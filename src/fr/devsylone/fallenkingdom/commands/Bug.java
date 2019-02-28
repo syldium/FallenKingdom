@@ -13,7 +13,7 @@ public class Bug extends FkCommand
 
 	public void execute(Player sender, FkPlayer fkp, String[] args)
 	{
-		fkp.sendMessage("Cette commande a été désactivée. Si tu souhaites signaler un bug, utilises ce lien : , "
+		fkp.sendMessage("Cette commande a été désactivée. Si tu souhaites signaler un bug, utilises ce lien : https://github.com/Etrenak/fallenkingdom/issues/new, "
 				+ "Ou bien rejoins notre discord : https://discord.gg/NwqFNa6");
 	}
 }
