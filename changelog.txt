@@ -1,0 +1,266 @@
+
+MODIFICATION = [*]
+AJOUT        = [+]
+RETRAIT      = [-]
+
+
+    >> 1.1
+[*] Correction d'une tache Asynchrone utilisant l'API de Bukkit
+[*] Correction d'un bug sur la téléportation
+--------
+
+    >> 1.2
+[+] Ajout de la commande /fk SetSbName
+[*] Correction d'un bug sur la téléportation
+--------
+
+    >> 1.3
+[+] /fk rules deathLimit
+[+] Ajout d'un chat d'équipes/global
+--------
+
+    >> 1.4
+[+] /fk team random
+[*] Changement de la permission FallenKingdom.team ➔ FallenKingdom.teams
+--------
+
+    >> 2.0.0
+[*] /fk setScoreboardName ➔ /fk game setSbName
+[+] Creepers électriques qui drop des tnt.
+[*] Changement complet du scoreboard
+         Avant la partie : https://goo.gl/RyGTnY
+         Durant la partie : https://goo.gl/PKCxGM
+[+] Un message est envoyé dans la console si une nouvelle version est disponible.
+[+] Règles DoPauseAfterDay et DeepPause.
+[*] Changement de multiples messages du plugin.
+[+] Compatibilité logiciel/plugin.
+--------
+
+    >> 2.0.1
+[*] Correction d'un bug sur la classe principale
+--------
+
+    >> 2.0.2
+[*] Bug fix sur la commande /fk game acceptapp
+[+] Compatibilité sur une amélioration du Fk config
+--------
+
+    >> 2.0.3
+[*] Bug fix sur les nouveaux fields des Packets en 1.9+
+[NB] Aucun changement sur la version 1.8
+--------
+
+    >> 2.0.4
+[-] Obfuscation du plugin qui causait des bugs.
+--------
+
+    >> 2.1.0
+[+] Option Application.Enabled qui permet de activer/désactiver la possibilité de connexion au plugin depuis un Fk config.
+[+] Option Charged_creepers qui permet d'activer/désactiver le spawn des creepers chargés.
+--------
+
+    >> 2.2.0
+[*] Correction d'un bug
+[+] /fk rules ChargedCreepers
+[+] /fk rules NetherCap
+[-] Charged_creepers dans la config
+[*] Update du Fk Config
+--------
+
+    >> 2.2.1
+[*] Correction d'un bug sur toutes les versions
+[*] Correction d'un bug en 1.12.1
+--------
+
+    >> 2.2.2
+[*] Correction d'un bug sur toutes les versions (Deco reco dans le nether avec un restart du serveur)
+--------
+
+    >> 2.2.3
+[*] Bug fix en 1.8 au lancement de la partie
+[+] Le plugin informe dans les logs lors d'une certaine configuration l'empêchant de fonctionner
+--------
+
+    >> 2.3.0
+[+] Support de CraftBukkit
+[*] Fix du message informant que le plugin se trouve dans un dossier contenant un espace (Affichait %20 au lieu d'un espace)
+[+] Ajout d'une stacktrace bien plus complète lors d'une erreur à l’exécution d'une commande
+--------
+
+    >> 2.3.1
+[*] Correction d'un bug en 1.9 - 1.12 (JoinEvent import md_5 sous craftbukkit)
+[*] Correction d'un bug en 1.9 - 1.11 (fk team removeplayer/remove ne marchait pas)
+--------
+
+    >> 2.3.2
+[*] Fix de la commande /fk team setbase qui ne marchait pas :S
+--------
+
+    >> 2.3.4
+[*] Bug fixes
+--------
+
+    >> 2.4.0
+[*] Fix de la commande /fk rules friendlyfire qui ne marchait pas :confused_:
+[+] Message à la connexion lorsqu'un message d'alerte a été envoyé dans la console
+[+] Message prévenant l'incompatibilité du scoreboard en dessous le la 1.8.8
+[+] Petit ajout dans les logs pour les devs
+--------
+
+    >> 2.4.1
+[*] La commande /fk help remarche :D
+[+] Un message en jeu indique quand une nouvelle version est sortie
+--------
+
+    >> 2.5.0
+[+] /fk rules EndCap
+[+] /fk rules TntJump (permet d'autoriser ou non les tours de tnt pour assaut)
+[+] /fk game restore (permet de restorer la partie à une pause précédente)
+[+] /fk rules PlaceBlockInCave (autorise ou non la pose de blocs dans les cavernes)
+[*] /fk rules ChargedCreepers (prend maintenant 3 parametres : le pourcentage de chance qu'un creeper se transforme en creeper chargé, le pourcentage de chance qu'il loot des tnt, et le nombre de tnt qu'il loot)
+[+] Autocomplétion d'une commande lorsqu'on appuie sur la touche tab
+[*] Le plugin devient le même pour toutes les versions de spigot.
+--------
+
+    >> 2.5.1
+[*] Bug fixes
+--------
+
+    >> 2.5.2
+[*] Bug fixes
+--------
+
+    >> 2.5.3
+[*] Bug fixes
+--------
+
+    >> 2.5.4
+[*] Bug fixes
+--------
+
+    >> 2.5.5
+[*] Bug fixes
+--------
+
+    >> 2.6.0
+[*] Bug fixes
+[*] /fk rules PlaceBlockInCave Qui prend maintenant en paramètre le nombre de blocs nécessaire au dessus de la tête d'un joueur pour qu'il soit considéré comme en caverne.
+[*] Vous pouvez maintenant customiser le stuff de départ avance la commande /fk game StarterInv.
+[*] La commande /fk game DeepPause fonctionne même après redémarrage du serveur et ne bug plus !
+[+] Si une erreur survient, nous (les devs) en seront directement avertis !
+[+] Si malgré tout vous remarquez un problème, la commande /fk bug <texte> est à votre disposition !
+[+] Des conseils apparaîtront de temps en temps dans le chat pour vous aider à mieux configurer le plugin :-)
+[+] /fk game StarterInv
+[+] Et enfin ce qui nous a demandé le plus de temps, la configuration du scoreboard :o
+[+] /fk scoreboard setLine
+[+] /fk scoreboard setName
+[+] /fk scoreboard Edit
+[+] /fk scoreboard LeaveEdit
+--------
+
+    >> 2.6.1
+[*] Bug fixes
+--------
+
+    >> 2.6.2
+[*] Bug fix
+--------
+
+    >> 2.6.3
+[*] Bugs fixes
+--------
+
+    >> 2.6.4
+[*] Bugs fixes
+--------
+
+     >> 2.6.5
+[*] Bugs fixes
+[+] Compabilité spigot v1_8_R1
+[*] Compabilité craftbukkit
+--------
+ 
+     >> 2.6.6
+[*] Fix d'un bug sous Windows
+--------
+
+     >> 2.7.0
+[*] Bugs fixes
+[+] Statistiques sur les commandes
+--------
+
+     >> 2.7.1
+[*] Bugs fixes
+--------
+
+     >> 2.7.2
+[*] Bugs fixes
+--------
+
+     >> 2.7.3
+[*] Bugs fixes
+--------
+ 
+      >> 2.8.0
+[+] Coffres à crocheter
+--------
+
+      >> 2.9.0
+[+] Les portails s'allument auto lors de l'activation du nether
+--------
+
+      >> 2.10.0
+[*] Si on allume un portail en créatif avant le début de la partie, il s'ouvre, et si on le casse, il se réouvrira lors de l'activation du nether
+[+] Auto updater (Beta)
+[+] Sauvegarde des portails à allumer (pour Reload/Restart)
+--------
+
+      >> 2.11.0
+[*] Les rules peuvent désormais être modifiées même en cours de jeu
+[*] Random teams fixées
+[+] Salles des coffres reconnues par le plugin
+[+] /fk team ChestsRoom
+[*] /fk team SetBase fixé
+[*] Couleur des pseudos des joueurs fixé après deco/reco
+[+] Warning quand on passe en creative
+--------
+
+      >> 2.12.0
+[*] Bug fix -> On pouvait se deplacer lors d'une deeppause
+[*] Les items ne despawn plus en deeppause
+[*] Bug fix -> On peut casser des blocs en pause en creative
+--------
+
+      >> 2.13.0
+[*] Bugs fixes
+[+] Vous êtes mieux averti lorsque le plugin a détecté un problème au démarrage
+[+] Meilleure indication du /fk scoreboard LeaveEdit
+[+] /fk rules RespawnAtHome -> Si le joueur a un lit il respawn normalement, sinon True=Respawn dans sa base, False=Respawn au WorldSpawn
+--------
+
+      >> 2.14.0
+[*] Changement de l'adresse du site dans le code
+--------
+
+      >> 2.15.0
+[+] Fix auto des espaces dans le chemin d'accès
+--------
+
+      >> 2.15.1
+[+] Bugs fixes
+--------
+
+      >> 2.15.2
+[*] Bug TabCompleter fix
+[*] Bug Portail nether fix
+[*] Bug Scoreboard Edit fix
+[*] Message ChestRoom -> ChestsRoom
+--------
+
+      >> 2.15.3
+[*] Bugs fixes
+--------
+
+      >> 2.15.4
+[*] Avertissement concernant le AllowBlock pour les ender eyes
+--------

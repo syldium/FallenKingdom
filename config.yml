@@ -1,0 +1,13 @@
+Application:
+  #Activer/Désactiver la possibilté de connection depuis un Fk config.
+  Enabled: true
+  #Si vous louez votre serveur, certains ports sont dédiés aux plugins, mais il faudra peut-être le réserver
+  Port: 50000
+  #Il est très fortement conseillé de changer de mot de passe.
+  Password: "pass"
+
+#Envoyer automatiquement des rapports statistiques d'utilisation du plugin nous permettant d'ameliorer celui-ci
+stats_enabled: true
+
+#Envoyer automatiquement un rapport de bug lorsqu'un problème survient au niveau de ce plugin.
+auto_report_bugs: true
