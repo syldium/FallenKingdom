@@ -11,3 +11,6 @@ Si vous êtes développeurs, sachez que ce projet à fait l'objet de plusieurs m
 
 ## Signaler un bug
 Si vous souhaitez [signaler un bug](https://github.com/Etrenak/fallenkingdom/issues/new), merci de joindre votre fichier latest.log au rapport de bug. Ce fichier contient des éléments essentiels pour que nous puissions identifier le problème et le résoudre.
+
+## Documentation
+* [Event spigot](docs/api/api.md)
