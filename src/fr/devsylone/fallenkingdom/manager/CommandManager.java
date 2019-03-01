@@ -60,7 +60,7 @@ public class CommandManager
 				while(entries.hasMoreElements())
 				{
 					final String name = entries.nextElement().getName();
-					if(name.startsWith("fr/devsylone/fallenkingdom/commands/") && !name.contains("Fk") && !name.contains("$"))
+					if(name.startsWith("fr/devsylone/fallenkingdom/commands/") && !name.contains("Fk") && !name.contains("$")  && name.endsWith(".class")) //On ne veut que les class (pas les pkg qui génèrent un CNFE)
 						try
 						{
 							blb++;

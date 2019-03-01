@@ -488,4 +488,8 @@ public class Fk extends JavaPlugin
 		return fkpi;
 	}
 
+	public static void main(String[] args){
+		System.out.println("Ce fichier est à mettre dans votre dossier plugin et non pas à executer");
+	}
+
 }
