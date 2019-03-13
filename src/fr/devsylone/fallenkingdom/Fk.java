@@ -426,6 +426,8 @@ public class Fk extends JavaPlugin
 		pRestorer = new PauseRestorer();
 
 		// Scoreboards
+		sbManager = new ScoreboardManager(); //Le recréer pour le réinitialiser
+
 		getScoreboardManager().recreateAllScoreboards();
 
 		saveableManager = new SaveablesManager(this); // En dernier
