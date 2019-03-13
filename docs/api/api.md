@@ -1,7 +1,7 @@
-###Api Fk
+### Api Fk
 Le plugin est doté d'un évent spigot : GameEvent
 
-Vous pouvez untiliser ce dernier comme un évent classique :
+Vous pouvez utiliser ce dernier comme un évent classique :
 
 ```java
 	@EventHandler
