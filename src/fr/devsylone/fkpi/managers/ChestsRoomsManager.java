@@ -12,8 +12,8 @@ public class ChestsRoomsManager implements Saveable
 
 	public ChestsRoomsManager()
 	{
-		captureTime = 0;
-		offset = 0;
+		captureTime = 60;
+		offset = 2;
 		enabled = true;
 	}
 

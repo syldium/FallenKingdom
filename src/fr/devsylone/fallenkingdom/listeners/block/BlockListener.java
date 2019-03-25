@@ -33,7 +33,6 @@ public class BlockListener implements Listener
 	@EventHandler
 	public void event(BlockPlaceEvent e)
 	{
-		Fk.debug(e.getBlock().getType());
 		Player p = e.getPlayer();
 		FkPlayer fkp = Fk.getInstance().getPlayerManager().getPlayer(p);
 		Team team = Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(p.getName());

@@ -5,9 +5,3 @@ Application:
   Port: 50000
   #Il est très fortement conseillé de changer de mot de passe.
   Password: "pass"
-
-#Envoyer automatiquement des rapports statistiques d'utilisation du plugin nous permettant d'ameliorer celui-ci
-stats_enabled: true
-
-#Envoyer automatiquement un rapport de bug lorsqu'un problème survient au niveau de ce plugin.
-auto_report_bugs: true

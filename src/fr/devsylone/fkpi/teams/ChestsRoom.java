@@ -138,6 +138,7 @@ public class ChestsRoom implements Saveable
 				for(int iz = 0; iz <= Math.abs(zDif); iz++)
 				{
 					final Location loc = min.clone().add(xDif < 0 ? -ix : ix, yDif < 0 ? -iy : iy, zDif < 0 ? -iz : iz);
+					p.teleport(loc);
 					int inter = 0;
 					inter = inter + (ix == Math.abs(xDif) ? 1 : 0);
 					inter = inter + (iy == Math.abs(yDif) ? 1 : 0);
@@ -355,5 +356,10 @@ public class ChestsRoom implements Saveable
 	private int getOffset()
 	{
 		return FkPI.getInstance().getChestsRoomsManager().getOffset();
+	}
+	
+	public boolean exists()
+	{
+		return !chests.isEmpty();
 	}
 }
