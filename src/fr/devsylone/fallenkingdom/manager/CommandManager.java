@@ -73,7 +73,7 @@ public class CommandManager
 				if(blb < 10)
 				{
 					Fk.getInstance().getLogger().severe("Erreur ! Veuillez contacer le support");
-					Fk.getInstance().addOnConnectWarning("Erreur au chargement, merci de contacter le support en envoyant vos logs");
+					Fk.getInstance().addError("Erreur au chargement des commandes, merci de contacter le support via https://discord.gg/SmAAFxh ou bien devsylone@gmail.com");
 				}
 
 				jar.close();
@@ -82,7 +82,7 @@ public class CommandManager
 			else
 			{
 				Fk.getInstance().getLogger().severe("Merci de renommer le plugin en FallenKingdom.jar");
-				Fk.getInstance().addOnConnectWarning("Erreur au chargement, merci de contacter le support en envoyant vos logs");
+				Fk.getInstance().addError("Erreur au chargement des commandes, merci de contacter le support via https://discord.gg/SmAAFxh ou bien devsylone@gmail.com");
 			}
 		}catch(IOException e)
 		{

@@ -138,7 +138,6 @@ public class ChestsRoom implements Saveable
 				for(int iz = 0; iz <= Math.abs(zDif); iz++)
 				{
 					final Location loc = min.clone().add(xDif < 0 ? -ix : ix, yDif < 0 ? -iy : iy, zDif < 0 ? -iz : iz);
-					p.teleport(loc);
 					int inter = 0;
 					inter = inter + (ix == Math.abs(xDif) ? 1 : 0);
 					inter = inter + (iy == Math.abs(yDif) ? 1 : 0);
@@ -265,15 +264,13 @@ public class ChestsRoom implements Saveable
 			if(Bukkit.getPlayer(player) != null)
 				Fk.getInstance().getPlayerManager().getPlayer(player).sendMessage(team.getChatColor() + "[Équipe]§r Vous commencez la capture de la salle des coffres  !");
 
+		final long startCaptureTimestamp = System.currentTimeMillis();
 		captureTask = new BukkitRunnable()
 		{
-			double i = 0;
-
 			@Override
 			public void run()
 			{
-				i += 0.25d;
-				if(i >= FkPI.getInstance().getChestsRoomsManager().getCaptureTime())
+				if(System.currentTimeMillis() >= startCaptureTimestamp + FkPI.getInstance().getChestsRoomsManager().getCaptureTime() * 1000)
 				{
 					state = ChestRoomState.CAPTURED;
 					Fk.broadcast("\n\n\n\n§dL'équipe " + team.getChatColor() + team.getName() + " §da capturé la salle des coffres de l'équipe " + base.getTeam().getChatColor() + base.getTeam().getName());
@@ -319,7 +316,7 @@ public class ChestsRoom implements Saveable
 				else
 					for(String player : team.getPlayers())
 						if(Bukkit.getPlayer(player) != null)
-							Fk.getInstance().getPacketManager().sendTitle(Bukkit.getPlayer(player), "", "§b" + (int) (i / (double) FkPI.getInstance().getChestsRoomsManager().getCaptureTime() * 100) + "%", 0, 20, 20);
+							Fk.getInstance().getPacketManager().sendTitle(Bukkit.getPlayer(player), "", "§b" + (int) ((System.currentTimeMillis() - startCaptureTimestamp) / 1000.0d / (double) FkPI.getInstance().getChestsRoomsManager().getCaptureTime() * 100) + "%", 0, 20, 20);
 			}
 		}.runTaskTimer(Fk.getInstance(), 5l, 5l);
 	}
@@ -357,7 +354,7 @@ public class ChestsRoom implements Saveable
 	{
 		return FkPI.getInstance().getChestsRoomsManager().getOffset();
 	}
-	
+
 	public boolean exists()
 	{
 		return !chests.isEmpty();

@@ -1,5 +1,7 @@
 package fr.devsylone.fallenkingdom.utils;
 
+import java.io.File;
+
 import org.bukkit.Bukkit;
 
 import fr.devsylone.fallenkingdom.Fk;
@@ -62,11 +64,11 @@ public class DebuggerUtils
 		String serverName;
 		try
 		{
-			String[] folders = path.split("/");
+			String[] folders = path.split(File.separator);
 			serverName = folders[folders.length - 3];
 		}catch(Exception e)
 		{
-			serverName = "server";
+			serverName = "serverErr";
 		}
 		return serverName;
 	}
@@ -87,7 +89,7 @@ public class DebuggerUtils
 			log("CraftBukkit version : " + Bukkit.getBukkitVersion() + " | " + Bukkit.getVersion());
 		log("Plugin version : v" + Fk.getInstance().getDescription().getVersion());
 		log("---- Comandes depuis reload ----");
-		if(FkCommandExecutor.logs!=null)
+		if(FkCommandExecutor.logs != null)
 			for(String cmdfor : FkCommandExecutor.logs.keySet())
 				log("  > " + cmdfor + (((Boolean) FkCommandExecutor.logs.get(cmdfor)).booleanValue() ? "" : "  [Error occured]"));
 		else

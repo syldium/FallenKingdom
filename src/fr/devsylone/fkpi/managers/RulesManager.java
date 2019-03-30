@@ -61,6 +61,7 @@ public class RulesManager implements Saveable
 		registerNewRule(new PlaceBlockInCave(new Boolean(false), 3));
 		registerNewRule(new Rule("TntJump", new Boolean(true)));
 		registerNewRule(new Rule("RespawnAtHome", new Boolean(false)));
+		registerNewRule(new Rule("HealthBelowName", new Boolean(true)));
 
 		List<String> allowedBlocks = new ArrayList<String>();
 		allowedBlocks.add("TORCH");

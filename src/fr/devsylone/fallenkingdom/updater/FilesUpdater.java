@@ -131,6 +131,17 @@ public class FilesUpdater
 				setSection.set("Enabled", true);
 
 		}
+		
+//		if(isGrowing(lastv, "2.16.0"))
+//		{
+//			file = Fk.getInstance().getSaveableManager().getFileConfiguration("save.yml");
+//
+//			setSection = file.createSection("FkPI.RulesManager.Rules.HealthBelowName");
+//
+//			setSection = file.createSection("FkPI.ChestsRoomsManager");
+//			setSection.set("value", true);
+//
+//		}
 	}
 
 	public boolean isSection(String path)

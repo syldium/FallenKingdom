@@ -36,7 +36,9 @@ public class FkScoreboard
 		this.bukkitBoard = Bukkit.getScoreboardManager().getNewScoreboard();
 
 		sidebarBoard = new ScoreboardSign(player, Fk.getInstance().getScoreboardManager().getName());
-		bukkitBoard.registerNewObjective("§c❤", "health").setDisplaySlot(DisplaySlot.BELOW_NAME);
+		
+		if((boolean) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("HealthBelowName").getValue())
+			bukkitBoard.registerNewObjective("§c❤", "health").setDisplaySlot(DisplaySlot.BELOW_NAME);
 
 		List<String> sidebarConfig = Fk.getInstance().getScoreboardManager().getSidebar();
 
@@ -155,7 +157,7 @@ public class FkScoreboard
 		{
 			bukkitBoard.registerNewTeam(team.getName());
 			bukkitBoard.getTeam(team.getName()).setPrefix(team.getPrefix());
-			
+
 			for(String entry : CrossversionTeam.getEntries(team))
 				if(Bukkit.getPlayer(entry) != null)
 					CrossversionTeam.addEntry(entry, bukkitBoard.getTeam(team.getName()));

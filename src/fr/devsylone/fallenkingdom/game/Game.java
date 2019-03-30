@@ -52,23 +52,25 @@ public class Game implements Saveable
 		return state;
 	}
 
+	@SuppressWarnings("incomplete-switch")
 	public boolean setState(GameState state)
 	{
 		if(this.state == state)
 			return false;
 
 		//Event creation
-		switch (state){
+		switch(state)
+		{
 			case PAUSE:
-				Bukkit.getPluginManager().callEvent(new GameEvent(GameEvent.Type.PAUSEEVENT, day));
+				Bukkit.getPluginManager().callEvent(new GameEvent(GameEvent.Type.PAUSE_EVENT, day));
 				break;
 			case STARTED:
-				if (this.state == GameState.STARTING) Bukkit.getPluginManager().callEvent(new GameEvent(GameEvent.Type.STARTEVENT, day));
-				else Bukkit.getPluginManager().callEvent(new GameEvent(GameEvent.Type.RESUMEEVENT, day));
+				if(this.state == GameState.STARTING)
+					Bukkit.getPluginManager().callEvent(new GameEvent(GameEvent.Type.START_EVENT, day));
+				else
+					Bukkit.getPluginManager().callEvent(new GameEvent(GameEvent.Type.RESUME_EVENT, day));
 				break;
 		}
-
-
 
 		this.state = state;
 
@@ -112,8 +114,7 @@ public class Game implements Saveable
 					time = 0;
 					Fk.broadcast("§bJour " + day);
 
-					Bukkit.getPluginManager().callEvent(new GameEvent(GameEvent.Type.NEWDAY, day)); //EVENT
-
+					Bukkit.getPluginManager().callEvent(new GameEvent(GameEvent.Type.NEW_DAY, day)); //EVENT
 
 					if((boolean) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("DoPauseAfterDay").getValue() && day > 1)
 						try
@@ -128,14 +129,14 @@ public class Game implements Saveable
 					{
 						pvp = true;
 						Fk.broadcast("§cLe pvp est désormais actif !", FkSound.ENDERDRAGON_GROWL);
-						Bukkit.getPluginManager().callEvent(new GameEvent(GameEvent.Type.PVPENABLED, day)); //EVENT
+						Bukkit.getPluginManager().callEvent(new GameEvent(GameEvent.Type.PVP_ENABLED, day)); //EVENT
 					}
 
 					if((int) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("TntCap").getValue() == day)
 					{
 						assault = true;
 						Fk.broadcast("§cLes assauts sont désormais actifs !", FkSound.ENDERDRAGON_GROWL);
-						Bukkit.getPluginManager().callEvent(new GameEvent(GameEvent.Type.TNTENABLED, day)); //EVENT
+						Bukkit.getPluginManager().callEvent(new GameEvent(GameEvent.Type.TNT_ENABLED, day)); //EVENT
 					}
 
 					if((int) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("NetherCap").getValue() == day)
@@ -143,14 +144,14 @@ public class Game implements Saveable
 						nether = true;
 						Fk.broadcast("§cLe nether est désormais ouvert !", FkSound.ENDERDRAGON_GROWL);
 						Fk.getInstance().getPortalsManager().enablePortals();
-						Bukkit.getPluginManager().callEvent(new GameEvent(GameEvent.Type.NETHERENABLED, day)); //EVENT
+						Bukkit.getPluginManager().callEvent(new GameEvent(GameEvent.Type.NETHER_ENABLED, day)); //EVENT
 					}
 
 					if((int) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("EndCap").getValue() == day)
 					{
 						end = true;
 						Fk.broadcast("§cL'end est désormais ouvert !", FkSound.ENDERDRAGON_GROWL);
-						Bukkit.getPluginManager().callEvent(new GameEvent(GameEvent.Type.ENDENABLED, day)); //EVENT
+						Bukkit.getPluginManager().callEvent(new GameEvent(GameEvent.Type.END_ENABLED, day)); //EVENT
 					}
 
 					for(LockedChest chest : Fk.getInstance().getFkPI().getLockedChestsManager().getChestList())

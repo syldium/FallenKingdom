@@ -199,18 +199,6 @@ public class Fk extends JavaPlugin
 			e.printStackTrace();
 		}
 
-		if(!getConfig().contains("stats_enabled"))
-		{
-			getConfig().set("stats_enabled", true);
-			saveConfig();
-		}
-
-		if(!getConfig().contains("auto_report_bugs"))
-		{
-			getConfig().set("auto_report_bugs", true);
-			saveConfig();
-		}
-
 		if(getConfig().getBoolean("Application.Enabled"))
 		{
 			if(Bukkit.getVersion().contains("Spigot"))
@@ -258,6 +246,16 @@ public class Fk extends JavaPlugin
 			e.printStackTrace();
 		}
 
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable()
+		{
+
+			@Override
+			public void run()
+			{
+				saveableManager.saveAll();
+			}
+		}, 5l * 20l, 5l * 20l);
+		
 		check();
 	}
 
@@ -329,6 +327,7 @@ public class Fk extends JavaPlugin
 	{
 		return server;
 	}
+
 	public PortalsManager getPortalsManager()
 	{
 		return portalManager;
@@ -490,7 +489,8 @@ public class Fk extends JavaPlugin
 		return fkpi;
 	}
 
-	public static void main(String[] args){
+	public static void main(String[] args)
+	{
 		System.out.println("Ce fichier est à mettre dans votre dossier plugin et non pas à executer");
 	}
 
