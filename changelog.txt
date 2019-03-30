@@ -264,3 +264,15 @@ RETRAIT      = [-]
       >> 2.15.4
 [*] Avertissement concernant le AllowBlock pour les ender eyes
 --------
+
+      >> 2.16.0
+[*] Valeurs par défaut du ChestsRoomManager fixées
+[+] API Events pour d'autres plugins
+[*] Correction d'un bug lors du chargement des commandes
+[+] Reset du scoreboard lors d'un /fk game reset
+[+] Sauvegardes automatiques
+[+] /fk rules HealthBelowName
+[+] /fk team SetColor
+[+] /fk scoreboard reset
+[*] Fix directions/distance de la base
+--------
