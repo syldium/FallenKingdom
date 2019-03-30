@@ -25,27 +25,8 @@ public class ScoreboardManager implements Saveable
 
 	public ScoreboardManager()
 	{
-		name = ChatUtils.PREFIX;
-		stringTrue = "§2✔";
-		stringFalse = "§4✘";
-		noTeam = "§4No team";
-		noBase = "§4No Base";
-		arrows = "↑↗→↘↓↙←↖";
-		sidebar = new ArrayList<String>();
-		sidebar.add("§f§a§k§e");
-		sidebar.add("§6Jour {D} §2{H}h{M}");
-		sidebar.add("§m------------");
-		sidebar.add("Equipe : §e{TEAM}");
-		sidebar.add("Morts : §e{MORTS}");
-		sidebar.add("Kills : §e{KILLS}");
-		sidebar.add("{BASE_PORTAL} : §e{DIST} §l{ARROW}");
-		sidebar.add("Pvp {PVP?}");
-		sidebar.add("Assauts {TNT?}");
-		sidebar.add("Nether {NETHER?}");
-		sidebar.add("End {END?}");
-		sidebar.add("§m------------");
-		sidebar.add(ChatUtils.DEVSYLONE);
-
+		sidebar = new ArrayList<>();
+		reset();
 	}
 
 	public HashMap<String, String> getCustomStrings()
@@ -149,6 +130,30 @@ public class ScoreboardManager implements Saveable
 	{
 		for(FkPlayer player : Fk.getInstance().getPlayerManager().getConnectedPlayers())
 			player.getScoreboard().refreshNicks();
+	}
+
+	public void reset()
+	{
+		name = ChatUtils.PREFIX;
+		stringTrue = "§2✔";
+		stringFalse = "§4✘";
+		noTeam = "§4No team";
+		noBase = "§4No Base";
+		arrows = "↑↗→↘↓↙←↖";
+		sidebar.clear();
+		sidebar.add("§f§a§k§e");
+		sidebar.add("§6Jour {D} §2{H}h{M}");
+		sidebar.add("§m------------");
+		sidebar.add("Equipe : §e{TEAM}");
+		sidebar.add("Morts : §e{MORTS}");
+		sidebar.add("Kills : §e{KILLS}");
+		sidebar.add("{BASE_PORTAL} : §e{DIST} §l{ARROW}");
+		sidebar.add("Pvp {PVP?}");
+		sidebar.add("Assauts {TNT?}");
+		sidebar.add("Nether {NETHER?}");
+		sidebar.add("End {END?}");
+		sidebar.add("§m------------");
+		sidebar.add(ChatUtils.DEVSYLONE);
 	}
 
 	@Override

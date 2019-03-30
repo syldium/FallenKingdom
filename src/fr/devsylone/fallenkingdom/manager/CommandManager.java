@@ -31,6 +31,7 @@ public class CommandManager
 		confirms = new HashMap<String, Boolean>();
 		confirms.put("stop", false);
 		confirms.put("reset", false);
+		confirms.put("sbreset", false);
 	}
 
 	public boolean isConfirmed(String key)
@@ -262,6 +263,9 @@ public class CommandManager
 
 		if(!command.getPath().equalsIgnoreCase("game stop"))
 			setConfirmed("stop", false);
+		
+		if(!command.getPath().equalsIgnoreCase("scoreboard reset"))
+			setConfirmed("sbreset", false);
 
 		try
 		{

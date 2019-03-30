@@ -38,6 +38,7 @@ public class Reset extends FkGameCommand
 			broadcast(ChatColor.RED + "La partie a été " + ChatColor.DARK_RED + ChatColor.BOLD + "complètement" + ChatColor.RED + " réinitialisée");
 			Fk.getInstance().reset();
 			Fk.getInstance().getCommandManager().setConfirmed("reset", false);
+			
 		}
 	}
 }
