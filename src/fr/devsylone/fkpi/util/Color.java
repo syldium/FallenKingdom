@@ -13,82 +13,60 @@ public enum Color
 	BLANC("blanc", "blanche", ChatColor.WHITE, (byte) 0),
 	NOIR("noir", "noire", ChatColor.BLACK, (byte) 15),
 	ORANGE("orange", "orange", ChatColor.GOLD, (byte) 1),
-	GRIS("gris", "grise", ChatColor.GRAY, (byte) 8);
+	GRIS("gris", "grise", ChatColor.GRAY, (byte) 8),
+	NO_COLOR("no color", "no color", ChatColor.WHITE, (byte) 0);
 
-	private String m_maleColor;
-	private String m_femColor;
-	private ChatColor m_chatColor;
-	private byte m_data;
+	private String maleColor;
+	private String femColor;
+	private ChatColor chatColor;
+	private byte data;
+	
+	public static final int GENRE_F = 0;
+	public static final int GENRE_M = 1;
 
-	Color(String colorM, String colorF, ChatColor chatColor, byte data)
+	private Color(String maleColor, String femColor, ChatColor chatColor, byte data)
 	{
-		m_maleColor = colorM;
-		m_femColor = colorF;
-		m_chatColor = chatColor;
-		m_data = data;
+		this.maleColor = maleColor;
+		this.femColor = femColor;
+		this.chatColor = chatColor;
+		this.data = data;
 	}
 
 	public static Color forName(String name)
 	{
 		for(Color c : Color.values())
-			if(name.equalsIgnoreCase(c.m_maleColor) || name.equalsIgnoreCase(c.m_femColor))
+			if(name.equalsIgnoreCase(c.maleColor) || name.equalsIgnoreCase(c.femColor))
 				return c;
 
 		return null;
 	}
-
-	public static String getMaleColor(String color)
+	
+	public String getGenredName(int genre)
 	{
-		for(Color c : Color.values())
-			if(color.equalsIgnoreCase(c.m_maleColor) || color.equalsIgnoreCase(c.m_femColor))
-				return c.m_maleColor;
-
-		return null;
+		return genre == GENRE_M ? maleColor : femColor;
 	}
 
-	public static String getColor(String color, String genre)
+	public static String getGenredName(String color, int genre)
 	{
-		if(genre == "m")
-		{
-			for(Color c : Color.values())
-			{
-				if(color.equalsIgnoreCase(c.m_maleColor) || color.equalsIgnoreCase(c.m_femColor))
-					return c.m_maleColor;
-			}
-		}
-
-		if(genre == "f")
-		{
-			for(Color c : Color.values())
-			{
-				if(color.equalsIgnoreCase(c.m_maleColor) || color.equalsIgnoreCase(c.m_femColor))
-					return c.m_femColor;
-			}
-		}
-
-		return "null null";
+		return forName(color).getGenredName(genre);
 	}
 
 	public static ChatColor getChatColor(String color)
 	{
 		for(Color c : Color.values())
-			if(color.equalsIgnoreCase(c.m_maleColor) || color.equalsIgnoreCase(c.m_femColor))
-				return c.m_chatColor;
+			if(color.equalsIgnoreCase(c.maleColor) || color.equalsIgnoreCase(c.femColor))
+				return c.chatColor;
 
 		return ChatColor.WHITE;
 	}
 
 	public ChatColor getChatColor()
 	{
-		return m_chatColor;
+		return chatColor;
 	}
 
-	public static byte getData(String color)
+	public byte getData()
 	{
-		for(Color c : Color.values())
-			if(color.equalsIgnoreCase(c.m_maleColor) || color.equalsIgnoreCase(c.m_femColor))
-				return c.m_data;
-
-		return 0;
+		return data;
 	}
 }

@@ -8,7 +8,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 
-import fr.devsylone.fkpi.util.Color;
 import fr.devsylone.fkpi.util.Saveable;
 
 /**
@@ -220,7 +219,7 @@ public class Base implements Saveable
 				 * la couleur même si elle est deprecated.
 				 */
 				index.getBlock().setType(Material.WOOL);
-				index.getBlock().setData(Color.getData(team.getName()));
+				index.getBlock().setData(team.getColor().getData());
 
 				index.add(0, 1, 0);
 			}

@@ -149,7 +149,7 @@ public class TeamManager implements Saveable
 			String p = players.get(rdmi);
 			if(getPlayerTeam(p) != null)
 				removePlayerOfHisTeam(p);
-			
+
 			teams.get(0).addPlayer(p);
 			players.remove(rdmi);
 		}

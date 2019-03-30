@@ -273,11 +273,11 @@ public class ChestsRoom implements Saveable
 				if(System.currentTimeMillis() >= startCaptureTimestamp + FkPI.getInstance().getChestsRoomsManager().getCaptureTime() * 1000)
 				{
 					state = ChestRoomState.CAPTURED;
-					Fk.broadcast("\n\n\n\n§dL'équipe " + team.getChatColor() + team.getName() + " §da capturé la salle des coffres de l'équipe " + base.getTeam().getChatColor() + base.getTeam().getName());
+					Fk.broadcast("\n\n\n\n§dL'équipe " + team.toString() + " §da capturé la salle des coffres de l'équipe " + base.getTeam().toString());
 					Fk.broadcast("");
 					Fk.broadcast("");
 					for(Player p : Bukkit.getOnlinePlayers())
-						Fk.getInstance().getPacketManager().sendTitle(p, "Équipe " + base.getTeam().getChatColor() + base.getTeam().getName(), "§cÉliminée", 10, 60, 10);
+						Fk.getInstance().getPacketManager().sendTitle(p, "Équipe " + base.getTeam().toString(), "§cÉliminée", 10, 60, 10);
 
 					if(FkPI.getInstance().getTeamManager().getTeams().size() > 2)
 						Bukkit.dispatchCommand((CommandSender) Bukkit.getOnlinePlayers().toArray()[0], "fk game pause");
@@ -285,7 +285,7 @@ public class ChestsRoom implements Saveable
 					else
 					{
 						for(Player p : Bukkit.getOnlinePlayers())
-							Fk.getInstance().getPacketManager().sendTitle(p, "Victoire !!", "Gagnants : " + team.getChatColor() + team.getName(), 10, 10 * 20, 10);
+							Fk.getInstance().getPacketManager().sendTitle(p, "Victoire !!", "Gagnants : " + team.toString(), 10, 10 * 20, 10);
 						new BukkitRunnable()
 						{
 							private int i;

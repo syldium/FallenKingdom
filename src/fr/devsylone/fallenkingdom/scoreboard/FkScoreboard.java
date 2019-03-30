@@ -67,7 +67,7 @@ public class FkScoreboard
 			sidebarBoard.setLine("§bEquipes :", ++index);
 
 			for(fr.devsylone.fkpi.teams.Team team : Fk.getInstance().getFkPI().getTeamManager().getTeams())
-				sidebarBoard.setLine(" " + team.getChatColor() + team.getName() + " (§7" + team.getPlayers().size() + team.getChatColor() + ")", ++index);
+				sidebarBoard.setLine(" " + team.toString() + " (§7" + team.getPlayers().size() + team.getChatColor() + ")", ++index);
 
 			sidebarBoard.setLine("§1", ++index);
 			sidebarBoard.setLine("§bRègles :", ++index);

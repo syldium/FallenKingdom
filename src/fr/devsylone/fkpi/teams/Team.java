@@ -21,6 +21,8 @@ public class Team implements Saveable
 	private org.bukkit.scoreboard.Team scoreboardTeam;
 	private List<String> players;
 
+	private Color color;
+
 	static
 	{
 		IS_BUKKIT_PLUGIN = FkPI.getInstance().isBukkitPlugin();
@@ -30,12 +32,16 @@ public class Team implements Saveable
 	{
 		this.name = name;
 
+		color = Color.forName(name);
+		if(color == null)
+			color = Color.NO_COLOR;
+
 		players = new ArrayList<String>();
 
 		if(IS_BUKKIT_PLUGIN)
 		{
 			scoreboardTeam = FkPI.getInstance().getTeamManager().getScoreboard().registerNewTeam(name);
-			scoreboardTeam.setPrefix(getChatColor() + "");
+			scoreboardTeam.setPrefix(color.getChatColor() + "");
 		}
 
 	}
@@ -83,16 +89,28 @@ public class Team implements Saveable
 		return base;
 	}
 
+	public Color getColor()
+	{
+		return color;
+	}
+
 	public ChatColor getChatColor()
 	{
-		return Color.getChatColor(name);
+		return color.getChatColor();
+	}
+
+	public void setColor(Color color)
+	{
+		this.color = color == null ? Color.NO_COLOR : color;
+		if(IS_BUKKIT_PLUGIN)
+			scoreboardTeam.setPrefix(this.color.getChatColor() + "");
 	}
 
 	public org.bukkit.scoreboard.Team getScoreboardTeam()
 	{
 		return scoreboardTeam;
 	}
-	
+
 	public void balance(List<Team> teams, int playerPerTeams)
 	{
 		if(players.size() >= playerPerTeams)// On a assez de joueurs
@@ -127,7 +145,7 @@ public class Team implements Saveable
 	@Override
 	public boolean equals(Object other)
 	{
-		return  other != null  && other instanceof Team? name.equals(((Team) other).getName()) : false;
+		return other != null && other instanceof Team ? name.equals(((Team) other).getName()) : false;
 	}
 
 	@Override
@@ -137,6 +155,9 @@ public class Team implements Saveable
 			CrossversionTeam.addEntry(entr, scoreboardTeam);
 
 		players = config.getStringList("Members");
+		color = Color.valueOf(config.getString("Color"));
+		if(IS_BUKKIT_PLUGIN)
+			scoreboardTeam.setPrefix(this.color.getChatColor() + "");
 
 		if(!config.isConfigurationSection("Base"))
 			return;
@@ -151,17 +172,19 @@ public class Team implements Saveable
 	public void save(ConfigurationSection config)
 	{
 		config.set("Members", players);
+		config.set("Color", color.name());
 
 		if(base == null || base.getCenter().getWorld() == null)
 		{
 			config.set("Base", null);
 			return;
 		}
+
 		base.save(config.createSection("Base"));
 	}
 
 	public String toString()
 	{
-		return getChatColor() + getName();
+		return color.getChatColor() + getName();
 	}
 }

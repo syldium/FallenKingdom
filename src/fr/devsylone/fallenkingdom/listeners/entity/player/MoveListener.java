@@ -62,13 +62,13 @@ public class MoveListener implements Listener
 					if(pTeam != null && team.equals(pTeam))
 						fkp.sendMessage(ChatColor.GREEN + "Vous entrez dans votre base");
 					else
-						fkp.sendMessage("Vous entrez dans la base de l'equipe " + team.getChatColor() + team.getName());
+						fkp.sendMessage("Vous entrez dans la base de l'equipe " + team.toString());
 
 				else if(team.getBase().contains(e.getFrom()) && !team.getBase().contains(e.getTo()))
 					if(pTeam != null && team.equals(pTeam))
 						fkp.sendMessage(ChatColor.RED + "Vous sortez de votre base");
 					else
-						fkp.sendMessage("Vous sortez de la base de l'equipe " + team.getChatColor() + team.getName());
+						fkp.sendMessage("Vous sortez de la base de l'equipe " + team.toString());
 
 				if(team.getBase().getChestsRoom() != null && Fk.getInstance().getFkPI().getChestsRoomsManager().isEnabled())
 				{
@@ -77,7 +77,7 @@ public class MoveListener implements Listener
 							fkp.sendMessage(ChatColor.DARK_GREEN + "Vous entrez dans votre salle des coffres (§e/fk team ChestsRoom Show§2)");
 						else
 						{
-							fkp.sendMessage("§rVous entrez dans la salle des coffres de l'équipe " + team.getChatColor() + team.getName());
+							fkp.sendMessage("§rVous entrez dans la salle des coffres de l'équipe " + team.toString());
 							team.getBase().getChestsRoom().addEnemyInside(e.getPlayer().getName());
 						}
 
@@ -87,7 +87,7 @@ public class MoveListener implements Listener
 						else
 						{
 							team.getBase().getChestsRoom().removeEnemyInside(e.getPlayer().getName());
-							fkp.sendMessage("§rVous sortez de la salle des coffres de l'équipe " + team.getChatColor() + team.getName());
+							fkp.sendMessage("§rVous sortez de la salle des coffres de l'équipe " + team.toString());
 						}
 				}
 			}

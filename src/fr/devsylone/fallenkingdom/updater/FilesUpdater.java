@@ -10,6 +10,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.game.Game.GameState;
+import fr.devsylone.fkpi.util.Color;
 
 public class FilesUpdater
 {
@@ -122,26 +123,30 @@ public class FilesUpdater
 					setSection.set(key, getSection.get(key));
 			}
 			setSection = file.createSection("FkPI.ChestsRoomsManager");
-			setSection.set("CaptureTime", 60);
-			setSection.set("Offset", 2);
-			
+			set("CaptureTime", 60);
+			set("Offset", 2);
+
 			if(!GameState.valueOf(file.getString("Game.State")).equals(GameState.BEFORE_STARTING))
-				setSection.set("Enabled", false);
+				set("Enabled", false);
 			else
-				setSection.set("Enabled", true);
+				set("Enabled", true);
 
 		}
-		
-//		if(isGrowing(lastv, "2.16.0"))
-//		{
-//			file = Fk.getInstance().getSaveableManager().getFileConfiguration("save.yml");
-//
-//			setSection = file.createSection("FkPI.RulesManager.Rules.HealthBelowName");
-//
-//			setSection = file.createSection("FkPI.ChestsRoomsManager");
-//			setSection.set("value", true);
-//
-//		}
+
+		if(isGrowing(lastv, "2.16.0"))
+		{
+			file = Fk.getInstance().getSaveableManager().getFileConfiguration("save.yml");
+
+			//			setSection = file.createSection("FkPI.RulesManager.Rules.HealthBelowName");
+			//
+			//			setSection = file.createSection("FkPI.ChestsRoomsManager");
+			//			setSection.set("value", true);
+			
+			getSection = file.getConfigurationSection("FkPI.TeamManager");
+			setSection = getSection;
+			for(String team : getSection.getKeys(false))
+				set(team + ".Color", Color.forName(team));
+		}
 	}
 
 	public boolean isSection(String path)

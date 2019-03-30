@@ -18,13 +18,13 @@ public class Remove extends fr.devsylone.fallenkingdom.commands.teams.FkTeamComm
 	{
 		if(Fk.getInstance().getFkPI().getTeamManager().getTeam(args[0]) == null)
 			throw new FkLightException("Cette équipe n'existe pas !");
-		
-		ChatColor color=Fk.getInstance().getFkPI().getTeamManager().getTeam(args[0]).getChatColor();
+
+		ChatColor color = Fk.getInstance().getFkPI().getTeamManager().getTeam(args[0]).getChatColor();
 		Object[] players = Fk.getInstance().getFkPI().getTeamManager().getTeam(args[0]).getPlayers().toArray();
 		for(Object player : players)
 			Fk.getInstance().getCommandManager().executeCommand(new String[] {"team", "removeplayer", String.valueOf(player)}, sender);
-		
+
 		Fk.getInstance().getFkPI().getTeamManager().removeTeam(args[0]);
-		broadcast("L'équipe " + color+args[0] + " §6a été supprimée ! ");
+		broadcast("L'équipe " + color + args[0] + " §6a été supprimée ! ");
 	}
 }
