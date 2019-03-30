@@ -38,7 +38,7 @@ public class ScoreboardManager implements Saveable
 		sidebar.add("Equipe : §e{TEAM}");
 		sidebar.add("Morts : §e{MORTS}");
 		sidebar.add("Kills : §e{KILLS}");
-		sidebar.add("Base : §e{DIST} §l{ARROW}");
+		sidebar.add("{BASE_PORTAL} : §e{DIST} §l{ARROW}");
 		sidebar.add("Pvp {PVP?}");
 		sidebar.add("Assauts {TNT?}");
 		sidebar.add("Nether {NETHER?}");

@@ -23,8 +23,9 @@ public enum PlaceHolder
 
 	BASE_DISTANCE("getBaseDistance", PlaceHolderUtils.class, new String[] {"player"}, "Distance de la base", "PLAYER_DISTANCE_TO_BASE", "BASE_DISTANCE", "DISTANCE", "DIST"),
 	BASE_DIRECTION("getBaseDirection", PlaceHolderUtils.class, new String[] {"player", "arrows"}, "Direction de la base", "PLAYER_BASE_DIRECTION", "BASE_DIRECTION", "DIRECTION", "ARROW", "ARROWS"),
+	BASE_OR_PORTAL("getBaseOrPortal", PlaceHolderUtils.class, new String[] {"player"}, "Base/portail selon la dimension", "BASE_OR_PORTAL", "BASE_PORTAL"),
 
-	PVPCAP("isPvpEnabled", Fk.getInstance().getGame(), "Pvp actifs ?", "PVP?", "PVP_ACTIVATED"),
+	PVPCAP("isPvpEnabled", Fk.getInstance().getGame(), "Pvp actifs ?", "PVP?"),
 	TNTCAP("isAssaultsEnabled", Fk.getInstance().getGame(), "Assauts actifs ?", "TNT?"),
 	NETHERCAP("isNetherEnabled", Fk.getInstance().getGame(), "Nether ouvert ?", "NETHER?"),
 	ENDCAP("isEndEnabled", Fk.getInstance().getGame(), "End ouvert ?", "END?");

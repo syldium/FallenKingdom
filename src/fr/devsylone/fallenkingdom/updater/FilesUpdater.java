@@ -141,11 +141,23 @@ public class FilesUpdater
 			//
 			//			setSection = file.createSection("FkPI.ChestsRoomsManager");
 			//			setSection.set("value", true);
-			
+
 			getSection = file.getConfigurationSection("FkPI.TeamManager");
 			setSection = getSection;
 			for(String team : getSection.getKeys(false))
 				set(team + ".Color", Color.forName(team));
+
+			file = Fk.getInstance().getSaveableManager().getFileConfiguration("scoreboard.yml");
+
+			List<String> lines = file.getStringList("ScoreboardManager.Sidebar");
+			for(int i=0;i<lines.size();i++)
+				if(lines.get(i).startsWith("Base : "))
+				{
+					lines.set(i, lines.get(i).replaceAll("Base : ", "{BASE_PORTAL}"));
+					break;
+				}
+			System.out.println(String.join(" - ", lines));
+			file.set("ScoreboardManager.Sidebar", lines);
 		}
 	}
 

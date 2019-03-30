@@ -254,8 +254,8 @@ public class Fk extends JavaPlugin
 			{
 				saveableManager.saveAll();
 			}
-		}, 5l * 20l, 5l * 20l);
-		
+		}, 5l * 60l * 20l, 5l * 60l * 20l);
+
 		check();
 	}
 

@@ -25,7 +25,7 @@ public class PlaceHolderUtils
 			else if(Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(player.getName()).getBase() == null)
 				value = "{noBase}";
 
-			else if(Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(player.getName()).getBase().getCenter().getWorld().equals(player.getWorld()))
+			else if(!Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(player.getName()).getBase().getCenter().getWorld().equals(player.getWorld()))
 				value = "0";
 			else
 			{
@@ -117,6 +117,11 @@ public class PlaceHolderUtils
 			a += 360;
 
 		return "" + arrows.charAt((int) a / 45);
+	}
+	
+	public static String getBaseOrPortal(Player player)
+	{
+		return player.getWorld().getEnvironment() == Environment.NETHER ? "Portail" : "Base";
 	}
 
 	public static int getDeaths(Player p)
