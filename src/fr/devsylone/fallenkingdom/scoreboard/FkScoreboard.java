@@ -36,7 +36,7 @@ public class FkScoreboard
 		this.bukkitBoard = Bukkit.getScoreboardManager().getNewScoreboard();
 
 		sidebarBoard = new ScoreboardSign(player, Fk.getInstance().getScoreboardManager().getName());
-		
+
 		if((boolean) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("HealthBelowName").getValue())
 			bukkitBoard.registerNewObjective("§c❤", "health").setDisplaySlot(DisplaySlot.BELOW_NAME);
 
@@ -66,8 +66,15 @@ public class FkScoreboard
 		{
 			sidebarBoard.setLine("§bEquipes :", ++index);
 
-			for(fr.devsylone.fkpi.teams.Team team : Fk.getInstance().getFkPI().getTeamManager().getTeams())
-				sidebarBoard.setLine(" " + team.toString() + " (§7" + team.getPlayers().size() + team.getChatColor() + ")", ++index);
+			if(Fk.getInstance().getFkPI().getTeamManager().getTeams().size() <= 10)
+				for(fr.devsylone.fkpi.teams.Team team : Fk.getInstance().getFkPI().getTeamManager().getTeams())
+					sidebarBoard.setLine(" " + team.toString() + " (§7" + team.getPlayers().size() + team.getChatColor() + ")", ++index);
+			else
+				for(int i = 0; i < 10; i++)
+				{
+					fr.devsylone.fkpi.teams.Team team = Fk.getInstance().getFkPI().getTeamManager().getTeams().get(i);
+					sidebarBoard.setLine(" " + team.toString() + " (§7" + team.getPlayers().size() + team.getChatColor() + ")", ++index);
+				}
 
 			sidebarBoard.setLine("§1", ++index);
 			sidebarBoard.setLine("§bRègles :", ++index);

@@ -29,9 +29,6 @@ public class TeamManager implements Saveable
 
 	public boolean createTeam(String name)
 	{
-		if(getTeams().size() >= 10)
-			throw new FkLightException("Il y a trop d'équipes !");
-
 		if(getTeam(name) != null)
 			throw new FkLightException("Cette équipe existe déjà !");
 
