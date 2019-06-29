@@ -276,3 +276,7 @@ RETRAIT      = [-]
 [+] /fk scoreboard reset
 [*] Fix directions/distance de la base
 --------
+
+      >> 2.16.1
+[*] La salle des coffres se met à jour quand un coffre est cassé
+--------
