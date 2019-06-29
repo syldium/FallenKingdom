@@ -46,6 +46,8 @@ public class BlockExplodeListener implements Listener
 
 		for(Block b : toRemove)
 			e.blockList().remove(b);
+		
+		removeExplodedChestsRoomChests(e.blockList());
 	}
 
 	@EventHandler
@@ -76,6 +78,8 @@ public class BlockExplodeListener implements Listener
 
 		for(Block b : toRemove)
 			e.blockList().remove(b);
+		
+		removeExplodedChestsRoomChests(e.blockList());
 	}
 
 	public void removeExplodedChestsRoomChests(List<Block> blockList)
