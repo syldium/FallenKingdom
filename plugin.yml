@@ -1,7 +1,7 @@
 name: FallenKingdom
 version: 2.16.0
 author: Devsylone_Team
-authors: [Etrenak, fabulacraft]
+authors: [Etrenak, fabulacraft, Blendman974]
 main: fr.devsylone.fallenkingdom.Fk
 prefix: FK
 softdepend: ['Multiverse-Core'] #Si vous ne possedez pas Multiverse-Core le plugin marchera exactement de la meme facon.
