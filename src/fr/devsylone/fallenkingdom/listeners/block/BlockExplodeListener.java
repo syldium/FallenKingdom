@@ -14,6 +14,7 @@ import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 
 import fr.devsylone.fallenkingdom.Fk;
+import fr.devsylone.fkpi.teams.Team;
 
 public class BlockExplodeListener implements Listener
 {
@@ -75,5 +76,13 @@ public class BlockExplodeListener implements Listener
 
 		for(Block b : toRemove)
 			e.blockList().remove(b);
+	}
+
+	public void removeExplodedChestsRoomChests(List<Block> blockList)
+	{
+		for(Team team : Fk.getInstance().getFkPI().getTeamManager().getTeams())
+			if(team.getBase() != null && team.getBase().getChestsRoom() != null)
+				for(Block b : blockList)
+					team.getBase().getChestsRoom().removeChest(b.getLocation());
 	}
 }
