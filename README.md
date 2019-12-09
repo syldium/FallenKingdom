@@ -6,7 +6,7 @@ Le plugin est sous la Licence publique Creative Commons Attribution - Utilisatio
 
 Nous sommes deux développeurs à avoir crée et maintenu ce projet seuls durant 3 ans, et nous souhaitons  désormais que chacun puisse nous aider à améliorer et maintenir ce plugin. 
 
-Si vous êtes développeurs, sachez que ce projet à fait l'objet de plusieurs milliers de téléchargements en cumulant les différents sites sur lesquels il est disponible, des dizaines de personnes vous seront reconnaissantes d'un ajout quelconque, ou d'un bug fix !
+Si vous êtes développeur, sachez que ce projet a fait l'objet de plusieurs milliers de téléchargements en cumulant les différents sites sur lesquels il est disponible, des centaines de personnes vous seront reconnaissantes d'un ajout quelconque, ou d'un bug fix !
 
 
 ## Signaler un bug
