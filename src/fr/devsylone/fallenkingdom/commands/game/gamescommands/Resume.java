@@ -1,5 +1,6 @@
 package fr.devsylone.fallenkingdom.commands.game.gamescommands;
 
+import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
@@ -29,7 +30,7 @@ public class Resume extends FkGameCommand
 		if(!((Boolean) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("EternalDay").getValue()).booleanValue())
 		{
 			for(World w : org.bukkit.Bukkit.getWorlds())
-				w.setGameRuleValue("doDaylightCycle", "true");
+				w.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, true);
 		}
 		Fk.getInstance().getDeepPauseManager().resetAIs();
 		Fk.getInstance().getDeepPauseManager().unprotectItems();

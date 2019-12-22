@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.zip.ZipOutputStream;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -229,7 +230,7 @@ public class Fk extends JavaPlugin
 		if((Boolean) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("EternalDay").getValue())
 			for(World w : Bukkit.getWorlds())
 			{
-				w.setGameRuleValue("doDaylightCycle", "false");
+				w.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
 				w.setTime(6000l);
 			}
 
@@ -246,15 +247,7 @@ public class Fk extends JavaPlugin
 			e.printStackTrace();
 		}
 
-		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable()
-		{
-
-			@Override
-			public void run()
-			{
-				saveableManager.saveAll();
-			}
-		}, 5l * 60l * 20l, 5l * 60l * 20l);
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> saveableManager.saveAll(), 5l * 60l * 20l, 5l * 60l * 20l);
 
 		check();
 	}
@@ -408,7 +401,7 @@ public class Fk extends JavaPlugin
 
 	public void reset()
 	{
-		Bukkit.getScheduler().cancelAllTasks();
+		Bukkit.getScheduler().cancelTasks(instance);
 		fkpi.reset();
 		game = new Game();
 
@@ -434,7 +427,7 @@ public class Fk extends JavaPlugin
 
 	public void stop()
 	{
-		Bukkit.getScheduler().cancelAllTasks();
+		Bukkit.getScheduler().cancelTasks(instance);
 
 		tipsManager.cancelBroadcasts();
 		tipsManager.startBroadcasts();
@@ -468,11 +461,11 @@ public class Fk extends JavaPlugin
 		if(NMSUtils.getVersion().equals("v1_8_R1"))
 			addError("Votre version de spigot n'est pas compatible avec le plugin, merci d'utiliser la version 1.8.8 de spigot");
 
-		if(NMSUtils.getVersion().startsWith("v1_13"))
-			addError("La 1.13 n'est pas encore supportée par le plugin ! Vous pouvez utiliser toutes les versions de la 1.8.9 à la 1.12.2");
+		if(NMSUtils.getVersion().startsWith("v1_13") || NMSUtils.getVersion().startsWith("v1_14") || NMSUtils.getVersion().startsWith("v1_15"))
+			addOnConnectWarning("Le support des versions ≥ 1.13 est en développement.");
 
-		if(!System.getProperty("java.version").startsWith("1.8"))
-			addError("Votre version de java n'est pas compatible avec le plugin. Merci d'utiliser Java 8");
+		if(!System.getProperty("java.version").startsWith("1.8") && !System.getProperty("java.version").startsWith("1.11"))
+			addError("Votre version de java n'est pas compatible avec le plugin. Merci d'utiliser Java 8 ou 11");
 
 		for(String warn : warns)
 		{

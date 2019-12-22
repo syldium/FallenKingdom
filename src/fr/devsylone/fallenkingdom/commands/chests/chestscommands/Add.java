@@ -1,7 +1,5 @@
 package fr.devsylone.fallenkingdom.commands.chests.chestscommands;
 
-import java.util.HashSet;
-
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -31,11 +29,11 @@ public class Add extends FkChestsCommand
 		Block target=null;
 		try
 		{
-			target = sender.getTargetBlock((HashSet<Material>)null, 10);
+			target = sender.getTargetBlock(null, 10);
 		}
 		catch(NoSuchMethodError e)
 		{
-			target = sender.getTargetBlock((HashSet<Byte>)null, 10);
+			target = sender.getTargetBlock(null, 10);
 		}
 		
 		if(!target.getType().equals(Material.CHEST))

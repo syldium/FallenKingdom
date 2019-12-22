@@ -1,6 +1,7 @@
 package fr.devsylone.fallenkingdom.commands.rules.rulescommands.booleancommands;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
@@ -21,14 +22,14 @@ public class EternalDay extends FkBooleanRuleCommand
 		{
 			for(World w : Bukkit.getWorlds())
 			{
-				w.setGameRuleValue("doDaylightCycle", "false");
+				w.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
 				w.setTime(12000L);
 			}
 		}
 		else
 		{
 			for(World w : Bukkit.getWorlds())
-				w.setGameRuleValue("doDaylightCycle", "true");
+				w.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, true);
 		}
 		broadcast("La nuit est maintenant", (Boolean.valueOf(args[0]).booleanValue() ? "dés" : "") + "activée", " !");
 	}

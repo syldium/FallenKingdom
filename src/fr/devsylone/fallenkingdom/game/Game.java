@@ -3,7 +3,7 @@ package fr.devsylone.fallenkingdom.game;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.bukkit.Achievement;
+//import org.bukkit.Achievement;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -387,10 +387,10 @@ public class Game implements Saveable
 						Fk.getInstance().getStarterInventoryManager().applyStarterInv(p);
 					}
 
-					if(Bukkit.getBukkitVersion().contains("1.8"))
+					/*if(Bukkit.getBukkitVersion().contains("1.8"))
 						for(Achievement a : Achievement.values())
 							if(p.hasAchievement(a))
-								p.removeAchievement(a);
+								p.removeAchievement(a);*/
 
 					p.playSound(p.getLocation(), FkSound.EXPLODE.bukkitSound(), 1, 1);
 				}

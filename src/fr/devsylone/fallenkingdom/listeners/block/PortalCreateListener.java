@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -21,8 +22,8 @@ public class PortalCreateListener implements Listener
 	{
 		if(!Fk.getInstance().getGame().isNetherEnabled() && !e.getWorld().getName().endsWith("_nether") && e.getReason() == CreateReason.FIRE)
 		{
-			Block air = null;
-			for(Block b : e.getBlocks())
+			BlockState air = null;
+			for(BlockState b : e.getBlocks())
 				if(b.getType().equals(Material.AIR))
 				{
 					air = b;
