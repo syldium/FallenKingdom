@@ -33,7 +33,7 @@ public class PortalCreateListener implements Listener
 				ex.printStackTrace(); // Dommage...
 			}
 			if (Fk.isDebug())
-				Bukkit.getLogger().info(air.getType().toString() + " en " + air.getLocation().toString());
+				Fk.getInstance().getLogger().info(air.getType().toString() + " en " + air.getLocation().toString());
 
 			Fk.getInstance().getPortalsManager().addPortal(air.getLocation());
 			e.setCancelled(true);
