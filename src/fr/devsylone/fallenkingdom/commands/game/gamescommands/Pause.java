@@ -1,7 +1,6 @@
 package fr.devsylone.fallenkingdom.commands.game.gamescommands;
 
 import org.bukkit.Bukkit;
-import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
@@ -34,6 +33,7 @@ public class Pause extends FkGameCommand
 		super("pause", "Met la partie en pause.");
 	}
 
+	@SuppressWarnings("deprecated")
 	public void execute(Player sender, FkPlayer fkp, String[] args) throws ReflectiveOperationException
 	{
 		if(sender != null)
@@ -47,7 +47,7 @@ public class Pause extends FkGameCommand
 
 		for(World w : Bukkit.getWorlds())
 		{
-			w.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+			w.setGameRuleValue("doDaylightCycle", "false");
 		}
 		Fk.getInstance().getDeepPauseManager().removeAIs();
 		Fk.getInstance().getDeepPauseManager().protectDespawnItems();

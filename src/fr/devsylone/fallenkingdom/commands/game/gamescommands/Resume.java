@@ -1,6 +1,5 @@
 package fr.devsylone.fallenkingdom.commands.game.gamescommands;
 
-import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
@@ -18,6 +17,7 @@ public class Resume extends FkGameCommand
 		super("resume", "Reprend la partie après une pause.");
 	}
 
+	@SuppressWarnings("deprecated")
 	public void execute(Player sender, FkPlayer fkp, String[] args) throws ReflectiveOperationException
 	{
 		if(Fk.getInstance().getGame().getState().equals(Game.GameState.BEFORE_STARTING))
@@ -30,7 +30,7 @@ public class Resume extends FkGameCommand
 		if(!((Boolean) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("EternalDay").getValue()).booleanValue())
 		{
 			for(World w : org.bukkit.Bukkit.getWorlds())
-				w.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, true);
+				w.setGameRuleValue("doDaylightCycle", "true");
 		}
 		Fk.getInstance().getDeepPauseManager().resetAIs();
 		Fk.getInstance().getDeepPauseManager().unprotectItems();
