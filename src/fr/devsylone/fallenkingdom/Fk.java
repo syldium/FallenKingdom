@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.zip.ZipOutputStream;
 
 import org.bukkit.Bukkit;
-import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -30,6 +29,7 @@ import fr.devsylone.fallenkingdom.manager.TipsManager;
 import fr.devsylone.fallenkingdom.manager.packets.PacketManager;
 import fr.devsylone.fallenkingdom.manager.packets.PacketManager1_8;
 import fr.devsylone.fallenkingdom.manager.packets.PacketManager1_9;
+import fr.devsylone.fallenkingdom.manager.packets.PacketManager1_13;
 import fr.devsylone.fallenkingdom.manager.saveable.DeepPauseManager;
 import fr.devsylone.fallenkingdom.manager.saveable.PlayerManager;
 import fr.devsylone.fallenkingdom.manager.saveable.PortalsManager;
@@ -132,7 +132,12 @@ public class Fk extends JavaPlugin
 		siManager = new StarterInventoryManager();
 		sbManager = new ScoreboardManager();
 
-		pcktManager = Bukkit.getBukkitVersion().contains("1.8") ? new PacketManager1_8() : new PacketManager1_9();
+		if (Bukkit.getBukkitVersion().contains("1.8"))
+			pcktManager = new PacketManager1_8();
+		else if (NMSUtils.nmsOptionalClass("ScoreboardServer$Action").isPresent())
+			pcktManager = new PacketManager1_13();
+		else
+			pcktManager = new PacketManager1_9();
 
 		dpManager = new DeepPauseManager();
 		tipsManager = new TipsManager();
@@ -230,8 +235,8 @@ public class Fk extends JavaPlugin
 		if((Boolean) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("EternalDay").getValue())
 			for(World w : Bukkit.getWorlds())
 			{
-				w.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
-				w.setTime(6000l);
+				w.setGameRuleValue("doDaylightCycle", "false");
+				w.setTime(6000L);
 			}
 
 		/*
