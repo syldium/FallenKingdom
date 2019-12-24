@@ -81,7 +81,7 @@ public class Base implements Saveable
 	/**
 	 * Repère si la Location se trouve dans la base ou non, sans prendre en compte l'axe y (hauteur).
 	 * @param loc Location à vérifier.
-	 * @para lag Le nombre à ajouter au rayon de la base
+	 * @param lag Le nombre à ajouter au rayon de la base
 	 * @return
 	 * 	- <b>true</b> Si la Location est à l'intérieur de la base.<br>
 	 *         - <b>false</b> Dans le cas contraire.
@@ -135,7 +135,6 @@ public class Base implements Saveable
 	/**
 	 * Construit la base en jeu.
 	 */
-	@SuppressWarnings("deprecation")
 	public void construct()
 	{
 		adjustLoc(center);
@@ -149,28 +148,28 @@ public class Base implements Saveable
 
 			adjustLoc(loc);
 			loc.getBlock().setType(material);
-			//loc.getBlock().setData(data);
+			XBlock.setData(loc.getBlock(), data);
 
 			loc.setX(center.getBlockX() - radius + i);
 			loc.setZ(center.getBlockZ() - radius);
 
 			adjustLoc(loc);
 			loc.getBlock().setType(material);
-			//loc.getBlock().setData(data);
+			XBlock.setData(loc.getBlock(), data);
 
 			loc.setX(center.getBlockX() - radius);
 			loc.setZ(center.getBlockZ() + radius - i);
 
 			adjustLoc(loc);
 			loc.getBlock().setType(material);
-			//loc.getBlock().setData(data);
+			XBlock.setData(loc.getBlock(), data);
 
 			loc.setX(center.getBlockX() + radius);
 			loc.setZ(center.getBlockZ() - radius + i);
 
 			adjustLoc(loc);
 			loc.getBlock().setType(material);
-			//loc.getBlock().setData(data);
+			XBlock.setData(loc.getBlock(), data);
 		}
 
 		/*

@@ -28,6 +28,7 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.data.*;
 import org.bukkit.material.*;
 
+import java.lang.reflect.Method;
 import java.util.EnumSet;
 
 /*
@@ -106,6 +107,18 @@ public final class XBlock {
             ((Colorable) data).setColor(color);
             state.update(true);
             return true;
+        }
+        return false;
+    }
+
+    public static boolean setData(Block block, byte data) {
+        if (ISFLAT) return false;
+        try {
+            Method setDataMethod = Block.class.getMethod("setData", byte.class);
+            setDataMethod.invoke(block, data);
+            return true;
+        } catch (Exception e) {
+
         }
         return false;
     }
