@@ -3,6 +3,7 @@ package fr.devsylone.fallenkingdom.manager.saveable;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.devsylone.fallenkingdom.utils.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -27,21 +28,16 @@ public class PortalsManager implements Saveable
 
 	public void enablePortals()
 	{
+		Material caveAir = XMaterial.CAVE_AIR.parseMaterial();
 		for(final Location loc : portals)
 		{
-			if(loc != null && loc.getBlock() != null && loc.getBlock().getType().equals(Material.AIR))
+			if(loc != null && loc.getBlock() != null && (loc.getBlock().getType().equals(Material.AIR) || loc.getBlock().getType().equals(caveAir)))
 			{
 				loc.getBlock().setType(Material.FIRE);
-				Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), new Runnable()
-				{
-
-					@Override
-					public void run()
-					{
-						if(loc.getBlock().getType().equals(Material.FIRE))
-							loc.getBlock().setType(Material.AIR);
-					}
-				}, 20l);
+				Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), () -> {
+					if(loc.getBlock().getType().equals(Material.FIRE))
+						loc.getBlock().setType(Material.AIR);
+				}, 20L);
 
 			}
 		}

@@ -29,7 +29,9 @@ import org.bukkit.block.data.*;
 import org.bukkit.material.*;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.List;
 
 /*
  * References
@@ -121,5 +123,32 @@ public final class XBlock {
 
         }
         return false;
+    }
+
+    /**
+     * Get the first air block from a list of blocks
+     * @see List<BlockState> for 1.13+ event.getBlocks()
+     * @see ArrayList<Block> for 1.12.2- event.getBlocks()
+     * @param blocks
+     * @return air
+     */
+    public static Block getAirBlock(List<?> blocks) {
+        try {
+            Method getBlock = blocks.get(0).getClass().getDeclaredMethod("getBlock"); // Cette méthode n'existe qu'en 1.13+, pour passer du BlockState au Block
+            // 1.13+
+            return (Block) getBlock.invoke(blocks.stream().filter(b -> {
+                try {
+                    Material material = ((Block) getBlock.invoke(b)).getType();
+                    return material.equals(Material.AIR) || material.equals(Material.CAVE_AIR);
+                } catch (ReflectiveOperationException ex) {
+                    ex.printStackTrace();
+                }
+                return false;
+            }).findFirst().orElse(null));
+        } catch (Exception ex) {
+            // 1.12.2-
+            // Comme en 1.13+, on filtre la liste de blocs pour ne garder que les blocs d'air, puis on récupère le premier élément de la liste.
+            return (Block) blocks.stream().filter(b -> ((Block) b).getType().equals(Material.AIR)).findFirst().orElse(null);
+        }
     }
 }
