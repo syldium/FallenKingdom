@@ -35,7 +35,7 @@ public abstract class PacketManager
 
 	protected abstract void sendDestroy(int id);
 
-	protected abstract void sendEquipment(int id, int slot, String itemName);
+	protected abstract void sendEquipment(int id, int slot, Material material);
 
 	public abstract void sendBlockChange(Player p, Location loc, Material newBlock);
 
@@ -71,7 +71,7 @@ public abstract class PacketManager
 	{
 		int id = sendSpawn(p, loc.clone().add(0, -1, 0));
 		sendMetadata(id, false, "");
-		sendEquipment(id, size, "minecraft:" + item.name().toLowerCase());
+		sendEquipment(id, size, item);
 		return id;
 	}
 

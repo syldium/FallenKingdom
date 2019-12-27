@@ -50,6 +50,7 @@ public class PacketManager1_9 extends PacketManager
 			NMSUtils.register("net.minecraft.server._version_.IChatBaseComponent$ChatSerializer");
 			NMSUtils.register("net.minecraft.server._version_.PacketPlayOutCustomPayload");
 			NMSUtils.register("net.minecraft.server._version_.PacketDataSerializer");
+			NMSUtils.register("org.bukkit.craftbukkit._version_.inventory.CraftItemStack");
 
 		}catch(Exception e)
 		{
@@ -160,14 +161,15 @@ public class PacketManager1_9 extends PacketManager
 	}
 
 	@Override
-	protected void sendEquipment(int id, int slot, String itemName)
+	protected void sendEquipment(int id, int slot, Material material)
 	{
 		try
 		{
+			ItemStack bukkitItem = new ItemStack(material);
+			Object nmsItem = NMSUtils.getClass("CraftItemStack").getDeclaredMethod("asNMSCopy", ItemStack.class).invoke(null, bukkitItem);
 			Object itemSlot = NMSUtils.getClass("EnumItemSlot").getDeclaredField(slot == BIG_ITEM ? "HEAD" : "MAINHAND").get(null);
-			Object item = NMSUtils.getClass("ItemStack").getConstructor(NMSUtils.getClass("Block")).newInstance(NMSUtils.getClass("Block").getDeclaredMethod("getByName", String.class).invoke(null, itemName));
-			Object armors = NMSUtils.getClass("PacketPlayOutEntityEquipment").getConstructor(int.class, NMSUtils.getClass("EnumItemSlot"), NMSUtils.getClass("ItemStack")).newInstance(id, itemSlot, item);
 
+			Object armors = NMSUtils.getClass("PacketPlayOutEntityEquipment").getConstructor(int.class, NMSUtils.getClass("EnumItemSlot"), NMSUtils.getClass("ItemStack")).newInstance(id, itemSlot, nmsItem);
 			PacketUtils.sendPacket(getPlayer(id), armors);
 		}catch(Exception ex)
 		{
@@ -240,30 +242,24 @@ public class PacketManager1_9 extends PacketManager
 
 		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "replaceitem entity " + p.getName() + " slot.hotbar." + slot + " minecraft:written_book 1 0 " + nbtTags);
 
-		Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), new Runnable()
-		{
-
-			@Override
-			public void run()
+		Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), () -> {
+			try
 			{
-				try
-				{
-					if(original != null && original.getType() != Material.AIR)
-						p.getWorld().dropItem(p.getLocation(), original).setPickupDelay(0);
+				if(original != null && original.getType() != Material.AIR)
+					p.getWorld().dropItem(p.getLocation(), original).setPickupDelay(0);
 
-					p.getInventory().setHeldItemSlot(slot);
-					
-					ByteBuf buf = Unpooled.buffer(256);
-					buf.setByte(0, (byte) 0);
-					buf.writerIndex(1);
-					Object payload = NMSUtils.getClass("PacketPlayOutCustomPayload").getDeclaredConstructor(String.class, NMSUtils.getClass("PacketDataSerializer")).newInstance("MC|BOpen", NMSUtils.getClass("PacketDataSerializer").getDeclaredConstructor(ByteBuf.class).newInstance(buf));
+				p.getInventory().setHeldItemSlot(slot);
 
-					PacketUtils.sendPacket(p, payload);
-				}catch(Exception ex)
-				{
-					ex.printStackTrace();
-				}
+				ByteBuf buf = Unpooled.buffer(256);
+				buf.setByte(0, (byte) 0);
+				buf.writerIndex(1);
+				Object payload = NMSUtils.getClass("PacketPlayOutCustomPayload").getDeclaredConstructor(String.class, NMSUtils.getClass("PacketDataSerializer")).newInstance("MC|BOpen", NMSUtils.getClass("PacketDataSerializer").getDeclaredConstructor(ByteBuf.class).newInstance(buf));
+
+				PacketUtils.sendPacket(p, payload);
+			}catch(Exception ex)
+			{
+				ex.printStackTrace();
 			}
-		}, 5l);
+		}, 5L);
 	}
 }

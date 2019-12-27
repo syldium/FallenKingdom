@@ -30,6 +30,7 @@ import fr.devsylone.fallenkingdom.manager.packets.PacketManager;
 import fr.devsylone.fallenkingdom.manager.packets.PacketManager1_8;
 import fr.devsylone.fallenkingdom.manager.packets.PacketManager1_9;
 import fr.devsylone.fallenkingdom.manager.packets.PacketManager1_13;
+import fr.devsylone.fallenkingdom.manager.packets.PacketManager1_14;
 import fr.devsylone.fallenkingdom.manager.saveable.DeepPauseManager;
 import fr.devsylone.fallenkingdom.manager.saveable.PlayerManager;
 import fr.devsylone.fallenkingdom.manager.saveable.PortalsManager;
@@ -135,7 +136,10 @@ public class Fk extends JavaPlugin
 		if (Bukkit.getBukkitVersion().contains("1.8"))
 			pcktManager = new PacketManager1_8();
 		else if (NMSUtils.nmsOptionalClass("ScoreboardServer$Action").isPresent())
-			pcktManager = new PacketManager1_13();
+			if (Bukkit.getBukkitVersion().contains("1.13"))
+				pcktManager = new PacketManager1_13();
+			else
+				pcktManager = new PacketManager1_14();
 		else
 			pcktManager = new PacketManager1_9();
 
@@ -469,7 +473,7 @@ public class Fk extends JavaPlugin
 		if(NMSUtils.getVersion().startsWith("v1_13") || NMSUtils.getVersion().startsWith("v1_14") || NMSUtils.getVersion().startsWith("v1_15"))
 			addOnConnectWarning("Le support des versions ≥ 1.13 est en développement.");
 
-		if(!System.getProperty("java.version").startsWith("1.8") && !System.getProperty("java.version").startsWith("1.11"))
+		if(!System.getProperty("java.version").startsWith("1.8") && !System.getProperty("java.version").startsWith("11."))
 			addError("Votre version de java n'est pas compatible avec le plugin. Merci d'utiliser Java 8 ou 11");
 
 		for(String warn : warns)
