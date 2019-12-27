@@ -133,22 +133,21 @@ public final class XBlock {
      * @return air
      */
     public static Block getAirBlock(List<?> blocks) {
-        try {
-            Method getBlock = blocks.get(0).getClass().getDeclaredMethod("getBlock"); // Cette méthode n'existe qu'en 1.13+, pour passer du BlockState au Block
-            // 1.13+
-            return (Block) getBlock.invoke(blocks.stream().filter(b -> {
-                try {
-                    Material material = ((Block) getBlock.invoke(b)).getType();
-                    return material.equals(Material.AIR) || material.equals(Material.CAVE_AIR);
-                } catch (ReflectiveOperationException ex) {
-                    ex.printStackTrace();
+        if (ISFLAT) { // 1.13+
+            for (Object b : blocks) {
+                Material material = ((BlockState) b).getBlock().getType();
+                if (material.equals(Material.AIR) || material.equals(Material.CAVE_AIR)) {
+                    return ((BlockState) b).getBlock();
                 }
-                return false;
-            }).findFirst().orElse(null));
-        } catch (Exception ex) {
-            // 1.12.2-
-            // Comme en 1.13+, on filtre la liste de blocs pour ne garder que les blocs d'air, puis on récupère le premier élément de la liste.
-            return (Block) blocks.stream().filter(b -> ((Block) b).getType().equals(Material.AIR)).findFirst().orElse(null);
+            }
+        } else { // 1.12.2-
+            for (Object b : blocks) {
+                Material material = ((Block) b).getType();
+                if (material.equals(Material.AIR)) {
+                    return ((Block) b);
+                }
+            }
         }
+        return null;
     }
 }
