@@ -1,8 +1,9 @@
 name: FallenKingdom
-version: 2.16.1
+version: 2.17.0-snapshot
 author: Devsylone_Team
-authors: [Etrenak, fabulacraft, Blendman974]
+authors: [Etrenak, fabulacraft, Blendman974, syldium]
 main: fr.devsylone.fallenkingdom.Fk
+api-version: 1.13
 prefix: FK
 softdepend: ['Multiverse-Core'] #Si vous ne possedez pas Multiverse-Core le plugin marchera exactement de la meme facon.
 
