@@ -1,5 +1,6 @@
 package fr.devsylone.fallenkingdom.commands.rules.rulescommands;
 
+import fr.devsylone.fkpi.util.BlockDescription;
 import org.bukkit.entity.Player;
 
 import fr.devsylone.fallenkingdom.Fk;
@@ -27,8 +28,8 @@ public class PlaceBlockInCave extends fr.devsylone.fallenkingdom.commands.rules.
       fkp.sendMessage("§aSi vous vous trouvez sous une base ennemie, vous ne §cpourrez pas poser de bloc en dehors de la liste de blocs autorisés");
       fkp.sendMessage("§aIl est impossible de poser de la §cTNT §aavant le jour §c" + Fk.getInstance().getFkPI().getRulesManager().getRuleByName("tntcap").getValue() + "§a, en caverne comme à la surface.");
       fkp.sendMessage("§aPour rappel, voici la liste des blocs autorisés à être posé en dehors de votre base à la surface et en caverne : ");
-      for (String block : ((AllowedBlocks)Fk.getInstance().getFkPI().getRulesManager().getRuleByName("AllowedBlocks")).getValue())
-        fkp.sendMessage("§d- " + block);
+      for (BlockDescription b : ((AllowedBlocks)Fk.getInstance().getFkPI().getRulesManager().getRuleByName("AllowedBlocks")).getValue())
+        fkp.sendMessage("§d- " + b.toString());
       fkp.sendMessage("§b§m-------");
     }
     else

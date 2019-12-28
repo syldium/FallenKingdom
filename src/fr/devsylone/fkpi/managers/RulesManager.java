@@ -70,7 +70,7 @@ public class RulesManager implements Saveable
 		allowedBlocks.add("WALL_SIGN");
 		allowedBlocks.add("SIGN_POST");
 		allowedBlocks.add("TNT");
-		registerNewRule(new AllowedBlocks(allowedBlocks));
+		registerNewRule(AllowedBlocks.fromStringList(allowedBlocks));
 	}
 
 	public void load(ConfigurationSection config)

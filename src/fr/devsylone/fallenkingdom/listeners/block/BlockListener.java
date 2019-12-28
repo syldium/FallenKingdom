@@ -1,5 +1,6 @@
 package fr.devsylone.fallenkingdom.listeners.block;
 
+import fr.devsylone.fkpi.util.BlockDescription;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -97,7 +98,7 @@ public class BlockListener implements Listener
 			return;
 		}
 
-		if(((AllowedBlocks) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("AllowedBlocks")).getValue().contains(e.getBlock().getType().toString()))
+		if(((AllowedBlocks) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("AllowedBlocks")).isAllowed(new BlockDescription(e.getBlock())))
 			return;
 
 		Location block = e.getBlock().getLocation();
