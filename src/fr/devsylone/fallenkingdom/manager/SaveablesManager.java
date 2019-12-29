@@ -52,6 +52,7 @@ public class SaveablesManager
 		state = State.SAVE;
 		reset();
 
+		Fk.getInstance().getLogger().info("Une sauvegarde automatique est en cours.");
 		for(Saveable s : saveables.keySet())
 			s.save(saveables.get(s).createSection(s.getClass().getSimpleName()));
 
@@ -66,6 +67,7 @@ public class SaveablesManager
 				e.printStackTrace();
 			}
 		state = State.SLEEP;
+		Fk.getInstance().getLogger().info("La sauvegarde automatique est terminée.");
 	}
 
 	public void loadAll()

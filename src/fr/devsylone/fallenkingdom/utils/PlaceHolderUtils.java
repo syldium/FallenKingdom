@@ -110,14 +110,14 @@ public class PlaceHolderUtils
 			if(nearestBaseTeam == null)
 				return Fk.getInstance().getScoreboardManager().getNoBase();
 
-			else if(!Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(player.getName()).getBase().getCenter().getWorld().equals(player.getWorld()))
-				return ChatColor.RED +  "?";
+			else if(!nearestBaseTeam.getBase().getCenter().getWorld().equals(player.getWorld()))
+				return ChatColor.DARK_RED +  "?";
 
 			else
 				return nearestBaseTeam.getChatColor() + nearestBaseTeam.getName();
 		}
 		else
-			return ChatColor.RED + "?";
+			return ChatColor.DARK_RED + "?";
 	}
 
 	public static String getNearestBaseDirection(Player player, String arrows)
@@ -136,8 +136,8 @@ public class PlaceHolderUtils
 			if(nearestBaseTeam == null)
 				return Fk.getInstance().getScoreboardManager().getNoBase();
 
-			else if(!Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(player.getName()).getBase().getCenter().getWorld().equals(player.getWorld()))
-				return ChatColor.RED + "?";
+			else if(!nearestBaseTeam.getBase().getCenter().getWorld().equals(player.getWorld()))
+				return ChatColor.DARK_RED + "?";
 
 			else
 			{
@@ -146,7 +146,7 @@ public class PlaceHolderUtils
 			}
 		}
 		else
-			return ChatColor.RED + "?";
+			return ChatColor.DARK_RED + "?";
 	}
 
 	public static String getTeamOf(Player p)
