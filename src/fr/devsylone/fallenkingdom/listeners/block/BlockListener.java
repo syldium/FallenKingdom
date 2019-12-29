@@ -1,5 +1,6 @@
 package fr.devsylone.fallenkingdom.listeners.block;
 
+import fr.devsylone.fallenkingdom.utils.XBlock;
 import fr.devsylone.fkpi.util.BlockDescription;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -115,7 +116,7 @@ public class BlockListener implements Listener
 				int stones = 0;
 				if(!enemyBase && (boolean) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("PlaceBlockInCave").getValue())
 					for(int y = block.getBlockY() + 1; y < 256; y++)
-						if(block.getWorld().getBlockAt(block.getBlockX(), y, block.getBlockZ()).getType().equals(Material.STONE))
+						if(XBlock.isBlockInCave(block.getWorld().getBlockAt(block.getBlockX(), y, block.getBlockZ()).getType()))
 						{
 							if(++stones >= ((PlaceBlockInCave) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("PlaceBlockInCave")).getMinimumBlocks())
 								return;

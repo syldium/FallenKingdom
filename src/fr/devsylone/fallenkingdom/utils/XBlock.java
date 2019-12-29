@@ -65,15 +65,14 @@ public final class XBlock {
             XMaterial.PEONY, XMaterial.TALL_GRASS, XMaterial.LARGE_FERN, XMaterial.FERN, XMaterial.DEAD_BUSH,
             XMaterial.OAK_FENCE, XMaterial.AIR
     );
+    public static final EnumSet<XMaterial> BLOCKS_IN_CAVES = EnumSet.of(
+            XMaterial.STONE, XMaterial.GRANITE, XMaterial.DIORITE, XMaterial.ANDESITE
+    );
     private static final boolean ISFLAT = XMaterial.isNewVersion();
 
     public static Material grass() {
         // En 1.13+, grass désigne la plante, en 1.12.2-, grass désigne le bloc
-        if (ISFLAT) {
-            return Material.getMaterial("GRASS");
-        } else {
-            return Material.getMaterial("TALLGRASS");
-        }
+        return ISFLAT ? Material.getMaterial("GRASS") : Material.getMaterial("TALLGRASS");
     }
 
     public static boolean isReplacable(Material material) {
@@ -81,6 +80,11 @@ public final class XBlock {
             return true;
         }
         return material.equals(grass());
+    }
+
+    public static boolean isBlockInCave(Material material) {
+        if (!ISFLAT) return material.equals(Material.STONE);
+        return BLOCKS_IN_CAVES.contains(XMaterial.matchXMaterial(material));
     }
 
     public static boolean setColor(Block block, DyeColor color) {
@@ -119,7 +123,7 @@ public final class XBlock {
             Method setDataMethod = Block.class.getMethod("setData", byte.class);
             setDataMethod.invoke(block, data);
             return true;
-        } catch (Exception e) {
+        } catch (ReflectiveOperationException e) {
 
         }
         return false;
