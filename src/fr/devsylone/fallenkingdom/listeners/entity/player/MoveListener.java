@@ -24,7 +24,7 @@ public class MoveListener implements Listener
 		 * IF changé de block X-Y-Z
 		 */
 
-		Fk.getInstance().getPlayerManager().getPlayer(e.getPlayer().getName()).getScoreboard().refresh(PlaceHolder.BASE_DIRECTION, PlaceHolder.BASE_DISTANCE);
+		Fk.getInstance().getPlayerManager().getPlayer(e.getPlayer().getName()).getScoreboard().refresh(PlaceHolder.BASE_DIRECTION, PlaceHolder.BASE_DISTANCE, PlaceHolder.NEAREST_TEAM_BASE, PlaceHolder.NEAREST_BASE_DIRECTION);
 
 		if(e.getFrom().getBlockX() == e.getTo().getBlockX() && e.getFrom().getBlockZ() == e.getTo().getBlockZ() && e.getFrom().getBlockY() == e.getTo().getBlockY())
 			return;
@@ -70,7 +70,7 @@ public class MoveListener implements Listener
 					else
 						fkp.sendMessage("Vous sortez de la base de l'equipe " + team.toString());
 
-				if(team.getBase().getChestsRoom() != null && Fk.getInstance().getFkPI().getChestsRoomsManager().isEnabled())
+				if(team.getBase().getChestsRoom() != null && Fk.getInstance().getFkPI().getChestsRoomsManager().isEnabled() && !e.getPlayer().getGameMode().equals(GameMode.SPECTATOR))
 				{
 					if(team.getBase().getChestsRoom().contains(e.getTo()) && !team.getBase().getChestsRoom().contains(e.getFrom()))
 						if(team.equals(pTeam))

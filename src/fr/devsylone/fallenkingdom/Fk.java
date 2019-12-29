@@ -76,6 +76,8 @@ public class Fk extends JavaPlugin
 
 	private boolean uptodate = true;
 
+	private final boolean isNewVersion = NMSUtils.nmsOptionalClass("ScoreboardServer$Action").isPresent();
+
 	public static Fk getInstance()
 	{
 		return instance;
@@ -135,7 +137,7 @@ public class Fk extends JavaPlugin
 
 		if (Bukkit.getBukkitVersion().contains("1.8"))
 			pcktManager = new PacketManager1_8();
-		else if (NMSUtils.nmsOptionalClass("ScoreboardServer$Action").isPresent())
+		else if (isNewVersion)
 			if (Bukkit.getBukkitVersion().contains("1.13"))
 				pcktManager = new PacketManager1_13();
 			else
@@ -489,6 +491,11 @@ public class Fk extends JavaPlugin
 	public FkPI getFkPI()
 	{
 		return fkpi;
+	}
+
+	public boolean isNewVersion()
+	{
+		return isNewVersion;
 	}
 
 	public static void main(String[] args)

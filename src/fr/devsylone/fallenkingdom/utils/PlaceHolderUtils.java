@@ -1,5 +1,6 @@
 package fr.devsylone.fallenkingdom.utils;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World.Environment;
 import org.bukkit.entity.Player;
@@ -7,6 +8,8 @@ import org.bukkit.util.Vector;
 
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fkpi.teams.Team;
+
+import java.util.Comparator;
 
 public class PlaceHolderUtils
 {
@@ -73,8 +76,7 @@ public class PlaceHolderUtils
 			else
 			{
 				Location base = Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(player.getName()).getBase().getCenter().clone();
-				String arrow = getDirectionOf(ploc, base, arrows);
-				return arrow;
+				return getDirectionOf(ploc, base, arrows);
 			}
 		}
 		
@@ -86,11 +88,65 @@ public class PlaceHolderUtils
 			Location to = Fk.getInstance().getPlayerManager().getPlayer(player).getPortal().clone();
 			to.setY(ploc.getY());
 
-			String arrow = getDirectionOf(ploc, to, arrows);
-			return arrow;
+			return getDirectionOf(ploc, to, arrows);
 		}
 		else
 			return "";
+	}
+
+	public static String getNearestTeamBase(Player player)
+	{
+		Location ploc = player.getLocation().clone();
+		if(player.getWorld().getEnvironment() == Environment.NORMAL)
+		{
+			if(Fk.getInstance().getFkPI().getTeamManager().getTeams().size() < 1)
+				return Fk.getInstance().getScoreboardManager().getNoTeam();
+
+			Team nearestBaseTeam = Fk.getInstance().getFkPI().getTeamManager().getTeams().stream()
+					.filter(team -> team.getBase() != null && !team.getPlayers().contains(player.getName()))
+					.sorted(Comparator.comparingDouble(team -> team.getBase().getCenter().distance(player.getLocation())))
+					.findFirst().orElse(null);
+
+			if(nearestBaseTeam == null)
+				return Fk.getInstance().getScoreboardManager().getNoBase();
+
+			else if(!Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(player.getName()).getBase().getCenter().getWorld().equals(player.getWorld()))
+				return ChatColor.RED +  "?";
+
+			else
+				return nearestBaseTeam.getChatColor() + nearestBaseTeam.getName();
+		}
+		else
+			return ChatColor.RED + "?";
+	}
+
+	public static String getNearestBaseDirection(Player player, String arrows)
+	{
+		Location ploc = player.getLocation().clone();
+		if(player.getWorld().getEnvironment() == Environment.NORMAL)
+		{
+			if(Fk.getInstance().getFkPI().getTeamManager().getTeams().size() < 1)
+				return Fk.getInstance().getScoreboardManager().getNoTeam();
+
+			Team nearestBaseTeam = Fk.getInstance().getFkPI().getTeamManager().getTeams().stream()
+					.filter(team -> team.getBase() != null && !team.getPlayers().contains(player.getName()))
+					.sorted(Comparator.comparingDouble(team -> team.getBase().getCenter().distance(player.getLocation())))
+					.findFirst().orElse(null);
+
+			if(nearestBaseTeam == null)
+				return Fk.getInstance().getScoreboardManager().getNoBase();
+
+			else if(!Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(player.getName()).getBase().getCenter().getWorld().equals(player.getWorld()))
+				return ChatColor.RED + "?";
+
+			else
+			{
+				Location base = nearestBaseTeam.getBase().getCenter().clone();
+				return getDirectionOf(ploc, base, arrows);
+			}
+		}
+		else
+			return ChatColor.RED + "?";
 	}
 
 	public static String getTeamOf(Player p)

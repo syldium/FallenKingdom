@@ -32,7 +32,7 @@ public class FkScoreboard
 	{
 		formatted = true;
 		this.player = player;
-		this.placeHolders = new HashMap();
+		this.placeHolders = new HashMap<>();
 		this.bukkitBoard = Bukkit.getScoreboardManager().getNewScoreboard();
 
 		sidebarBoard = new ScoreboardSign(player, Fk.getInstance().getScoreboardManager().getName());
@@ -111,7 +111,7 @@ public class FkScoreboard
 		if(Fk.getInstance().getGame().getState() == GameState.BEFORE_STARTING && !Fk.getInstance().getPlayerManager().getPlayer(player).getState().equals(PlayerState.EDITING_SCOREBOARD))
 			return;
 
-		ArrayList<Integer> linesToRefresh = new ArrayList();
+		ArrayList<Integer> linesToRefresh = new ArrayList<>();
 
 		for(PlaceHolder p : placeHolders)
 		{
