@@ -276,16 +276,6 @@ public class Game implements Saveable
 		config.set("State", state.name());
 		config.set("Day", day);
 		config.set("Time", time);
-
-		if(state.equals(GameState.PAUSE))
-			try
-			{
-				Fk.getInstance().getCommandManager().getCommand("game resume").execute(null, null, new String[0]);
-			}catch(Exception ex)
-			{
-				Fk.broadcast("§4Une erreur est survenue lors de la reprise de la partie. Merci de signaler ce bug.");
-				ex.printStackTrace();
-			}
 	}
 
 	public void start()

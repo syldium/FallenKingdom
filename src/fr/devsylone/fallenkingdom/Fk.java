@@ -268,6 +268,17 @@ public class Fk extends JavaPlugin
 	{
 		saveableManager.saveAll();
 
+		// Même si la partie est en pause et est sauvegardée dans cet état,
+		// on essaye de remettre dans un état normal, c'est-à-dire avec l'IA des mobs.
+		// Au redémarrage, la commande "game pause" sera exécutée si cela a été enregistré.
+		if (game.getState().equals(Game.GameState.PAUSE)) {
+			try {
+				getCommandManager().getCommand("game resume").execute(null, null, new String[0]);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
 		if(server != null)
 			server.interrupt();
 
