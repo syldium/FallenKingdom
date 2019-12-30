@@ -127,7 +127,7 @@ public class BlockListener implements Listener
 				p.sendMessage(ChatUtils.PREFIX + ChatColor.RED + "Vous ne pouvez pas poser ce bloc !");
 				e.setCancelled(true);
 			}
-			else if(e.getBlock().getType().equals(Material.CHEST))
+			else if(XBlock.canBePartOfChestRoom(e.getBlock().getType()))
 			{
 				int limit = (Integer) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("ChestLimit").getValue();
 				int baseY = Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(e.getPlayer().getName()).getBase().getCenter().getBlockY();
@@ -182,7 +182,7 @@ public class BlockListener implements Listener
 			}
 		}
 
-		if(e.getBlock().getType().equals(Material.CHEST) && team.getBase() != null && !e.isCancelled() && team.getBase().contains(e.getBlock().getLocation()) && Fk.getInstance().getFkPI().getChestsRoomsManager().isEnabled())
+		if(XBlock.canBePartOfChestRoom(e.getBlock().getType()) && team.getBase() != null && !e.isCancelled() && team.getBase().contains(e.getBlock().getLocation()) && Fk.getInstance().getFkPI().getChestsRoomsManager().isEnabled())
 		{
 			team.getBase().getChestsRoom().removeChest(e.getBlock().getLocation());
 			return;

@@ -68,6 +68,9 @@ public final class XBlock {
     public static final EnumSet<XMaterial> BLOCKS_IN_CAVES = EnumSet.of(
             XMaterial.STONE, XMaterial.GRANITE, XMaterial.DIORITE, XMaterial.ANDESITE
     );
+    public static final EnumSet<Material> CONTAINERS = EnumSet.of(
+            Material.CHEST, XMaterial.BARREL.parseMaterial(true)
+    );
     private static final boolean ISFLAT = XMaterial.isNewVersion();
 
     public static Material grass() {
@@ -85,6 +88,10 @@ public final class XBlock {
     public static boolean isBlockInCave(Material material) {
         if (!ISFLAT) return material.equals(Material.STONE);
         return BLOCKS_IN_CAVES.contains(XMaterial.matchXMaterial(material));
+    }
+
+    public static boolean canBePartOfChestRoom(Material material) {
+        return CONTAINERS.contains(material);
     }
 
     public static boolean setColor(Block block, DyeColor color) {
