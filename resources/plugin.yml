@@ -1,5 +1,5 @@
 name: FallenKingdom
-version: 2.17.0-snapshot
+version: ${project.version}
 author: Devsylone_Team
 authors: [Etrenak, fabulacraft, Blendman974, syldium]
 main: fr.devsylone.fallenkingdom.Fk
