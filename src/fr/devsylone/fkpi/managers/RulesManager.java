@@ -63,14 +63,9 @@ public class RulesManager implements Saveable
 		registerNewRule(new Rule("RespawnAtHome", new Boolean(false)));
 		registerNewRule(new Rule("HealthBelowName", new Boolean(true)));
 
-		List<String> allowedBlocks = new ArrayList<String>();
-		allowedBlocks.add("TORCH");
-		allowedBlocks.add("REDSTONE_TORCH_ON");
-		allowedBlocks.add("FIRE");
-		allowedBlocks.add("WALL_SIGN");
-		allowedBlocks.add("SIGN_POST");
-		allowedBlocks.add("TNT");
-		registerNewRule(AllowedBlocks.fromStringList(allowedBlocks));
+		AllowedBlocks allowedBlocks = new AllowedBlocks();
+		allowedBlocks.fillWithDefaultValues();
+		registerNewRule(allowedBlocks);
 	}
 
 	public void load(ConfigurationSection config)

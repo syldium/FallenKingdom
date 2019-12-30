@@ -1,6 +1,8 @@
 package fr.devsylone.fkpi.rules;
 
+import fr.devsylone.fallenkingdom.utils.XMaterial;
 import fr.devsylone.fkpi.util.BlockDescription;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;
@@ -13,18 +15,6 @@ public class AllowedBlocks extends Rule
 	{
 		super("AllowedBlocks", value);
 		this.value = value;
-	}
-
-	public static AllowedBlocks fromStringList(List<String> value)
-	{
-		return new AllowedBlocks(value.stream().map(v -> {
-			if (v.contains(":")) {
-				String[] splitted = v.split(":");
-				return new BlockDescription(splitted[0], Byte.parseByte(splitted[1]));
-			} else {
-				return new BlockDescription(v);
-			}
-		}).collect(Collectors.toList()));
 	}
 
 	public AllowedBlocks()
@@ -67,5 +57,56 @@ public class AllowedBlocks extends Rule
 	public boolean isAllowed(BlockDescription block)
 	{
 		return getValue().contains(block);
+	}
+
+	public List<BlockDescription> reducedList()
+	{
+		List<BlockDescription> list = getValue();
+		if (list.containsAll(allSigns())) {
+			list = list.stream().filter(b -> !b.getBlockName().contains("SIGN")).collect(Collectors.toList());
+			list.add(new BlockDescription("SIGN (tous types)"));
+		}
+		return list;
+	}
+
+	public void fillWithDefaultValues()
+	{
+		getValue().add(new BlockDescription("TORCH"));
+		getValue().add(new BlockDescription("WALL_TORCH"));
+		if (XMaterial.isNewVersion()) {
+			getValue().add(new BlockDescription(Material.REDSTONE_TORCH));
+			getValue().add(new BlockDescription(Material.REDSTONE_WALL_TORCH));
+		} else {
+			getValue().add(new BlockDescription("REDSTONE_TORCH_ON"));
+		}
+
+		getValue().add(new BlockDescription("FIRE"));
+		getValue().addAll(allSigns());
+		getValue().add(new BlockDescription("TNT"));
+
+	}
+
+	public static List<BlockDescription> allSigns()
+	{
+		List<BlockDescription> signs = new ArrayList<>();
+		if (XMaterial.isNewVersion())
+			signs.add(new BlockDescription(XMaterial.OAK_SIGN.parseMaterial()));
+		else
+			signs.add(new BlockDescription("SIGN_POST"));
+		signs.add(new BlockDescription(XMaterial.OAK_WALL_SIGN.parseMaterial()));
+		if (Material.getMaterial("ACACIA_SIGN") != null)
+		{
+			signs.add(new BlockDescription(Material.ACACIA_SIGN));
+			signs.add(new BlockDescription(Material.ACACIA_WALL_SIGN));
+			signs.add(new BlockDescription(Material.BIRCH_SIGN));
+			signs.add(new BlockDescription(Material.BIRCH_WALL_SIGN));
+			signs.add(new BlockDescription(Material.DARK_OAK_SIGN));
+			signs.add(new BlockDescription(Material.DARK_OAK_WALL_SIGN));
+			signs.add(new BlockDescription(Material.JUNGLE_SIGN));
+			signs.add(new BlockDescription(Material.JUNGLE_WALL_SIGN));
+			signs.add(new BlockDescription(Material.SPRUCE_SIGN));
+			signs.add(new BlockDescription(Material.SPRUCE_WALL_SIGN));
+		}
+		return signs;
 	}
 }

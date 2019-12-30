@@ -33,7 +33,7 @@ public class RulesFormatter
 
 		else if(rule instanceof AllowedBlocks)
 		{
-			for(BlockDescription b : ((AllowedBlocks) rule).getValue())
+			for(BlockDescription b : ((AllowedBlocks) rule).reducedList())
 				value += ("\n" + "§b> §2" + b.toString());
 		}
 
