@@ -3,6 +3,7 @@ package fr.devsylone.fkpi.teams;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.devsylone.fallenkingdom.Fk;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -50,7 +51,6 @@ public class Team implements Saveable
 	{
 		if(IS_BUKKIT_PLUGIN)
 			CrossversionTeam.addEntry(p, scoreboardTeam);
-
 		players.add(p);
 	}
 
@@ -102,8 +102,12 @@ public class Team implements Saveable
 	public void setColor(Color color)
 	{
 		this.color = color == null ? Color.NO_COLOR : color;
-		if(IS_BUKKIT_PLUGIN)
-			scoreboardTeam.setPrefix(this.color.getChatColor() + "");
+		if(IS_BUKKIT_PLUGIN) {
+			if(Fk.getInstance().isNewVersion())
+				scoreboardTeam.setColor(this.color.getChatColor());
+			else
+				scoreboardTeam.setPrefix(String.valueOf(this.color.getChatColor()));
+		}
 	}
 
 	public org.bukkit.scoreboard.Team getScoreboardTeam()

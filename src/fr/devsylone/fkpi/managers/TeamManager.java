@@ -41,7 +41,9 @@ public class TeamManager implements Saveable
 		if(name.length() > 25)
 			throw new FkLightException("Le nom de l'équipe ne peut exceder 25 caractères !");
 
-		teams.add(new Team(name));
+		Team team = new Team(name);
+		team.setColor(Color.forName(name));
+		teams.add(team);
 
 		if(FkPI.getInstance().isBukkitPlugin())
 			return Color.forName(name) != null;
