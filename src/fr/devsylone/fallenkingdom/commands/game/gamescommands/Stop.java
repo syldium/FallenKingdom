@@ -14,6 +14,7 @@ public class Stop extends FkGameCommand
 	public Stop()
 	{
 		super("stop", "Arrete la partie après un lancement.");
+		permission = ADMIN_PERMISSION;
 	}
 
 	public void execute(Player sender, FkPlayer fkp, String[] args)

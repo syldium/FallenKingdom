@@ -31,6 +31,7 @@ public class Pause extends FkGameCommand
 	public Pause()
 	{
 		super("pause", "Met la partie en pause.");
+		permission = ADMIN_PERMISSION;
 	}
 
 	@SuppressWarnings("deprecated")

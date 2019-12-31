@@ -8,10 +8,14 @@ import fr.devsylone.fallenkingdom.utils.FkSound;
 
 public abstract class FkCommand
 {
+	public static final String PLAYER_PERMISSION = "fallenkingdom.player";
+	public static final String ADMIN_PERMISSION = "fallenkingdom.admin";
+
 	protected int nbrArgs;
 	protected String usage;
 	protected String path;
 	protected String description;
+	protected String permission = PLAYER_PERMISSION;
 
 	public FkCommand(String path, String args, int nbrArgs, String description)
 	{
@@ -47,5 +51,10 @@ public abstract class FkCommand
 	public String getPath()
 	{
 		return path;
+	}
+
+	public String getPermission()
+	{
+		return permission;
 	}
 }

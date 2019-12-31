@@ -10,3 +10,11 @@ softdepend: ['Multiverse-Core'] #Si vous ne possedez pas Multiverse-Core le plug
 commands:
  fk:
   aliase: FallenKingdom
+
+permissions:
+ fallenkingdom.admin:
+  description: Permet d'éditer les paramètres du Fallen Kingdom
+  default: op
+ fallenkingdom.player:
+  description: Permet d'afficher les règles et les équipes
+  default: true

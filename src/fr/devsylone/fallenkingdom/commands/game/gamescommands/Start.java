@@ -11,6 +11,7 @@ public class Start extends FkGameCommand
 	public Start()
 	{
 		super("start", "Lance la partie.");
+		permission = ADMIN_PERMISSION;
 	}
 
 	public void execute(Player sender, FkPlayer fkp, String[] args)

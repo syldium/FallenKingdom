@@ -12,6 +12,7 @@ public class Reset extends FkGameCommand
 	public Reset()
 	{
 		super("reset", "Enlève toutes les configurations du plugin.");
+		permission = ADMIN_PERMISSION;
 	}
 
 	public void execute(Player sender, FkPlayer fkp, String[] args)

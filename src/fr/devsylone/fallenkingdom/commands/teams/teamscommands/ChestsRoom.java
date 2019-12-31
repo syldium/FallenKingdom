@@ -1,5 +1,6 @@
 package fr.devsylone.fallenkingdom.commands.teams.teamscommands;
 
+import fr.devsylone.fallenkingdom.manager.CommandManager;
 import org.bukkit.entity.Player;
 
 import fr.devsylone.fallenkingdom.Fk;
@@ -20,6 +21,9 @@ public class ChestsRoom extends FkTeamCommand
 	{
 		if(args.length == 0)
 			args = new String[] {"help"};
+
+		if(!args[0].equalsIgnoreCase("show") && !Fk.getInstance().getCommandManager().hasPermission(sender, ADMIN_PERMISSION))
+			throw new FkLightException(CommandManager.NO_PERMISSION_MSG);
 		
 		if(args[0].equalsIgnoreCase("show"))
 		{

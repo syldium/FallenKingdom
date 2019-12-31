@@ -25,10 +25,13 @@ public class CommandManager
 	private List<FkCommand> commandList;
 	private HashMap<String, Boolean> confirms;
 
+	public final static String NO_PERMISSION_MSG =  "Vous n'avez pas la permission d'exécuter cette commande.";
+	private final boolean permissions = Fk.getInstance().getConfig().getBoolean("enable-permissions", false);
+
 	public CommandManager()
 	{
-		commandList = new ArrayList<FkCommand>();
-		confirms = new HashMap<String, Boolean>();
+		commandList = new ArrayList<>();
+		confirms = new HashMap<>();
 		confirms.put("stop", false);
 		confirms.put("reset", false);
 		confirms.put("sbreset", false);
@@ -98,7 +101,7 @@ public class CommandManager
 
 	public void sendHelp(Player p)
 	{
-		List<FkCommand> list = new ArrayList<FkCommand>();
+		List<FkCommand> list = new ArrayList<>();
 		list.add(new FkCommand("team", "", 0, "Gestion des équipes")
 		{
 			@Override
@@ -138,7 +141,7 @@ public class CommandManager
 
 	public void sendHelp(String name, Player p)
 	{
-		List<FkCommand> list = new ArrayList<FkCommand>();
+		List<FkCommand> list = new ArrayList<>();
 		for(FkCommand command : commandList)
 			if(command.getUsage().contains(name))
 				list.add(command);
@@ -232,6 +235,9 @@ public class CommandManager
 				throw new FkLightException("Commande inconnue. §e/fk help §cpour la liste des commandes du plugin.");
 		}
 
+		if(!hasPermission(sender, command.getPermission()))
+			throw new FkLightException(NO_PERMISSION_MSG);
+
 		/*
 		 * Trouve les arguments de la commande à effectuer.
 		 */
@@ -295,5 +301,10 @@ public class CommandManager
 	public List<FkCommand> getCommandList()
 	{
 		return (List<FkCommand>) ImmutableList.copyOf(commandList);
+	}
+
+	public boolean hasPermission(Player sender, String permission)
+	{
+		return !permissions || (permissions && sender.hasPermission(permission));
 	}
 }

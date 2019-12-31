@@ -1,5 +1,7 @@
 package fr.devsylone.fallenkingdom.commands.game.gamescommands;
 
+import fr.devsylone.fallenkingdom.exception.FkLightException;
+import fr.devsylone.fallenkingdom.manager.CommandManager;
 import org.bukkit.entity.Player;
 
 import fr.devsylone.fallenkingdom.Fk;
@@ -16,6 +18,9 @@ public class StarterInv extends FkGameCommand
 
 	public void execute(Player sender, FkPlayer fkp, String[] args)
 	{
+		if(!args[0].equalsIgnoreCase("show") && !Fk.getInstance().getCommandManager().hasPermission(sender, ADMIN_PERMISSION))
+			throw new FkLightException(CommandManager.NO_PERMISSION_MSG);
+
 		if(args[0].equalsIgnoreCase("undo"))
 		{
 			if(Fk.getInstance().getStarterInventoryManager().undo())

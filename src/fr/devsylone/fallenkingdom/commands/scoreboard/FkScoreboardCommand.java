@@ -10,6 +10,8 @@ public abstract class FkScoreboardCommand extends FkCommand
 	public FkScoreboardCommand(String name, String args, int nbrArgs, String description)
 	{
 		super("scoreboard " + name, args, nbrArgs, description);
+		if(path != "help")
+			permission = ADMIN_PERMISSION;
 	}
 
 	protected void broadcast(String message)
