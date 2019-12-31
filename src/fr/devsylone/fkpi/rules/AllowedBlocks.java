@@ -61,9 +61,9 @@ public class AllowedBlocks extends Rule
 
 	public List<BlockDescription> reducedList()
 	{
-		List<BlockDescription> list = getValue();
+		List<BlockDescription> list = new ArrayList<>(getValue());
 		if (list.containsAll(allSigns())) {
-			list = list.stream().filter(b -> !b.getBlockName().contains("SIGN")).collect(Collectors.toList());
+			list.removeIf(b -> b.getBlockName().contains("SIGN"));
 			list.add(new BlockDescription("SIGN (tous types)"));
 		}
 		return list;

@@ -13,8 +13,8 @@ Si vous êtes développeur, sachez que ce projet a fait l'objet de plusieurs mil
 - [x] Assurer la réflection des Material
 - [x] Utilisation des paquets 1.13+
 - [x] Affichage de la salle des coffres
-- [ ] Parité - exemple : `Material.STONE` ne désigne plus les variantes de roches (WIP)
-- [ ] Gestion des nouveaux éléments de gameplay (exemple : tonneaux)
+- [x] Parité - exemple : `Material.STONE` ne désigne plus les variantes de roches
+- [x] Gestion des nouveaux éléments de gameplay (exemple : tonneaux)
 - [ ] Optionnel : implémenter [Brigadier](https://github.com/Mojang/brigadier)
 
 ## Signaler un bug

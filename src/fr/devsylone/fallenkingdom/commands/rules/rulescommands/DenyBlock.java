@@ -24,13 +24,12 @@ public class DenyBlock extends FkRuleCommand
 	{
 		Player p = org.bukkit.Bukkit.getPlayer(sender.getName());
 
-		BlockDescription blockDescription = null;
+		final BlockDescription blockDescription;
 		if(args.length > 0) {
 			String block = args[0];
-			if(Material.matchMaterial(block) == null)
+			blockDescription = new BlockDescription(block);
+			if(Material.matchMaterial(blockDescription.getBlockName()) == null)
 				throw new FkLightException(block + " n'est pas un bloc ! ");
-			else
-				blockDescription = new BlockDescription(block);
 		} else {
 			if(p == null || p.getItemInHand().getType().equals(Material.AIR))
 				throw new FkLightException(usage);
@@ -43,7 +42,9 @@ public class DenyBlock extends FkRuleCommand
 			throw new FkLightException("Il est déjà interdit de poser ce block ! ");
 		
 		List<BlockDescription> list = rule.getValue();
-		list.remove(blockDescription);
+		// Si le nom de bloc donné est moins précis que ceux enregistrés (ex : WOOL avec WOOL:2, WOOL:3)
+		// on supprime toutes les occurences de WOOL (donc des fois plusieurs)
+		list.removeIf(b -> b.equals(blockDescription));
 		Fk.getInstance().getFkPI().getRulesManager().getRuleByName("AllowedBlocks").setValue(list);
 
 		broadcast("Le bloc ", blockDescription.toString(), "ne peut plus être posé en dehors de sa base !");

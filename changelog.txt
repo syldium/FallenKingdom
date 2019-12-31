@@ -280,3 +280,14 @@ RETRAIT      = [-]
       >> 2.16.1
 [*] La salle des coffres se met à jour quand un coffre est cassé
 --------
+
+      >> 2.17.0
+[+] Support des versions 1.13.X, 1.14.X, 1.15.X
+[+] 2 placeholders indiquant la base ennemie la plus proche
+[+] AllowBlock supporte les datas types
+[+] Les arguments optionnels peuvent être complétés avec Tab
+[+] Possibilité d'utiliser des permissions
+[*] La config générée tient compte de la version du serveur
+[*] Fix de /fk rules allowBlock sans arguments
+[*] Fix de la gestion de la pause
+[-] Les achievements 1.8 ne sont plus gérés

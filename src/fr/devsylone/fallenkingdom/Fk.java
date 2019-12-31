@@ -483,9 +483,6 @@ public class Fk extends JavaPlugin
 		if(NMSUtils.getVersion().equals("v1_8_R1"))
 			addError("Votre version de spigot n'est pas compatible avec le plugin, merci d'utiliser la version 1.8.8 de spigot");
 
-		if(NMSUtils.getVersion().startsWith("v1_13") || NMSUtils.getVersion().startsWith("v1_14") || NMSUtils.getVersion().startsWith("v1_15"))
-			addOnConnectWarning("Le support des versions ≥ 1.13 est en développement.");
-
 		if(!System.getProperty("java.version").startsWith("1.8") && !System.getProperty("java.version").startsWith("11."))
 			addError("Votre version de java n'est pas compatible avec le plugin. Merci d'utiliser Java 8 ou 11");
 

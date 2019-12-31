@@ -27,14 +27,13 @@ public class AllowBlock extends FkRuleCommand
 	{
 		Player p = org.bukkit.Bukkit.getPlayer(sender.getName());
 		
-		BlockDescription blockDescription = null;
+		final BlockDescription blockDescription;
 		if(args.length > 0) {
 			String block = args[0];
 			makeSuggestionIf(block, "ender", ENDER_EYE_MSG, p);
-			if(Material.matchMaterial(block) == null)
+			blockDescription = new BlockDescription(block);
+			if(Material.matchMaterial(blockDescription.getBlockName()) == null)
 				throw new FkLightException(block + " n'est pas un bloc ! ");
-			else
-				blockDescription = new BlockDescription(block);
 		} else {
 			if(p == null || p.getItemInHand().getType().equals(Material.AIR))
 				throw new FkLightException(usage);

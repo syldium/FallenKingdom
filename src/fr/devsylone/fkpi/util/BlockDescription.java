@@ -16,7 +16,7 @@ public class BlockDescription implements Serializable
     public BlockDescription(String blockName)
     {
         if (blockName.contains(":")) {
-            this.blockName = blockName.split(":")[0];
+            this.blockName = blockName.split(":")[0].toUpperCase();
             this.data = Byte.parseByte(blockName.split(":")[1]);
         } else {
             this.blockName = blockName.toUpperCase();
