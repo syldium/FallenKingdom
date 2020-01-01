@@ -2,6 +2,7 @@ package fr.devsylone.fallenkingdom.commands.rules.rulescommands;
 
 import java.util.List;
 
+import fr.devsylone.fallenkingdom.utils.XMaterial;
 import fr.devsylone.fkpi.util.BlockDescription;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -16,7 +17,7 @@ import fr.devsylone.fkpi.rules.AllowedBlocks;
 public class AllowBlock extends FkRuleCommand
 {
 	// Si ENDER dans le nom, même si c'est un mauvais material, prevenir que les yeux c'est une state du ENDER_PORTAL_FRAME
-	private static final String ENDER_EYE_MSG =  "§a[Note] Si vous souhaitez autoriser les joueurs à compléter les portails de l'end avec des yeux, utilisez §e/fk rules allowblock ENDER_PORTAL_FRAME";
+	private static final String ENDER_EYE_MSG = "§a[Note] Si vous souhaitez autoriser les joueurs à compléter les portails de l'end avec des yeux, utilisez §e/fk rules allowblock " + XMaterial.END_PORTAL_FRAME.parseMaterial().name();
 
 	public AllowBlock()
 	{

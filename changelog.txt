@@ -290,4 +290,5 @@ RETRAIT      = [-]
 [*] La config générée tient compte de la version du serveur
 [*] Fix de /fk rules allowBlock sans arguments
 [*] Fix de la gestion de la pause
+[*] Fix d'endCap
 [-] Les achievements 1.8 ne sont plus gérés
