@@ -9,6 +9,7 @@ import fr.devsylone.fkpi.rules.AllowedBlocks;
 import fr.devsylone.fkpi.rules.ChargedCreepers;
 import fr.devsylone.fkpi.rules.PlaceBlockInCave;
 import fr.devsylone.fkpi.rules.Rule;
+import fr.devsylone.fkpi.util.BlockDescription;
 
 public class RulesFormatter
 {
@@ -32,8 +33,8 @@ public class RulesFormatter
 
 		else if(rule instanceof AllowedBlocks)
 		{
-			for(String b : ((AllowedBlocks) rule).getValue())
-				value += ("\n" + "§b> §2" + b);
+			for(BlockDescription b : ((AllowedBlocks) rule).reducedList())
+				value += ("\n" + "§b> §2" + b.toString());
 		}
 
 		else if(rule.getValue() instanceof Boolean)

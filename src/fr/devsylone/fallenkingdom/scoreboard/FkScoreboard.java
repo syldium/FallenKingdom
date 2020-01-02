@@ -32,7 +32,7 @@ public class FkScoreboard
 	{
 		formatted = true;
 		this.player = player;
-		this.placeHolders = new HashMap<PlaceHolder, ArrayList<Integer>>();
+		this.placeHolders = new HashMap<>();
 		this.bukkitBoard = Bukkit.getScoreboardManager().getNewScoreboard();
 
 		sidebarBoard = new ScoreboardSign(player, Fk.getInstance().getScoreboardManager().getName());
@@ -111,7 +111,7 @@ public class FkScoreboard
 		if(Fk.getInstance().getGame().getState() == GameState.BEFORE_STARTING && !Fk.getInstance().getPlayerManager().getPlayer(player).getState().equals(PlayerState.EDITING_SCOREBOARD))
 			return;
 
-		ArrayList<Integer> linesToRefresh = new ArrayList<Integer>();
+		ArrayList<Integer> linesToRefresh = new ArrayList<>();
 
 		for(PlaceHolder p : placeHolders)
 		{
@@ -163,7 +163,10 @@ public class FkScoreboard
 		for(Team team : Fk.getInstance().getFkPI().getTeamManager().getScoreboard().getTeams())
 		{
 			bukkitBoard.registerNewTeam(team.getName());
-			bukkitBoard.getTeam(team.getName()).setPrefix(team.getPrefix());
+			if(Fk.getInstance().isNewVersion())
+				bukkitBoard.getTeam(team.getName()).setColor(team.getColor());
+			else
+				bukkitBoard.getTeam(team.getName()).setPrefix(team.getPrefix());
 
 			for(String entry : CrossversionTeam.getEntries(team))
 				if(Bukkit.getPlayer(entry) != null)

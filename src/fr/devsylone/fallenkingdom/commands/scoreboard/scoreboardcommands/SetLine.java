@@ -32,8 +32,8 @@ public class SetLine extends FkScoreboardCommand
 		if(line.length() >= 45)
 			throw new FkLightException("La ligne ne peut pas faire plus de 44 caractères");
 
-		if(line.length() >= 32)
-			fkp.sendMessage("§c[Attention] Votre ligne fais plus de 32 caractère, le plugin peut disfonctionnner. Il est possible que le scoreboard bug à un moment.\nSi il y a un bug, changez la ligne et redémarrez votre serveur.");
+		if(line.length() >= 32 && !Fk.getInstance().isNewVersion())
+			fkp.sendMessage("§c[Attention] Votre ligne fait plus de 32 caractères, le plugin peut dysfonctionner. Il est possible que le scoreboard bug à un moment.\nS'il y a un bug, changez la ligne et redémarrez votre serveur.");
 
 		Fk.getInstance().getScoreboardManager().setLine(Integer.parseInt(args[0]), line.replace("&", "§"));
 	}

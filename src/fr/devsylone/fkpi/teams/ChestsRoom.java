@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import fr.devsylone.fallenkingdom.utils.XBlock;
+import fr.devsylone.fallenkingdom.utils.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Color;
@@ -146,7 +148,7 @@ public class ChestsRoom implements Saveable
 					inter = inter + (iy == 0 ? 1 : 0);
 					inter = inter + (iz == 0 ? 1 : 0);
 
-					if(!loc.equals(p.getLocation().add(0, -1, 0).getBlock().getLocation()) && loc.getBlock().getType() == Material.STONE || loc.getBlock().getType() == Material.COBBLESTONE || loc.getBlock().getType() == Material.DIRT || loc.getBlock().getType() == Material.GRASS || loc.getBlock().getType() == Material.GRAVEL || loc.getBlock().getType().name().contains("ORE"))
+					if(!loc.equals(p.getLocation().add(0, -1, 0).getBlock().getLocation()) && XBlock.isBlockInCave(loc.getBlock().getType()) || loc.getBlock().getType() == Material.SAND || loc.getBlock().getType() == Material.COBBLESTONE || loc.getBlock().getType() == Material.DIRT || loc.getBlock().getType() == XMaterial.GRASS_BLOCK.parseMaterial() || loc.getBlock().getType() == Material.GRAVEL || loc.getBlock().getType().name().contains("ORE"))
 					{
 						Fk.getInstance().getPacketManager().sendBlockChange(p, loc, Material.AIR);
 						toReset.add(loc.getChunk());

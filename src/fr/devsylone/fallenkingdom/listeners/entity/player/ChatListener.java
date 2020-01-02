@@ -1,5 +1,6 @@
 package fr.devsylone.fallenkingdom.listeners.entity.player;
 
+import fr.devsylone.fkpi.util.BlockDescription;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -30,8 +31,8 @@ public class ChatListener implements Listener
 
 					if(rule instanceof AllowedBlocks)
 					{
-						for(String s : ((AllowedBlocks) rule).getValue())
-							content += ", " + s;
+						for(BlockDescription s : ((AllowedBlocks) rule).getValue())
+							content += ", " + s.toString();
 
 						content = content.substring(2);
 					}

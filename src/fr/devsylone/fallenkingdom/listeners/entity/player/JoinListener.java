@@ -1,6 +1,5 @@
 package fr.devsylone.fallenkingdom.listeners.entity.player;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -43,8 +42,8 @@ public class JoinListener implements Listener
 		final Team pTeam = Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(e.getPlayer().getName());
 		if(pTeam != null) //REFRESH LES TEAMS SCOREBOARD (MC=CACA)
 		{
-			Bukkit.dispatchCommand(e.getPlayer(), "fk team removePlayer " + e.getPlayer().getName() + " nobroadcast");
-			Bukkit.dispatchCommand(e.getPlayer(), "fk team addPlayer " + e.getPlayer().getName() + " " + pTeam.getName() + " nobroadcast");
+			e.getPlayer().setDisplayName(pTeam.getChatColor() + e.getPlayer().getName());
+			Fk.getInstance().getScoreboardManager().refreshNicks();
 		}
 
 		e.setJoinMessage(null);

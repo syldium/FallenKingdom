@@ -2,6 +2,8 @@ package fr.devsylone.fallenkingdom.commands.rules.rulescommands;
 
 import java.util.List;
 
+import fr.devsylone.fallenkingdom.utils.XMaterial;
+import fr.devsylone.fkpi.util.BlockDescription;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -15,7 +17,7 @@ import fr.devsylone.fkpi.rules.AllowedBlocks;
 public class AllowBlock extends FkRuleCommand
 {
 	// Si ENDER dans le nom, même si c'est un mauvais material, prevenir que les yeux c'est une state du ENDER_PORTAL_FRAME
-	private static final String ENDER_EYE_MSG =  "§a[Note] Si vous souhaitez autoriser les joueurs à compléter les portails de l'end avec des yeux, utilisez §e/fk rules allowblock ENDER_PORTAL_FRAME";
+	private static final String ENDER_EYE_MSG = "§a[Note] Si vous souhaitez autoriser les joueurs à compléter les portails de l'end avec des yeux, utilisez §e/fk rules allowblock " + XMaterial.END_PORTAL_FRAME.parseMaterial().name();
 
 	public AllowBlock()
 	{
@@ -26,27 +28,27 @@ public class AllowBlock extends FkRuleCommand
 	{
 		Player p = org.bukkit.Bukkit.getPlayer(sender.getName());
 		
-		Material m = null;
+		final BlockDescription blockDescription;
 		if(args.length > 0) {
 			String block = args[0];
-			m = Material.matchMaterial(block);
 			makeSuggestionIf(block, "ender", ENDER_EYE_MSG, p);
-			if(m == null)
+			blockDescription = new BlockDescription(block);
+			if(Material.matchMaterial(blockDescription.getBlockName()) == null)
 				throw new FkLightException(block + " n'est pas un bloc ! ");
 		} else {
 			if(p == null || p.getItemInHand().getType().equals(Material.AIR))
 				throw new FkLightException(usage);
-			m = p.getItemInHand().getType();
-			makeSuggestionIf(m.name(), "ender", ENDER_EYE_MSG, p);
+			blockDescription = new BlockDescription(p.getItemInHand());
+			makeSuggestionIf(p.getItemInHand().getType().name(), "ender", ENDER_EYE_MSG, p);
 		}
 		AllowedBlocks rule = (AllowedBlocks) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("AllowedBlocks");
 
-		List<String> list = rule.getValue();
-		if(list.contains(m.name()))
+		if(rule.isAllowed(blockDescription))
 			throw new FkLightException("Il est déjà autorisé de poser ce block ! ");
-		
-		list.add(m.name());
-		broadcast("Le bloc", m.toString(), "peut maintenant être posé en dehors de sa base ! ");
+
+		List<BlockDescription> list = rule.getValue();
+		list.add(blockDescription);
+		broadcast("Le bloc", blockDescription.toString(), "peut maintenant être posé en dehors de sa base ! ");
 	}
 
 	public void makeSuggestionIf(String haystack, String needle, String message, Player player)

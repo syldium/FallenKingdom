@@ -1,0 +1,20 @@
+name: FallenKingdom
+version: ${project.version}
+author: Devsylone_Team
+authors: [Etrenak, fabulacraft, Blendman974, syldium]
+main: fr.devsylone.fallenkingdom.Fk
+api-version: 1.13
+prefix: FK
+softdepend: ['Multiverse-Core'] #Si vous ne possedez pas Multiverse-Core le plugin marchera exactement de la meme facon.
+
+commands:
+ fk:
+  aliase: FallenKingdom
+
+permissions:
+ fallenkingdom.admin:
+  description: Permet d'éditer les paramètres du Fallen Kingdom
+  default: op
+ fallenkingdom.player:
+  description: Permet d'afficher les règles et les équipes
+  default: true

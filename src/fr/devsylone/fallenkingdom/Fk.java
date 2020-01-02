@@ -29,6 +29,8 @@ import fr.devsylone.fallenkingdom.manager.TipsManager;
 import fr.devsylone.fallenkingdom.manager.packets.PacketManager;
 import fr.devsylone.fallenkingdom.manager.packets.PacketManager1_8;
 import fr.devsylone.fallenkingdom.manager.packets.PacketManager1_9;
+import fr.devsylone.fallenkingdom.manager.packets.PacketManager1_13;
+import fr.devsylone.fallenkingdom.manager.packets.PacketManager1_14;
 import fr.devsylone.fallenkingdom.manager.saveable.DeepPauseManager;
 import fr.devsylone.fallenkingdom.manager.saveable.PlayerManager;
 import fr.devsylone.fallenkingdom.manager.saveable.PortalsManager;
@@ -73,6 +75,8 @@ public class Fk extends JavaPlugin
 	private String lastVersion;
 
 	private boolean uptodate = true;
+
+	private final boolean isNewVersion = NMSUtils.nmsOptionalClass("ScoreboardServer$Action").isPresent();
 
 	public static Fk getInstance()
 	{
@@ -131,7 +135,15 @@ public class Fk extends JavaPlugin
 		siManager = new StarterInventoryManager();
 		sbManager = new ScoreboardManager();
 
-		pcktManager = Bukkit.getBukkitVersion().contains("1.8") ? new PacketManager1_8() : new PacketManager1_9();
+		if (Bukkit.getBukkitVersion().contains("1.8"))
+			pcktManager = new PacketManager1_8();
+		else if (isNewVersion)
+			if (Bukkit.getBukkitVersion().contains("1.13"))
+				pcktManager = new PacketManager1_13();
+			else
+				pcktManager = new PacketManager1_14();
+		else
+			pcktManager = new PacketManager1_9();
 
 		dpManager = new DeepPauseManager();
 		tipsManager = new TipsManager();
@@ -230,7 +242,7 @@ public class Fk extends JavaPlugin
 			for(World w : Bukkit.getWorlds())
 			{
 				w.setGameRuleValue("doDaylightCycle", "false");
-				w.setTime(6000l);
+				w.setTime(6000L);
 			}
 
 		/*
@@ -246,15 +258,7 @@ public class Fk extends JavaPlugin
 			e.printStackTrace();
 		}
 
-		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable()
-		{
-
-			@Override
-			public void run()
-			{
-				saveableManager.saveAll();
-			}
-		}, 5l * 60l * 20l, 5l * 60l * 20l);
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> saveableManager.saveAll(), 5l * 60l * 20l, 5l * 60l * 20l);
 
 		check();
 	}
@@ -263,6 +267,17 @@ public class Fk extends JavaPlugin
 	public void onDisable()
 	{
 		saveableManager.saveAll();
+
+		// Même si la partie est en pause et est sauvegardée dans cet état,
+		// on essaye de remettre dans un état normal, c'est-à-dire avec l'IA des mobs.
+		// Au redémarrage, la commande "game pause" sera exécutée si cela a été enregistré.
+		if (game.getState().equals(Game.GameState.PAUSE)) {
+			try {
+				getCommandManager().getCommand("game resume").execute(null, null, new String[0]);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 
 		if(server != null)
 			server.interrupt();
@@ -408,7 +423,7 @@ public class Fk extends JavaPlugin
 
 	public void reset()
 	{
-		Bukkit.getScheduler().cancelAllTasks();
+		Bukkit.getScheduler().cancelTasks(instance);
 		fkpi.reset();
 		game = new Game();
 
@@ -434,7 +449,7 @@ public class Fk extends JavaPlugin
 
 	public void stop()
 	{
-		Bukkit.getScheduler().cancelAllTasks();
+		Bukkit.getScheduler().cancelTasks(instance);
 
 		tipsManager.cancelBroadcasts();
 		tipsManager.startBroadcasts();
@@ -468,11 +483,8 @@ public class Fk extends JavaPlugin
 		if(NMSUtils.getVersion().equals("v1_8_R1"))
 			addError("Votre version de spigot n'est pas compatible avec le plugin, merci d'utiliser la version 1.8.8 de spigot");
 
-		if(NMSUtils.getVersion().startsWith("v1_13"))
-			addError("La 1.13 n'est pas encore supportée par le plugin ! Vous pouvez utiliser toutes les versions de la 1.8.9 à la 1.12.2");
-
-		if(!System.getProperty("java.version").startsWith("1.8"))
-			addError("Votre version de java n'est pas compatible avec le plugin. Merci d'utiliser Java 8");
+		if(!System.getProperty("java.version").startsWith("1.8") && !System.getProperty("java.version").startsWith("11."))
+			addError("Votre version de java n'est pas compatible avec le plugin. Merci d'utiliser Java 8 ou 11");
 
 		for(String warn : warns)
 		{
@@ -487,6 +499,11 @@ public class Fk extends JavaPlugin
 	public FkPI getFkPI()
 	{
 		return fkpi;
+	}
+
+	public boolean isNewVersion()
+	{
+		return isNewVersion;
 	}
 
 	public static void main(String[] args)

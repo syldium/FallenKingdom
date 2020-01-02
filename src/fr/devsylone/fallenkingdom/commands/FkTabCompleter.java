@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import fr.devsylone.fkpi.util.Color;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -81,12 +82,17 @@ public class FkTabCompleter implements TabCompleter
 			else
 				parametersEntered = theSplit;
 
-			if(parametersEntered.length > parameters.length)
+			String map;
+			if(parametersEntered.length > parameters.length+optionalParameters.length)
 				return returned;
+			else if(parametersEntered.length > parameters.length)
+				map = optionalParameters[parametersEntered.length - parameters.length - 1];
+			else
+				map = parameters[parametersEntered.length - 1];
 
 			String lastParameter = parametersEntered[parametersEntered.length - 1];//"/fk team AddPlayer fabulacraft rou" -> "rou" <- else || "AddPlayer fabulacraft " -> "" <- if
 
-			for(String s : getListOfPossibleValueForArg(parameters[parametersEntered.length - 1], lastParameter))
+			for(String s : getListOfPossibleValueForArg(map, lastParameter))
 				returned.add(s);
 
 		}
@@ -105,7 +111,7 @@ public class FkTabCompleter implements TabCompleter
 
 	private ArrayList<String> getListOfPossibleValueForArg(String arg, String startOfArg)
 	{
-		ArrayList<String> possibleValues = new ArrayList<String>();
+		ArrayList<String> possibleValues = new ArrayList<>();
 
 		if(arg.equalsIgnoreCase("team"))
 		{
@@ -125,8 +131,14 @@ public class FkTabCompleter implements TabCompleter
 		else if(arg.equalsIgnoreCase("block"))
 		{
 			for(Material m : Material.values())
-				if(m.name().startsWith(startOfArg))
-					possibleValues.add(m.name());
+				if(m.isBlock() && m.name().startsWith(startOfArg.toUpperCase()))
+					possibleValues.add(m.name().toLowerCase());
+		}
+		else if(arg.equalsIgnoreCase("color"))
+		{
+			for(Color c : Color.values())
+				if(startsWith(c.getGenredName(1), startOfArg))
+					possibleValues.add(c.getGenredName(1));
 		}
 		else if(arg.contains("|"))
 		{
@@ -134,7 +146,6 @@ public class FkTabCompleter implements TabCompleter
 				if(startsWith(s, startOfArg))
 					possibleValues.add(s);
 		}
-
 		else if(arg.equalsIgnoreCase("limit") || arg.equalsIgnoreCase("name") || arg.equalsIgnoreCase("day") || arg.equalsIgnoreCase("radius"))
 		{
 

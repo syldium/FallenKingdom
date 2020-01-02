@@ -14,6 +14,7 @@ public class Restore extends FkGameCommand
 	public Restore()
 	{
 		super("Restore", "[pause_id] (Par défaut restore à la dernière pause)", 0, "Permet de restaurer les états des joueurs avant une pause.");
+		permission = ADMIN_PERMISSION;
 	}
 
 	public void execute(Player sender, FkPlayer fkp, String[] args)

@@ -1,6 +1,8 @@
 package fr.devsylone.fallenkingdom.scoreboard;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +25,59 @@ public class ScoreboardSign
 	private final Player player;
 	private String objectiveName;
 
+	private static boolean VERSION1_13 = false;
+
+	// Chat
+	private static final Method CHAT_SERIALIZER;
+
+	// Scoreboard packets
+	private static final Constructor<?> PACKET_SB_OBJ;
+	private static final Constructor<?> PACKET_SB_DISPLAY_OBJ;
+	private static final Constructor<?> PACKET_SB_SCORE;
+	private static final Constructor<?> PACKET_SB_TEAM;
+
+	// Scoreboard enums
+	private static final Class<?> ENUM_SB_HEALTH_DISPLAY;
+	private static final Class<?> ENUM_SB_ACTION;
+	private static final Class<?> ENUM_CHAT_FORMAT;
+	private static final Object ENUM_CHAT_FORMAT_RESET;
+	private static final Object ENUM_SB_HEALTH_DISPLAY_INTEGER;
+	private static final Object ENUM_SB_ACTION_CHANGE;
+	private static final Object ENUM_SB_ACTION_REMOVE;
+
+
+	static {
+		try {
+			if (NMSUtils.nmsOptionalClass("ScoreboardServer$Action").isPresent()) {
+				VERSION1_13 = true;
+				CHAT_SERIALIZER = NMSUtils.nmsClass("IChatBaseComponent$ChatSerializer").getDeclaredMethod("a", String.class);
+			} else {
+				CHAT_SERIALIZER = null;
+			}
+
+			PACKET_SB_OBJ = NMSUtils.nmsClass("PacketPlayOutScoreboardObjective").getConstructor();
+			PACKET_SB_DISPLAY_OBJ = NMSUtils.nmsClass("PacketPlayOutScoreboardDisplayObjective").getConstructor();
+			PACKET_SB_SCORE = NMSUtils.nmsClass("PacketPlayOutScoreboardScore").getConstructor();
+			PACKET_SB_TEAM = NMSUtils.nmsClass("PacketPlayOutScoreboardTeam").getConstructor();
+
+			ENUM_SB_HEALTH_DISPLAY = NMSUtils.nmsClass("IScoreboardCriteria$EnumScoreboardHealthDisplay");
+			if (VERSION1_13) {
+				ENUM_SB_ACTION = NMSUtils.nmsClass("ScoreboardServer$Action");
+				ENUM_CHAT_FORMAT = NMSUtils.nmsClass("EnumChatFormat");
+				ENUM_CHAT_FORMAT_RESET = NMSUtils.enumValueOf(ENUM_CHAT_FORMAT, "RESET");
+			} else {
+				ENUM_SB_ACTION = NMSUtils.nmsClass("PacketPlayOutScoreboardScore$EnumScoreboardAction");
+				ENUM_CHAT_FORMAT = null;
+				ENUM_CHAT_FORMAT_RESET = null;
+			}
+			ENUM_SB_HEALTH_DISPLAY_INTEGER = NMSUtils.enumValueOf(ENUM_SB_HEALTH_DISPLAY, "INTEGER");
+			ENUM_SB_ACTION_CHANGE = NMSUtils.enumValueOf(ENUM_SB_ACTION, "CHANGE");
+			ENUM_SB_ACTION_REMOVE = NMSUtils.enumValueOf(ENUM_SB_ACTION, "REMOVE");
+		} catch (ReflectiveOperationException e) {
+			throw new ExceptionInInitializerError(e);
+		}
+	}
+
 	/**
 	 * Create a scoreboard sign for a given player and using a specifig objective name
 	 * @param player the player viewing the scoreboard sign
@@ -30,22 +85,6 @@ public class ScoreboardSign
 	 */
 	public ScoreboardSign(Player player, String objectiveName)
 	{
-		try
-		{
-			NMSUtils.register("net.minecraft.server._version_.PlayerConnection");
-			NMSUtils.register("net.minecraft.server._version_.IScoreboardCriteria");
-			NMSUtils.register("net.minecraft.server._version_.IScoreboardCriteria$EnumScoreboardHealthDisplay");
-			NMSUtils.register("net.minecraft.server._version_.Packet");
-			NMSUtils.register("net.minecraft.server._version_.PacketPlayOutScoreboardDisplayObjective");
-			NMSUtils.register("net.minecraft.server._version_.PacketPlayOutScoreboardObjective");
-			NMSUtils.register("net.minecraft.server._version_.PacketPlayOutScoreboardScore");
-			NMSUtils.register("net.minecraft.server._version_.PacketPlayOutScoreboardScore$EnumScoreboardAction");
-			NMSUtils.register("net.minecraft.server._version_.PacketPlayOutScoreboardTeam");
-			NMSUtils.register("org.bukkit.craftbukkit._version_.entity.CraftPlayer");
-		}catch(Exception e)
-		{
-			e.printStackTrace();
-		}
 		this.player = player;
 		this.objectiveName = objectiveName;
 	}
@@ -233,7 +272,7 @@ public class ScoreboardSign
 	{
 		try
 		{
-			Object packet = NMSUtils.getClass("PacketPlayOutScoreboardObjective").newInstance();
+			Object packet = PACKET_SB_OBJ.newInstance();
 
 			// Nom de l'objectif
 			setField(packet, "a", player.getName());
@@ -246,19 +285,8 @@ public class ScoreboardSign
 
 			if(mode == 0 || mode == 2)
 			{
-				setField(packet, "b", displayName);
-				try
-				{
-					Object integer = null;
-					for(int i = 0; i < NMSUtils.getClass("EnumScoreboardHealthDisplay").getEnumConstants().length; i++)
-						if(NMSUtils.getClass("EnumScoreboardHealthDisplay").getEnumConstants()[i].toString().equalsIgnoreCase("INTEGER"))
-							integer = NMSUtils.getClass("EnumScoreboardHealthDisplay").getEnumConstants()[i];
-
-					setField(packet, "c", integer);
-				}catch(Exception e)
-				{
-					e.printStackTrace();
-				}
+				setComponentField(packet, "b", displayName);
+				setField(packet, "c", ENUM_SB_HEALTH_DISPLAY_INTEGER);
 			}
 
 			return packet;
@@ -276,7 +304,7 @@ public class ScoreboardSign
 
 		try
 		{
-			packet = NMSUtils.getClass("PacketPlayOutScoreboardDisplayObjective").newInstance();
+			packet = PACKET_SB_DISPLAY_OBJ.newInstance();
 		}catch(Exception e)
 		{
 			e.printStackTrace();
@@ -291,37 +319,31 @@ public class ScoreboardSign
 	private Object sendScore(String line, int score)
 	{
 		Object packet = null;
-		try
-		{
-			packet = NMSUtils.getClass("PacketPlayOutScoreboardScore").getDeclaredConstructor(String.class).newInstance(line);
-
-			setField(packet, "b", player.getName());
-			setField(packet, "c", score);
-
-			Object change = null;
-
-			for(int i = 0; i < NMSUtils.getClass("EnumScoreboardAction").getEnumConstants().length; i++)
-				if(NMSUtils.getClass("EnumScoreboardAction").getEnumConstants()[i].toString().equalsIgnoreCase("CHANGE"))
-					change = NMSUtils.getClass("EnumScoreboardAction").getEnumConstants()[i];
-
-			setField(packet, "d", change);
-		}catch(Exception e)
-		{
+		try {
+			packet = PACKET_SB_SCORE.newInstance();
+		} catch (ReflectiveOperationException e) {
 			e.printStackTrace();
 		}
+		setField(packet, "d", ENUM_SB_ACTION_CHANGE);
+		setField(packet, "b", player.getName());
+		setField(packet, "c", score);
+		setField(packet, "a", line);
 		return packet;
 	}
 
 	private Object removeLine(String line)
 	{
-		try
-		{
-			return  NMSUtils.getClass("PacketPlayOutScoreboardScore").getDeclaredConstructor(String.class).newInstance(line);
-		}catch(Exception e)
-		{
+		Object packet = null;
+		try {
+			packet = PACKET_SB_SCORE.newInstance();
+		} catch (ReflectiveOperationException e) {
 			e.printStackTrace();
 		}
-		return null;
+		setField(packet, "d", ENUM_SB_ACTION_REMOVE);
+		setField(packet, "b", player.getName());
+		setField(packet, "a", line);
+		setField(packet, "c", 0);
+		return packet;
 	}
 
 	/**
@@ -386,19 +408,21 @@ public class ScoreboardSign
 
 			try
 			{
-				packet = NMSUtils.getClass("PacketPlayOutScoreboardTeam").newInstance();
+				packet = PACKET_SB_TEAM.newInstance();
+
+				setField(packet, "a", name);
+				setComponentField(packet, "b", "");
+				setComponentField(packet, "c", prefix);
+				setComponentField(packet, "d", suffix);
+				setField(packet, "e", "always");
+				//setField(packet, "f", 0);
+				if (VERSION1_13)
+					setField(packet, "g", ENUM_CHAT_FORMAT_RESET);
+				setField(packet, fieldHOrI, mode);
 			}catch(Exception e)
 			{
 				e.printStackTrace();
 			}
-
-			setField(packet, "a", name);
-			setField(packet, "b", "");
-			setField(packet, "c", prefix);
-			setField(packet, "d", suffix);
-			setField(packet, "e", "always");
-			//setField(packet, "f", 0);
-			setField(packet, fieldHOrI, mode);
 			return packet;
 		}
 
@@ -418,7 +442,7 @@ public class ScoreboardSign
 
 			try
 			{
-				packet = NMSUtils.getClass("PacketPlayOutScoreboardTeam").newInstance();
+				packet = PACKET_SB_TEAM.newInstance();
 			}catch(Exception e)
 			{
 				e.printStackTrace();
@@ -484,7 +508,7 @@ public class ScoreboardSign
 
 			try
 			{
-				packet = NMSUtils.getClass("PacketPlayOutScoreboardTeam").newInstance();
+				packet = PACKET_SB_TEAM.newInstance();
 			}catch(Exception e)
 			{
 				e.printStackTrace();
@@ -571,6 +595,15 @@ public class ScoreboardSign
 		}catch(NoSuchFieldException | IllegalAccessException e)
 		{
 			e.printStackTrace();
+		}
+	}
+
+	private void setComponentField(Object object, String fieldName, String value) throws ReflectiveOperationException
+	{
+		if (VERSION1_13) {
+			setField(object, fieldName, CHAT_SERIALIZER.invoke(null, "{\"text\":\"" + value + "\"}"));
+		} else {
+			setField(object, fieldName, value);
 		}
 	}
 }

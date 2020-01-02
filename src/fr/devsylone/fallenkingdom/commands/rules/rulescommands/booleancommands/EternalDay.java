@@ -14,6 +14,7 @@ public class EternalDay extends FkBooleanRuleCommand
 		super("eternalDay", "A true, désactive de la nuit.");
 	}
 
+	@SuppressWarnings("deprecated")
 	public void execute(Player sender, FkPlayer fkp, String[] args)
 	{
 		setRuleValue(args[0]);

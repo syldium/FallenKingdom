@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import fr.devsylone.fallenkingdom.utils.XMaterial;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -61,10 +62,10 @@ public class FilesUpdater
 					set("ChargedCreepers", 50001);
 
 			//Version 2.5.0 Material.SIGN c'est l'item
-			if(setSection.getStringList("AllowedBlocks").contains(Material.SIGN.name()))
+			if(setSection.getStringList("AllowedBlocks").contains(XMaterial.OAK_SIGN.parseMaterial().name()))
 			{
 				List<String> list = setSection.getStringList("AllowedBlocks");
-				list.remove(Material.SIGN.name());
+				list.remove(XMaterial.OAK_SIGN.parseMaterial().name());
 				set("AllowedBlocks", list);
 			}
 

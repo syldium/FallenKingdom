@@ -11,6 +11,8 @@ public abstract class FkRuleCommand extends FkCommand
 	public FkRuleCommand(String path, String args, int nbrArgs, String description)
 	{
 		super("rules " + path, args, nbrArgs, description);
+		if(path != "help" && path != "list")
+			permission = ADMIN_PERMISSION;
 	}
 
 	protected void broadcast(String message, String value, String end, FkSound sound)

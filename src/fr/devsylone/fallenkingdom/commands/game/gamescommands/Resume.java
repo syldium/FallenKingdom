@@ -15,8 +15,10 @@ public class Resume extends FkGameCommand
 	public Resume()
 	{
 		super("resume", "Reprend la partie après une pause.");
+		permission = ADMIN_PERMISSION;
 	}
 
+	@SuppressWarnings("deprecated")
 	public void execute(Player sender, FkPlayer fkp, String[] args) throws ReflectiveOperationException
 	{
 		if(Fk.getInstance().getGame().getState().equals(Game.GameState.BEFORE_STARTING))
@@ -26,7 +28,7 @@ public class Resume extends FkGameCommand
 
 		Fk.getInstance().getGame().setState(Game.GameState.STARTED);
 
-		if(!((Boolean) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("EternalDay").getValue()).booleanValue())
+		if(!(Boolean) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("EternalDay").getValue())
 		{
 			for(World w : org.bukkit.Bukkit.getWorlds())
 				w.setGameRuleValue("doDaylightCycle", "true");

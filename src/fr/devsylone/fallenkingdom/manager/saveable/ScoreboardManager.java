@@ -139,7 +139,7 @@ public class ScoreboardManager implements Saveable
 		stringFalse = "§4✘";
 		noTeam = "§4No team";
 		noBase = "§4No Base";
-		arrows = "↑↗→↘↓↙←↖";
+		arrows = Fk.getInstance().isNewVersion() ? "⇑⇗⇒⇘⇓⇙⇐⇖" : "↑↗→↘↓↙←↖";
 		sidebar.clear();
 		sidebar.add("§f§a§k§e");
 		sidebar.add("§6Jour {D} §2{H}h{M}");

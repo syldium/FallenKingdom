@@ -1,8 +1,7 @@
 package fr.devsylone.fkpi.teams;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import fr.devsylone.fallenkingdom.utils.XBlock;
+import fr.devsylone.fallenkingdom.utils.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -82,7 +81,7 @@ public class Base implements Saveable
 	/**
 	 * Repère si la Location se trouve dans la base ou non, sans prendre en compte l'axe y (hauteur).
 	 * @param loc Location à vérifier.
-	 * @para lag Le nombre à ajouter au rayon de la base
+	 * @param lag Le nombre à ajouter au rayon de la base
 	 * @return
 	 * 	- <b>true</b> Si la Location est à l'intérieur de la base.<br>
 	 *         - <b>false</b> Dans le cas contraire.
@@ -136,7 +135,6 @@ public class Base implements Saveable
 	/**
 	 * Construit la base en jeu.
 	 */
-	@SuppressWarnings("deprecation")
 	public void construct()
 	{
 		adjustLoc(center);
@@ -150,28 +148,28 @@ public class Base implements Saveable
 
 			adjustLoc(loc);
 			loc.getBlock().setType(material);
-			loc.getBlock().setData(data);
+			XBlock.setData(loc.getBlock(), data);
 
 			loc.setX(center.getBlockX() - radius + i);
 			loc.setZ(center.getBlockZ() - radius);
 
 			adjustLoc(loc);
 			loc.getBlock().setType(material);
-			loc.getBlock().setData(data);
+			XBlock.setData(loc.getBlock(), data);
 
 			loc.setX(center.getBlockX() - radius);
 			loc.setZ(center.getBlockZ() + radius - i);
 
 			adjustLoc(loc);
 			loc.getBlock().setType(material);
-			loc.getBlock().setData(data);
+			XBlock.setData(loc.getBlock(), data);
 
 			loc.setX(center.getBlockX() + radius);
 			loc.setZ(center.getBlockZ() - radius + i);
 
 			adjustLoc(loc);
 			loc.getBlock().setType(material);
-			loc.getBlock().setData(data);
+			XBlock.setData(loc.getBlock(), data);
 		}
 
 		/*
@@ -188,7 +186,7 @@ public class Base implements Saveable
 
 		for(int i = 0; i < 3; i++)
 		{
-			index.getBlock().setType(Material.FENCE);
+			index.getBlock().setType(XMaterial.OAK_FENCE.parseMaterial());
 			index.add(0, 1, 0);
 		}
 
@@ -215,11 +213,9 @@ public class Base implements Saveable
 				/*
 				 * On place une laine et on change la couleur
 				 * en fonction de la couleur de l'equipe.
-				 * Impossible de trouver une autre possibilité de changer
-				 * la couleur même si elle est deprecated.
 				 */
-				index.getBlock().setType(Material.WOOL);
-				index.getBlock().setData(team.getColor().getData());
+				index.getBlock().setType(XMaterial.WHITE_WOOL.parseMaterial());
+				XBlock.setColor(index.getBlock(), team.getColor().getDyeColor());
 
 				index.add(0, 1, 0);
 			}
@@ -244,19 +240,10 @@ public class Base implements Saveable
 		if(loc == null)
 			return null;
 
-		List<Material> lsBlocks = new ArrayList<Material>();
-		lsBlocks.add(Material.AIR);
-		lsBlocks.add(Material.RED_ROSE);
-		lsBlocks.add(Material.YELLOW_FLOWER);
-		lsBlocks.add(Material.DOUBLE_PLANT);
-		lsBlocks.add(Material.LONG_GRASS);
-		lsBlocks.add(Material.SNOW);
-		lsBlocks.add(Material.FENCE);
-
-		while(lsBlocks.contains(loc.getBlock().getType()))
+		while(XBlock.isReplacable(loc.getBlock().getType()))
 			loc.add(0, -1, 0);
 
-		while(!lsBlocks.contains(loc.getBlock().getType()))
+		while(!XBlock.isReplacable(loc.getBlock().getType()))
 			loc.add(0, 1, 0);
 
 		return loc;

@@ -9,7 +9,7 @@ public class InventoryListener implements Listener
 	@EventHandler
 	public void click(InventoryClickEvent e)
 	{
-		if(e.getInventory().getName().equals("§bInventaire de départ"))
+		if(e.getView().getTitle().equals("§bInventaire de départ"))
 			e.setCancelled(true);
 	}
 }

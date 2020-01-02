@@ -2,7 +2,6 @@ package fr.devsylone.fallenkingdom.listeners.block;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -12,6 +11,11 @@ import org.bukkit.event.world.PortalCreateEvent.CreateReason;
 
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.game.Game.GameState;
+import fr.devsylone.fallenkingdom.utils.XBlock;
+
+import java.lang.reflect.Method;
+import java.util.List;
+
 
 public class PortalCreateListener implements Listener
 {
@@ -22,12 +26,15 @@ public class PortalCreateListener implements Listener
 		if(!Fk.getInstance().getGame().isNetherEnabled() && !e.getWorld().getName().endsWith("_nether") && e.getReason() == CreateReason.FIRE)
 		{
 			Block air = null;
-			for(Block b : e.getBlocks())
-				if(b.getType().equals(Material.AIR))
-				{
-					air = b;
-					break;
-				}
+			try {
+				Method getBlocks = PortalCreateEvent.class.getDeclaredMethod("getBlocks");
+				air = XBlock.getAirBlock((List<?>) getBlocks.invoke(e));
+			} catch (Exception ex) {
+				ex.printStackTrace(); // Dommage...
+			}
+			if (Fk.isDebug())
+				Fk.getInstance().getLogger().info(air.getType().toString() + " en " + air.getLocation().toString());
+
 			Fk.getInstance().getPortalsManager().addPortal(air.getLocation());
 			e.setCancelled(true);
 			for(Player p : Bukkit.getOnlinePlayers())

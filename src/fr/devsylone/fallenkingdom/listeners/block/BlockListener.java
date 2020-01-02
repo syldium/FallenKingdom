@@ -1,5 +1,7 @@
 package fr.devsylone.fallenkingdom.listeners.block;
 
+import fr.devsylone.fallenkingdom.utils.XBlock;
+import fr.devsylone.fkpi.util.BlockDescription;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -97,7 +99,7 @@ public class BlockListener implements Listener
 			return;
 		}
 
-		if(((AllowedBlocks) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("AllowedBlocks")).getValue().contains(e.getBlock().getType().toString()))
+		if(((AllowedBlocks) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("AllowedBlocks")).isAllowed(new BlockDescription(e.getBlock())))
 			return;
 
 		Location block = e.getBlock().getLocation();
@@ -114,7 +116,7 @@ public class BlockListener implements Listener
 				int stones = 0;
 				if(!enemyBase && (boolean) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("PlaceBlockInCave").getValue())
 					for(int y = block.getBlockY() + 1; y < 256; y++)
-						if(block.getWorld().getBlockAt(block.getBlockX(), y, block.getBlockZ()).getType().equals(Material.STONE))
+						if(XBlock.isBlockInCave(block.getWorld().getBlockAt(block.getBlockX(), y, block.getBlockZ()).getType()))
 						{
 							if(++stones >= ((PlaceBlockInCave) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("PlaceBlockInCave")).getMinimumBlocks())
 								return;
@@ -125,7 +127,7 @@ public class BlockListener implements Listener
 				p.sendMessage(ChatUtils.PREFIX + ChatColor.RED + "Vous ne pouvez pas poser ce bloc !");
 				e.setCancelled(true);
 			}
-			else if(e.getBlock().getType().equals(Material.CHEST))
+			else if(XBlock.canBePartOfChestRoom(e.getBlock().getType()))
 			{
 				int limit = (Integer) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("ChestLimit").getValue();
 				int baseY = Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(e.getPlayer().getName()).getBase().getCenter().getBlockY();
@@ -180,7 +182,7 @@ public class BlockListener implements Listener
 			}
 		}
 
-		if(e.getBlock().getType().equals(Material.CHEST) && team.getBase() != null && !e.isCancelled() && team.getBase().contains(e.getBlock().getLocation()) && Fk.getInstance().getFkPI().getChestsRoomsManager().isEnabled())
+		if(XBlock.canBePartOfChestRoom(e.getBlock().getType()) && team.getBase() != null && !e.isCancelled() && team.getBase().contains(e.getBlock().getLocation()) && Fk.getInstance().getFkPI().getChestsRoomsManager().isEnabled())
 		{
 			team.getBase().getChestsRoom().removeChest(e.getBlock().getLocation());
 			return;

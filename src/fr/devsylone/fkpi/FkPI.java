@@ -3,6 +3,7 @@ package fr.devsylone.fkpi;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.devsylone.fkpi.util.BlockDescription;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -92,8 +93,8 @@ public class FkPI implements Saveable
 		for(Rule rule : rulesManager.getRulesList())
 		{
 			if(rule instanceof AllowedBlocks)
-				for(String block : ((AllowedBlocks) rule).getValue())
-					response.add("rules " + rule.getName() + " " + block);
+				for(BlockDescription b : ((AllowedBlocks) rule).getValue())
+					response.add("rules " + rule.getName() + " " + b.toString());
 
 			else if(rule instanceof PlaceBlockInCave)
 			{
@@ -134,8 +135,8 @@ public class FkPI implements Saveable
 			{
 				if(args[1].equalsIgnoreCase("AllowedBlocks"))
 				{
-					List<String> blocks = ((AllowedBlocks) rulesManager.getRuleByName("AllowedBlocks")).getValue();
-					blocks.add(args[2]);
+					List<BlockDescription> blocks = ((AllowedBlocks) rulesManager.getRuleByName("AllowedBlocks")).getValue();
+					blocks.add(new BlockDescription(args[2]));
 					rulesManager.getRuleByName("AllowedBlocks").setValue(blocks);
 				}
 
