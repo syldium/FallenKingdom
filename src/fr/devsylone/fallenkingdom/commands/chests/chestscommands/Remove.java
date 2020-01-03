@@ -25,7 +25,7 @@ public class Remove extends FkChestsCommand
 		LockedChest chest = Fk.getInstance().getFkPI().getLockedChestsManager().getChestAt(target.getLocation());
 		
 		if(!Fk.getInstance().getFkPI().getLockedChestsManager().remove(target.getLocation()))
-			throw new FkLightException("Vous devez regarder un coffre à crocheter pour le remettre normal");
+			throw new FkLightException("Vous devez regarder un coffre à crocheter pour lui supprimer sa spécificité");
 		broadcast("§cLe coffre à crocheter §5" + chest.getName() + "§c a été supprimé");
 
 	}

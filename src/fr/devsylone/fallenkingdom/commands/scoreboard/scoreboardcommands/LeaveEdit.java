@@ -9,7 +9,7 @@ public class LeaveEdit extends FkScoreboardCommand
 {
 	public LeaveEdit()
 	{
-		super("LeaveEdit", "", 0, "Sortir du mode de configuration");
+		super("leaveEdit", "", 0, "Sortir du mode de configuration");
 	}
 
 	public void execute(Player sender, FkPlayer fkp, String[] args)

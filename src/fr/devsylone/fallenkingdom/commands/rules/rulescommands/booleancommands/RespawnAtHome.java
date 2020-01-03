@@ -9,7 +9,7 @@ public class RespawnAtHome extends FkBooleanRuleCommand
 {
 	public RespawnAtHome()
 	{
-		super("RespawnAtHome", "Si le joueur a un lit il respawn normalement, sinon True=Respawn dans sa base, False=Respawn au WorldSpawn");
+		super("respawnAtHome", "Si le joueur a un lit il respawn normalement, sinon True=Respawn dans sa base, False=Respawn au WorldSpawn");
 	}
 
 	@Override

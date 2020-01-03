@@ -144,7 +144,7 @@ public class ScoreboardManager implements Saveable
 		sidebar.add("§f§a§k§e");
 		sidebar.add("§6Jour {D} §2{H}h{M}");
 		sidebar.add("§m------------");
-		sidebar.add("Equipe : §e{TEAM}");
+		sidebar.add("Équipe : §e{TEAM}");
 		sidebar.add("Morts : §e{MORTS}");
 		sidebar.add("Kills : §e{KILLS}");
 		sidebar.add("{BASE_PORTAL} : §e{DIST} §l{ARROW}");

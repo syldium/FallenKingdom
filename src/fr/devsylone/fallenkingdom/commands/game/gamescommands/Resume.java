@@ -22,7 +22,7 @@ public class Resume extends FkGameCommand
 	public void execute(Player sender, FkPlayer fkp, String[] args) throws ReflectiveOperationException
 	{
 		if(Fk.getInstance().getGame().getState().equals(Game.GameState.BEFORE_STARTING))
-			throw new FkLightException("La partie n'a pas encore commencée.");
+			throw new FkLightException("La partie n'a pas encore commencé.");
 		if(Fk.getInstance().getGame().getState().equals(Game.GameState.STARTED))
 			throw new FkLightException("La partie n'est pas en pause.");
 

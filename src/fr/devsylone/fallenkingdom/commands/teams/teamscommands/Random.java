@@ -13,7 +13,7 @@ public class Random extends FkTeamCommand
 {
 	public Random()
 	{
-		super("Random", "", 0, "Crée des équipes aléatoires équilibrées.");
+		super("random", "", 0, "Crée des équipes aléatoires équilibrées.");
 	}
 
 	public void execute(Player sender, FkPlayer fkp, String[] args)

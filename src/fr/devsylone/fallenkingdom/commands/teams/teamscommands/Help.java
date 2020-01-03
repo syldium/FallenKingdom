@@ -10,7 +10,7 @@ public class Help extends FkTeamCommand
 {
 	public Help()
 	{
-		super("Help", "", 0, "Ben c'est ça :D.");
+		super("help", "", 0, "Ben c'est ça :D.");
 	}
 
 	public void execute(Player sender, FkPlayer fkp, String[] args)

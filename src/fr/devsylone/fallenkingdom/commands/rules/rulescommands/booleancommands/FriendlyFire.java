@@ -9,7 +9,7 @@ public class FriendlyFire extends FkBooleanRuleCommand
 {
 	public FriendlyFire()
 	{
-		super("FriendlyFire", "A true, les joueurs au sein d'une même équipe peuvent s'infliger des dégâts.");
+		super("friendlyFire", "À true, les joueurs au sein d'une même équipe peuvent s'infliger des dégâts.");
 	}
 
 	public void execute(Player sender, FkPlayer fkp, String[] args)

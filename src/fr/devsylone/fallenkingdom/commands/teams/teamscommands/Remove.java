@@ -11,7 +11,7 @@ public class Remove extends fr.devsylone.fallenkingdom.commands.teams.FkTeamComm
 {
 	public Remove()
 	{
-		super("Remove", "<team>", 1, "Supprimer une équipe.");
+		super("remove", "<team>", 1, "Supprimer une équipe.");
 	}
 
 	public void execute(Player sender, FkPlayer fkp, String[] args) throws Exception

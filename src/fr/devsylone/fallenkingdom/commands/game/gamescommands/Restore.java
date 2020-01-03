@@ -13,7 +13,7 @@ public class Restore extends FkGameCommand
 {
 	public Restore()
 	{
-		super("Restore", "[pause_id] (Par défaut restore à la dernière pause)", 0, "Permet de restaurer les états des joueurs avant une pause.");
+		super("restore", "[pause_id] (Par défaut restaure à la dernière pause)", 0, "Permet de restaurer les états des joueurs avant une pause.");
 		permission = ADMIN_PERMISSION;
 	}
 
@@ -32,6 +32,6 @@ public class Restore extends FkGameCommand
 				throw new FkLightException(args[0] + " n'est pas un id valide");
 			}
 		id = Fk.getInstance().getPauseRestorer().restoreAll(id);//Si l'id était -1 ça remet le bon
-		Fk.broadcast("§2Votre inventaire, position, niveaux d'experience, barre de faim, barre de vie, ainsi que vos effets de potions ont été réstaurés comme au début de la pause n°" + id, FkSound.NOTE_PLING);
+		Fk.broadcast("§2Votre inventaire, position, niveaux d'experience, barre de faim, barre de vie, ainsi que vos effets de potions ont été restaurés comme au début de la pause n°" + id, FkSound.NOTE_PLING);
 	}
 }

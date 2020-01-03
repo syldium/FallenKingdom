@@ -13,7 +13,7 @@ public class AddPlayer extends FkTeamCommand
 {
 	public AddPlayer()
 	{
-		super("AddPlayer", "<player> <team>", 2, "Ajoute un joueur à une équipe.");
+		super("addPlayer", "<player> <team>", 2, "Ajoute un joueur à une équipe.");
 	}
 
 	public void execute(Player sender, FkPlayer fkp, String[] args)

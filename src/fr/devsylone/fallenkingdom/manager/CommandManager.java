@@ -76,7 +76,7 @@ public class CommandManager
 				}
 				if(blb < 10)
 				{
-					Fk.getInstance().getLogger().severe("Erreur ! Veuillez contacer le support");
+					Fk.getInstance().getLogger().severe("Erreur ! Veuillez contacter le support");
 					Fk.getInstance().addError("Erreur au chargement des commandes, merci de contacter le support via https://discord.gg/SmAAFxh ou bien devsylone@gmail.com");
 				}
 

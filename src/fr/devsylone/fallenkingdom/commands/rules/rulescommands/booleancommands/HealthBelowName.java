@@ -10,7 +10,7 @@ public class HealthBelowName extends FkBooleanRuleCommand
 {
 	public HealthBelowName()
 	{
-		super("HealthBelowName", "Permet de voir/ne plus voir la vie des joueurs sous leur pseudo");
+		super("healthBelowName", "Permet de voir/ne plus voir la vie des joueurs sous leur pseudo");
 	}
 
 	public void execute(Player sender, FkPlayer fkp, String[] args) throws ReflectiveOperationException

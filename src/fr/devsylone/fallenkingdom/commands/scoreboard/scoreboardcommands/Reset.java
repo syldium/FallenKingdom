@@ -11,7 +11,7 @@ public class Reset extends FkScoreboardCommand
 {
 	public Reset()
 	{
-		super("Reset", "", 0, "Réinitialise l'agencement du scoreboard");
+		super("reset", "", 0, "Réinitialise l'agencement du scoreboard");
 	}
 
 	public void execute(final Player sender, final FkPlayer fkp, String[] args)

@@ -15,7 +15,7 @@ public class List extends FkTeamCommand
 {
 	public List()
 	{
-		super("List", "", 0, "Donne le detail de toutes les équipes.");
+		super("list", "", 0, "Donne le détail de toutes les équipes.");
 	}
 
 	public void execute(Player sender, FkPlayer fkp, String[] args)

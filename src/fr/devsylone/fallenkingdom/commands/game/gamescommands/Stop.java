@@ -13,7 +13,7 @@ public class Stop extends FkGameCommand
 {
 	public Stop()
 	{
-		super("stop", "Arrete la partie après un lancement.");
+		super("stop", "Arrête la partie après un lancement.");
 		permission = ADMIN_PERMISSION;
 	}
 

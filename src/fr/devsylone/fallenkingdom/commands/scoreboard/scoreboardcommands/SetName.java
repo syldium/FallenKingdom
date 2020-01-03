@@ -12,7 +12,7 @@ public class SetName extends FkScoreboardCommand
 {
 	public SetName()
 	{
-		super("SetName", "<text>", 1, "Modifie le nom du scoreboard.");
+		super("setName", "<text>", 1, "Modifie le nom du scoreboard.");
 	}
 
 	public void execute(Player sender, FkPlayer fkp, String[] args) throws Exception

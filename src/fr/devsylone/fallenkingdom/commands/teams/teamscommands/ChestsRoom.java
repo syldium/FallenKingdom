@@ -1,12 +1,12 @@
 package fr.devsylone.fallenkingdom.commands.teams.teamscommands;
 
-import fr.devsylone.fallenkingdom.manager.CommandManager;
 import org.bukkit.entity.Player;
 
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.commands.teams.FkTeamCommand;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
 import fr.devsylone.fallenkingdom.game.Game.GameState;
+import fr.devsylone.fallenkingdom.manager.CommandManager;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fkpi.teams.Team;
 
@@ -14,7 +14,7 @@ public class ChestsRoom extends FkTeamCommand
 {
 	public ChestsRoom()
 	{
-		super("ChestsRoom", "<Help|Enabled|CaptureTime|Offset|Show>", 0, "Gestion des salles des coffres");
+		super("chestsRoom", "<Help|Enabled|CaptureTime|Offset|Show>", 0, "Gestion des salles des coffres");
 	}
 
 	public void execute(Player sender, FkPlayer fkp, String[] args)
@@ -74,7 +74,7 @@ public class ChestsRoom extends FkTeamCommand
 				throw new FkLightException("L'espace doit être un nombre entier compris entre 1 et 10 inclus");
 
 			Fk.getInstance().getFkPI().getChestsRoomsManager().setOffset(Integer.parseInt(args[1]));
-			broadcast("L'Espace entre la limite de la salle des coffres et les coffres le plus proche est désormais de §b" + Integer.parseInt(args[1]) + " §6blocs");
+			broadcast("L'espace entre la limite de la salle des coffres et les coffres le plus proche est désormais de §b" + Integer.parseInt(args[1]) + " §6blocs");
 		}
 
 		else

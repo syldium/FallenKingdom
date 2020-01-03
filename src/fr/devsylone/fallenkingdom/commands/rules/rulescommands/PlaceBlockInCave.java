@@ -12,7 +12,7 @@ public class PlaceBlockInCave extends fr.devsylone.fallenkingdom.commands.rules.
 {
   public PlaceBlockInCave()
   {
-    super("PlaceBlockInCave", "<true|false|info> [blocks]", 1, " À true il est possible de poser n'importe quel bloc lorsque que l'on est en caverne.");
+    super("placeBlockInCave", "<true|false|info> [blocks]", 1, " À true il est possible de poser n'importe quel bloc lorsque que l'on est en caverne.");
   }
   
 

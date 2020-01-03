@@ -16,13 +16,13 @@ public class Edit extends FkScoreboardCommand
 
 	public Edit()
 	{
-		super("Edit", "", 0, "Ouvre l'interface de configuration du scoreboard");
+		super("edit", "", 0, "Ouvre l'interface de configuration du scoreboard");
 	}
 
 	public void execute(final Player sender, final FkPlayer fkp, String[] args)
 	{
 		if(playersBeingLearningHowToEditTheBeautifulScoreboard.contains(sender.getName()))
-			throw new FkLightException("Minutes papillon, t'es déjà en train d'apprendre à edit le scoreboard :p");
+			throw new FkLightException("Minutes papillon, t'es déjà en train d'apprendre à modifier le scoreboard :p");
 
 		if(fkp.hasAlreadyLearntHowToEditTheBeautifulScoreboard() && args.length < 2)
 			fkp.newSbDisplayer();
@@ -72,7 +72,7 @@ public class Edit extends FkScoreboardCommand
 				public void run()
 				{
 					Fk.broadcast("");
-					Fk.broadcast("§bAffichera à 13h56 dans votre scoreboard \n§bà la ligne §c12 §6Jour actuel §7> §d13:56");
+					Fk.broadcast("§bAffichera à 13h56 dans votre scoreboard \n§bà la ligne §c12 §b:  §6Jour actuel §7> §d13:56");
 				}
 			}, time * 20l);
 

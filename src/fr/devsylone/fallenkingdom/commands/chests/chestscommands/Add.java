@@ -1,5 +1,7 @@
 package fr.devsylone.fallenkingdom.commands.chests.chestscommands;
 
+import java.util.Set;
+
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -9,8 +11,6 @@ import fr.devsylone.fallenkingdom.commands.chests.FkChestsCommand;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fkpi.lockedchests.LockedChest;
-
-import java.util.Set;
 
 public class Add extends FkChestsCommand
 {

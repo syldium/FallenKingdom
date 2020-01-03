@@ -12,7 +12,7 @@ public class SetLine extends FkScoreboardCommand
 {
 	public SetLine()
 	{
-		super("SetLine", "<number> <text>", 2, "Modifie la ligne du scoreboard.");
+		super("setLine", "<number> <text>", 2, "Modifie la ligne du scoreboard.");
 	}
 
 	public void execute(Player sender, FkPlayer fkp, String[] args) throws Exception

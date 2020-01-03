@@ -12,7 +12,7 @@ public class SetBase extends fr.devsylone.fallenkingdom.commands.teams.FkTeamCom
 {
 	public SetBase()
 	{
-		super("SetBase", "<team> <radius> [block] Ou item dans la main", 2, "Modifier l'emplacement de la base d'une équipe.");
+		super("setBase", "<team> <radius> [block] Ou item dans la main", 2, "Modifier l'emplacement de la base d'une équipe.");
 	}
 
 	@SuppressWarnings("deprecation")

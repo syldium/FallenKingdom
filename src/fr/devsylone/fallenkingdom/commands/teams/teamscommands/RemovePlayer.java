@@ -10,7 +10,7 @@ public class RemovePlayer extends FkTeamCommand
 {
 	public RemovePlayer()
 	{
-		super("RemovePlayer", "<player>", 1, "Enlever un joueur d'une équipe.");
+		super("removePlayer", "<player>", 1, "Enlever un joueur d'une équipe.");
 	}
 
 	public void execute(Player sender, FkPlayer fkp, String[] args)

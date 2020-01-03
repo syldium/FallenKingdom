@@ -37,9 +37,9 @@ public class ChestLimit extends FkRuleCommand
 		Fk.getInstance().getFkPI().getRulesManager().getRuleByName("chestLimit").setValue(Integer.valueOf(limit));
 
 		if(limit == 0)
-			broadcast("Les salles des coffres peuvent maintenant être construites à", "n'importe quelle", "profondeur ! ");
+			broadcast("Les salles des coffres peuvent maintenant être construites à", "n'importe quelle", "profondeur ou hauteur ! ");
 		else
-			broadcast("Les salles des coffres ne peuvent maintenant plus dépasser", String.valueOf(limit), "blocs de profondeur ! ");
+			broadcast("Les salles des coffres ne peuvent maintenant plus dépasser", String.valueOf(limit), "blocs de profondeur ou de hauteur ! ");
 		
 	}
 }

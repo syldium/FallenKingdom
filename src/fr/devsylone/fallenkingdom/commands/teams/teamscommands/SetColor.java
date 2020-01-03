@@ -13,7 +13,7 @@ public class SetColor extends FkTeamCommand
 {
 	public SetColor()
 	{
-		super("SetColor", "<team> <color>", 2, "Change la couleur de l'équipe");
+		super("setColor", "<team> <color>", 2, "Change la couleur de l'équipe");
 	}
 
 	public void execute(Player sender, FkPlayer fkp, String[] args)

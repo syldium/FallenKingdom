@@ -11,7 +11,7 @@ public class EternalDay extends FkBooleanRuleCommand
 {
 	public EternalDay()
 	{
-		super("eternalDay", "A true, désactive de la nuit.");
+		super("eternalDay", "À true, désactive le cycle jour/nuit.");
 	}
 
 	@SuppressWarnings("deprecated")

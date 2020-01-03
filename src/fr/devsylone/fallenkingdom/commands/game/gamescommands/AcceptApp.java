@@ -12,7 +12,7 @@ public class AcceptApp extends FkGameCommand
 {
 	public AcceptApp()
 	{
-		super("AcceptApp", "Met en place la dernière configuration envoyée via le logiciel");
+		super("acceptApp", "Met en place la dernière configuration envoyée via le logiciel");
 	}
 
 	public void execute(Player sender, FkPlayer fkp, String[] args)

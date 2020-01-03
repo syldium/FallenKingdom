@@ -12,7 +12,7 @@ public class DenyApp extends FkGameCommand
 {
 	public DenyApp()
 	{
-		super("DenyApp", "Annule la dernière configuration envoyée via le logiciel");
+		super("denyApp", "Annule la dernière configuration envoyée via le logiciel");
 	}
 
 	public void execute(Player sender, FkPlayer fkp, String[] args)

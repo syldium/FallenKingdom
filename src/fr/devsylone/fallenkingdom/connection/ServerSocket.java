@@ -57,7 +57,7 @@ public abstract class ServerSocket extends Thread
 	public List<String> getFkPIArray()
 	{
 		if(!fkpiReady)
-			throw new FkLightException("Il n'y a pas de configuration récement envoyée par le logiciel");
+			throw new FkLightException("Il n'y a pas de configuration récemment envoyée par le logiciel");
 
 		return FkPIArray;
 	}

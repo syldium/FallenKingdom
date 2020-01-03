@@ -27,10 +27,10 @@ import fr.devsylone.fallenkingdom.manager.ListenersManager;
 import fr.devsylone.fallenkingdom.manager.SaveablesManager;
 import fr.devsylone.fallenkingdom.manager.TipsManager;
 import fr.devsylone.fallenkingdom.manager.packets.PacketManager;
-import fr.devsylone.fallenkingdom.manager.packets.PacketManager1_8;
-import fr.devsylone.fallenkingdom.manager.packets.PacketManager1_9;
 import fr.devsylone.fallenkingdom.manager.packets.PacketManager1_13;
 import fr.devsylone.fallenkingdom.manager.packets.PacketManager1_14;
+import fr.devsylone.fallenkingdom.manager.packets.PacketManager1_8;
+import fr.devsylone.fallenkingdom.manager.packets.PacketManager1_9;
 import fr.devsylone.fallenkingdom.manager.saveable.DeepPauseManager;
 import fr.devsylone.fallenkingdom.manager.saveable.PlayerManager;
 import fr.devsylone.fallenkingdom.manager.saveable.PortalsManager;
@@ -475,7 +475,7 @@ public class Fk extends JavaPlugin
 		List<String> warns = new ArrayList<String>();
 
 		if(getConfig().get("Charged_creepers") != null)
-			warns.add("L'option Charged_creepers dans le fichier de configuration n'est plus utilisee, il faut utiliser /fk rules ChargedCreepers");
+			warns.add("L'option Charged_creepers dans le fichier de configuration n'est plus utilisée, il faut utiliser /fk rules ChargedCreepers");
 
 		if(Bukkit.getVersion().contains("Bukkit"))
 			addError("Ce plugin n'est pas compatible avec CraftBukkit, veuillez utiliser spigot.");

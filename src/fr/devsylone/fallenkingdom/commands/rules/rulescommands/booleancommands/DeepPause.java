@@ -11,7 +11,7 @@ public class DeepPause extends FkBooleanRuleCommand
 {
 	public DeepPause()
 	{
-		super("deepPause", "Permet d'activer/désativer la pause approfondie");
+		super("deepPause", "Permet d'activer/désactiver la pause approfondie");
 	}
 
 	public void execute(Player sender, FkPlayer fkp, String[] args) throws ReflectiveOperationException
