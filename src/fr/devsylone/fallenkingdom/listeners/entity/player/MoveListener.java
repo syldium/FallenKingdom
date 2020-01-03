@@ -62,13 +62,13 @@ public class MoveListener implements Listener
 					if(pTeam != null && team.equals(pTeam))
 						fkp.sendMessage(ChatColor.GREEN + "Vous entrez dans votre base");
 					else
-						fkp.sendMessage("Vous entrez dans la base de l'equipe " + team.toString());
+						fkp.sendMessage("Vous entrez dans la base de l'équipe " + team.toString());
 
 				else if(team.getBase().contains(e.getFrom()) && !team.getBase().contains(e.getTo()))
 					if(pTeam != null && team.equals(pTeam))
 						fkp.sendMessage(ChatColor.RED + "Vous sortez de votre base");
 					else
-						fkp.sendMessage("Vous sortez de la base de l'equipe " + team.toString());
+						fkp.sendMessage("Vous sortez de la base de l'équipe " + team.toString());
 
 				if(team.getBase().getChestsRoom() != null && Fk.getInstance().getFkPI().getChestsRoomsManager().isEnabled() && !e.getPlayer().getGameMode().equals(GameMode.SPECTATOR))
 				{

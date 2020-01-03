@@ -1,12 +1,12 @@
 package fr.devsylone.fallenkingdom.commands.rules.rulescommands;
 
-import fr.devsylone.fkpi.util.BlockDescription;
 import org.bukkit.entity.Player;
 
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fkpi.rules.AllowedBlocks;
+import fr.devsylone.fkpi.util.BlockDescription;
 
 public class PlaceBlockInCave extends fr.devsylone.fallenkingdom.commands.rules.FkRuleCommand
 {
@@ -46,12 +46,12 @@ public class PlaceBlockInCave extends fr.devsylone.fallenkingdom.commands.rules.
           rule.setMinimumBlocks(Integer.parseInt(args[1]));
         }
         catch (NumberFormatException e) {
-          fkp.sendMessage("§cVotre nombre n'est pas valide, le nombre de blocks de roches minimum reste à §4" + rule.getMinimumBlocks());
+          fkp.sendMessage("§cVotre nombre n'est pas valide, le nombre de blocs de roches minimum reste à §4" + rule.getMinimumBlocks());
         }
       }
-      broadcast("Il est maintenant", Boolean.valueOf(args[0]).booleanValue() ? "possible" : "impossible", "de poser d'autres blocs que ceux figurant dans la liste des blocs autorisés §4§luniquement en caverne !");
-      broadcast("§6La limite de blocks pour être considére en caverne est de : §4" + rule.getMinimumBlocks() + " §6blocks");
-      broadcast("§e/fk rules PlaceBlockInCave info§a pour plus d'information.");
+      broadcast("§4§luniquement en caverne§6, il est maintenant", Boolean.valueOf(args[0]).booleanValue() ? "possible" : "impossible", "de poser d'autres blocs que ceux figurant dans la liste des blocs autorisés !");
+      broadcast("§6La limite de blocs pour être considéré en caverne est de : §4" + rule.getMinimumBlocks() + " §6blocs consécutifs");
+      broadcast("§e/fk rules PlaceBlockInCave info§a pour plus d'informations.");
     }
   }
 }

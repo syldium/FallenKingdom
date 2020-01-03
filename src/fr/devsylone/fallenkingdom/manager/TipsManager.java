@@ -46,9 +46,9 @@ public class TipsManager
 		newTip(new Edit(), "Modifier le scoreboard à votre guise ! ");
 		newTip(new Bug(), "Un problème ? Alertez l'équipe de développement en une commande");
 		newTip(new Restore(), "À utiliser après une pause !");
-		newTip(new StarterInv(), "Personaliser le stuff de départ");
-		newTip(new PlaceBlockInCave(), "Poser des blocs en caverne !");
-		newTip(new Add(), "Créer des coffres à crocheter !");
+		newTip(new StarterInv(), "Personnalisez le stuff de départ");
+		newTip(new PlaceBlockInCave(), "Pour poser des blocs en caverne !");
+		newTip(new Add(), "Créez des coffres à crocheter !");
 
 		newTip(null, "Faîtes §l[tab] &ren écrivant votre commande, elle s'ecrira tout seule !");
 		newTip(null, "Notre discord : §e§lhttps://discord.gg/NwqFNa6 &r !");
@@ -72,9 +72,7 @@ public class TipsManager
 		displayed.add(rdmi);
 
 		Fk.broadcast("");
-		Fk.broadcast("");
 		Fk.broadcast(tip.getChatFormatted(), ChatUtils.TIP, FkSound.NOTE_PLING);
-		Fk.broadcast("");
 		Fk.broadcast("");
 		if(displayed.size() >= tips.size())
 			displayed.clear();

@@ -64,7 +64,7 @@ public class FkScoreboard
 
 		if(Fk.getInstance().getGame().getState().equals(GameState.BEFORE_STARTING) && !Fk.getInstance().getPlayerManager().getPlayer(player).getState().equals(PlayerState.EDITING_SCOREBOARD))
 		{
-			sidebarBoard.setLine("§bEquipes :", ++index);
+			sidebarBoard.setLine("§bÉquipes :", ++index);
 
 			if(Fk.getInstance().getFkPI().getTeamManager().getTeams().size() <= 10)
 				for(fr.devsylone.fkpi.teams.Team team : Fk.getInstance().getFkPI().getTeamManager().getTeams())

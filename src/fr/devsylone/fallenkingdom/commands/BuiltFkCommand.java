@@ -1,9 +1,5 @@
 package fr.devsylone.fallenkingdom.commands;
 
-import java.util.HashMap;
-
-import org.json.simple.JSONObject;
-
 public class BuiltFkCommand
 {
 	public enum SucessLevel
@@ -24,13 +20,13 @@ public class BuiltFkCommand
 		this.args = args;
 	}
 	
-	@Override
-	public String toString()
-	{
-		HashMap<String, String> map = new HashMap<String, String>();
-		map.put("command", cmdPath);
-		map.put("args", String.join(" ", args));
-		map.put("level", level.name());
-		return new JSONObject(map).toJSONString();
-	}
+//	@Override
+//	public String toString()
+//	{
+//		HashMap<String, String> map = new HashMap<String, String>();
+//		map.put("command", cmdPath);
+//		map.put("args", String.join(" ", args));
+//		map.put("level", level.name());
+//		return new JSONObject(map).toJSONString();
+//	}
 }
