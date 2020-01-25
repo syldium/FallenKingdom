@@ -240,10 +240,10 @@ public class Base implements Saveable
 		if(loc == null)
 			return null;
 
-		while(XBlock.isReplacable(loc.getBlock().getType()))
+		while(XBlock.isReplacable(loc.getBlock().getType()) && loc.getY() > 1.0D)
 			loc.add(0, -1, 0);
-
-		while(!XBlock.isReplacable(loc.getBlock().getType()))
+		
+		while(!XBlock.isReplacable(loc.getBlock().getType()) && loc.getY())
 			loc.add(0, 1, 0);
 
 		return loc;
