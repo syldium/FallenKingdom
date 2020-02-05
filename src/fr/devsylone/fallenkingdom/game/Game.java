@@ -6,6 +6,7 @@ import java.util.Date;
 //import org.bukkit.Achievement;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
@@ -19,6 +20,7 @@ import fr.devsylone.fallenkingdom.scoreboard.PlaceHolder;
 import fr.devsylone.fallenkingdom.utils.FkSound;
 import fr.devsylone.fkpi.lockedchests.LockedChest;
 import fr.devsylone.fkpi.util.Saveable;
+import me.kvq.plugin.trails.API.SuperTrailsAPI;
 
 public class Game implements Saveable
 {
@@ -382,10 +384,18 @@ public class Game implements Saveable
 							if(p.hasAchievement(a))
 								p.removeAchievement(a);*/
 
+					p.getWorld().setDifficulty(Difficulty.NORMAL);
 					p.playSound(p.getLocation(), FkSound.EXPLODE.bukkitSound(), 1, 1);
+
 				}
 
 				Fk.broadcast("§2La partie commence, bonne chance à tous !");
+				
+				for(Player p : Bukkit.getOnlinePlayers())
+				{
+					SuperTrailsAPI.setTrail(0, p);
+				}
+				
 				setState(GameState.STARTED);
 				if(task == 0)
 					startTimer();
@@ -396,8 +406,12 @@ public class Game implements Saveable
 	private void broadcastStartIn(int time)
 	{
 		Fk.broadcast("La partie démarre dans §c" + time + "§r seconde(s)");
-		for(Player p : Bukkit.getOnlinePlayers())
+		
+		for(Player p : Bukkit.getOnlinePlayers()) {
+			
 			p.playSound(p.getLocation(), FkSound.NOTE_PLING.bukkitSound(), 1, 1);
+			p.sendTitle("§6\u2694 La partie va commencer \u2694", "§a" + Integer.toString(time) + "§a secondes...", 25, 120, 25);
+		}
 	}
 
 	private void broadcastTpIn(int time)
