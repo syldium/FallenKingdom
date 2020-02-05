@@ -1,5 +1,5 @@
 
-Fallenkingdom - Fun+
+Fallen Kingdom - Fun+
 ===
 [Pour une description complète du plugin cliquez ici](https://www.spigotmc.org/resources/fallenkingdom.38878/)
 
@@ -34,9 +34,25 @@ Me lançant dans le dev de plugins il y a moins de deux mois je m'amuse à crée
 - [ ] ToDO: Lier le choix d'activer les potions ou non au fichier config.yml.
 
 ## Signaler un bug
-Si vous souhaitez [signaler un bug](https://github.com/Etrenak/fallenkingdom/issues/new), merci de joindre votre fichier latest.log au rapport de bug. Ce fichier contient des éléments essentiels pour que nous puissions identifier le problème et le résoudre.
+
+> Si vous souhaitez [signaler un bug]
+> (https://github.com/Etrenak/fallenkingdom/issues/new), merci de
+> joindre votre fichier latest.log au rapport de bug. Ce fichier
+> contient des éléments essentiels pour que nous puissions identifier le
+> problème et le résoudre.
+
+## Screenshot
+![Title/Titre avant lancement](http://files.sikya.fr/2020-02-05_22.03.52.png)
+
+![Effets mort d'un joueur à par un autre joueur](http://files.sikya.fr/2020-02-05_22.04.39.png)
+
+![Un des quelques effets aléatoires à la connexion](http://files.sikya.fr/2020-02-05_22.09.12.png)
+
+![Interdiction des potions](http://files.sikya.fr/Screenshot_1.png)
+
+![Refonte graphique du t'chat](http://files.sikya.fr/Screenshot_2.png)
+
+![MOTD Managing](http://files.sikya.fr/Webp.net-gifmaker.gif)
 
 ## Documentation
 * [Event spigot](docs/api/api.md)
-
-
