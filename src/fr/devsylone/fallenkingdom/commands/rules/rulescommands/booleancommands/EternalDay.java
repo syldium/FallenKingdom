@@ -14,7 +14,7 @@ public class EternalDay extends FkBooleanRuleCommand
 		super("eternalDay", "À true, désactive le cycle jour/nuit.");
 	}
 
-	@SuppressWarnings("deprecated")
+	@SuppressWarnings({ "deprecation" })
 	public void execute(Player sender, FkPlayer fkp, String[] args)
 	{
 		setRuleValue(args[0]);

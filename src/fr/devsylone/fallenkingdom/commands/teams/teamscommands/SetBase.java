@@ -44,5 +44,6 @@ public class SetBase extends fr.devsylone.fallenkingdom.commands.teams.FkTeamCom
 		base.construct();
 		broadcast("La base de l'équipe " + args[0] + " définie en :§b X > " + base.getCenter().getBlockX() + "; Z > " + base.getCenter().getBlockZ());
 	}
+	
 
 }

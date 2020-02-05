@@ -96,6 +96,7 @@ public class PlaceHolderUtils
 
 	public static String getNearestTeamBase(Player player)
 	{
+		@SuppressWarnings("unused")
 		Location ploc = player.getLocation().clone();
 		if(player.getWorld().getEnvironment() == Environment.NORMAL)
 		{

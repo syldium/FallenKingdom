@@ -51,6 +51,7 @@ public class ScoreboardDisplayer
 
 		startUpdateRunnable();
 		Fk.getInstance().getScoreboardManager().recreateAllScoreboards();
+		
 	}
 
 	public void updateLoc()

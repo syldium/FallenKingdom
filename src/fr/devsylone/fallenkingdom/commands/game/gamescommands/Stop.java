@@ -45,6 +45,5 @@ public class Stop extends FkGameCommand
 		}
 		else
 			throw new FkLightException("La partie n'est pas encore commencée !");
-		
 	}
 }

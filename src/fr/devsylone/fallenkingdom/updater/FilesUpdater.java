@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Set;
 
 import fr.devsylone.fallenkingdom.utils.XMaterial;
-import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 

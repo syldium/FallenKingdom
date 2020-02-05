@@ -104,6 +104,7 @@ public class TeamManager implements Saveable
 		return null;
 	}
 
+	
 	public void addPlayer(String player, String teamName)
 	{
 		if(getPlayerTeam(player) != null)

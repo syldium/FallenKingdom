@@ -24,6 +24,7 @@ public class AllowBlock extends FkRuleCommand
 		super("allowBlock", "[block] OU /fk rules allowBlock (prendra l'item dans votre main)", 0, "Permet de pouvoir poser un bloc en dehors de sa base.");
 	}
 
+	@SuppressWarnings("deprecation")
 	public void execute(Player sender, FkPlayer fkp, String[] args)
 	{
 		Player p = org.bukkit.Bukkit.getPlayer(sender.getName());

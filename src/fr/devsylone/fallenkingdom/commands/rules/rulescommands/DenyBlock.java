@@ -20,6 +20,7 @@ public class DenyBlock extends FkRuleCommand
 				"Annule l'effet du allowBlock sur le bloc choisi.");
 	}
 
+	@SuppressWarnings("deprecation")
 	public void execute(Player sender, FkPlayer fkp, String[] args)
 	{
 		Player p = org.bukkit.Bukkit.getPlayer(sender.getName());

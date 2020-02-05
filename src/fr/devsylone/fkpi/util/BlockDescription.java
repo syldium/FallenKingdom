@@ -8,6 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 
+@SuppressWarnings("serial")
 public class BlockDescription implements Serializable
 {
     private String blockName;
@@ -34,7 +35,7 @@ public class BlockDescription implements Serializable
         this.blockName = material.name();
     }
 
-    @SuppressWarnings("deprecated")
+    @SuppressWarnings({ "deprecation"})
     public BlockDescription(Block block)
     {
         this.blockName = block.getType().name();

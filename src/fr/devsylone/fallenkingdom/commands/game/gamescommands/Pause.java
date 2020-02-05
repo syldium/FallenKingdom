@@ -34,7 +34,7 @@ public class Pause extends FkGameCommand
 		permission = ADMIN_PERMISSION;
 	}
 
-	@SuppressWarnings("deprecated")
+	@SuppressWarnings({ "deprecation" })
 	public void execute(Player sender, FkPlayer fkp, String[] args) throws ReflectiveOperationException
 	{
 		if(sender != null)

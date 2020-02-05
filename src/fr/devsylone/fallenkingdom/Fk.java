@@ -90,6 +90,7 @@ public class Fk extends JavaPlugin
 		lastVersion = getDescription().getVersion();
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void onEnable()
 	{

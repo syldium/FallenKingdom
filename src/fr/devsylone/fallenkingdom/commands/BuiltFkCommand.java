@@ -9,8 +9,11 @@ public class BuiltFkCommand
 		UNKNOWN_COMMAND;
 	}
 	
+	@SuppressWarnings("unused")
 	private String cmdPath;
+	@SuppressWarnings("unused")
 	private String args[];
+	@SuppressWarnings("unused")
 	private SucessLevel level;
 	
 	public BuiltFkCommand(String commandPath, SucessLevel lvl, String... args)

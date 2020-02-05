@@ -29,7 +29,6 @@ import org.bukkit.block.data.*;
 import org.bukkit.material.*;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 

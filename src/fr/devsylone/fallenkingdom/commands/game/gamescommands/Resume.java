@@ -18,9 +18,10 @@ public class Resume extends FkGameCommand
 		permission = ADMIN_PERMISSION;
 	}
 
-	@SuppressWarnings("deprecated")
+	@SuppressWarnings({ "deprecation" })
 	public void execute(Player sender, FkPlayer fkp, String[] args) throws ReflectiveOperationException
 	{
+
 		if(Fk.getInstance().getGame().getState().equals(Game.GameState.BEFORE_STARTING))
 			throw new FkLightException("La partie n'a pas encore commencé.");
 		if(Fk.getInstance().getGame().getState().equals(Game.GameState.STARTED))
@@ -40,4 +41,5 @@ public class Resume extends FkGameCommand
 			super.broadcast("La partie", "reprend", ".", FkSound.NOTE_PIANO);
 
 	}
+
 }

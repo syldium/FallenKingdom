@@ -12,6 +12,7 @@ public class Create extends FkTeamCommand
 	public Create()
 	{
 		super("create", "<team>", 1, "Crée une équipe.");
+		permission = ADMIN_PERMISSION;
 	}
 
 	public void execute(Player sender, FkPlayer fkp, String[] args)
@@ -30,6 +31,5 @@ public class Create extends FkTeamCommand
 		}
 
 		broadcast("L'équipe " + Fk.getInstance().getFkPI().getTeamManager().getTeam(args[0]).toString() + " §6a été créée !");
-		
 	}
 }

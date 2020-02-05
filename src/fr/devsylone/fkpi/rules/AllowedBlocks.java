@@ -22,6 +22,7 @@ public class AllowedBlocks extends Rule
 		this(new ArrayList<BlockDescription>());
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<BlockDescription> getValue()
 	{

@@ -41,5 +41,6 @@ public class Reset extends FkGameCommand
 			Fk.getInstance().getCommandManager().setConfirmed("reset", false);
 			
 		}
+	
 	}
 }

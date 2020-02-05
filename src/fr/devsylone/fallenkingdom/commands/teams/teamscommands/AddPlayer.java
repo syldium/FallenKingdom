@@ -14,6 +14,7 @@ public class AddPlayer extends FkTeamCommand
 	public AddPlayer()
 	{
 		super("addPlayer", "<player> <team>", 2, "Ajoute un joueur à une équipe.");
+		permission = ADMIN_PERMISSION;
 	}
 
 	public void execute(Player sender, FkPlayer fkp, String[] args)
@@ -32,5 +33,5 @@ public class AddPlayer extends FkTeamCommand
 		}
 		if(args.length < 3 || !args[2].equalsIgnoreCase("nobroadcast"))
 			broadcast(color + args[0] + ChatColor.GOLD + " a rejoint l'équipe " + color + args[1] + ChatColor.GOLD + " !");
-	}
+		}
 }
