@@ -48,18 +48,18 @@ public class ChatListener implements Listener
 		if(msg.startsWith("!"))
 		{
 			e.setMessage(e.getMessage().substring(1));
-			e.setFormat("(global)%s : " + cc + "%s");
+			e.setFormat("§a§l[GLOBAL] %s §7» " + cc + "%s");
 		}
 
 		else if(Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(p.getName()) == null)
-			e.setFormat("(global)%s : " + cc + "%s");
+			e.setFormat("§a§l[GLOBAL] %s §7» " + cc + "%s");
 
 		else
 		{
 			e.setCancelled(true);
 			for(String pl : Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(p.getName()).getPlayers())
 				if(Bukkit.getPlayer(pl) != null)
-					Bukkit.getPlayer(pl).sendMessage(ChatColor.WHITE + "(team)" + p.getDisplayName() + " : " + cc + msg);
+					Bukkit.getPlayer(pl).sendMessage(ChatColor.WHITE + "§e§l[TEAM] " + p.getDisplayName() + " §7» " + cc + msg);
 		}
 	}
 }
