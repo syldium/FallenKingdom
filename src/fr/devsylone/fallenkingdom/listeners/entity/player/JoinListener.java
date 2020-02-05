@@ -1,20 +1,36 @@
 package fr.devsylone.fallenkingdom.listeners.entity.player;
 
+import java.util.ArrayList;
+
+import java.util.List;
+import java.util.Random;
+
 import org.bukkit.ChatColor;
+import org.bukkit.Difficulty;
+import org.bukkit.GameMode;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent.Result;
+
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import fr.devsylone.fallenkingdom.Fk;
+import fr.devsylone.fallenkingdom.game.Game.GameState;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fallenkingdom.players.FkPlayer.PlayerState;
 import fr.devsylone.fkpi.teams.Team;
+import me.kvq.plugin.trails.API.SuperTrailsAPI;
 
 public class JoinListener implements Listener
 {
+    public int getRandomElement(List<Integer> list) { 
+        Random rand = new Random(); 
+        return list.get(rand.nextInt(list.size())); 
+    } 
+    
 	@EventHandler
 	public void prelogin(final AsyncPlayerPreLoginEvent e)
 	{
@@ -32,6 +48,7 @@ public class JoinListener implements Listener
 	public void join(final PlayerJoinEvent e)
 	{
 		FkPlayer player = Fk.getInstance().getPlayerManager().getPlayer(e.getPlayer());
+		Player player_bukkit = e.getPlayer();
 		
 		if(e.getPlayer().isOp())
 			for(String s : Fk.getInstance().getOnConnectWarnings())
@@ -53,7 +70,27 @@ public class JoinListener implements Listener
 		if(player.getState() == PlayerState.EDITING_SCOREBOARD)
 			player.getSbDisplayer().display();
 
-	}
+		if(Fk.getInstance().getGame().getState() == GameState.BEFORE_STARTING || Fk.getInstance().getGame().getState() == GameState.PAUSE) {
+			List<Integer> EFFECTS = new ArrayList<Integer>();
+			EFFECTS.add(4);
+			EFFECTS.add(6);
+			EFFECTS.add(9);
+			EFFECTS.add(11);
+			EFFECTS.add(17);
+			EFFECTS.add(26);
+			EFFECTS.add(28);
+			EFFECTS.add(32);
+			
+			//https://github.com/kvq/Trails/wiki/API
+			 int RANDOM_EFFECT = getRandomElement(EFFECTS);
+			 //p.sendMessage(Integer.toString(RANDOM_EFFECT));
+			 SuperTrailsAPI.setTrail(RANDOM_EFFECT, player_bukkit);
+			 player_bukkit.setGameMode(GameMode.ADVENTURE);
+			 player_bukkit.getWorld().setDifficulty(Difficulty.PEACEFUL);
+			}
+		
+		}
+	
 
 	@EventHandler
 	public void quit(PlayerQuitEvent e)
