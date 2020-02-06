@@ -17,18 +17,11 @@ Le plugin est sous la Licence publique Creative Commons Attribution - Utilisatio
 Me lançant dans le dev de plugins il y a moins de deux mois je m'amuse à créer de petits plugins pour mon serveur Survie avec mes amis. Puis aillant déjà fait plusieurs FallenKingdom avec ce plugins j'ai voulu profiter de son coté open-source pour essayer de rajouter quelques petites choses. "Le modifier à ma sauce", je souhaitais rajouter un peu  + de fun, de couleurs aussi. Mon code n'est pas le meilleur mais il fonctionne. 
 *N'hésitez pas à me contacter sur Twitter: **@xrths_***
 
-## Dépendances
-
- - ProtocolLib ([https://www.spigotmc.org/resources/protocollib.1997/](https://www.spigotmc.org/resources/protocollib.1997/))
- - SuperTrails API [https://www.spigotmc.org/resources/supertrails.1879/](https://www.spigotmc.org/resources/supertrails.1879/)
-
-*Il vous faudra mettre ces deux plugins dans votre dossier /plugins.*
-
 ## Ajouts par rapport à la version de base
 - [x] Particules à la connexion et en attendant de lancer la partie.
 - [x] Ajout d'un message (TITRE) indiquant le temps qu'il reste avant le début de la partie.
 - [x] Explosion de feux d'artifices lorsqu'un joueur est tué par un autre joueur.
-- [x] Potions interdites.
+- [x] Potions interdites [Splash/Drink/Hoppers].
 - [x] Refonte graphique du t'chat.
 - [x] Affichage de l'état de la partie dans le MOTD.
 - [ ] ToDO: Lier le choix d'activer les potions ou non au fichier config.yml.
@@ -46,13 +39,15 @@ Me lançant dans le dev de plugins il y a moins de deux mois je m'amuse à crée
 
 ![Effets mort d'un joueur à par un autre joueur](http://files.sikya.fr/2020-02-05_22.04.39.png)
 
-![Un des quelques effets aléatoires à la connexion](http://files.sikya.fr/2020-02-05_22.09.12.png)
+![Un des quelques effets aléatoires à la connexion]([http://files.sikya.fr/Sans%20titre.png](http://files.sikya.fr/Sans%20titre.png))
 
 ![Interdiction des potions](http://files.sikya.fr/Screenshot_1.png)
 
 ![Refonte graphique du t'chat](http://files.sikya.fr/Screenshot_2.png)
 
-![MOTD Managing](http://files.sikya.fr/Webp.net-gifmaker.gif)
+![MOTD Managing](http://files.sikya.fr/gif.gif)
 
 ## Documentation
 * [Event spigot](docs/api/api.md)
+
+
