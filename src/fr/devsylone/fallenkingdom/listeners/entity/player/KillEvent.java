@@ -8,7 +8,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 
-import com.comphenix.protocol.ProtocolLibrary;
 import fr.devsylone.fallenkingdom.utils.Fireworks;
 
 public class KillEvent implements Listener {
@@ -18,35 +17,25 @@ public class KillEvent implements Listener {
     	Entity DEADER = e.getEntity();
     	Entity KILLER = e.getEntity().getKiller();
     	
-    	Player KILLER_PLAYER = e.getEntity().getKiller();
-    	
     	if(KILLER instanceof Player && DEADER instanceof Player) {
-    		int VERSION_CLIENT = ProtocolLibrary.getProtocolManager().getProtocolVersion(KILLER_PLAYER);
-
-    		if (VERSION_CLIENT >= 107){
-	        
-    			for(int i =0; i<10;i++){
-    				Fireworks.random(DEADER.getLocation());
-	        	}
-    		}
-
-    			
-    		else if (VERSION_CLIENT < 107){
+    		if(Bukkit.getServer().getClass().getPackage().getName().contains("1_8")) {
     			DEADER.getWorld().strikeLightningEffect(DEADER.getLocation());
     		}
     		
-    		for (Player player : Bukkit.getOnlinePlayers())
-    			{	
+    		else {
+    			for(int i =0; i<5;i++){
+    				Fireworks.random(DEADER.getLocation());
+	        	}
     			
-    			if (player.getName().equals(KILLER.getName())){
-        			continue;
-    			}
+        		for (Player player : Bukkit.getOnlinePlayers())
+    				{	
     			
-    			else {
-    				player.playSound(player.getLocation(), Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 1f, 1f);
-    				
+        			if (player.getName().equals(KILLER.getName())){
+        				player.playSound(player.getLocation(), Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 1f, 1f);
         			}
+
     			}		
         	}
     	}
     }
+}
