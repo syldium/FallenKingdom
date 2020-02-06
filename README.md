@@ -20,10 +20,11 @@ Me lançant dans le dev de plugins il y a moins de deux mois je m'amuse à crée
 ## Ajouts par rapport à la version de base
 - [x] Particules à la connexion et en attendant de lancer la partie.
 - [x] Ajout d'un message (TITRE) indiquant le temps qu'il reste avant le début de la partie.
-- [x] Explosion de feux d'artifices lorsqu'un joueur est tué par un autre joueur.
+- [x] Explosion de feux d'artifices (ou éclair pour la 1.8) lorsqu'un joueur est tué par un autre joueur.
 - [x] Potions interdites [Splash/Drink/Hoppers].
 - [x] Refonte graphique du t'chat.
 - [x] Affichage de l'état de la partie dans le MOTD.
+- [x] Aucune dépendance
 - [ ] ToDO: Lier le choix d'activer les potions ou non au fichier config.yml.
 
 ## Signaler un bug
@@ -34,17 +35,12 @@ Me lançant dans le dev de plugins il y a moins de deux mois je m'amuse à crée
 > contient des éléments essentiels pour que nous puissions identifier le
 > problème et le résoudre.
 
-## Screenshot
+## Screenshots
 ![Title/Titre avant lancement](http://files.sikya.fr/2020-02-05_22.03.52.png)
-
 ![Effets mort d'un joueur à par un autre joueur](http://files.sikya.fr/2020-02-05_22.04.39.png)
-
-![Un des quelques effets aléatoires à la connexion]([http://files.sikya.fr/Sans%20titre.png](http://files.sikya.fr/Sans%20titre.png))
-
+![enter image description here](http://files.sikya.fr/particles.png)
 ![Interdiction des potions](http://files.sikya.fr/Screenshot_1.png)
-
 ![Refonte graphique du t'chat](http://files.sikya.fr/Screenshot_2.png)
-
 ![MOTD Managing](http://files.sikya.fr/gif.gif)
 
 ## Documentation
