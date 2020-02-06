@@ -17,6 +17,7 @@ import fr.devsylone.fallenkingdom.listeners.entity.player.InventoryListener;
 import fr.devsylone.fallenkingdom.listeners.entity.player.JoinListener;
 import fr.devsylone.fallenkingdom.listeners.entity.player.KillEvent;
 import fr.devsylone.fallenkingdom.listeners.entity.player.MoveListener;
+import fr.devsylone.fallenkingdom.listeners.entity.player.Particles;
 import fr.devsylone.fallenkingdom.listeners.entity.player.PotionBan;
 import fr.devsylone.fallenkingdom.listeners.entity.player.PvpListener;
 import fr.devsylone.fallenkingdom.listeners.entity.player.RespawnListener;
@@ -52,5 +53,6 @@ public class ListenersManager
 		plugin.getServer().getPluginManager().registerEvents(new PingMOTD(), plugin);
 		plugin.getServer().getPluginManager().registerEvents(new PotionBan(), plugin);
 		plugin.getServer().getPluginManager().registerEvents(new SpawnProtection(), plugin);
+		plugin.getServer().getPluginManager().registerEvents(new Particles(), plugin);
 	}
 }
