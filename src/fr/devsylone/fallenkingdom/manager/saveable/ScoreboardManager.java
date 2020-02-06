@@ -153,7 +153,7 @@ public class ScoreboardManager implements Saveable
 		sidebar.add("Nether {NETHER?}");
 		sidebar.add("End {END?}");
 		sidebar.add("§m------------");
-		sidebar.add(ChatUtils.DEVSYLONE);
+		sidebar.add(ChatUtils.INFO);
 	}
 
 	@Override
