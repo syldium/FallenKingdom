@@ -37,7 +37,8 @@ public class FkScoreboard
 		this.bukkitBoard = Bukkit.getScoreboardManager().getNewScoreboard();
 
 		sidebarBoard = new ScoreboardSign(player, Fk.getInstance().getScoreboardManager().getName());
-
+		
+		if((boolean) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("HealthBelowName").getValue())
 		    Fk.getInstance().getFkPI().getRulesManager().getRuleByName("HealthBelowName").getValue();
 			bukkitBoard.registerNewObjective("§c❤", "health").setDisplaySlot(DisplaySlot.BELOW_NAME);
 
