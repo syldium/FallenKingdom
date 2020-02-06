@@ -1,7 +1,5 @@
 package fr.devsylone.fallenkingdom.listeners.entity.player;
 
-import java.util.ArrayList;
-
 import java.util.List;
 import java.util.Random;
 
@@ -19,10 +17,11 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.game.Game.GameState;
+import fr.devsylone.fallenkingdom.particles.FastParticle;
+import fr.devsylone.fallenkingdom.particles.ParticleType;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fallenkingdom.players.FkPlayer.PlayerState;
 import fr.devsylone.fkpi.teams.Team;
-import me.kvq.plugin.trails.API.SuperTrailsAPI;
 
 public class JoinListener implements Listener
 {
@@ -71,6 +70,7 @@ public class JoinListener implements Listener
 			player.getSbDisplayer().display();
 
 		if(Fk.getInstance().getGame().getState() == GameState.BEFORE_STARTING || Fk.getInstance().getGame().getState() == GameState.PAUSE) {
+			/*
 			List<Integer> EFFECTS = new ArrayList<Integer>();
 			EFFECTS.add(4);
 			EFFECTS.add(6);
@@ -85,6 +85,8 @@ public class JoinListener implements Listener
 			 int RANDOM_EFFECT = getRandomElement(EFFECTS);
 			 //p.sendMessage(Integer.toString(RANDOM_EFFECT));
 			 SuperTrailsAPI.setTrail(RANDOM_EFFECT, player_bukkit);
+			 */
+			 FastParticle.spawnParticle(player_bukkit, ParticleType.CLOUD, player_bukkit.getLocation(), 1000);
 			 player_bukkit.setGameMode(GameMode.ADVENTURE);
 			 player_bukkit.getWorld().setDifficulty(Difficulty.PEACEFUL);
 			}
