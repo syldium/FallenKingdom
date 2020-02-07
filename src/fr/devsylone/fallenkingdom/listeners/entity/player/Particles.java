@@ -20,7 +20,6 @@ import org.bukkit.event.Listener;
 
 public class Particles implements Listener {
 	
-	@SuppressWarnings("unused")
 	private static int getRandomNumberInRange(int min, int max) {
 
 		if (min >= max) {
