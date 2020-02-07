@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Random;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Difficulty;
-import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -87,8 +85,6 @@ public class JoinListener implements Listener
 			 SuperTrailsAPI.setTrail(RANDOM_EFFECT, player_bukkit);
 			 */
 			 FastParticle.spawnParticle(player_bukkit, ParticleType.CLOUD, player_bukkit.getLocation(), 1000);
-			 player_bukkit.setGameMode(GameMode.ADVENTURE);
-			 player_bukkit.getWorld().setDifficulty(Difficulty.PEACEFUL);
 			}
 		
 		}
