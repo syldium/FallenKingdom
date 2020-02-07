@@ -3,9 +3,6 @@ package fr.devsylone.fkpi.teams;
 import fr.devsylone.fallenkingdom.utils.XBlock;
 import fr.devsylone.fallenkingdom.utils.XMaterial;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -239,22 +236,19 @@ public class Base implements Saveable
 	 * @param loc La Location à modifier.
 	 * @return La Location modifiée.
 	 */
-	@SuppressWarnings("deprecation")
 	private Location adjustLoc(Location loc)
 	{
-	    List<Material> lsBlocks = new ArrayList<>();
-	    lsBlocks.add(Material.AIR);
-	    lsBlocks.add(Material.LEGACY_RED_ROSE);
-	    lsBlocks.add(Material.LEGACY_YELLOW_FLOWER);
-	    lsBlocks.add(Material.LEGACY_DOUBLE_PLANT);
-	    lsBlocks.add(Material.LEGACY_LONG_GRASS);
-	    lsBlocks.add(Material.SNOW);
-	    lsBlocks.add(Material.OAK_FENCE);
-	    while (lsBlocks.contains(loc.getBlock().getType()))
-	      loc.add(0.0D, -1.0D, 0.0D); 
-	    while (!lsBlocks.contains(loc.getBlock().getType()))
-	      loc.add(0.0D, 1.0D, 0.0D); 
-	    return loc;
+		
+		if(loc == null)
+			return null;
+
+		while(XBlock.isReplacable(loc.getBlock().getType()) && loc.getY() > 1.0D)
+			loc.add(0, -1, 0);
+		
+		while(!XBlock.isReplacable(loc.getBlock().getType()))
+			loc.add(0, 1, 0);
+
+		return loc;
 	}
 
 	@Override
