@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Creeper;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,6 +21,7 @@ import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fallenkingdom.players.FkPlayer.PlayerState;
 import fr.devsylone.fallenkingdom.scoreboard.PlaceHolder;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
+import fr.devsylone.fallenkingdom.utils.Fireworks;
 import fr.devsylone.fallenkingdom.utils.FkSound;
 import fr.devsylone.fkpi.rules.ChargedCreepers;
 
@@ -44,7 +46,22 @@ public class DamageListener implements Listener
 	public void dead(PlayerDeathEvent e)
 	{
 		e.setDeathMessage(ChatUtils.PREFIX + e.getDeathMessage());
+    	Entity DEADER = e.getEntity();
+    	Entity KILLER = e.getEntity().getKiller();
 
+		/*
+		 * Effect on player kill an another player
+		*/
+    	if(KILLER instanceof Player && DEADER instanceof Player) {
+    		if(Bukkit.getServer().getClass().getPackage().getName().contains("1_8")) {
+    			DEADER.getWorld().strikeLightningEffect(DEADER.getLocation());
+    		}
+    		else {
+    			for(int i =0; i<5;i++){
+    				Fireworks.random(DEADER.getLocation());
+	        	}
+    		}
+    		
 		/*
 		 * Si le killer a une team
 		 */
@@ -66,7 +83,9 @@ public class DamageListener implements Listener
 			*/
 			if(e.getEntity().getKiller() != null && e.getEntity().getKiller().getName() != e.getEntity().getName())
 				Fk.getInstance().getPlayerManager().getPlayer(e.getEntity().getKiller().getName()).addKill();
+	    	}
 		}
+		
 		/*
 		 * Replace color killed
 		 */
@@ -112,5 +131,6 @@ public class DamageListener implements Listener
 
 		Fk.getInstance().getScoreboardManager().refreshAllScoreboards(PlaceHolder.DEATHS);
 		Fk.getInstance().getScoreboardManager().refreshAllScoreboards(PlaceHolder.KILLS);
+		}
 	}
-}
+
