@@ -25,7 +25,7 @@ Me lançant dans le dev de plugins il y a moins de deux mois je m'amuse à crée
 - [x] Refonte graphique du t'chat.
 - [x] Affichage de l'état de la partie dans le MOTD.
 - [x] Aucune dépendance
-- [ ] ToDO: Lier le choix d'activer les potions ou non au fichier config.yml.
+- [ ] ToDO: Lier le choix d'activer les potions ou non à une commande.
 
 ## Signaler un bug
 
