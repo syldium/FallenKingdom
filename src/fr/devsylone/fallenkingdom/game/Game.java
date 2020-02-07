@@ -406,13 +406,11 @@ public class Game implements Saveable
 			p.playSound(p.getLocation(), FkSound.NOTE_PLING.bukkitSound(), 1, 1);
 			
 			if(Bukkit.getServer().getClass().getPackage().getName().contains("1_8"))
-			{
-				continue;
-			}
-			
+			{continue;}
+		
 			else
 			{
-			p.sendTitle("§6\u2694 La partie va commencer \u2694", "§a" + Integer.toString(time) + "§a secondes...", 25, 120, 25);
+			Fk.getInstance().getPacketManager().sendTitle(p,"§6\u2694 La partie va commencer \u2694", "§a" + Integer.toString(time) + "§a secondes...", 25, 100, 25);
 			}
 		}
 	}
