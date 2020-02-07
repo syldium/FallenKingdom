@@ -39,7 +39,7 @@ public class PotionBan implements Listener {
 	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void onItemConsume (PlayerItemConsumeEvent e) {
-		Player player = (Player) e.getPlayer();
+		Player player = e.getPlayer();
 		
 		if(Bukkit.getServer().getClass().getPackage().getName().contains("1_8")) {
 		    
@@ -57,9 +57,8 @@ public class PotionBan implements Listener {
     public void onBlockClick(PlayerInteractEvent event) {
 		Player player = (Player) event.getPlayer();
 		
-		if(Bukkit.getServer().getClass().getPackage().getName().contains("1_8")) {
-
-		}
+		if(Bukkit.getServer().getClass().getPackage().getName().contains("1_8"))
+			return;
 		
 		else { 
 			
