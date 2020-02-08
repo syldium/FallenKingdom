@@ -14,11 +14,11 @@ import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.game.Game.GameState;
 import fr.devsylone.fallenkingdom.particles.FastParticle;
 import fr.devsylone.fallenkingdom.particles.ParticleType;
-import fr.devsylone.fallenkingdom.utils.RandomColor;
+import fr.devsylone.fallenkingdom.utils.ColorsUtils;
 
 import org.bukkit.event.Listener;
 
-public class Particles implements Listener {
+public class ParticlesListener implements Listener {
 	
 	private static int getRandomNumberInRange(int min, int max) {
 
@@ -75,7 +75,7 @@ public class Particles implements Listener {
 		if(playerLoc.getBlockX()!=playerX || playerLoc.getBlockY()!=playerY || playerLoc.getBlockZ()!=playerZ)
 			{
 			
-		FastParticle.spawnParticle(player, ParticleType.REDSTONE, player.getLocation(), 100, RandomColor.getColor(getRandomNumberInRange(0, 17)));
+		FastParticle.spawnParticle(player, ParticleType.REDSTONE, player.getLocation(), 100, ColorsUtils.getColors(getRandomNumberInRange(0, 17)));
 		}
 			}
 	else;
