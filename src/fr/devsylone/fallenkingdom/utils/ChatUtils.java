@@ -11,5 +11,5 @@ public class ChatUtils
 	public static final String SCOREBOARD = "§b[§6ScoreBoard§b] ";
 	public static final String ALERT = "§b§l[ALERTE§b] ";
 	public static final String DEBUG = "§7[§cDebug§7] ";
-	public static final String TIP = "§a[§6Info§b] ";
+	public static final String TIP = "§a[§6Tip§b] ";
 }
