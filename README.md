@@ -42,7 +42,7 @@ Voulant modifier le plugin FK pour m'amuser et voir mes capacités, j'ai décid�
 ![enter image description here](https://i.ibb.co/KFyXQJp/PLAYER-PARTICLES-WAITING-LAUCH.png)
 ![Interdiction des potions](https://i.ibb.co/ZfZBHkV/POTIONS-BAN.png)
 ![Refonte graphique du t'chat](https://i.ibb.co/Y8bdpqx/CHAT-COLOR.png)
-![MOTD Managing](https://i.ibb.co/71wh26s/MOTD.gif)
+![MOTD Managing](https://zupimages.net/up/20/06/jt1i.gif)
 
 ## Documentation
 * [Event spigot](docs/api/api.md)
