@@ -12,7 +12,6 @@ public class Create extends FkTeamCommand
 	public Create()
 	{
 		super("create", "<team>", 1, "Crée une équipe.");
-		permission = ADMIN_PERMISSION;
 	}
 
 	public void execute(Player sender, FkPlayer fkp, String[] args)
