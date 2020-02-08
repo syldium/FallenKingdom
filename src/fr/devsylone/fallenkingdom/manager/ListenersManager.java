@@ -10,20 +10,18 @@ import fr.devsylone.fallenkingdom.listeners.entity.DamageListener;
 import fr.devsylone.fallenkingdom.listeners.entity.mob.MobSpawn;
 import fr.devsylone.fallenkingdom.listeners.entity.player.ChangeGamemodeListener;
 import fr.devsylone.fallenkingdom.listeners.entity.player.ChatListener;
-import fr.devsylone.fallenkingdom.listeners.entity.player.FireworkProtection;
 import fr.devsylone.fallenkingdom.listeners.entity.player.FoodListener;
 import fr.devsylone.fallenkingdom.listeners.entity.player.GoToNetherListener;
 import fr.devsylone.fallenkingdom.listeners.entity.player.InventoryListener;
 import fr.devsylone.fallenkingdom.listeners.entity.player.JoinListener;
 import fr.devsylone.fallenkingdom.listeners.entity.player.MoveListener;
-import fr.devsylone.fallenkingdom.listeners.entity.player.Particles;
-import fr.devsylone.fallenkingdom.listeners.entity.player.PotionBan;
+import fr.devsylone.fallenkingdom.listeners.entity.player.ParticlesListener;
+import fr.devsylone.fallenkingdom.listeners.entity.player.PotionListener;
 import fr.devsylone.fallenkingdom.listeners.entity.player.PvpListener;
 import fr.devsylone.fallenkingdom.listeners.entity.player.RespawnListener;
 import fr.devsylone.fallenkingdom.listeners.entity.player.ScrollListener;
-import fr.devsylone.fallenkingdom.listeners.entity.player.SpawnProtection;
 import fr.devsylone.fallenkingdom.listeners.entity.player.UsePortalListener;
-import fr.devsylone.fallenkingdom.utils.PingMOTD;
+import fr.devsylone.fallenkingdom.listeners.motd.MotdListener;
 
 public class ListenersManager
 {
@@ -47,10 +45,8 @@ public class ListenersManager
 		plugin.getServer().getPluginManager().registerEvents(new PortalCreateListener(), plugin);
 		plugin.getServer().getPluginManager().registerEvents(new ChangeGamemodeListener(), plugin);
 		plugin.getServer().getPluginManager().registerEvents(new RespawnListener(), plugin);
-		plugin.getServer().getPluginManager().registerEvents(new FireworkProtection(), plugin);
-		plugin.getServer().getPluginManager().registerEvents(new PingMOTD(), plugin);
-		plugin.getServer().getPluginManager().registerEvents(new PotionBan(), plugin);
-		plugin.getServer().getPluginManager().registerEvents(new SpawnProtection(), plugin);
-		plugin.getServer().getPluginManager().registerEvents(new Particles(), plugin);
+		plugin.getServer().getPluginManager().registerEvents(new MotdListener(), plugin);
+		plugin.getServer().getPluginManager().registerEvents(new PotionListener(), plugin);
+		plugin.getServer().getPluginManager().registerEvents(new ParticlesListener(), plugin);
 	}
 }
