@@ -399,14 +399,12 @@ public class Game implements Saveable
 	private void broadcastStartIn(int time)
 	{
 		Fk.broadcast("La partie démarre dans §c" + time + "§r seconde(s)");
-		@SuppressWarnings("unused")
-		boolean minecraft18;
 		for(Player p : Bukkit.getOnlinePlayers()) {
 			
 			p.playSound(p.getLocation(), FkSound.NOTE_PLING.bukkitSound(), 1, 1);
 			
 			if(Bukkit.getServer().getClass().getPackage().getName().contains("1_8"))
-			{continue;}
+				return;
 		
 			else
 			{
