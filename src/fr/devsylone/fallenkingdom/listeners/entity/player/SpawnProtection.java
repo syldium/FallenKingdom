@@ -14,14 +14,11 @@ public class SpawnProtection implements Listener
 	@EventHandler
 	public void onEntityDamage(EntityDamageEvent e)
 	{
-
-		if(Fk.getInstance().getGame().getState() == GameState.BEFORE_STARTING && Fk.getInstance().getGame().getState() == GameState.STARTING) {
+		if(Fk.getInstance().getGame().getState() == GameState.BEFORE_STARTING || Fk.getInstance().getGame().getState() == GameState.STARTING){
 			if (e.getEntity() instanceof Player)
 				e.setCancelled(true);
-			
 		}
-	}
-		
+	}	
 }
 	
 
