@@ -45,7 +45,7 @@ public class PotionBan implements Listener {
 		    
 	     if (e.getItem().getType() == Material.POTION) {
 	    	 e.setCancelled(true);
-	    	 player.sendMessage("§cLes potions sont désactivées sur cette partie.");
+	    	 player.sendMessage("§cLes potions sont désactivées durant cette partie.");
 	    	 player.setItemInHand(null);
 	     	}
 		}
@@ -57,8 +57,9 @@ public class PotionBan implements Listener {
     public void onBlockClick(PlayerInteractEvent event) {
 		Player player = (Player) event.getPlayer();
 		
-		if(Bukkit.getServer().getClass().getPackage().getName().contains("1_8"))
-			return;
+		if(Bukkit.getServer().getClass().getPackage().getName().contains("1_8")) {
+			
+		}
 		
 		else { 
 			
@@ -66,14 +67,13 @@ public class PotionBan implements Listener {
       
     		if(Fk.getInstance().getConfig().getBoolean("potions") == false) {
 	            
-	            player.sendMessage("§cLes potions sont désactivées sur cette partie.");
+    			player.sendMessage("§cLes potions sont désactivées durant cette partie.");
 	          
 	            event.setCancelled(true);
 	            player.setItemInHand(null);        
-        			}
-				}
+        		}
 			}
+		}
 	}
-
 }
 	
