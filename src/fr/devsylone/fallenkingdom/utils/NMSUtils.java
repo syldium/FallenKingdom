@@ -8,7 +8,7 @@ import org.bukkit.Bukkit;
 
 public class NMSUtils
 {
-	private static String version;
+	public static String version;
 	private static Set<Class<?>> classes;;
 
 	static
