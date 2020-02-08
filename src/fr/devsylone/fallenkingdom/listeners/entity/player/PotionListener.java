@@ -17,7 +17,7 @@ import org.bukkit.potion.PotionEffect;
 import fr.devsylone.fallenkingdom.Fk;
 
 
-public class PotionBan implements Listener {
+public class PotionListener implements Listener {
 	
 	//TODO: RELIER AVEC UNE COMMANDE 
 	
