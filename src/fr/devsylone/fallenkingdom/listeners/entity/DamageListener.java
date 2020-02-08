@@ -9,6 +9,7 @@ import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -20,7 +21,7 @@ import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fallenkingdom.players.FkPlayer.PlayerState;
 import fr.devsylone.fallenkingdom.scoreboard.PlaceHolder;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
-import fr.devsylone.fallenkingdom.utils.Fireworks;
+import fr.devsylone.fallenkingdom.utils.FireworksUtils;
 import fr.devsylone.fallenkingdom.utils.FkSound;
 import fr.devsylone.fkpi.rules.ChargedCreepers;
 
@@ -29,7 +30,7 @@ public class DamageListener implements Listener
 	@EventHandler
 	public void damage(EntityDamageEvent e)
 	{
-		if(Fk.getInstance().getGame().getState().equals(GameState.PAUSE))
+		if(Fk.getInstance().getGame().getState().equals(GameState.PAUSE) || Fk.getInstance().getGame().getState().equals(GameState.BEFORE_STARTING) || Fk.getInstance().getGame().getState().equals(GameState.STARTING))
 			e.setCancelled(true);
 	}
 
@@ -40,6 +41,12 @@ public class DamageListener implements Listener
 		if(e.getEntity() instanceof Creeper && ((Creeper) e.getEntity()).isPowered() && (new Random().nextInt(100) <= rule.getDrop()))
 			e.getDrops().add(new ItemStack(Material.TNT, rule.getTntAmount()));
 	}
+	
+	  @EventHandler
+	  public void onEntityDamageByEntity(EntityDamageByEntityEvent e) {
+	    if (e.getDamager() instanceof org.bukkit.entity.Firework)
+	      e.setCancelled(true); 
+	  }
 
 	@EventHandler
 	public void dead(PlayerDeathEvent e)
@@ -55,7 +62,7 @@ public class DamageListener implements Listener
     		}
     		else {
     			for(int i =0; i<5;i++){
-    				Fireworks.random(e.getEntity().getLocation());
+    				FireworksUtils.random(e.getEntity().getLocation());
 	        	}
     		}
     		
