@@ -1,5 +1,5 @@
 
-Fallen Kingdom - Fun+
+Fallen Kingdom Fun - Fork
 ===
 [Pour une description complète du plugin cliquez ici](https://www.spigotmc.org/resources/fallenkingdom.38878/)
 
