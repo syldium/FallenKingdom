@@ -6,7 +6,6 @@ import java.util.Date;
 //import org.bukkit.Achievement;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
@@ -382,7 +381,6 @@ public class Game implements Saveable
 							if(p.hasAchievement(a))
 								p.removeAchievement(a);*/
 
-					p.getWorld().setDifficulty(Difficulty.NORMAL);
 					p.setGameMode(GameMode.SURVIVAL);
 					p.playSound(p.getLocation(), FkSound.EXPLODE.bukkitSound(), 1, 1);
 				}
