@@ -6,7 +6,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Creeper;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -46,19 +45,17 @@ public class DamageListener implements Listener
 	public void dead(PlayerDeathEvent e)
 	{
 		e.setDeathMessage(ChatUtils.PREFIX + e.getDeathMessage());
-    	Entity DEADER = e.getEntity();
-    	Entity KILLER = e.getEntity().getKiller();
 
 		/*
 		 * Effect on player kill an another player
 		*/
-    	if(KILLER instanceof Player && DEADER instanceof Player) {
+    	if(e.getEntity().getKiller() instanceof Player && e.getEntity() instanceof Player) {
     		if(Bukkit.getServer().getClass().getPackage().getName().contains("1_8")) {
-    			DEADER.getWorld().strikeLightningEffect(DEADER.getLocation());
+    			e.getEntity().getWorld().strikeLightningEffect(e.getEntity().getKiller().getLocation());
     		}
     		else {
     			for(int i =0; i<5;i++){
-    				Fireworks.random(DEADER.getLocation());
+    				Fireworks.random(e.getEntity().getLocation());
 	        	}
     		}
     		
