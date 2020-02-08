@@ -14,18 +14,19 @@ Le plugin est sous la Licence publique Creative Commons Attribution - Utilisatio
 > sur lesquels il est disponible, des centaines de personnes vous seront
 > reconnaissantes d'un ajout quelconque, ou d'un bug fix !
 
-Me lançant dans le dev de plugins il y a moins de deux mois je m'amuse à créer de petits plugins pour mon serveur Survie avec mes amis. Puis aillant déjà fait plusieurs FallenKingdom avec ce plugins j'ai voulu profiter de son coté open-source pour essayer de rajouter quelques petites choses. "Le modifier à ma sauce", je souhaitais rajouter un peu  + de fun, de couleurs aussi. Mon code n'est pas le meilleur mais il fonctionne. 
+Voulant modifier le plugin FK pour m'amuser et voir mes capacités, j'ai décidé de faire ce fork du plugin. 
+
 *N'hésitez pas à me contacter sur Twitter: **@xrths_***
 
-## Ajouts par rapport à la version de base
+## Quoi de plus?
 - [x] Particules à la connexion et en attendant de lancer la partie.
 - [x] Ajout d'un message (TITRE) indiquant le temps qu'il reste avant le début de la partie.
 - [x] Explosion de feux d'artifices (ou éclair pour la 1.8) lorsqu'un joueur est tué par un autre joueur.
-- [x] Potions interdites [Splash/Drink/Hoppers].
+- [x] Potions interdites [Splash/Drink/Droppers].
 - [x] Refonte graphique du t'chat.
 - [x] Affichage de l'état de la partie dans le MOTD.
 - [x] Aucune dépendance
-- [ ] ToDO: Lier le choix d'activer les potions ou non à une commande.
+- [ ] TODO: Lier le choix d'activer les potions ou non au fichier config.yml.
 
 ## Signaler un bug
 
@@ -36,12 +37,12 @@ Me lançant dans le dev de plugins il y a moins de deux mois je m'amuse à crée
 > problème et le résoudre.
 
 ## Screenshots
-![Title/Titre avant lancement](http://files.sikya.fr/2020-02-05_22.03.52.png)
-![Effets mort d'un joueur à par un autre joueur](http://files.sikya.fr/2020-02-05_22.04.39.png)
-![enter image description here](http://files.sikya.fr/particles.png)
-![Interdiction des potions](http://files.sikya.fr/Screenshot_1.png)
-![Refonte graphique du t'chat](http://files.sikya.fr/Screenshot_2.png)
-![MOTD Managing](http://files.sikya.fr/gif.gif)
+![Title/Titre avant lancement](https://i.ibb.co/JdwV4Kn/TITLE.png)
+![Effets mort d'un joueur à par un autre joueur](https://i.ibb.co/KzJRP15/PLAYER-KILL-FIREWORKS.png)
+![enter image description here](https://i.ibb.co/KFyXQJp/PLAYER-PARTICLES-WAITING-LAUCH.png)
+![Interdiction des potions](https://i.ibb.co/ZfZBHkV/POTIONS-BAN.png)
+![Refonte graphique du t'chat](https://i.ibb.co/Y8bdpqx/CHAT-COLOR.png)
+![MOTD Managing](https://zupimages.net/up/20/06/jt1i.gif)
 
 ## Documentation
 * [Event spigot](docs/api/api.md)

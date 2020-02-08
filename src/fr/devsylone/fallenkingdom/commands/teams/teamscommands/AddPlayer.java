@@ -14,7 +14,6 @@ public class AddPlayer extends FkTeamCommand
 	public AddPlayer()
 	{
 		super("addPlayer", "<player> <team>", 2, "Ajoute un joueur à une équipe.");
-		permission = ADMIN_PERMISSION;
 	}
 
 	public void execute(Player sender, FkPlayer fkp, String[] args)
