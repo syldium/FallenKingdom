@@ -9,10 +9,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.material.MaterialData;
 
 /**
- * Particle sender using the Bukkit particles API for 1.9+ servers
- *
- * @author MrMicky
- */
+	@author MrMicky
+						**/
+
 @SuppressWarnings("deprecation")
 interface ParticleSender {
 

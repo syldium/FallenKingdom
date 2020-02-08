@@ -9,12 +9,12 @@ import org.bukkit.material.MaterialData;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import fr.devsylone.fallenkingdom.utils.NMSUtils;
 
 /**
- * Legacy particle sender with NMS for 1.7/1.8 servers
- *
- * @author MrMicky
- */
+	@author MrMicky
+						**/
+
 @SuppressWarnings("deprecation")
 class ParticleSenderLegacy implements ParticleSender {
 
@@ -32,18 +32,18 @@ class ParticleSenderLegacy implements ParticleSender {
     private static final int[] EMPTY = new int[0];
 
     static {
-        ENUM_PARTICLE = FastReflection.nmsOptionalClass("EnumParticle").orElse(null);
+        ENUM_PARTICLE = NMSUtils.nmsOptionalClass("EnumParticle").orElse(null);
         SERVER_IS_1_8 = ENUM_PARTICLE != null;
 
         try {
-            Class<?> packetParticleClass = FastReflection.nmsClass("PacketPlayOutWorldParticles");
-            Class<?> playerClass = FastReflection.nmsClass("EntityPlayer");
-            Class<?> playerConnectionClass = FastReflection.nmsClass("PlayerConnection");
-            Class<?> worldClass = FastReflection.nmsClass("WorldServer");
-            Class<?> entityPlayerClass = FastReflection.nmsClass("EntityPlayer");
+            Class<?> packetParticleClass = NMSUtils.nmsClass("PacketPlayOutWorldParticles");
+            Class<?> playerClass = NMSUtils.nmsClass("EntityPlayer");
+            Class<?> playerConnectionClass = NMSUtils.nmsClass("PlayerConnection");
+            Class<?> worldClass = NMSUtils.nmsClass("WorldServer");
+            Class<?> entityPlayerClass = NMSUtils.nmsClass("EntityPlayer");
 
-            Class<?> craftPlayerClass = FastReflection.obcClass("entity.CraftPlayer");
-            Class<?> craftWorldClass = FastReflection.obcClass("CraftWorld");
+            Class<?> craftPlayerClass = NMSUtils.obcClass("entity.CraftPlayer");
+            Class<?> craftWorldClass = NMSUtils.obcClass("CraftWorld");
 
             if (SERVER_IS_1_8) {
                 PACKET_PARTICLE = packetParticleClass.getConstructor(ENUM_PARTICLE, boolean.class, float.class,
@@ -62,7 +62,7 @@ class ParticleSenderLegacy implements ParticleSender {
             WORLD_GET_HANDLE = craftWorldClass.getDeclaredMethod("getHandle");
             PLAYER_GET_HANDLE = craftPlayerClass.getDeclaredMethod("getHandle");
             PLAYER_CONNECTION = playerClass.getField("playerConnection");
-            SEND_PACKET = playerConnectionClass.getMethod("sendPacket", FastReflection.nmsClass("Packet"));
+            SEND_PACKET = playerConnectionClass.getMethod("sendPacket", NMSUtils.nmsClass("Packet"));
         } catch (ReflectiveOperationException e) {
             throw new ExceptionInInitializerError(e);
         }
@@ -134,7 +134,7 @@ class ParticleSenderLegacy implements ParticleSender {
     }
 
     private Object getEnumParticle(ParticleType particleType) {
-        return FastReflection.enumValueOf(ENUM_PARTICLE, particleType.toString());
+        return NMSUtils.enumValueOf(ENUM_PARTICLE, particleType.toString());
     }
 
     private int[] toData(ParticleType particle, Object data) {

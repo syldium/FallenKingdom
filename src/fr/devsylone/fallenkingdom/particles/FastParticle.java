@@ -3,22 +3,20 @@ package fr.devsylone.fallenkingdom.particles;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import fr.devsylone.fallenkingdom.utils.NMSUtils;
 
 /**
- * Simple Bukkit Particles API with 1.7 to 1.13.2 support !
- * <p>
- * You can find the project on <a href="https://github.com/MrMicky-FR/FastParticles">GitHub</a>
- *
- * @author MrMicky
- */
+	@author MrMicky
+						**/
+
 public final class FastParticle {
 
     private static final ParticleSender PARTICLE_SENDER;
 
     static {
-        if (FastReflection.optionalClass("org.bukkit.Particle$DustOptions").isPresent()) {
+        if (NMSUtils.optionalClass("org.bukkit.Particle$DustOptions").isPresent()) {
             PARTICLE_SENDER = new ParticleSender.ParticleSender1_13();
-        } else if (FastReflection.optionalClass("org.bukkit.Particle").isPresent()) {
+        } else if (NMSUtils.optionalClass("org.bukkit.Particle").isPresent()) {
             PARTICLE_SENDER = new ParticleSender.ParticleSenderImpl();
         } else {
             PARTICLE_SENDER = new ParticleSenderLegacy();
