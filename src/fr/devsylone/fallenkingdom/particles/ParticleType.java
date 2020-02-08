@@ -4,12 +4,14 @@ import org.bukkit.Color;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 
+import fr.devsylone.fallenkingdom.utils.NMSUtils;
+
 /**
- * @author MrMicky
- */
+ 		@author MrMicky
+ 							**/
+
 @SuppressWarnings("deprecation")
 public enum ParticleType {
-
     // 1.7+
     EXPLOSION_NORMAL("explode", "poof"),
     EXPLOSION_LARGE("largeexplode", "explosion"),
@@ -96,7 +98,7 @@ public enum ParticleType {
     private static final int SERVER_VERSION_ID;
 
     static {
-        String ver = FastReflection.VERSION;
+        String ver = NMSUtils.version;
         SERVER_VERSION_ID = ver.charAt(4) == '_' ? Character.getNumericValue(ver.charAt(3)) : Integer.parseInt(ver.substring(3, 5));
     }
 
