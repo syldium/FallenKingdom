@@ -98,7 +98,7 @@ public enum ParticleType {
     private static final int SERVER_VERSION_ID;
 
     static {
-        String ver = NMSUtils.version;
+        String ver = NMSUtils.getVersion();
         SERVER_VERSION_ID = ver.charAt(4) == '_' ? Character.getNumericValue(ver.charAt(3)) : Integer.parseInt(ver.substring(3, 5));
     }
 
