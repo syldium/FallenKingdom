@@ -292,3 +292,13 @@ RETRAIT      = [-]
 [*] Fix de la gestion de la pause
 [*] Fix d'endCap
 [-] Les achievements 1.8 ne sont plus gérés
+--------
+
+      >> 2.18.0
+[+] Possibilité d'interdire les potions
+[+] Particules à la connexion d'un joueur et avant le début de partie
+[+] Explosions de feux d'artifices lorsqu'un joueur en tue un autre en 1.9+
+[+] Éclair lorsqu'un joueur en tue un autre en 1.8
+[+] Empêcher le spawn de Phantoms 
+[+] Affichage de l'état de la partie dans le MOTD
+[+] Ajout d'un message sur l'écran lors du décompte de début de partie
