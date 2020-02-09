@@ -1,7 +1,7 @@
 name: FallenKingdom
 version: ${project.version}
 author: Devsylone_Team
-authors: [Etrenak, fabulacraft, Blendman974, syldium]
+authors: [Etrenak, fabulacraft, Blendman974, syldium, Ottawas]
 main: fr.devsylone.fallenkingdom.Fk
 api-version: 1.13
 prefix: FK
