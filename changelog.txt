@@ -296,6 +296,7 @@ RETRAIT      = [-]
 
       >> 2.18.0
 [+] Possibilité d'interdire les potions
+[+] Empêcher les joueurs de prendre des dégats lorsque la partie n'est pas active
 [+] Particules à la connexion d'un joueur et avant le début de partie
 [+] Explosions de feux d'artifices lorsqu'un joueur en tue un autre en 1.9+
 [+] Éclair lorsqu'un joueur en tue un autre en 1.8
