@@ -23,7 +23,9 @@
     </licenses>
 
     <build>
+        <finalName>${project.name}-${project.version}</finalName>
         <defaultGoal>clean package</defaultGoal>
+        <sourceDirectory>src/</sourceDirectory> <!-- Force Maven to explore src/ because of its unusual structure -->
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -46,6 +48,14 @@
                         </goals>
                         <configuration>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <minimizeJar>true</minimizeJar>
+                            <relocations>
+                                <relocation>
+                                    <!-- Keeps consistency with the modified version of XBlock -->
+                                    <pattern>com.cryptomorin.xseries</pattern>
+                                    <shadedPattern>fr.devsylone.fallenkingdom.utils</shadedPattern>
+                                </relocation>
+                            </relocations>
                         </configuration>
                     </execution>
                 </executions>
@@ -71,23 +81,18 @@
     </repositories>
 
     <dependencies>
+        <!-- Used to check the structure of NMS packets -->
         <!--<dependency>
-            <groupId>1.15.1_R1</groupId>
-            <artifactId>spigot_1_15_1_R1</artifactId>
-            <version>1.15.1</version>
+            <groupId>1.15.2_R0.1</groupId>
+            <artifactId>spigot_1_15_2</artifactId>
+            <version>1.15.2-R0.1</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/../spigot-1.15.1.jar</systemPath>
+            <systemPath>${project.basedir}/../spigot-1.15.2.jar</systemPath>
         </dependency>-->
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.15-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>jsr305</artifactId>
-            <version>3.0.2</version>
+            <version>1.15.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -99,8 +104,13 @@
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-buffer</artifactId>
-            <version>4.1.43.Final</version>
+            <version>4.1.45.Final</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.cryptomorin</groupId>
+            <artifactId>XSeries</artifactId>
+            <version>5.3.1</version>
         </dependency>
     </dependencies>
 </project>

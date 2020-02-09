@@ -2,8 +2,7 @@ package fr.devsylone.fallenkingdom.commands.rules.rulescommands;
 
 import java.util.List;
 
-import fr.devsylone.fallenkingdom.utils.XMaterial;
-import fr.devsylone.fkpi.util.BlockDescription;
+import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -13,6 +12,7 @@ import fr.devsylone.fallenkingdom.exception.FkLightException;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fkpi.rules.AllowedBlocks;
+import fr.devsylone.fkpi.util.BlockDescription;
 
 public class AllowBlock extends FkRuleCommand
 {

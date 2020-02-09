@@ -33,7 +33,8 @@ public class SetBase extends fr.devsylone.fallenkingdom.commands.teams.FkTeamCom
 		else
 		{
 			m = sender.getItemInHand().getType();
-			data = sender.getItemInHand().getData().getData();
+			// getData() implique d'initialiser le support des anciens Material à partir de la 1.15.2 (le charger dure entre 1 et 3 secondes)
+			data = Fk.getInstance().isNewVersion() ? 0 : sender.getItemInHand().getData().getData();
 		}
 		
 		if(!Fk.getInstance().getFkPI().getTeamManager().getTeamNames().contains(args[0]))

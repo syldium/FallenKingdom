@@ -5,8 +5,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.cryptomorin.xseries.XMaterial;
 import fr.devsylone.fallenkingdom.utils.XBlock;
-import fr.devsylone.fallenkingdom.utils.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Color;
@@ -46,7 +46,7 @@ public class ChestsRoom implements Saveable
 	{
 		NORMAL,
 		CAPTURING,
-		CAPTURED;
+		CAPTURED
 	}
 
 	public ChestsRoom(Base base)

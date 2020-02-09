@@ -21,6 +21,7 @@
  */
 package fr.devsylone.fallenkingdom.utils;
 
+import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
