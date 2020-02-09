@@ -2,6 +2,7 @@ package fr.devsylone.fkpi.lockedchests;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
 
 import fr.devsylone.fallenkingdom.Fk;
@@ -13,7 +14,7 @@ public class LockedChest implements Saveable
 	{
 		LOCKED,
 		UNLOCKING,
-		UNLOCKED;
+		UNLOCKED
 	}
 
 	private String unlocker;
@@ -23,6 +24,7 @@ public class LockedChest implements Saveable
 	private ChestState state;
 	private long lastInteract;
 	private long startUnlocking;
+	private float yFix = -0.5F;
 
 	private int task = -1;
 
@@ -90,6 +92,21 @@ public class LockedChest implements Saveable
 		lastInteract = System.currentTimeMillis();
 	}
 
+	public void setYFixByBlockFace(BlockFace blockFace)
+	{
+		switch (blockFace)
+		{
+			case UP:
+				yFix = -1.25F;
+				break;
+			case DOWN:
+				yFix = 0;
+				break;
+			default:
+				yFix = -0.5F;
+		}
+	}
+
 	public void startUnlocking(String player)
 	{
 		if(unlocker != null)
@@ -104,7 +121,7 @@ public class LockedChest implements Saveable
 
 		lastInteract = System.currentTimeMillis();
 
-		final int armorstand = Fk.getInstance().getPacketManager().createFloattingText("§b0%", Bukkit.getPlayer(player), loc.clone().add(0.5, -0.5, 0.5));
+		final int armorstand = Fk.getInstance().getPacketManager().createFloattingText("§b0%", Bukkit.getPlayer(player), loc.clone().add(0.5, yFix, 0.5));
 
 		task = Bukkit.getScheduler().scheduleSyncRepeatingTask(Fk.getInstance(), new Runnable()
 		{
@@ -140,7 +157,7 @@ public class LockedChest implements Saveable
 		state = ChestState.valueOf(config.getString("State"));
 		time = config.getInt("Time");
 		day = config.getInt("Day");
-		name = config.getString("name");
+		name = config.getString("Name");
 	}
 
 	@Override

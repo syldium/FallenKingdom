@@ -46,6 +46,8 @@ public class LockedChestInteractListener implements Listener
 				return;
 			}
 
+			// Si le joueur vise la partie supérieure du coffre, l'armorstand va se placer entre lui et le coffre, et le client n'essayera plus de l'ouvrir, ce qui n'est pas voulu.
+			chest.setYFixByBlockFace(e.getBlockFace());
 			if(chest.getUnlocker() != e.getPlayer().getName())
 				chest.startUnlocking(e.getPlayer().getName());
 
