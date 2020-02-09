@@ -1,6 +1,6 @@
 package fr.devsylone.fkpi.rules;
 
-import fr.devsylone.fallenkingdom.utils.XMaterial;
+import com.cryptomorin.xseries.XMaterial;
 import fr.devsylone.fkpi.util.BlockDescription;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -44,13 +44,13 @@ public class AllowedBlocks extends Rule
 	public void load(ConfigurationSection config)
 	{
 		List<String> blocksString = config.getStringList("value");
-		value = blocksString.stream().map(b -> new BlockDescription(b)).collect(Collectors.toList());
+		value = blocksString.stream().map(BlockDescription::new).collect(Collectors.toList());
 	}
 
 	@Override
 	public void save(ConfigurationSection config)
 	{
-		List<String> blocksString = getValue().stream().map(b -> b.toString()).collect(Collectors.toList());
+		List<String> blocksString = getValue().stream().map(BlockDescription::toString).collect(Collectors.toList());
 		config.set("value", blocksString);
 	}
 

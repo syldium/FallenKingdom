@@ -1,12 +1,12 @@
 package fr.devsylone.fkpi.teams;
 
-import fr.devsylone.fallenkingdom.utils.XBlock;
-import fr.devsylone.fallenkingdom.utils.XMaterial;
+import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 
+import fr.devsylone.fallenkingdom.utils.XBlock;
 import fr.devsylone.fkpi.util.Saveable;
 
 /**
@@ -243,7 +243,7 @@ public class Base implements Saveable
 		while(XBlock.isReplacable(loc.getBlock().getType()) && loc.getY() > 1.0D)
 			loc.add(0, -1, 0);
 		
-		while(!XBlock.isReplacable(loc.getBlock().getType()) && loc.getY())
+		while(!XBlock.isReplacable(loc.getBlock().getType()))
 			loc.add(0, 1, 0);
 
 		return loc;

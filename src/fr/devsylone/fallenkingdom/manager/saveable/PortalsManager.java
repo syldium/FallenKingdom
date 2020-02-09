@@ -3,7 +3,7 @@ package fr.devsylone.fallenkingdom.manager.saveable;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.devsylone.fallenkingdom.utils.XMaterial;
+import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;

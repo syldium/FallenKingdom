@@ -1,6 +1,6 @@
 package fr.devsylone.fkpi.util;
 
-import fr.devsylone.fallenkingdom.utils.XMaterial;
+import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
