@@ -1,7 +1,5 @@
 package fr.devsylone.fallenkingdom.listeners.entity.player;
 
-import java.util.Collection;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -12,7 +10,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
-import org.bukkit.potion.PotionEffect;
 
 import fr.devsylone.fallenkingdom.Fk;
 
@@ -32,18 +29,14 @@ public class PotionListener implements Listener {
         Projectile projectile = e.getEntity();
 
         if (projectile instanceof ThrownPotion) {
-            ThrownPotion pot = (ThrownPotion) projectile;
-            Collection < PotionEffect > effects = pot.getEffects();
-            for (@SuppressWarnings("unused") PotionEffect p: effects) {
                 e.setCancelled(true);
-                break;
             }
         }
-    }
 
     /*
      ***POTIONS CONSOMABLES 1.8***
      */
+    
     @SuppressWarnings("deprecation")
     @EventHandler
     public void onItemConsume(PlayerItemConsumeEvent e) {
