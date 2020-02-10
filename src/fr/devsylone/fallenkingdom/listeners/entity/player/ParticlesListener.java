@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Random;
 import java.util.UUID;
 
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -14,21 +15,10 @@ import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.game.Game.GameState;
 import fr.devsylone.fallenkingdom.particles.FastParticle;
 import fr.devsylone.fallenkingdom.particles.ParticleType;
-import fr.devsylone.fallenkingdom.utils.ColorsUtils;
 
 import org.bukkit.event.Listener;
 
 public class ParticlesListener implements Listener {
-
-    private static int getRandomNumberInRange(int min, int max) {
-
-        if (min >= max) {
-            throw new IllegalArgumentException("max must be greater than min");
-        }
-
-        Random r = new Random();
-        return r.nextInt((max - min) + 1) + min;
-    }
 
     private HashMap < UUID, Location > playerLocation = new HashMap < UUID, Location > ();
     private HashMap < UUID, Long > movingTimer = new HashMap < UUID, Long > ();
@@ -39,7 +29,8 @@ public class ParticlesListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerMove(PlayerMoveEvent event) {
-
+	if (Fk.getInstance().getGame().getState() == GameState.BEFORE_STARTING || Fk.getInstance().getGame().getState() == GameState.STARTING) {
+	    
         Player player = event.getPlayer();
         playerID = player.getUniqueId();
 
@@ -72,13 +63,11 @@ public class ParticlesListener implements Listener {
 
             // player has moved after last check
 
-            if (Fk.getInstance().getGame().getState() == GameState.BEFORE_STARTING) {
-
                 if (playerLoc.getBlockX() != playerX || playerLoc.getBlockY() != playerY || playerLoc.getBlockZ() != playerZ) {
 
-                    FastParticle.spawnParticle(player, ParticleType.REDSTONE, player.getLocation(), 100, ColorsUtils.getColors(getRandomNumberInRange(0, 17)));
+                    FastParticle.spawnParticle(player, ParticleType.REDSTONE, player.getLocation(), 100, Color.fromBGR(new Random().nextInt(255), new Random().nextInt(255), new Random().nextInt(255)));
                 }
-            } else;
+            }
         }
     }
 }
