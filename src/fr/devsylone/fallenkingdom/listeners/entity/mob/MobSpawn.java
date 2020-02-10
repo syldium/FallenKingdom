@@ -33,15 +33,9 @@ public class MobSpawn implements Listener {
          * PHANTOMS
          */
         
-        if (Bukkit.getServer().getClass().getPackage().getName().contains("1_8") || Bukkit.getServer().getClass().getPackage().getName().contains("1_9") || Bukkit.getServer().getClass().getPackage().getName().contains("1_10") || Bukkit.getServer().getClass().getPackage().getName().contains("1_11") || Bukkit.getServer().getClass().getPackage().getName().contains("1_12")) {
-
-        } else {
-            if (e.getEntity() instanceof org.bukkit.entity.Phantom)
-                if (e.getSpawnReason() == CreatureSpawnEvent.SpawnReason.NATURAL)
+        if (Bukkit.getServer().getClass().getPackage().getName().contains("1_13") || Bukkit.getServer().getClass().getPackage().getName().contains("1_14") || Bukkit.getServer().getClass().getPackage().getName().contains("1_15") || Bukkit.getServer().getClass().getPackage().getName().contains("1_16"))
+            if (e.getEntity() instanceof org.bukkit.entity.Phantom && e.getSpawnReason() == CreatureSpawnEvent.SpawnReason.NATURAL)
                     e.setCancelled(true);
-        }
-
 
     }
-
 }
