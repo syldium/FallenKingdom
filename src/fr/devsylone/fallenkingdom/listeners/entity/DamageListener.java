@@ -30,7 +30,7 @@ public class DamageListener implements Listener
     
     @EventHandler
     public void damage(EntityDamageEvent e) {
-        if (Fk.getInstance().getGame().getState().equals(GameState.PAUSE) || Fk.getInstance().getGame().getState().equals(GameState.BEFORE_STARTING) || Fk.getInstance().getGame().getState().equals(GameState.STARTING))
+        if (Fk.getInstance().getGame().getState().equals(GameState.PAUSE))
             e.setCancelled(true);
     }
 
