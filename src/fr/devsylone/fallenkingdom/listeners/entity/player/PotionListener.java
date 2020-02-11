@@ -18,55 +18,47 @@ public class PotionListener implements Listener {
 
     //TODO: RELIER AVEC UNE COMMANDE 
 
-
-
     /*
      ***POTIONS DROPPER***
      */
     @EventHandler
     public void onProjectileLaunch(ProjectileLaunchEvent e) {
-
         Projectile projectile = e.getEntity();
 
         if (projectile instanceof ThrownPotion) {
-                e.setCancelled(true);
-            }
+            e.setCancelled(true);
         }
+    }
 
     /*
      ***POTIONS CONSOMABLES 1.8***
      */
-    
+
     @SuppressWarnings("deprecation")
     @EventHandler
     public void onItemConsume(PlayerItemConsumeEvent e) {
         Player player = e.getPlayer();
 
-        if (Bukkit.getServer().getClass().getPackage().getName().contains("1_8")) {
-
+        if (Bukkit.getServer().getClass().getPackage().getName().contains("1_8"))
             if (e.getItem().getType() == Material.POTION) {
                 e.setCancelled(true);
                 player.sendMessage("§cLes potions sont désactivées durant cette partie.");
                 player.setItemInHand(null);
             }
         }
-    }
 
 
     /*
      ***POTIONS 1.9+
      */
+    
     @SuppressWarnings("deprecation")
     @EventHandler
     public void onBlockClick(PlayerInteractEvent event) {
         Player player = (Player) event.getPlayer();
 
-        if (Bukkit.getServer().getClass().getPackage().getName().contains("1_8")) {
-
-        } else {
-
-            if (event.getMaterial() == Material.POTION || event.getMaterial() == Material.SPLASH_POTION) {
-
+        if (!Bukkit.getServer().getClass().getPackage().getName().contains("1_8"))
+            if (event.getMaterial() == Material.POTION || event.getMaterial() == Material.SPLASH_POTION)
                 if (Fk.getInstance().getConfig().getBoolean("potions") == false) {
 
                     player.sendMessage("§cLes potions sont désactivées durant cette partie.");
@@ -74,7 +66,5 @@ public class PotionListener implements Listener {
                     event.setCancelled(true);
                     player.setItemInHand(null);
                 }
-            }
         }
-    }
 }
