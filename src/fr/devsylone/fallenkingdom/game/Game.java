@@ -399,14 +399,7 @@ public class Game implements Saveable
 		for(Player p : Bukkit.getOnlinePlayers()) {
 			
 			p.playSound(p.getLocation(), FkSound.NOTE_PLING.bukkitSound(), 1, 1);
-			
-			if(Bukkit.getServer().getClass().getPackage().getName().contains("1_8"))
-				return;
-		
-			else
-			{
 			Fk.getInstance().getPacketManager().sendTitle(p,"§6\u2694 La partie va commencer \u2694", "§a" + Integer.toString(time) + "§a secondes...", 25, 100, 25);
-			}
 		}
 	}
 
