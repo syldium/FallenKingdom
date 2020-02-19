@@ -1,5 +1,6 @@
 package fr.devsylone.fallenkingdom.updater;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -158,6 +159,13 @@ public class FilesUpdater
 				}
 			System.out.println(String.join(" - ", lines));
 			file.set("ScoreboardManager.Sidebar", lines);
+		}
+
+		if(isGrowing(lastv, "2.18.0"))
+		{
+			file = Fk.getInstance().getSaveableManager().getFileConfiguration("save.yml");
+			file.set("FkPI.RulesManager.Rules.DenyPotions.value", false);
+			file.set("FkPI.RulesManager.Rules.DenyPotions.advanced", new ArrayList<String>());
 		}
 	}
 

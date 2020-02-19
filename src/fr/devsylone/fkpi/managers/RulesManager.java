@@ -8,6 +8,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
 import fr.devsylone.fkpi.rules.AllowedBlocks;
 import fr.devsylone.fkpi.rules.ChargedCreepers;
+import fr.devsylone.fkpi.rules.DenyPotions;
 import fr.devsylone.fkpi.rules.PlaceBlockInCave;
 import fr.devsylone.fkpi.rules.Rule;
 import fr.devsylone.fkpi.util.Saveable;
@@ -62,6 +63,7 @@ public class RulesManager implements Saveable
 		registerNewRule(new Rule("TntJump", new Boolean(true)));
 		registerNewRule(new Rule("RespawnAtHome", new Boolean(false)));
 		registerNewRule(new Rule("HealthBelowName", new Boolean(true)));
+		registerNewRule(new DenyPotions(true));
 
 		AllowedBlocks allowedBlocks = new AllowedBlocks();
 		allowedBlocks.fillWithDefaultValues();
@@ -81,6 +83,9 @@ public class RulesManager implements Saveable
 
 			else if(key.equalsIgnoreCase("AllowedBlocks"))
 				r = new AllowedBlocks();
+
+			else if(key.equalsIgnoreCase("DenyPotions"))
+				r = new DenyPotions();
 
 			r.load(config.getConfigurationSection("Rules." + key));
 			registerNewRule(r);

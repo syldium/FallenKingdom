@@ -7,6 +7,7 @@ import java.util.List;
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fkpi.rules.AllowedBlocks;
 import fr.devsylone.fkpi.rules.ChargedCreepers;
+import fr.devsylone.fkpi.rules.DenyPotions;
 import fr.devsylone.fkpi.rules.PlaceBlockInCave;
 import fr.devsylone.fkpi.rules.Rule;
 import fr.devsylone.fkpi.util.BlockDescription;
@@ -35,6 +36,17 @@ public class RulesFormatter
 		{
 			for(BlockDescription b : ((AllowedBlocks) rule).reducedList())
 				value += ("\n" + "§b> §2" + b.toString());
+		}
+
+		else if(rule instanceof DenyPotions)
+		{
+			if((boolean) rule.getValue())
+				value = "§4toutes";
+			else
+				if (((DenyPotions) rule).getAdvancedList().size() < 1)
+					value = "§efalse";
+				for(String disallowed : ((DenyPotions) rule).getAdvancedList())
+					value += ("\n" + "§4> §c" + disallowed);
 		}
 
 		else if(rule.getValue() instanceof Boolean)
