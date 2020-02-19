@@ -1,70 +1,46 @@
 package fr.devsylone.fallenkingdom.listeners.entity.player;
 
+import fr.devsylone.fallenkingdom.Fk;
+import fr.devsylone.fallenkingdom.utils.ChatUtils;
+import fr.devsylone.fkpi.rules.DenyPotions;
+
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
-import org.bukkit.entity.ThrownPotion;
+import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.ProjectileLaunchEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemConsumeEvent;
+import org.bukkit.event.inventory.BrewEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.PotionMeta;
 
-import fr.devsylone.fallenkingdom.Fk;
+import java.util.Arrays;
 
-
-public class PotionListener implements Listener {
-
-    //TODO: RELIER AVEC UNE COMMANDE 
-
-    /*
-     ***POTIONS DROPPER***
-     */
+public class PotionListener implements Listener
+{
     @EventHandler
-    public void onProjectileLaunch(ProjectileLaunchEvent e) {
-        Projectile projectile = e.getEntity();
+    public void onPotionBrew(final BrewEvent event)
+    {
+        // En 1.8, getContents() donne les références des items, donc on perd l'aspect save des potions. Du coup, on fait une deep copy.
+        ItemStack[] brewerInventory = Arrays.stream(event.getContents().getContents()).map(item -> item == null ? null : item.clone()).toArray(ItemStack[]::new);
+        ItemStack brewed = event.getContents().getIngredient().clone();
 
-        if (projectile instanceof ThrownPotion) {
-            e.setCancelled(true);
-        }
-    }
+        DenyPotions rule = (DenyPotions) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("DenyPotions");
+        Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), () -> {
+            for (ItemStack item : event.getContents().getContents())
+            {
+                if (item != null && item.getItemMeta() instanceof PotionMeta)
+                {
+                    if (rule.isProhibited(item))
+                    {
+                        event.getContents().setContents(brewerInventory);
+                        event.getContents().setIngredient(null);
+                        event.getBlock().getLocation().getWorld().dropItem(event.getBlock().getLocation(), brewed);
 
-    /*
-     ***POTIONS CONSOMABLES 1.8***
-     */
-
-    @SuppressWarnings("deprecation")
-    @EventHandler
-    public void onItemConsume(PlayerItemConsumeEvent e) {
-        Player player = e.getPlayer();
-
-        if (Bukkit.getServer().getClass().getPackage().getName().contains("1_8"))
-            if (e.getItem().getType() == Material.POTION) {
-                e.setCancelled(true);
-                player.sendMessage("§cLes potions sont désactivées durant cette partie.");
-                player.setItemInHand(null);
-            }
-        }
-
-
-    /*
-     ***POTIONS 1.9+
-     */
-    
-    @SuppressWarnings("deprecation")
-    @EventHandler
-    public void onBlockClick(PlayerInteractEvent event) {
-        Player player = (Player) event.getPlayer();
-
-        if (!Bukkit.getServer().getClass().getPackage().getName().contains("1_8"))
-            if (event.getMaterial() == Material.POTION || event.getMaterial() == Material.SPLASH_POTION)
-                if (Fk.getInstance().getConfig().getBoolean("potions") == false) {
-
-                    player.sendMessage("§cLes potions sont désactivées durant cette partie.");
-
-                    event.setCancelled(true);
-                    player.setItemInHand(null);
+                        String message = ChatUtils.PREFIX + ChatColor.RED + (((boolean) rule.getValue()) ? "L" : "C") + "es potions sont désactivées durant cette partie.";
+                        event.getContents().getViewers().forEach(viewer -> viewer.sendMessage(message));
+                        break;
+                    }
                 }
-        }
+            }
+        }, 1);
+    }
 }
