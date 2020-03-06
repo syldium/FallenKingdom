@@ -1,10 +1,16 @@
 package fr.devsylone.fallenkingdom.manager.saveable;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
@@ -17,27 +23,66 @@ import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.utils.NMSUtils;
 import fr.devsylone.fallenkingdom.utils.PacketUtils;
 import fr.devsylone.fkpi.util.Saveable;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 public class DeepPauseManager implements Saveable
 {
-	private List<Entity> noAI;
-	private List<Entity> unDespawnable;
+	private final List<LivingEntity> noAI = new ArrayList<>();
+	private final List<Entity> unDespawnable = new ArrayList<>();
 
-	public DeepPauseManager()
+	private static final boolean VERSION1_8 = Bukkit.getBukkitVersion().contains("1.8");
+	private static Method NMS_ENTITY_GETNBTTAG;
+    private static Method NMS_ENTITY_C;
+	private static Constructor<?> NMS_NBTTAG;
+	private static Method NMS_NBTTAG_INT;
+	private static Method NMS_ENTITY_F;
+
+	private static final Field FIELD_ITEM;
+
+	static
 	{
-		noAI = new ArrayList<Entity>();
-		unDespawnable = new ArrayList<Entity>();
-		try
-		{
-			NMSUtils.register("net.minecraft.server._version_.Entity");
-			NMSUtils.register("net.minecraft.server._version_.NBTTagCompound");
-			NMSUtils.register("org.bukkit.craftbukkit._version_.entity.CraftEntity");
+		try {
+            if (VERSION1_8) {
+				Class<?> entity = NMSUtils.nmsClass("Entity");
+                NMS_ENTITY_GETNBTTAG = entity.getDeclaredMethod("getNBTTag");
+                Class<?> nbtTagCompound = NMSUtils.nmsClass("NBTTagCompound");
+                NMS_NBTTAG = nbtTagCompound.getConstructor();
+                NMS_ENTITY_C = entity.getDeclaredMethod("c", nbtTagCompound);
+                NMS_NBTTAG_INT = nbtTagCompound.getDeclaredMethod("setInt", String.class, int.class);
+                NMS_ENTITY_F = entity.getDeclaredMethod("f", nbtTagCompound);
+            }
+			Class<?> craftItem = NMSUtils.obcClass("entity.CraftItem");
+            FIELD_ITEM = craftItem.getDeclaredField("item");
+            FIELD_ITEM.setAccessible(true);
+		} catch (ReflectiveOperationException e) {
+		    throw new ExceptionInInitializerError(e);
+		}
+	}
 
-			NMSUtils.register("org.bukkit.craftbukkit._version_.entity.CraftItem");
-			NMSUtils.register("net.minecraft.server._version_.EntityItem");
-		}catch(Exception e)
-		{
-			e.printStackTrace();
+	public void freezePlayers()
+	{
+		if (!(boolean) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("DeepPause").getValue()) {
+			return;
+		}
+		Bukkit.getOnlinePlayers().stream()
+			.filter(player -> player.getGameMode().equals(GameMode.SURVIVAL) || player.getGameMode().equals(GameMode.ADVENTURE))
+			.forEach(player -> freeze(player, false));
+	}
+
+	public void unfreezePlayers()
+	{
+		Bukkit.getOnlinePlayers().forEach(player -> freeze(player, true));
+	}
+
+	public void freeze(Player player, boolean revert)
+	{
+		if (revert) {
+			player.setWalkSpeed(0.2f);
+			player.getActivePotionEffects().forEach(effect -> player.removePotionEffect(effect.getType()));
+		} else {
+			player.setWalkSpeed(0.00002f);
+			player.addPotionEffect(new PotionEffect(PotionEffectType.WATER_BREATHING, Integer.MAX_VALUE, 0, false, false));
 		}
 	}
 
@@ -45,168 +90,126 @@ public class DeepPauseManager implements Saveable
 	{
 		if((Boolean) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("DeepPause").getValue())
 		{
-			for(World w : Bukkit.getWorlds())
+			for(World world : Bukkit.getWorlds())
 			{
-				for(org.bukkit.entity.Entity ent : w.getEntities())
-				{
-					if(ent.getType().equals(EntityType.DROPPED_ITEM))
-					{
-						try
-						{
-							Object entityItem = NMSUtils.getClass("EntityItem").cast(NMSUtils.getClass("CraftItem").getMethod("getHandle").invoke(NMSUtils.getClass("CraftItem").cast((Item) ent)));
-							PacketUtils.setField("age", -100000, entityItem);
-							unDespawnable.add(ent);
-						}catch(Exception e)
-						{
-							e.printStackTrace();
-						}
-					}
-				}
+				world.getEntities().stream()
+					.filter(entity -> entity.getType().equals(EntityType.DROPPED_ITEM))
+					.forEach(item -> {
+						setItemAge((Item) item, -32768);
+						unDespawnable.add(item);
+					});
 			}
 		}
-
 	}
 
 	public void unprotectItems()
 	{
-		for(Entity item : unDespawnable)
-		{
-			try
-			{
-				Object entityItem = NMSUtils.getClass("EntityItem").cast(NMSUtils.getClass("CraftItem").getMethod("getHandle").invoke(NMSUtils.getClass("CraftItem").cast((Item) item)));
-				PacketUtils.setField("age", 0, entityItem);
-			}catch(Exception e)
-			{
-				//dommage lol
-			}
-		}
+		unDespawnable.forEach(item -> setItemAge((Item) item, 0));
 		unDespawnable.clear();
 	}
 
-	public void removeAIs() throws ReflectiveOperationException
+	public void removeAIs()
 	{
 		if((Boolean) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("DeepPause").getValue())
 		{
-			for(World w : Bukkit.getWorlds())
+			for(World world : Bukkit.getWorlds())
 			{
-				for(org.bukkit.entity.Entity ent : w.getEntities())
-				{
-					if(!(ent instanceof Player))
-					{
-						if(Bukkit.getBukkitVersion().contains("1.8"))
-						{
-							Object craftEntity = NMSUtils.getClass("CraftEntity").cast(ent);
-							Object nmsEntity = NMSUtils.getClass("CraftEntity").getMethod("getHandle").invoke(craftEntity);
-
-							Object tag = NMSUtils.getClass("Entity").getMethod("getNBTTag").invoke(nmsEntity);
-
-							if(tag == null)
-								tag = NMSUtils.getClass("NBTTagCompound").newInstance();
-
-							NMSUtils.getClass("Entity").getMethod("c", NMSUtils.getClass("NBTTagCompound")).invoke(nmsEntity, tag);
-
-							if((int) NMSUtils.getClass("NBTTagCompound").getMethod("getInt", String.class).invoke(tag, "NoAI") != 1)
-							{
-								NMSUtils.getClass("NBTTagCompound").getMethod("setInt", String.class, int.class).invoke(tag, "NoAI", 1);
-								noAI.add(ent);
-							}
-							NMSUtils.getClass("Entity").getMethod("f", NMSUtils.getClass("NBTTagCompound")).invoke(nmsEntity, tag);
-						}
-
-						else if(ent instanceof LivingEntity)
-						{
-							LivingEntity.class.getMethod("setAI", boolean.class).invoke(ent, false);
-							noAI.add(ent);
-						}
-					}
-				}
+			    world.getLivingEntities().stream()
+                    .filter(entity -> !(entity instanceof Player))
+                    .forEach(entity -> {
+                        setAI(entity, false);
+                        noAI.add(entity);
+                    });
 			}
 		}
 	}
 
-	public void resetAIs() throws ReflectiveOperationException
+	public void resetAIs()
 	{
-		for(Entity entity : noAI)
-		{
-			try
-			{
-				if(Bukkit.getBukkitVersion().contains("1.8"))
-				{
-					Object craftEntity = NMSUtils.getClass("CraftEntity").cast(entity);
-					Object nmsEntity = NMSUtils.getClass("CraftEntity").getMethod("getHandle").invoke(craftEntity);
-
-					Object tag = NMSUtils.getClass("Entity").getMethod("getNBTTag").invoke(nmsEntity);
-
-					if(tag == null)
-						tag = NMSUtils.getClass("NBTTagCompound").newInstance();
-
-					NMSUtils.getClass("Entity").getMethod("c", NMSUtils.getClass("NBTTagCompound")).invoke(nmsEntity, tag);
-
-					NMSUtils.getClass("NBTTagCompound").getMethod("setInt", String.class, int.class).invoke(tag, "NoAI", 0);
-
-					NMSUtils.getClass("Entity").getMethod("f", NMSUtils.getClass("NBTTagCompound")).invoke(nmsEntity, tag);
-				}
-				else
-				{
-					LivingEntity.class.getMethod("setAI", boolean.class).invoke(entity, true);
-				}
-
-			}catch(Exception ex)
-			{
-				Bukkit.getLogger().warning("Entity at " + entity.getLocation().getBlockX() + ", " + entity.getLocation().getBlockY() + ", " + entity.getLocation().getBlockZ() + " world:" + entity.getLocation().getWorld().getName() + " n'a pa retrouvé son intelligence !");
-			}
-		}
+		noAI.forEach(entity -> setAI(entity, true));
 		noAI.clear();
 	}
 
 	@Override
 	public void load(ConfigurationSection config)
 	{
-		if(config.contains("noAI"))
-			for(String id : config.getStringList("noAI"))
-				for(World w : Bukkit.getWorlds())
-				{
-					for(Entity ent : w.getEntities())
-					{
-						if(!(ent instanceof Player))
-						{
-							if(ent.getUniqueId() == UUID.fromString(id))
-							{
-								noAI.add(ent);
-							}
-						}
-					}
-				}
+		if(config.contains("noAI")) {
+			List<String> uuids = config.getStringList("noAI");
+			noAI.addAll(
+				uuids.stream().map(id -> (LivingEntity) getEntity(UUID.fromString(id)))
+					.filter(Objects::nonNull)
+					.collect(Collectors.toList())
+			);
+		}
 		
-		if(config.contains("UnDespawnable"))
-			for(String id : config.getStringList("UnDespawnable"))
-				for(World w : Bukkit.getWorlds())
-				{
-					for(Entity ent : w.getEntities())
-					{
-						if(!(ent instanceof Player))
-						{
-							if(ent.getUniqueId() == UUID.fromString(id))
-							{
-								unDespawnable.add(ent);
-							}
-						}
-					}
-				}
+		if(config.contains("UnDespawnable")) {
+			List<String> uuids = config.getStringList("UnDespawnable");
+			unDespawnable.addAll(
+				uuids.stream().map(id -> getEntity(UUID.fromString(id)))
+					.filter(Objects::nonNull)
+					.collect(Collectors.toList())
+			);
+		}
 	}
 
 	@Override
 	public void save(ConfigurationSection config)
 	{
-		List<String> noAiIds = new ArrayList<String>();
-		for(Entity e : noAI)
-			noAiIds.add(e.getUniqueId().toString());
-		
-		List<String> itemIds = new ArrayList<String>();
-		for(Entity e : unDespawnable)
-			itemIds.add(e.getUniqueId().toString());
+		List<String> noAiIds = noAI.stream().map(DeepPauseManager::apply).collect(Collectors.toList());
+		List<String> itemIds = unDespawnable.stream().map(DeepPauseManager::apply).collect(Collectors.toList());
 
 		config.set("noAI", noAiIds);
 		config.set("UnDespawnable", itemIds);
+	}
+
+	private Entity getEntity(UUID uuid)
+	{
+		if (Fk.getInstance().isNewVersion())
+			return Bukkit.getEntity(uuid);
+		for (World world : Bukkit.getWorlds())
+		{
+			for (Entity e : world.getEntities())
+			{
+				if (e.getUniqueId().equals(uuid)) {
+					return e;
+				}
+			}
+		}
+		return null;
+	}
+
+	private void setAI(LivingEntity entity, boolean active)
+	{
+	    if (!VERSION1_8) {
+	        entity.setAI(active);
+	        return;
+        }
+		try {
+			Object nmsEntity = PacketUtils.getNMSEntity(entity);
+			Object tag = NMS_ENTITY_GETNBTTAG.invoke(nmsEntity);
+
+			if(tag == null)
+				tag = NMS_NBTTAG.newInstance();
+			NMS_ENTITY_C.invoke(nmsEntity, tag);
+			NMS_NBTTAG_INT.invoke(tag, "NoAI", active ? 0 : 1);
+			NMS_ENTITY_F.invoke(nmsEntity, tag);
+		} catch (ReflectiveOperationException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void setItemAge(Item item, int age)
+	{
+		try {
+			Object entityItem = FIELD_ITEM.get(item);
+			PacketUtils.setField("age", age, entityItem);
+		} catch(ReflectiveOperationException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private static String apply(Entity e)
+	{
+		return e.getUniqueId().toString();
 	}
 }

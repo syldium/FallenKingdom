@@ -6,6 +6,7 @@ import java.util.Arrays;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 /**
@@ -143,6 +144,13 @@ public class PacketUtils
 		Object craftWorld = NMSUtils.getClass("CraftWorld").cast(w);
 		Object nmsWorld = NMSUtils.getClass("CraftWorld").getDeclaredMethod("getHandle").invoke(craftWorld);
 		return nmsWorld;
+	}
+
+	public static Object getNMSEntity(Entity e) throws ReflectiveOperationException
+	{
+		Object craftEntity = NMSUtils.obcClass("entity.CraftEntity").cast(e);
+		Object nmsEntity = NMSUtils.obcClass("entity.CraftEntity").getDeclaredMethod("getHandle").invoke(craftEntity);
+		return nmsEntity;
 	}
 
 	public static void sendPacket(Object playerConnection, Object packet) throws ReflectiveOperationException

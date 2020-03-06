@@ -19,7 +19,7 @@ public class Resume extends FkGameCommand
 	}
 
 	@SuppressWarnings("deprecated")
-	public void execute(Player sender, FkPlayer fkp, String[] args) throws ReflectiveOperationException
+	public void execute(Player sender, FkPlayer fkp, String[] args)
 	{
 		if(Fk.getInstance().getGame().getState().equals(Game.GameState.BEFORE_STARTING))
 			throw new FkLightException("La partie n'a pas encore commencé.");
@@ -33,6 +33,7 @@ public class Resume extends FkGameCommand
 			for(World w : org.bukkit.Bukkit.getWorlds())
 				w.setGameRuleValue("doDaylightCycle", "true");
 		}
+		Fk.getInstance().getDeepPauseManager().unfreezePlayers();
 		Fk.getInstance().getDeepPauseManager().resetAIs();
 		Fk.getInstance().getDeepPauseManager().unprotectItems();
 

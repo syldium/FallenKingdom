@@ -35,7 +35,7 @@ public class Pause extends FkGameCommand
 	}
 
 	@SuppressWarnings("deprecated")
-	public void execute(Player sender, FkPlayer fkp, String[] args) throws ReflectiveOperationException
+	public void execute(Player sender, FkPlayer fkp, String[] args)
 	{
 		if(sender != null)
 		{
@@ -50,6 +50,7 @@ public class Pause extends FkGameCommand
 		{
 			w.setGameRuleValue("doDaylightCycle", "false");
 		}
+		Fk.getInstance().getDeepPauseManager().freezePlayers();
 		Fk.getInstance().getDeepPauseManager().removeAIs();
 		Fk.getInstance().getDeepPauseManager().protectDespawnItems();
 

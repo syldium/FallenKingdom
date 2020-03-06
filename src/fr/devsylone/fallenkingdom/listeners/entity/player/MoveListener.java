@@ -39,7 +39,7 @@ public class MoveListener implements Listener
 
 		if(Fk.getInstance().getGame().getState().equals(GameState.PAUSE) && (Boolean) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("DeepPause").getValue() && e.getFrom().getBlockY() == e.getTo().getBlockY())
 		{
-			if(e.getPlayer().getGameMode() == GameMode.CREATIVE)
+			if(e.getPlayer().getGameMode().equals(GameMode.CREATIVE) || e.getPlayer().getGameMode().equals(GameMode.SPECTATOR))
 				return;
 			
 			fkp.sendMessage(ChatColor.RED + "La partie est en pause.");
