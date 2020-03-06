@@ -15,6 +15,7 @@ import fr.devsylone.fallenkingdom.listeners.entity.player.GoToNetherListener;
 import fr.devsylone.fallenkingdom.listeners.entity.player.InventoryListener;
 import fr.devsylone.fallenkingdom.listeners.entity.player.JoinListener;
 import fr.devsylone.fallenkingdom.listeners.entity.player.MoveListener;
+import fr.devsylone.fallenkingdom.listeners.entity.player.PauseInteractionListener;
 import fr.devsylone.fallenkingdom.listeners.entity.player.PvpListener;
 import fr.devsylone.fallenkingdom.listeners.entity.player.RespawnListener;
 import fr.devsylone.fallenkingdom.listeners.entity.player.ScrollListener;
@@ -42,5 +43,6 @@ public class ListenersManager
 		plugin.getServer().getPluginManager().registerEvents(new PortalCreateListener(), plugin);
 		plugin.getServer().getPluginManager().registerEvents(new ChangeGamemodeListener(), plugin);
 		plugin.getServer().getPluginManager().registerEvents(new RespawnListener(), plugin);
+		plugin.getServer().getPluginManager().registerEvents(new PauseInteractionListener(), plugin);
 	}
 }
