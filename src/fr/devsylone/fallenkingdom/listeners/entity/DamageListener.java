@@ -3,6 +3,7 @@ package fr.devsylone.fallenkingdom.listeners.entity;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Creeper;
@@ -59,19 +60,19 @@ public class DamageListener implements Listener
 			/*
 			 * Replace color killer
 			 */
-			e.setDeathMessage(e.getDeathMessage().replaceAll(e.getEntity().getKiller().getName(), e.getEntity().getKiller().getDisplayName()));
+			e.setDeathMessage(e.getDeathMessage().replaceAll(e.getEntity().getKiller().getName(), e.getEntity().getKiller().getDisplayName() + ChatColor.GRAY));
 
 			/*
 			 * Add kill Si killer != dead
 			*/
-			if(e.getEntity().getKiller() != null && e.getEntity().getKiller().getName() != e.getEntity().getName())
+			if(e.getEntity().getKiller() != null && !e.getEntity().getKiller().getName().equals(e.getEntity().getName()))
 				Fk.getInstance().getPlayerManager().getPlayer(e.getEntity().getKiller().getName()).addKill();
 		}
 		/*
 		 * Replace color killed
 		 */
 		if(Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(e.getEntity().getName()) != null)
-			e.setDeathMessage(e.getDeathMessage().replaceAll(e.getEntity().getName(), e.getEntity().getDisplayName()));
+			e.setDeathMessage(e.getDeathMessage().replaceAll(e.getEntity().getName(), e.getEntity().getDisplayName() + ChatColor.GRAY));
 
 		/*
 		 * Si tué ou tueur pas de team pas de deathlimit
