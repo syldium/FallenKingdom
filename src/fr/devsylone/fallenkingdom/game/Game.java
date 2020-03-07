@@ -84,7 +84,7 @@ public class Game implements Saveable
 
 		Fk.getInstance().getScoreboardManager().refreshAllScoreboards();
 
-		if(getState().equals(GameState.STARTED))
+		if(!getState().equals(GameState.BEFORE_STARTING))
 			Fk.getInstance().getTipsManager().cancelBroadcasts();
 
 		task = Bukkit.getScheduler().scheduleSyncRepeatingTask(Fk.getInstance(), new Runnable()

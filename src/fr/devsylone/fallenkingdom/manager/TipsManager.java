@@ -25,6 +25,7 @@ import fr.devsylone.fallenkingdom.game.Game.GameState;
 import fr.devsylone.fallenkingdom.players.Tip;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fallenkingdom.utils.FkSound;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class TipsManager
 {
@@ -74,21 +75,18 @@ public class TipsManager
 		Fk.broadcast("");
 		Fk.broadcast(tip.getChatFormatted(), ChatUtils.TIP, FkSound.NOTE_PLING);
 		Fk.broadcast("");
-		if(displayed.size() >= tips.size())
+		if(displayed.size()+used.size() >= tips.size())
 			displayed.clear();
 	}
 
 	public void startBroadcasts()
 	{
-		this.task = Bukkit.getScheduler().scheduleSyncRepeatingTask(Fk.getInstance(), new Runnable()
-		{
-			public void run()
-			{
+		this.task = new BukkitRunnable() {
+			public void run() {
 				if(Fk.getInstance().getGame().getState().equals(GameState.BEFORE_STARTING))
 					sendRandomTip();
 			}
-		}, 3 * 60 * 20, 3 * 60 * 20);
-//				}, 100L, 100L);
+		}.runTaskTimerAsynchronously(Fk.getInstance(), 3 * 60 * 20, 3 * 60 * 20).getTaskId();
 	}
 
 	public void addUsed(FkCommand cmd)
@@ -100,7 +98,7 @@ public class TipsManager
 				usedTip = tip;
 				break;
 			}
-		if(usedTip != null)
+		if(usedTip != null && !used.contains(usedTip.getKey()))
 			used.add(usedTip.getKey());
 	}
 
