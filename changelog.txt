@@ -292,3 +292,15 @@ RETRAIT      = [-]
 [*] Fix de la gestion de la pause
 [*] Fix d'endCap
 [-] Les achievements 1.8 ne sont plus gérés
+--------
+
+      >> 2.17.1
+[*] Les noms et la position des coffres à crocheter devraient apparaître normalement
+[*] Correction de la couleur dans les messages de mort
+[*] Amélioration interne de l'enclenchement d'une deep pause
+[*] Les sons sont joués en 1.13 et supérieur
+[*] Les conteneurs ne sont plus ouvrables en deep pause
+[*] Dropper des items ou pêcher sont des actions impossibles en deep pause
+[*] En pause, la vitesse des joueurs en survie est à 0
+[*] Les dégâts à cause du vide sont subis, même en pause
+[*] Plus de crash à cause des tips
