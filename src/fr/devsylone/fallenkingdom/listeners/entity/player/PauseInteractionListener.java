@@ -14,13 +14,15 @@ public class PauseInteractionListener implements Listener
     @EventHandler
     public void onInteract(final PlayerInteractEvent event)
     {
-        event.setCancelled(isCancelledDueToPause(event.getPlayer()));
+        if (isCancelledDueToPause(event.getPlayer()))
+            event.setCancelled(true);
     }
 
     @EventHandler
     public void onDrop(final PlayerDropItemEvent event)
     {
-        event.setCancelled(isCancelledDueToPause(event.getPlayer()));
+        if (isCancelledDueToPause(event.getPlayer()))
+            event.setCancelled(true);
     }
 
     public boolean isCancelledDueToPause(final Player player)
