@@ -304,3 +304,8 @@ RETRAIT      = [-]
 [*] En pause, la vitesse des joueurs en survie est à 0
 [*] Les dégâts à cause du vide sont subis, même en pause
 [*] Plus de crash à cause des tips
+
+      >> 2.17.2
+[*] Les coffres à crocheter re-fonctionnent normalement
+[*] La commande /fk game restore en 1.8 est réparée
+[+] Ajouts de statistiques internes pour les développeurs
