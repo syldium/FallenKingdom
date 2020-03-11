@@ -54,13 +54,13 @@ public class PausedPlayer implements Saveable
 
 		inv = new ItemStack[40];
 
-		inv[0] = invArg.getHelmet();
-		inv[1] = invArg.getChestplate();
-		inv[2] = invArg.getLeggings();
-		inv[3] = invArg.getBoots();
+		inv[0] = cloneIfNotNull(invArg.getHelmet());
+		inv[1] = cloneIfNotNull(invArg.getChestplate());
+		inv[2] = cloneIfNotNull(invArg.getLeggings());
+		inv[3] = cloneIfNotNull(invArg.getBoots());
 
 		for(int i = 0; i < 36; i++)
-			inv[i + 4] = invArg.getItem(i);
+			inv[i + 4] = cloneIfNotNull(invArg.getItem(i));
 
 	}
 
@@ -108,6 +108,11 @@ public class PausedPlayer implements Saveable
 			return true;
 		else
 			return false;
+	}
+	
+	private ItemStack cloneIfNotNull(ItemStack item)
+	{
+		return item == null ? item : item.clone();
 	}
 
 	@Override
