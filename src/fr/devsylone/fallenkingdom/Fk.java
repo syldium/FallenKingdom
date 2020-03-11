@@ -11,6 +11,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.zip.ZipOutputStream;
 
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -244,6 +245,12 @@ public class Fk extends JavaPlugin
 				w.setGameRuleValue("doDaylightCycle", "false");
 				w.setTime(6000L);
 			}
+		
+		/*
+		 * Metrics
+		 */
+		
+		Metrics metrics = new Metrics(this, 6738);
 
 		/*
 		 * Updater
