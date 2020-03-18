@@ -21,18 +21,18 @@
  */
 package fr.devsylone.fallenkingdom.utils;
 
-import com.cryptomorin.xseries.XMaterial;
+import java.lang.reflect.Method;
+import java.util.EnumSet;
+import java.util.List;
+
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
-import org.bukkit.block.data.*;
-import org.bukkit.material.*;
+import org.bukkit.material.Colorable;
+import org.bukkit.material.MaterialData;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
+import com.cryptomorin.xseries.XMaterial;
 
 /*
  * References
@@ -148,7 +148,7 @@ public final class XBlock {
         if (ISFLAT) { // 1.13+
             for (Object b : blocks) {
                 Material material = ((BlockState) b).getBlock().getType();
-                if (material.equals(Material.AIR) || material.equals(Material.CAVE_AIR)) {
+                if (material.equals(Material.AIR) || material.equals(XMaterial.CAVE_AIR.parseMaterial())) {
                     return ((BlockState) b).getBlock();
                 }
             }

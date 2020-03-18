@@ -309,3 +309,6 @@ RETRAIT      = [-]
 [*] Les coffres à crocheter re-fonctionnent normalement
 [*] La commande /fk game restore en 1.8 est réparée
 [+] Ajouts de statistiques internes pour les développeurs
+
+      >> 2.18.0
+[+] Ajout de la commande /fk rules disabledPotions

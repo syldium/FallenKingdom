@@ -4,9 +4,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+
+import com.cryptomorin.xseries.XMaterial;
 
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.game.Game.GameState;
@@ -159,6 +160,28 @@ public class FilesUpdater
 			System.out.println(String.join(" - ", lines));
 			file.set("ScoreboardManager.Sidebar", lines);
 		}
+		
+//		if(isGrowing(lastv, "2.18.0"))
+//		{
+//			file = Fk.getInstance().getSaveableManager().getFileConfiguration("save.yml");
+//
+//			getSection = file.getConfigurationSection("FkPI.RulesManager.Rules");
+//			setSection = getSection;
+//			for(String team : getSection.getKeys(false))
+//				set(team + ".Color", Color.forName(team));
+//
+//			file = Fk.getInstance().getSaveableManager().getFileConfiguration("scoreboard.yml");
+//
+//			List<String> lines = file.getStringList("ScoreboardManager.Sidebar");
+//			for(int i=0;i<lines.size();i++)
+//				if(lines.get(i).startsWith("Base : "))
+//				{
+//					lines.set(i, lines.get(i).replaceAll("Base : ", "{BASE_PORTAL}"));
+//					break;
+//				}
+//			System.out.println(String.join(" - ", lines));
+//			file.set("ScoreboardManager.Sidebar", lines);
+//		}
 	}
 
 	public boolean isSection(String path)

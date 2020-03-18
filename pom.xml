@@ -97,12 +97,19 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/../spigot-1.15.2.jar</systemPath>
         </dependency>-->
-        <dependency>
+         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
             <version>1.15.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
+        <!-- Structure of 1.8 NMS packets -->
+<!--          <dependency> -->
+<!--             <groupId>org.spigotmc</groupId> -->
+<!--             <artifactId>spigot</artifactId> -->
+<!--             <version>1.8.8-R0.1-SNAPSHOT</version> -->
+<!--             <scope>provided</scope> -->
+<!--         </dependency> -->
         <dependency>
             <groupId>com.googlecode.json-simple</groupId>
             <artifactId>json-simple</artifactId>

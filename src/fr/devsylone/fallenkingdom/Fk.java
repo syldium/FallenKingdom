@@ -100,7 +100,7 @@ public class Fk extends JavaPlugin
 			/*
 			 * Mode debug
 			 */
-			DEBUG_MODE = DebuggerUtils.getServerFolderName().endsWith("-debug");
+			DEBUG_MODE = DebuggerUtils.getServerFolderName().endsWith("-debug") || new File(getDataFolder(), "debug").exists();
 			if(DEBUG_MODE)
 			{
 				debug("##########################");
@@ -136,10 +136,10 @@ public class Fk extends JavaPlugin
 		siManager = new StarterInventoryManager();
 		sbManager = new ScoreboardManager();
 
-		if (Bukkit.getBukkitVersion().contains("1.8"))
+		if(Bukkit.getBukkitVersion().contains("1.8"))
 			pcktManager = new PacketManager1_8();
-		else if (isNewVersion)
-			if (Bukkit.getBukkitVersion().contains("1.13"))
+		else if(isNewVersion)
+			if(Bukkit.getBukkitVersion().contains("1.13"))
 				pcktManager = new PacketManager1_13();
 			else
 				pcktManager = new PacketManager1_14();
@@ -245,11 +245,11 @@ public class Fk extends JavaPlugin
 				w.setGameRuleValue("doDaylightCycle", "false");
 				w.setTime(6000L);
 			}
-		
+
 		/*
 		 * Metrics
 		 */
-		
+
 		Metrics metrics = new Metrics(this, 6738);
 
 		/*
@@ -278,10 +278,13 @@ public class Fk extends JavaPlugin
 		// Même si la partie est en pause et est sauvegardée dans cet état,
 		// on essaye de remettre dans un état normal, c'est-à-dire avec l'IA des mobs.
 		// Au redémarrage, la commande "game pause" sera exécutée si cela a été enregistré.
-		if (game.getState().equals(Game.GameState.PAUSE)) {
-			try {
+		if(game.getState().equals(Game.GameState.PAUSE))
+		{
+			try
+			{
 				getCommandManager().getCommand("game resume").execute(null, null, new String[0]);
-			} catch (Exception e) {
+			}catch(Exception e)
+			{
 				e.printStackTrace();
 			}
 		}
@@ -388,7 +391,10 @@ public class Fk extends JavaPlugin
 		//			DebuggerUtils.printCurrentStackTrace();
 		if(DEBUG_MODE)
 		{
-			Bukkit.broadcastMessage(ChatUtils.DEBUG + (message == null ? "null" : message.toString()));
+			if(!Fk.getInstance().isEnabled())
+			Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), () -> Bukkit.broadcastMessage(ChatUtils.DEBUG + (message == null ? "null" : message.toString())));
+			else
+				Bukkit.broadcastMessage(ChatUtils.DEBUG + (message == null ? "null" : message.toString()));
 		}
 
 	}

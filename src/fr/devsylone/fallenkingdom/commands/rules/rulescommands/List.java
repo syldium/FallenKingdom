@@ -15,12 +15,12 @@ public class List extends FkRuleCommand
 
 	public void execute(Player sender, FkPlayer fkp, String[] args)
 	{
-		fkp.sendMessage("§a§m--------§b Liste des règles §a§m--------\n");
+		fkp.sendMessage("§7§m--------§b Liste des règles §7§m--------\n");
 
 		for(String s : RulesFormatter.formatRules())
 		{
 			fkp.sendMessage(s);
 		}
-		fkp.sendMessage("§a§m------------------------------\n");
+		fkp.sendMessage("§7§m------------------------------\n");
 	}
 }

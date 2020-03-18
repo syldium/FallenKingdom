@@ -1,13 +1,15 @@
 package fr.devsylone.fkpi.rules;
 
-import com.cryptomorin.xseries.XMaterial;
-import fr.devsylone.fkpi.util.BlockDescription;
-import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
+
+import com.cryptomorin.xseries.XMaterial;
+
+import fr.devsylone.fkpi.util.BlockDescription;
 
 public class AllowedBlocks extends Rule
 {
@@ -74,8 +76,8 @@ public class AllowedBlocks extends Rule
 		getValue().add(new BlockDescription("TORCH"));
 		getValue().add(new BlockDescription("WALL_TORCH"));
 		if (XMaterial.isNewVersion()) {
-			getValue().add(new BlockDescription(Material.REDSTONE_TORCH));
-			getValue().add(new BlockDescription(Material.REDSTONE_WALL_TORCH));
+			getValue().add(new BlockDescription(XMaterial.REDSTONE_TORCH.parseMaterial()));
+			getValue().add(new BlockDescription(XMaterial.REDSTONE_WALL_TORCH.parseMaterial()));
 		} else {
 			getValue().add(new BlockDescription("REDSTONE_TORCH_ON"));
 		}
@@ -96,16 +98,16 @@ public class AllowedBlocks extends Rule
 		signs.add(new BlockDescription(XMaterial.OAK_WALL_SIGN.parseMaterial()));
 		if (Material.getMaterial("ACACIA_SIGN") != null)
 		{
-			signs.add(new BlockDescription(Material.ACACIA_SIGN));
-			signs.add(new BlockDescription(Material.ACACIA_WALL_SIGN));
-			signs.add(new BlockDescription(Material.BIRCH_SIGN));
-			signs.add(new BlockDescription(Material.BIRCH_WALL_SIGN));
-			signs.add(new BlockDescription(Material.DARK_OAK_SIGN));
-			signs.add(new BlockDescription(Material.DARK_OAK_WALL_SIGN));
-			signs.add(new BlockDescription(Material.JUNGLE_SIGN));
-			signs.add(new BlockDescription(Material.JUNGLE_WALL_SIGN));
-			signs.add(new BlockDescription(Material.SPRUCE_SIGN));
-			signs.add(new BlockDescription(Material.SPRUCE_WALL_SIGN));
+			signs.add(new BlockDescription(XMaterial.ACACIA_SIGN.parseMaterial()));
+			signs.add(new BlockDescription(XMaterial.ACACIA_WALL_SIGN.parseMaterial()));
+			signs.add(new BlockDescription(XMaterial.BIRCH_SIGN.parseMaterial()));
+			signs.add(new BlockDescription(XMaterial.BIRCH_WALL_SIGN.parseMaterial()));
+			signs.add(new BlockDescription(XMaterial.DARK_OAK_SIGN.parseMaterial()));
+			signs.add(new BlockDescription(XMaterial.DARK_OAK_WALL_SIGN.parseMaterial()));
+			signs.add(new BlockDescription(XMaterial.JUNGLE_SIGN.parseMaterial()));
+			signs.add(new BlockDescription(XMaterial.JUNGLE_WALL_SIGN.parseMaterial()));
+			signs.add(new BlockDescription(XMaterial.SPRUCE_SIGN.parseMaterial()));
+			signs.add(new BlockDescription(XMaterial.SPRUCE_WALL_SIGN.parseMaterial()));
 		}
 		return signs;
 	}

@@ -79,7 +79,7 @@ public class FkScoreboard
 			sidebarBoard.setLine("§1", ++index);
 			sidebarBoard.setLine("§bRègles :", ++index);
 
-			for(String s : RulesFormatter.formatRules("allowedblocks", "chargedcreepers"))
+			for(String s : RulesFormatter.formatRules("allowedblocks", "chargedcreepers", "disabledpotions"))
 				if(index < 14)
 					sidebarBoard.setLine(" " + s, ++index);
 				else

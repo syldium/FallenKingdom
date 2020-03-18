@@ -10,6 +10,7 @@ import fr.devsylone.fallenkingdom.listeners.entity.DamageListener;
 import fr.devsylone.fallenkingdom.listeners.entity.mob.MobSpawn;
 import fr.devsylone.fallenkingdom.listeners.entity.player.ChangeGamemodeListener;
 import fr.devsylone.fallenkingdom.listeners.entity.player.ChatListener;
+import fr.devsylone.fallenkingdom.listeners.entity.player.DisabledPotionsListener;
 import fr.devsylone.fallenkingdom.listeners.entity.player.FoodListener;
 import fr.devsylone.fallenkingdom.listeners.entity.player.GoToNetherListener;
 import fr.devsylone.fallenkingdom.listeners.entity.player.InventoryListener;
@@ -44,5 +45,6 @@ public class ListenersManager
 		plugin.getServer().getPluginManager().registerEvents(new ChangeGamemodeListener(), plugin);
 		plugin.getServer().getPluginManager().registerEvents(new RespawnListener(), plugin);
 		plugin.getServer().getPluginManager().registerEvents(new PauseInteractionListener(), plugin);
+		plugin.getServer().getPluginManager().registerEvents(new DisabledPotionsListener(), plugin);
 	}
 }

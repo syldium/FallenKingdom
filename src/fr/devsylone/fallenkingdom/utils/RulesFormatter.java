@@ -7,9 +7,11 @@ import java.util.List;
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fkpi.rules.AllowedBlocks;
 import fr.devsylone.fkpi.rules.ChargedCreepers;
+import fr.devsylone.fkpi.rules.DisabledPotions;
 import fr.devsylone.fkpi.rules.PlaceBlockInCave;
 import fr.devsylone.fkpi.rules.Rule;
 import fr.devsylone.fkpi.util.BlockDescription;
+import fr.devsylone.fkpi.util.XPotionData;
 
 public class RulesFormatter
 {
@@ -34,7 +36,13 @@ public class RulesFormatter
 		else if(rule instanceof AllowedBlocks)
 		{
 			for(BlockDescription b : ((AllowedBlocks) rule).reducedList())
-				value += ("\n" + "§b> §2" + b.toString());
+				value += ("\n" + "§a✔ " + b.toString());
+		}
+
+		else if(rule instanceof DisabledPotions)
+		{
+			for(XPotionData data : ((DisabledPotions) rule).getValue())
+				value += ("\n" + "§c✘ " + data.getType().name() + (data.isExtended() ? " + redstone" : data.isUpgraded() ? " + glowtone" : ""));
 		}
 
 		else if(rule.getValue() instanceof Boolean)
