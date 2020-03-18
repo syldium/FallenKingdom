@@ -5,8 +5,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.cryptomorin.xseries.XMaterial;
-import fr.devsylone.fallenkingdom.utils.XBlock;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Color;
@@ -21,8 +19,11 @@ import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
+import com.cryptomorin.xseries.XMaterial;
+
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.manager.packets.PacketManager;
+import fr.devsylone.fallenkingdom.utils.XBlock;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.util.Saveable;
 
@@ -318,7 +319,12 @@ public class ChestsRoom implements Saveable
 				else
 					for(String player : team.getPlayers())
 						if(Bukkit.getPlayer(player) != null)
+						{
+							if(!contains(Bukkit.getPlayer(player).getLocation()) || Bukkit.getPlayer(player).isDead())
+								removeEnemyInside(player);
+
 							Fk.getInstance().getPacketManager().sendTitle(Bukkit.getPlayer(player), "", "§b" + (int) ((System.currentTimeMillis() - startCaptureTimestamp) / 1000.0d / (double) FkPI.getInstance().getChestsRoomsManager().getCaptureTime() * 100) + "%", 0, 20, 20);
+						}
 			}
 		}.runTaskTimer(Fk.getInstance(), 5l, 5l);
 	}
