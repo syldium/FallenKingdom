@@ -10,7 +10,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
@@ -23,7 +22,6 @@ import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.utils.NMSUtils;
 import fr.devsylone.fallenkingdom.utils.PacketUtils;
 import fr.devsylone.fkpi.util.Saveable;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class DeepPauseManager implements Saveable
@@ -60,30 +58,15 @@ public class DeepPauseManager implements Saveable
 		}
 	}
 
-	public void freezePlayers()
-	{
-		if (!(boolean) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("DeepPause").getValue()) {
-			return;
-		}
-		Bukkit.getOnlinePlayers().stream()
-			.filter(player -> player.getGameMode().equals(GameMode.SURVIVAL) || player.getGameMode().equals(GameMode.ADVENTURE))
-			.forEach(player -> freeze(player, false));
-	}
-
 	public void unfreezePlayers()
 	{
-		Bukkit.getOnlinePlayers().forEach(player -> freeze(player, true));
-	}
-
-	public void freeze(Player player, boolean revert)
-	{
-		if (revert) {
-			player.setWalkSpeed(0.2f);
-			player.getActivePotionEffects().forEach(effect -> player.removePotionEffect(effect.getType()));
-		} else {
-			player.setWalkSpeed(0.00002f);
-			player.addPotionEffect(new PotionEffect(PotionEffectType.WATER_BREATHING, Integer.MAX_VALUE, 0, false, false));
-		}
+		// Dans le cas d'une pause faite en 2.17.1 ou 2.17.2
+		Bukkit.getOnlinePlayers().forEach(player -> {
+			if (player.getWalkSpeed() < 0.02f && player.hasPotionEffect(PotionEffectType.WATER_BREATHING)) {
+				player.setWalkSpeed(0.2f);
+				player.removePotionEffect(PotionEffectType.WATER_BREATHING);
+			}
+		});
 	}
 
 	public void protectDespawnItems()

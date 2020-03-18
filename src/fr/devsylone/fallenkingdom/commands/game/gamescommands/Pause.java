@@ -50,7 +50,6 @@ public class Pause extends FkGameCommand
 		{
 			w.setGameRuleValue("doDaylightCycle", "false");
 		}
-		Fk.getInstance().getDeepPauseManager().freezePlayers();
 		Fk.getInstance().getDeepPauseManager().removeAIs();
 		Fk.getInstance().getDeepPauseManager().protectDespawnItems();
 

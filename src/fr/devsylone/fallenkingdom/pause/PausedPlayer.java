@@ -25,6 +25,7 @@ public class PausedPlayer implements Saveable
 	private int food;
 	private float saturation;
 	private float xp;
+	private int oxygen;
 	private GameMode gm;
 	private Location loc;
 	private List<PotionEffect> effects;
@@ -36,16 +37,17 @@ public class PausedPlayer implements Saveable
 
 	public PausedPlayer(Player p)
 	{
-		this(p.getName(), p.getInventory(), p.getHealth(), p.getFoodLevel(), p.getSaturation(), p.getExp(), p.getGameMode(), p.getLocation(), p.getActivePotionEffects());
+		this(p.getName(), p.getInventory(), p.getHealth(), p.getFoodLevel(), p.getSaturation(), p.getExp(), p.getRemainingAir(), p.getGameMode(), p.getLocation(), p.getActivePotionEffects());
 	}
 
-	public PausedPlayer(String pl, PlayerInventory invArg, double h, int f, float s, float xp, GameMode gm, Location loc, Collection<PotionEffect> e)
+	public PausedPlayer(String pl, PlayerInventory invArg, double h, int f, float s, float xp, int oxygen, GameMode gm, Location loc, Collection<PotionEffect> e)
 	{
 		player = pl;
 		health = h;
 		food = f;
 		saturation = s;
 		this.xp = xp;
+		this.oxygen = oxygen;
 		this.gm = gm;
 		this.loc = loc;
 
@@ -89,6 +91,7 @@ public class PausedPlayer implements Saveable
 			p.setFoodLevel(food);
 			p.setSaturation(saturation);
 			p.setExp(xp);
+			p.setRemainingAir(oxygen);
 			p.setGameMode(gm);
 			p.teleport(loc);
 
@@ -123,6 +126,7 @@ public class PausedPlayer implements Saveable
 		food = config.getInt("player");
 		saturation = (float) config.getDouble("player");
 		xp = (float) config.getDouble("player");
+		oxygen = config.getInt("oxygen", 300);
 		gm = GameMode.valueOf(config.getString("gm"));
 
 		loc = new Location(Bukkit.getWorld(UUID.fromString(config.getString("loc.world"))), config.getInt("loc.x"), config.getInt("loc.y"), config.getInt("loc.z"), config.getInt("loc.yaw"), config.getInt("loc.pitch"));
@@ -153,6 +157,7 @@ public class PausedPlayer implements Saveable
 		config.set("food", food);
 		config.set("saturation", (double) saturation);
 		config.set("xp", (double) xp);
+		config.set("oxygen", oxygen);
 		config.set("gm", gm.name());
 
 		if(loc != null && loc.getWorld() != null) {
