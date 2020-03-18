@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.zip.ZipOutputStream;
 
 import org.bstats.bukkit.Metrics;
@@ -251,7 +252,14 @@ public class Fk extends JavaPlugin
 		 */
 
 		Metrics metrics = new Metrics(this, 6738);
-
+		metrics.addCustomChart(new Metrics.SingleLineChart("server_running_1-8_version", new Callable<Integer>()
+		{
+			@Override
+			public Integer call() throws Exception
+			{
+				return Bukkit.getVersion().contains("1.8") ? 1 : 0;
+			}
+		}));
 		/*
 		 * Updater
 		 */
@@ -392,7 +400,7 @@ public class Fk extends JavaPlugin
 		if(DEBUG_MODE)
 		{
 			if(!Fk.getInstance().isEnabled())
-			Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), () -> Bukkit.broadcastMessage(ChatUtils.DEBUG + (message == null ? "null" : message.toString())));
+				Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), () -> Bukkit.broadcastMessage(ChatUtils.DEBUG + (message == null ? "null" : message.toString())));
 			else
 				Bukkit.broadcastMessage(ChatUtils.DEBUG + (message == null ? "null" : message.toString()));
 		}
