@@ -1,6 +1,7 @@
-package fr.devsylone.fallenkingdom.commands.rules;
+package fr.devsylone.fallenkingdom.commands.rules.rulescommands;
 
 import fr.devsylone.fallenkingdom.Fk;
+import fr.devsylone.fallenkingdom.commands.rules.FkRuleCommand;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
 import org.bukkit.entity.Player;

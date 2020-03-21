@@ -1,5 +1,6 @@
 package fr.devsylone.fallenkingdom.game;
 
+import fr.devsylone.fkpi.FkPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -97,18 +98,20 @@ public class Game implements Saveable
 				/*
 				 * Set sun time
 				 */
-				int worldTime = dayDuration == 24000 ? time : (int) (time / dayTickFactor);
+				long worldTime = getExceptedWorldTime();
 				for(World w : Bukkit.getWorlds())
 				{
 					/*
 					 * Time skip
+					 * Dans le monde normal, si la diff n'est pas due au changement de jour. 32 correspond à une durée de jour de 750 ticks soit environ 45 sec.
 					 */
-					if(w.getEnvironment().equals(World.Environment.NORMAL) && Math.abs(w.getTime() - worldTime) > 32 && time < dayDuration) {
+					if(w.getEnvironment().equals(World.Environment.NORMAL) && Math.abs(w.getTime() - worldTime) > 32 && time < dayDuration)
+					{
 						Fk.getInstance().getLogger().info("Ajustement de l'heure de la partie en fonction de l'heure du monde.");
 						time = (int) (w.getTime() * dayTickFactor);
-						continue;
+						worldTime = getExceptedWorldTime();
 					}
-					w.setTime((boolean) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("EternalDay").getValue() ? 6000l : worldTime);
+					w.setTime(worldTime);
 				}
 				if(worldTime == 23000)
 					Fk.broadcast("" + ChatColor.GRAY + ChatColor.ITALIC + "Le soleil va bientôt se lever...");
@@ -198,15 +201,25 @@ public class Game implements Saveable
 		return time;
 	}
 
+	public long getExceptedWorldTime()
+	{
+		if ((boolean) FkPI.getInstance().getRulesManager().getRuleByName("EternalDay").getValue())
+			return 6000;
+		else
+			return dayDuration == 24000 ? time : (long) (time / dayTickFactor);
+	}
+
 	public void updateDayDuration()
 	{
-		dayDuration = (int) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("DayDuration").getValue();
+		float previousDayTickFactor = dayTickFactor;
+		dayDuration = (int) FkPI.getInstance().getRulesManager().getRuleByName("DayDuration").getValue();
 		if (dayDuration < 1200) {
-			Fk.getInstance().getFkPI().getRulesManager().getRuleByName("DayDuration").setValue(new Integer(24000));
+			FkPI.getInstance().getRulesManager().getRuleByName("DayDuration").setValue(new Integer(24000));
 			dayDuration = 24000;
 		}
 		dayTickFactor = dayDuration/24000f;
 		scoreboardUpdate = dayDuration/1200;
+		time = (int) (time/previousDayTickFactor * dayTickFactor);
 	}
 
 	public String getFormattedTime()
