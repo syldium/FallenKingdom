@@ -8,9 +8,12 @@ public class GameEvent extends Event
 
 	private static final HandlerList HANDLERS = new HandlerList();
 
-	@Override
 	public HandlerList getHandlers()
 	{
+		return HANDLERS;
+	}
+
+	public static HandlerList getHandlerList() {
 		return HANDLERS;
 	}
 
