@@ -130,7 +130,7 @@ public class DisabledPotionsListener implements Listener
 
 		else
 			for(ItemStack potion : potions)
-				if(potion != null && potion.getType() == XMaterial.POTION.parseMaterial())
+				if(potion != null && (potion.getType() == XMaterial.POTION.parseMaterial() || potion.getType() == XMaterial.SPLASH_POTION.parseMaterial() || potion.getType() == XMaterial.LINGERING_POTION.parseMaterial()))
 				{
 					ItemStack predicatedResult = Utils.getPredicatedBrewedPotion(potion, ingredient);
 					if(predicatedResult.getItemMeta() instanceof PotionMeta && ((DisabledPotions) FkPI.getInstance().getRulesManager().getRuleByName("DisabledPotions")).isDisabled(XPotionData.fromItemStack(predicatedResult)))
