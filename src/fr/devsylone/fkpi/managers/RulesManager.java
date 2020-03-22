@@ -57,6 +57,7 @@ public class RulesManager implements Saveable
 		registerNewRule(new Rule("ChestLimit", new Integer(20)));
 		registerNewRule(new Rule("FriendlyFire", new Boolean(true)));
 		registerNewRule(new Rule("EternalDay", new Boolean(false)));
+		registerNewRule(new Rule("DayDuration", new Integer(24000)));
 		registerNewRule(new Rule("DoPauseAfterDay", new Boolean(false)));
 		registerNewRule(new Rule("DeepPause", new Boolean(true)));
 		registerNewRule(new ChargedCreepers(10, 50, 1));

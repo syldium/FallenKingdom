@@ -1,9 +1,6 @@
 package fr.devsylone.fallenkingdom.game;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-//import org.bukkit.Achievement;
+import fr.devsylone.fkpi.FkPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -25,6 +22,9 @@ public class Game implements Saveable
 	private GameState state;
 	private int day;
 	private int time;
+	private int dayDuration = 24000;
+	private int scoreboardUpdate = 20;
+	private float dayTickFactor = 1;
 
 	private boolean assault;
 	private boolean pvp;
@@ -98,18 +98,26 @@ public class Game implements Saveable
 				/*
 				 * Set sun time
 				 */
+				long worldTime = getExceptedWorldTime();
 				for(World w : Bukkit.getWorlds())
-					w.setTime((boolean) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("EternalDay").getValue() ? 6000l : time);
-
-				if(time == 23000)
+				{
+					/*
+					 * Time skip
+					 * Dans le monde normal, si la diff n'est pas due au changement de jour. 32 correspond à une durée de jour de 750 ticks soit environ 45 sec.
+					 */
+					if(w.getEnvironment().equals(World.Environment.NORMAL) && Math.abs(w.getTime() - worldTime) > 32 && time < dayDuration)
+					{
+						Fk.getInstance().getLogger().info("Ajustement de l'heure de la partie en fonction de l'heure du monde.");
+						time = (int) (w.getTime() * dayTickFactor);
+						worldTime = getExceptedWorldTime();
+					}
+					w.setTime(worldTime);
+				}
+				if(worldTime == 23000)
 					Fk.broadcast("" + ChatColor.GRAY + ChatColor.ITALIC + "Le soleil va bientôt se lever...");
 
-				else if(time == 24000)
+				else if(time >= dayDuration)
 				{
-
-					for(World w : Bukkit.getWorlds())
-						w.setTime(0l);
-
 					day++;
 					time = 0;
 					Fk.broadcast("§bJour " + day);
@@ -161,7 +169,7 @@ public class Game implements Saveable
 					Fk.getInstance().getScoreboardManager().recreateAllScoreboards();
 				}
 
-				if(time % 20 == 0)
+				if(time % scoreboardUpdate == 0)
 					Fk.getInstance().getScoreboardManager().refreshAllScoreboards(PlaceHolder.DAY, PlaceHolder.HOUR, PlaceHolder.MINUTE);
 
 			}
@@ -193,33 +201,55 @@ public class Game implements Saveable
 		return time;
 	}
 
+	public long getExceptedWorldTime()
+	{
+		if ((boolean) FkPI.getInstance().getRulesManager().getRuleByName("EternalDay").getValue())
+			return 6000;
+		else
+			return dayDuration == 24000 ? time : (long) (time / dayTickFactor);
+	}
+
+	public void updateDayDuration()
+	{
+		float previousDayTickFactor = dayTickFactor;
+		dayDuration = (int) FkPI.getInstance().getRulesManager().getRuleByName("DayDuration").getValue();
+		if (dayDuration < 1200) {
+			FkPI.getInstance().getRulesManager().getRuleByName("DayDuration").setValue(new Integer(24000));
+			dayDuration = 24000;
+		}
+		dayTickFactor = dayDuration/24000f;
+		scoreboardUpdate = dayDuration/1200;
+		time = (int) (time/previousDayTickFactor * dayTickFactor);
+	}
+
 	public String getFormattedTime()
 	{
-		Date time = new Date((int) ((Fk.getInstance().getGame().getTime() * 3.6 + 5 * 60 * 60) * 1000));
-
-		String h = new SimpleDateFormat("HH").format(time);
-		h = (String) (Integer.parseInt(h) > 24 ? "0" + (Integer.parseInt(h) - 24) : h);
-
-		String m = new SimpleDateFormat("mm").format(time);
-
-		return h + "h" + m;
+		int gameTime = (int) (time / dayTickFactor);
+		int hours = gameTime / 1000 + 6;
+		hours %= 24;
+		if (hours == 24) hours = 0;
+		int minutes = (gameTime % 1000) * 60 / 1000;
+		String mm = "0" + minutes;
+		mm = mm.substring(mm.length() - 2);
+		return hours + "h" + mm;
 	}
 
 	public String getHour()
 	{
-		Date time = new Date((int) ((Fk.getInstance().getGame().getTime() * 3.6 + 5 * 60 * 60) * 1000));
-
-		String h = new SimpleDateFormat("HH").format(time);
-		h = (String) (Integer.parseInt(h) > 24 ? "0" + (Integer.parseInt(h) - 24) : h);
-		return h;
+		int gameTime = (int) (time / dayTickFactor);
+		int hours = gameTime / 1000 + 6;
+		hours %= 24;
+		if (hours == 24) hours = 0;
+		return String.valueOf(hours);
 	}
 
 	public String getMinute()
 	{
-		Date time = new Date((int) ((Fk.getInstance().getGame().getTime() * 3.6 + 5 * 60 * 60) * 1000));
-
-		String m = new SimpleDateFormat("mm").format(time);
-		return m;
+		int gameTime = (int) (time / dayTickFactor);
+		int minutes = (gameTime % 1000) * 60 / 1000;
+		String mm = "0" + minutes;
+		mm = mm.substring(mm.length() - 2);
+		return mm;
 	}
 
 	public boolean isAssaultsEnabled()
@@ -253,6 +283,7 @@ public class Game implements Saveable
 		nether = (int) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("NetherCap").getValue() <= day;
 		end = (int) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("EndCap").getValue() <= day;
 		startTimer();
+		updateDayDuration();
 
 		if(state.equals(GameState.STARTING))
 		{
@@ -376,11 +407,6 @@ public class Game implements Saveable
 						p.setFlying(false);
 						Fk.getInstance().getStarterInventoryManager().applyStarterInv(p);
 					}
-
-					/*if(Bukkit.getBukkitVersion().contains("1.8"))
-						for(Achievement a : Achievement.values())
-							if(p.hasAchievement(a))
-								p.removeAchievement(a);*/
 
 					p.playSound(p.getLocation(), FkSound.EXPLODE.bukkitSound(), 1, 1);
 				}
