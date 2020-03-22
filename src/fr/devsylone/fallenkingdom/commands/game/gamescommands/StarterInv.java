@@ -13,7 +13,7 @@ public class StarterInv extends FkGameCommand
 {
 	public StarterInv()
 	{
-		super("starterInv", "<save|undo|show>", 1, "Gèrer l'inventaire que les joueurs ont au départ");
+		super("starterInv", "<save|undo|show>", 1, "Gérer l'inventaire que les joueurs ont au départ");
 	}
 
 	public void execute(Player sender, FkPlayer fkp, String[] args)

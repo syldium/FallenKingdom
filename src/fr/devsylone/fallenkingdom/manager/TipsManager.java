@@ -45,9 +45,9 @@ public class TipsManager
 		newTip(new TntJump(), "Empêcher les tours en §cTNT&r !");
 		newTip(new ChargedCreepers(), "Gérer les creepers chargés qui donnent de la §cTNT&r !");
 		newTip(new Edit(), "Modifier le scoreboard à votre guise ! ");
-		newTip(new Bug(), "Un problème ? Alertez l'équipe de développement en une commande");
+		newTip(new Bug(), "Un problème ? Alertez l'équipe de développement en une commande !");
 		newTip(new Restore(), "À utiliser après une pause !");
-		newTip(new StarterInv(), "Personnalisez le stuff de départ");
+		newTip(new StarterInv(), "Personnalisez le stuff de départ !");
 		newTip(new PlaceBlockInCave(), "Pour poser des blocs en caverne !");
 		newTip(new Add(), "Créez des coffres à crocheter !");
 
