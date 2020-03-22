@@ -1,6 +1,8 @@
 package fr.devsylone.fallenkingdom.game;
 
 import fr.devsylone.fkpi.FkPI;
+import fr.devsylone.fkpi.api.event.DayEvent;
+import fr.devsylone.fkpi.api.event.GameEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -62,13 +64,13 @@ public class Game implements Saveable
 		switch(state)
 		{
 			case PAUSE:
-				Bukkit.getPluginManager().callEvent(new GameEvent(GameEvent.Type.PAUSE_EVENT, day));
+				Bukkit.getPluginManager().callEvent(new GameEvent(GameEvent.Type.PAUSE_EVENT));
 				break;
 			case STARTED:
 				if(this.state == GameState.STARTING)
-					Bukkit.getPluginManager().callEvent(new GameEvent(GameEvent.Type.START_EVENT, day));
+					Bukkit.getPluginManager().callEvent(new GameEvent(GameEvent.Type.START_EVENT));
 				else
-					Bukkit.getPluginManager().callEvent(new GameEvent(GameEvent.Type.RESUME_EVENT, day));
+					Bukkit.getPluginManager().callEvent(new GameEvent(GameEvent.Type.RESUME_EVENT));
 				break;
 		}
 
@@ -122,7 +124,9 @@ public class Game implements Saveable
 					time = 0;
 					Fk.broadcast("§bJour " + day);
 
-					Bukkit.getPluginManager().callEvent(new GameEvent(GameEvent.Type.NEW_DAY, day)); //EVENT
+					Bukkit.getPluginManager().callEvent(new DayEvent(DayEvent.Type.NEW_DAY, day)); //EVENT
+					if(Fk.getInstance().getConfig().getBoolean("enable-mcfunction-support", false))
+						Bukkit.dispatchCommand(Bukkit.getConsoleSender(),"function fallenkingdom:newday");
 
 					if((boolean) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("DoPauseAfterDay").getValue() && day > 1)
 						try
@@ -137,14 +141,14 @@ public class Game implements Saveable
 					{
 						pvp = true;
 						Fk.broadcast("§cLe pvp est désormais actif !", FkSound.ENDERDRAGON_GROWL);
-						Bukkit.getPluginManager().callEvent(new GameEvent(GameEvent.Type.PVP_ENABLED, day)); //EVENT
+						Bukkit.getPluginManager().callEvent(new DayEvent(DayEvent.Type.PVP_ENABLED, day)); //EVENT
 					}
 
 					if((int) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("TntCap").getValue() == day)
 					{
 						assault = true;
 						Fk.broadcast("§cLes assauts sont désormais actifs !", FkSound.ENDERDRAGON_GROWL);
-						Bukkit.getPluginManager().callEvent(new GameEvent(GameEvent.Type.TNT_ENABLED, day)); //EVENT
+						Bukkit.getPluginManager().callEvent(new DayEvent(DayEvent.Type.TNT_ENABLED, day)); //EVENT
 					}
 
 					if((int) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("NetherCap").getValue() == day)
@@ -152,14 +156,14 @@ public class Game implements Saveable
 						nether = true;
 						Fk.broadcast("§cLe nether est désormais ouvert !", FkSound.ENDERDRAGON_GROWL);
 						Fk.getInstance().getPortalsManager().enablePortals();
-						Bukkit.getPluginManager().callEvent(new GameEvent(GameEvent.Type.NETHER_ENABLED, day)); //EVENT
+						Bukkit.getPluginManager().callEvent(new DayEvent(DayEvent.Type.NETHER_ENABLED, day)); //EVENT
 					}
 
 					if((int) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("EndCap").getValue() == day)
 					{
 						end = true;
 						Fk.broadcast("§cL'end est désormais ouvert !", FkSound.ENDERDRAGON_GROWL);
-						Bukkit.getPluginManager().callEvent(new GameEvent(GameEvent.Type.END_ENABLED, day)); //EVENT
+						Bukkit.getPluginManager().callEvent(new DayEvent(DayEvent.Type.END_ENABLED, day)); //EVENT
 					}
 
 					for(LockedChest chest : Fk.getInstance().getFkPI().getLockedChestsManager().getChestList())

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.devsylone.fallenkingdom.Fk;
+import fr.devsylone.fkpi.api.ITeam;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -12,7 +13,7 @@ import fr.devsylone.fkpi.util.Color;
 import fr.devsylone.fkpi.util.CrossversionTeam;
 import fr.devsylone.fkpi.util.Saveable;
 
-public class Team implements Saveable
+public class Team implements ITeam, Saveable
 {
 	private final static boolean IS_BUKKIT_PLUGIN;
 	private String name;

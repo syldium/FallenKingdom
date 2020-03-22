@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import fr.devsylone.fkpi.api.event.TeamCaptureEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Color;
@@ -263,6 +264,8 @@ public class ChestsRoom implements Saveable
 
 		captureTeam = team;
 
+		Bukkit.getServer().getPluginManager().callEvent(new TeamCaptureEvent(team, base.getTeam(), false));  // EVENT
+
 		for(String player : team.getPlayers())
 			if(Bukkit.getPlayer(player) != null)
 				Fk.getInstance().getPlayerManager().getPlayer(player).sendMessage(team.getChatColor() + "[Équipe]§r Vous commencez la capture de la salle des coffres  !");
@@ -287,6 +290,9 @@ public class ChestsRoom implements Saveable
 
 					else
 					{
+						Bukkit.getServer().getPluginManager().callEvent(new TeamCaptureEvent(team, base.getTeam(), true)); // EVENT
+						if(Fk.getInstance().getConfig().getBoolean("enable-mcfunction-support", false))
+							Bukkit.dispatchCommand(Bukkit.getConsoleSender(),"function fallenkingdom:win");
 						for(Player p : Bukkit.getOnlinePlayers())
 							Fk.getInstance().getPacketManager().sendTitle(p, "Victoire !!", "Gagnants : " + team.toString(), 10, 10 * 20, 10);
 						new BukkitRunnable()

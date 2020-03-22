@@ -1,24 +1,25 @@
 ### Api Fk
-Le plugin est doté d'un évent spigot : GameEvent
-
-Vous pouvez utiliser ce dernier comme un évent classique :
+Le plugin est doté de quelques évènements utilisables comme des évènements Spigot classiques :
 
 ```java
+class FkListener implements Listener
+{
 	@EventHandler
-	public void onFkEvent(GameEvent event){
+	public void onDayEvent(final DayEvent event) { // Lié au changement de jour
 		event.getDay(); //retourne un int indiquant le jour actuel
 		event.getType(); //retourne le type d'évenement
 	}
+    @EventHandler
+	public void onGameEvent(final GameEvent event) { // Début, pause ou reprise d'une partie
+		event.getType(); //retourne le type d'évenement
+	}
+    @EventHandler
+	public void onCaptureEvent(final TeamCaptureEvent event) { // Lors d'une capture de salle des coffres
+		if (event.isSuccess()) {
+		    Bukkit.broadcastMessage("Félicitations à l'équipe " + event.getAssailantsTeam().toString() + ChatColor.RESET + " !");
+		}
+	}
+}
 ```
 
-Les types d'event sonts : 
-* NEWDAY
-* PVPENABLED
-* TNTENABLED
-* NETHERENABLED
-* ENDENABLED
-* PAUSEEVENT
-* RESUMEEVENT
-* STARTEVENT
-
-Et viennent de l'Enum "GameEvent.Type"
+Les méthodes destinées à l'api externe sont situées dans le package [api](../../src/fr/devsylone/fkpi/api).

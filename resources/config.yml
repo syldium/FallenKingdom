@@ -1,6 +1,9 @@
 #Activer ou non la vérification des permissions lorsqu'une commande est exécutée
 enable-permissions: false
 
+#Activer ou non le support des .mcfunction personnalisées (à partir de la 1.12)
+enable-mcfunction-support: false
+
 Application:
   #Activer/Désactiver la possibilté de connection depuis un Fk config.
   Enabled: true
