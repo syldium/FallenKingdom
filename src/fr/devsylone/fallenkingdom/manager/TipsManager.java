@@ -9,6 +9,7 @@ import java.util.Random;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.commands.Bug;
@@ -25,7 +26,6 @@ import fr.devsylone.fallenkingdom.game.Game.GameState;
 import fr.devsylone.fallenkingdom.players.Tip;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fallenkingdom.utils.FkSound;
-import org.bukkit.scheduler.BukkitRunnable;
 
 public class TipsManager
 {
@@ -51,7 +51,7 @@ public class TipsManager
 		newTip(new PlaceBlockInCave(), "Pour poser des blocs en caverne !");
 		newTip(new Add(), "Créez des coffres à crocheter !");
 
-		newTip(null, "Faîtes §l[tab] &ren écrivant votre commande, elle s'ecrira tout seule !");
+		newTip(null, "Faites §l[tab] &ren écrivant votre commande, elle s'ecrira toute seule !");
 		newTip(null, "Notre discord : §e§lhttps://discord.gg/NwqFNa6 &r !");
 		newTip(null, "Les seaux ne peuvent être posés contre une muraille adverse !");
 	}
