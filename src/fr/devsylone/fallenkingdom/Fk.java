@@ -501,8 +501,8 @@ public class Fk extends JavaPlugin
 		if(Bukkit.getVersion().contains("Bukkit"))
 			addError("Ce plugin n'est pas compatible avec CraftBukkit, veuillez utiliser spigot.");
 
-		if(NMSUtils.getVersion().equals("v1_8_R1"))
-			addError("Votre version de spigot n'est pas compatible avec le plugin, merci d'utiliser la version 1.8.8 de spigot");
+		if(Bukkit.getVersion().contains("1.8") && getMinorVersionNumber() < 3)
+			addError("Votre version de spigot n'est pas compatible avec le plugin,\nmerci d'utiliser au minimum la version 1.8.3 de spigot");
 
 		if(!System.getProperty("java.version").startsWith("1.8") && !System.getProperty("java.version").startsWith("11."))
 			addError("Votre version de java n'est pas compatible avec le plugin. Merci d'utiliser Java 8 ou 11");
@@ -525,6 +525,16 @@ public class Fk extends JavaPlugin
 	public boolean isNewVersion()
 	{
 		return isNewVersion;
+	}
+
+	private int getMinorVersionNumber()
+	{
+		int count = (int) Bukkit.getVersion().chars().filter(ch -> ch == '.').count();
+		if (count > 1) {
+			int minorVersionIndex = Bukkit.getVersion().lastIndexOf('.') + 1;
+			return Integer.parseInt(Bukkit.getVersion().substring(minorVersionIndex, minorVersionIndex + 1));
+		}
+		return 0;
 	}
 
 	public static void main(String[] args)
