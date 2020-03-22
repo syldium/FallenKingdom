@@ -312,3 +312,7 @@ RETRAIT      = [-]
 
       >> 2.18.0
 [+] Ajout de la commande /fk rules disabledPotions
+[*] Correction de la langue dans certains messages
+[+] /fk rules dayDuration
+[+] Support de la commande /time set
+[-] La vitesse des joueurs n'est plus modifiée lors d'une pause

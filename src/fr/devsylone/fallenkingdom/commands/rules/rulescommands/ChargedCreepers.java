@@ -12,7 +12,7 @@ public class ChargedCreepers extends FkRuleCommand
 	public ChargedCreepers()
 	{
 		super("chargedCreepers", "<taux de spawn> <chance de drop> <nombre de tnts>", 3,
-				"Le §ctaux de spawn&r définit la chance en pourcentage qu'un creeper qui apparaît soit un creeper chargé. La §cchance de drop &rest la chance en pourcentage que le creeper chargé donne de la tnt à sa mort. Le §cnombre de tnts &rsera le nombre de tnt qu'un creeper chargé donnera à sa mort, si il en donne");
+				"Le §ctaux de spawn&r définit la chance en pourcentage qu'un creeper qui apparaît soit un creeper chargé. La §cchance de drop &rest la chance en pourcentage que le creeper chargé donne de la tnt à sa mort. Le §cnombre de tnts &rsera le nombre de tnt qu'un creeper chargé donnera à sa mort, s'il en donne");
 	}
 
 	public void execute(Player sender, FkPlayer fkp, String[] args)
