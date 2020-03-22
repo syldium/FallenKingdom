@@ -42,8 +42,8 @@ public class TipsManager
 		this.used = new HashSet<Integer>();
 
 		newTip(new DoPauseAfterDay(), "Mettre en pause à la fin de la journée !");
-		newTip(new TntJump(), "Empêcher les tower en §cTNT&r !");
-		newTip(new ChargedCreepers(), "Gérer les creepers chargés qui lootent de la §cTNT&r !");
+		newTip(new TntJump(), "Empêcher les tours en §cTNT&r !");
+		newTip(new ChargedCreepers(), "Gérer les creepers chargés qui donnent de la §cTNT&r !");
 		newTip(new Edit(), "Modifier le scoreboard à votre guise ! ");
 		newTip(new Bug(), "Un problème ? Alertez l'équipe de développement en une commande");
 		newTip(new Restore(), "À utiliser après une pause !");
