@@ -27,7 +27,7 @@ public enum PlaceHolder
 	NEAREST_TEAM_BASE("getNearestTeamBase", PlaceHolderUtils.class,  new String[] {"player"}, "Base ennemie la plus proche", "NEAREST_TEAM_BASE", "ENEMY_TEAM_BASE", "ENEMY_BASE"),
 	NEAREST_BASE_DIRECTION("getNearestBaseDirection", PlaceHolderUtils.class,  new String[] {"player", "arrows"}, "Direction de la base ennemie la plus proche", "NEAREST_BASE_DIRECTION", "ENEMY_BASE_DIRECTION", "ENEMY_BASE_DIR", "ENEMY_DIR"),
 
-	PVPCAP("isPvpEnabled", Fk.getInstance().getGame(), "Pvp actifs ?", "PVP?"),
+	PVPCAP("isPvpEnabled", Fk.getInstance().getGame(), "Pvp actif ?", "PVP?"),
 	TNTCAP("isAssaultsEnabled", Fk.getInstance().getGame(), "Assauts actifs ?", "TNT?"),
 	NETHERCAP("isNetherEnabled", Fk.getInstance().getGame(), "Nether ouvert ?", "NETHER?"),
 	ENDCAP("isEndEnabled", Fk.getInstance().getGame(), "End ouvert ?", "END?");
