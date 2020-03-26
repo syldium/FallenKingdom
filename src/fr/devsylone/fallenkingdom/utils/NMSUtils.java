@@ -89,7 +89,8 @@ public class NMSUtils
 	public static Optional<Class<?>> optionalClass(String className) {
 		try {
 			return Optional.of(Class.forName(className));
-		} catch (ClassNotFoundException e) {
+		} catch (NullPointerException|ClassNotFoundException e) {
+			// Vous aimez les trucs bizarres ? Class.forName() déclenche des fois des lang.NullPointerException, alors que ce n'est pas associé à sa signature...
 			return Optional.empty();
 		}
 	}
