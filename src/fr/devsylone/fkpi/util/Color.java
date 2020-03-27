@@ -6,10 +6,14 @@ import org.bukkit.DyeColor;
 public enum Color
 {
 	BLEU("bleu", "bleue", ChatColor.BLUE, DyeColor.BLUE),
+	CYAN("cyan", "cyan", ChatColor.DARK_AQUA, DyeColor.CYAN),
+	AQUA("aqua", "aqua", ChatColor.AQUA, DyeColor.LIGHT_BLUE),
 	ROUGE("rouge", "rouge", ChatColor.RED, DyeColor.RED),
-	VERT("vert", "verte", ChatColor.GREEN, DyeColor.GREEN),
+	LIME("lime", "lime", ChatColor.GREEN, DyeColor.LIME),
+	VERT("vert", "verte", ChatColor.DARK_GREEN, DyeColor.GREEN),
 	VIOLET("violet", "violette", ChatColor.DARK_PURPLE, DyeColor.PURPLE),
-	ROSE("rose", "rose", ChatColor.LIGHT_PURPLE, DyeColor.MAGENTA),
+	MAGENTA("magenta", "magenta", ChatColor.LIGHT_PURPLE, DyeColor.MAGENTA),
+	ROSE("rose", "rose", ChatColor.LIGHT_PURPLE, DyeColor.PINK),
 	JAUNE("jaune", "jaune", ChatColor.YELLOW, DyeColor.YELLOW),
 	BLANC("blanc", "blanche", ChatColor.WHITE, DyeColor.WHITE),
 	NOIR("noir", "noire", ChatColor.BLACK, DyeColor.BLACK),
