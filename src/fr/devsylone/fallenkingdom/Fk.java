@@ -9,7 +9,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.zip.ZipOutputStream;
 
 import org.bstats.bukkit.Metrics;
@@ -250,16 +249,12 @@ public class Fk extends JavaPlugin
 		/*
 		 * Metrics
 		 */
+		try {
+			metrics();
+		} catch (NoClassDefFoundError e) {
+			e.printStackTrace();
+		}
 
-		Metrics metrics = new Metrics(this, 6738);
-		metrics.addCustomChart(new Metrics.SingleLineChart("server_running_1-8_version", new Callable<Integer>()
-		{
-			@Override
-			public Integer call() throws Exception
-			{
-				return Bukkit.getVersion().contains("1.8") ? 1 : 0;
-			}
-		}));
 		/*
 		 * Updater
 		 */
@@ -453,6 +448,8 @@ public class Fk extends JavaPlugin
 
 		pManager = new PlayerManager();
 		portalManager = new PortalsManager();
+		dpManager.unprotectItems();
+		dpManager.resetAIs();
 
 		// Reset saveFile & Restorer
 
@@ -476,6 +473,8 @@ public class Fk extends JavaPlugin
 		tipsManager.startBroadcasts();
 
 		game.stop();
+		dpManager.resetAIs();
+		dpManager.unprotectItems();
 
 		for(FkPlayer p : getPlayerManager().getConnectedPlayers())
 		{
@@ -535,6 +534,12 @@ public class Fk extends JavaPlugin
 			return Integer.parseInt(Bukkit.getVersion().substring(minorVersionIndex, minorVersionIndex + 1));
 		}
 		return 0;
+	}
+
+	private void metrics() throws NoClassDefFoundError // gson en 1.8.0
+	{
+		Metrics metrics = new Metrics(this, 6738);
+		metrics.addCustomChart(new Metrics.SingleLineChart("server_running_1-8_version", () -> Bukkit.getVersion().contains("1.8") ? 1 : 0));
 	}
 
 	public static void main(String[] args)
