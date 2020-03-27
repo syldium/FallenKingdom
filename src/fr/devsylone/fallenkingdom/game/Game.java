@@ -46,7 +46,7 @@ public class Game implements Saveable
 	{
 		state = GameState.BEFORE_STARTING;
 		day = 0;
-		time = 23999;
+		time = (int) FkPI.getInstance().getRulesManager().getRuleByName("DayDuration").getValue() - 10;
 	}
 
 	public GameState getState()
@@ -187,7 +187,7 @@ public class Game implements Saveable
 		setState(GameState.BEFORE_STARTING);
 
 		day = 0;
-		time = 23999;
+		time = (int) FkPI.getInstance().getRulesManager().getRuleByName("DayDuration").getValue() - 10;
 		assault = false;
 		pvp = false;
 		nether = false;
@@ -414,6 +414,9 @@ public class Game implements Saveable
 
 					p.playSound(p.getLocation(), FkSound.EXPLODE.bukkitSound(), 1, 1);
 				}
+
+				for(World w : Bukkit.getWorlds())
+					w.setTime((boolean) FkPI.getInstance().getRulesManager().getRuleByName("EternalDay").getValue() ? 6000L : 23990L);
 
 				Fk.broadcast("§2La partie commence, bonne chance à tous !");
 				setState(GameState.STARTED);
