@@ -319,6 +319,7 @@ RETRAIT      = [-]
 [-] La vitesse des joueurs n'est plus modifiée lors d'une pause
 
       >> 2.18.1
+[+] /fk chests list
 [+] Ajout des couleurs lime, cyan et aqua
 [*] Séparation des couleurs magenta et rose
 [*] Amélioration de la détection des versions non supportées
