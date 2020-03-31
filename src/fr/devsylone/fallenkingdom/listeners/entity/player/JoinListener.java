@@ -21,16 +21,16 @@ public class JoinListener implements Listener
 		if(!Fk.getInstance().getError().isEmpty())
 		{
 			e.setLoginResult(Result.KICK_OTHER);
-			e.setKickMessage("§d§m----------§5 Fallenkingdom §d§m----------\n"
-					+ "\n"
-					+ "§6Le plugin a rencontré une erreur\n\n"
-					+ "§7Erreur : §c" + Fk.getInstance().getError());
+			e.setKickMessage(kickMessage());
 		}
 	}
 
 	@EventHandler
 	public void join(final PlayerJoinEvent e)
 	{
+		if(!Fk.getInstance().getError().isEmpty()) // Bukkit n'a pas l'air d'invoquer l'AsyncPlayerPreLoginEvent
+			e.getPlayer().kickPlayer(kickMessage());
+
 		FkPlayer player = Fk.getInstance().getPlayerManager().getPlayer(e.getPlayer());
 		
 		if(e.getPlayer().isOp())
@@ -63,5 +63,13 @@ public class JoinListener implements Listener
 
 		e.setQuitMessage(null);
 		Fk.broadcast(e.getPlayer().getDisplayName() + ChatColor.GRAY + " a quitté la partie !");
+	}
+
+	private String kickMessage()
+	{
+		return "§d§m----------§5 Fallenkingdom §d§m----------\n"
+				+ "\n"
+				+ "§6Le plugin a rencontré une erreur\n\n"
+				+ "§7Erreur : §c" + Fk.getInstance().getError();
 	}
 }

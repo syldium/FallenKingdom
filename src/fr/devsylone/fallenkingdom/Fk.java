@@ -94,6 +94,7 @@ public class Fk extends JavaPlugin
 	@Override
 	public void onEnable()
 	{
+		check();
 
 		try
 		{
@@ -269,8 +270,6 @@ public class Fk extends JavaPlugin
 		}
 
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> saveableManager.saveAll(), 5l * 60l * 20l, 5l * 60l * 20l);
-
-		check();
 	}
 
 	@Override
@@ -501,10 +500,10 @@ public class Fk extends JavaPlugin
 			addError("Ce plugin n'est pas compatible avec CraftBukkit, veuillez utiliser spigot.");
 
 		if(Bukkit.getVersion().contains("1.8") && getMinorVersionNumber() < 3)
-			addError("Votre version de spigot n'est pas compatible avec le plugin,\nmerci d'utiliser au minimum la version 1.8.3 de spigot");
+			addError("Votre version de spigot n'est pas compatible avec le plugin,\nmerci d'utiliser au minimum la version §l§n1.8.3 de spigot");
 
-		if(!System.getProperty("java.version").startsWith("1.8") && !System.getProperty("java.version").startsWith("11."))
-			addError("Votre version de java n'est pas compatible avec le plugin. Merci d'utiliser Java 8 ou 11");
+		if(!System.getProperty("java.version").startsWith("1.8") && !System.getProperty("java.version").startsWith("11.") && !System.getProperty("java.version").startsWith("14"))
+			addError("Votre version de java n'est pas compatible avec le plugin. Merci d'utiliser Java 8 ou LTS supérieure");
 
 		for(String warn : warns)
 		{
