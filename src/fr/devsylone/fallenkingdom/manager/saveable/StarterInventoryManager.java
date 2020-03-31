@@ -9,35 +9,28 @@ import org.bukkit.inventory.PlayerInventory;
 
 import fr.devsylone.fkpi.util.Saveable;
 
+import java.util.Arrays;
+
 public class StarterInventoryManager implements Saveable
 {
-	private ItemStack[] armors;
-	private ItemStack[] inventory;
+	private ItemStack[] armors = new ItemStack[4];
+	private ItemStack[] inventory = new ItemStack[Bukkit.getVersion().contains("1.8") ? 36 : 41];
 
-	private ItemStack[] lastArmors;
-	private ItemStack[] lastInventory;
-
-	public StarterInventoryManager()
-	{
-		armors = new ItemStack[4];
-		inventory = new ItemStack[36];
-
-		lastArmors = armors;
-		lastInventory = inventory;
-	}
+	private ItemStack[] lastArmors = armors;
+	private ItemStack[] lastInventory = inventory;
 
 	public void setStarterInv(PlayerInventory inv)
 	{
 		lastArmors = armors;
 		lastInventory = inventory;
 
-		armors = inv.getArmorContents();
-		inventory = inv.getContents();
+		armors = Arrays.stream(inv.getArmorContents()).map(item -> item == null ? null : item.clone()).toArray(ItemStack[]::new);
+		inventory = Arrays.stream(inv.getContents()).map(item -> item == null ? null : item.clone()).toArray(ItemStack[]::new);
 	}
 
 	public boolean undo()
 	{
-		if(armors == lastArmors)
+		if(inventory == lastInventory)
 			return false;
 
 		armors = lastArmors;
@@ -63,6 +56,8 @@ public class StarterInventoryManager implements Saveable
 		for(int i = 0; i < inventory.length; i++)
 			if(i < 9)
 				inv.setItem(45 + i, inventory[i]);
+			else if (i >= 36)
+				inv.setItem(i - 36, inventory[i]);
 			else
 				inv.setItem(9 + i, inventory[i]);
 
