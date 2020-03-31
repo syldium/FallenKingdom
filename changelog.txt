@@ -309,6 +309,7 @@ RETRAIT      = [-]
 [*] Les coffres à crocheter re-fonctionnent normalement
 [*] La commande /fk game restore en 1.8 est réparée
 [+] Ajouts de statistiques internes pour les développeurs
+--------
 
       >> 2.18.0
 [+] Ajout de la commande /fk rules disabledPotions
@@ -316,3 +317,10 @@ RETRAIT      = [-]
 [+] /fk rules dayDuration
 [+] Support de la commande /time set
 [-] La vitesse des joueurs n'est plus modifiée lors d'une pause
+
+      >> 2.18.1
+[+] Ajout des couleurs lime, cyan et aqua
+[*] Séparation des couleurs magenta et rose
+[*] Amélioration de la détection des versions non supportées
+[*] Fix de la visualisation de l'inventaire de départ
+[*] Fix d'une erreur au lancement avec Mohist
