@@ -17,6 +17,7 @@ public class Remove extends FkChestsCommand
 	public Remove()
 	{
 		super("remove", "Le coffre devant vous redeviendra normal");
+		permission = ADMIN_PERMISSION;
 	}
 
 	public void execute(Player sender, FkPlayer fkp, String[] args)

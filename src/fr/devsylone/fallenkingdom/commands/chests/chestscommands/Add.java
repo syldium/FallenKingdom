@@ -17,6 +17,7 @@ public class Add extends FkChestsCommand
 	public Add()
 	{
 		super("add", "<day> <time> (en secondes) [name] ", 2, "Le coffre devant vous deviendra un coffre à crocheter durant le temps défini, crochetable à partir du jour défini, avec un nom ou pas");
+		permission = ADMIN_PERMISSION;
 	}
 
 	public void execute(Player sender, FkPlayer fkp, String[] args)
