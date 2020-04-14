@@ -1,5 +1,6 @@
 package fr.devsylone.fallenkingdom.commands.rules;
 
+import fr.devsylone.fallenkingdom.utils.Messages;
 import org.bukkit.ChatColor;
 
 import fr.devsylone.fallenkingdom.commands.FkCommand;
@@ -8,6 +9,11 @@ import fr.devsylone.fallenkingdom.utils.FkSound;
 
 public abstract class FkRuleCommand extends FkCommand
 {
+	public FkRuleCommand(String path, String args, int nbrArgs, Messages description)
+	{
+		this(path, args, nbrArgs, description.getMessage());
+	}
+
 	public FkRuleCommand(String path, String args, int nbrArgs, String description)
 	{
 		super("rules " + path, args, nbrArgs, description);

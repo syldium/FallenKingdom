@@ -1,6 +1,6 @@
 package fr.devsylone.fallenkingdom.commands.scoreboard.scoreboardcommands;
 
-import org.bukkit.ChatColor;
+import fr.devsylone.fallenkingdom.utils.Messages;
 import org.bukkit.entity.Player;
 
 import fr.devsylone.fallenkingdom.Fk;
@@ -11,28 +11,20 @@ public class Reset extends FkScoreboardCommand
 {
 	public Reset()
 	{
-		super("reset", "", 0, "Réinitialise l'agencement du scoreboard");
+		super("reset", "", 0, Messages.CMD_MAP_SCOREBOARD_RESET);
 	}
 
 	public void execute(final Player sender, final FkPlayer fkp, String[] args)
 	{
 		if(!Fk.getInstance().getCommandManager().isConfirmed("sbreset"))
 		{
-			String msg = "";
-			msg = msg + ChatColor.RED + "§m--------------§c ATTENTION §c§m--------------\n";
-			msg = msg + ChatColor.RED + "Vous êtes sur le point de supprimer\n";
-			msg = msg + ChatColor.DARK_RED + "tous les réglages §ldu scoreboard§c\n\n";
-			msg = msg + ChatColor.RED + "Si c'est bien ce que vous voulez faire, \n";
-			msg = msg + ChatColor.RED + "merci de retaper la commande.\n";
-			msg = msg + ChatColor.RED + "§m--------------------------------------";
-
-			fkp.sendMessage(msg);
+			fkp.sendMessage(createWarning(Messages.WARNING_SCOREBOARD_RESET, true));
 
 			Fk.getInstance().getCommandManager().setConfirmed("sbreset", true);
 		}
 		else
 		{
-			fkp.sendMessage("§aLe scoreboard a été réinitialisé !");
+			fkp.sendMessage(Messages.CMD_MAP_SCOREBOARD_RESET);
 			Fk.getInstance().getScoreboardManager().reset();
 			Fk.getInstance().getScoreboardManager().recreateAllScoreboards();
 			Fk.getInstance().getScoreboardManager().refreshAllScoreboards();

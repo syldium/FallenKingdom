@@ -1,5 +1,6 @@
 package fr.devsylone.fallenkingdom.commands.teams.teamscommands;
 
+import fr.devsylone.fallenkingdom.utils.Messages;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -11,7 +12,7 @@ public class Remove extends fr.devsylone.fallenkingdom.commands.teams.FkTeamComm
 {
 	public Remove()
 	{
-		super("remove", "<team>", 1, "Supprimer une équipe.");
+		super("remove", "<team>", 1, Messages.CMD_MAP_TEAM_REMOVE);
 	}
 
 	public void execute(Player sender, FkPlayer fkp, String[] args) throws Exception

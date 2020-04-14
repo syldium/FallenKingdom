@@ -1,6 +1,6 @@
 package fr.devsylone.fallenkingdom.listeners.block;
 
-import org.bukkit.ChatColor;
+import fr.devsylone.fallenkingdom.utils.Messages;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World.Environment;
@@ -16,7 +16,7 @@ import fr.devsylone.fkpi.teams.Team;
 
 public class BucketListener implements Listener
 {
-	private Fk plugin;
+	private final Fk plugin;
 
 	public BucketListener(Fk mc)
 	{
@@ -37,7 +37,7 @@ public class BucketListener implements Listener
 
 		if(plugin.getGame().getState().equals(GameState.PAUSE))
 		{
-			p.sendMessage(ChatUtils.PREFIX + ChatColor.RED + "La partie est en pause.");
+			ChatUtils.sendMessage(p, Messages.PLAYER_PAUSE);
 			e.setCancelled(true);
 			return;
 		}
@@ -46,7 +46,7 @@ public class BucketListener implements Listener
 			if(!Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(p.getName()).equals(team))
 				if(team.getBase() != null && team.getBase().contains(bloc, 1))
 				{
-					p.sendMessage(ChatUtils.PREFIX + ChatColor.RED + "Vous ne pouvez pas vider ce seau !");
+					ChatUtils.sendMessage(p, Messages.PLAYER_PLACE_WATER_NEXT);
 					e.setCancelled(true);
 					break;
 				}

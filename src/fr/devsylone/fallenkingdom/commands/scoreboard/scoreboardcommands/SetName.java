@@ -1,5 +1,6 @@
 package fr.devsylone.fallenkingdom.commands.scoreboard.scoreboardcommands;
 
+import fr.devsylone.fallenkingdom.utils.Messages;
 import org.bukkit.entity.Player;
 
 import fr.devsylone.fallenkingdom.Fk;
@@ -12,7 +13,7 @@ public class SetName extends FkScoreboardCommand
 {
 	public SetName()
 	{
-		super("setName", "<text>", 1, "Modifie le nom du scoreboard.");
+		super("setName", "<text>", 1, Messages.CMD_MAP_SCOREBOARD_SET_NAME);
 	}
 
 	public void execute(Player sender, FkPlayer fkp, String[] args) throws Exception

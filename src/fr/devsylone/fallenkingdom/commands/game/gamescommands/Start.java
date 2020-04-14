@@ -1,5 +1,6 @@
 package fr.devsylone.fallenkingdom.commands.game.gamescommands;
 
+import fr.devsylone.fallenkingdom.utils.Messages;
 import org.bukkit.entity.Player;
 
 import fr.devsylone.fallenkingdom.Fk;
@@ -10,7 +11,7 @@ public class Start extends FkGameCommand
 {
 	public Start()
 	{
-		super("start", "Lance la partie.");
+		super("start", Messages.CMD_MAP_GAME_START.getMessage());
 		permission = ADMIN_PERMISSION;
 	}
 

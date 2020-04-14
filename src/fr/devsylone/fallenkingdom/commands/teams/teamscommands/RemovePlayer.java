@@ -1,5 +1,6 @@
 package fr.devsylone.fallenkingdom.commands.teams.teamscommands;
 
+import fr.devsylone.fallenkingdom.utils.Messages;
 import org.bukkit.entity.Player;
 
 import fr.devsylone.fallenkingdom.Fk;
@@ -10,7 +11,7 @@ public class RemovePlayer extends FkTeamCommand
 {
 	public RemovePlayer()
 	{
-		super("removePlayer", "<player>", 1, "Enlever un joueur d'une équipe.");
+		super("removePlayer", "<player>", 1, Messages.CMD_MAP_TEAM_REMOVE_PLAYER);
 	}
 
 	public void execute(Player sender, FkPlayer fkp, String[] args)

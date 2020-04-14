@@ -1,6 +1,6 @@
 package fr.devsylone.fallenkingdom.commands.game.gamescommands;
 
-import org.bukkit.ChatColor;
+import fr.devsylone.fallenkingdom.utils.Messages;
 import org.bukkit.entity.Player;
 
 import fr.devsylone.fallenkingdom.Fk;
@@ -13,7 +13,7 @@ public class Stop extends FkGameCommand
 {
 	public Stop()
 	{
-		super("stop", "Arrête la partie après un lancement.");
+		super("stop", Messages.CMD_MAP_GAME_STOP.getMessage());
 		permission = ADMIN_PERMISSION;
 	}
 
@@ -23,28 +23,18 @@ public class Stop extends FkGameCommand
 		{
 			if (!Fk.getInstance().getCommandManager().isConfirmed("stop"))
 			{
-				String msg = "";
-				msg = msg + ChatColor.RED + "§m--------------§c ATTENTION §c§m--------------\n";
-				msg = msg + ChatColor.RED + "Vous êtes sur le point de stopper\n";
-				msg = msg + ChatColor.RED + "la partie en cours !\n";
-				msg = msg + ChatColor.RED + "\n";
-				msg = msg + ChatColor.RED + "Si c'est bien ce que vous voulez faire, \n";
-				msg = msg + ChatColor.RED + "merci de retaper la commande.\n";
-				msg = msg + ChatColor.RED + "§m--------------------------------------";
-
-				fkp.sendMessage(msg);
-
+				fkp.sendMessage(createWarning(Messages.WARNING_STOP, true));
 				Fk.getInstance().getCommandManager().setConfirmed("stop", true);
 
 			}
 			else
 			{
 				Fk.getInstance().stop();
-				super.broadcast(ChatColor.RED + "La partie a été stoppée");
+				super.broadcast(Messages.CMD_GAME_STOP.getMessage());
 			}
 		}
 		else
-			throw new FkLightException("La partie n'est pas encore commencée !");
+			throw new FkLightException(Messages.CMD_ERROR_GAME_NOT_STARTED);
 		
 	}
 }

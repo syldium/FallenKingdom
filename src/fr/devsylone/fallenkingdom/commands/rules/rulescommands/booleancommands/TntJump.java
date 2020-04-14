@@ -1,5 +1,6 @@
 package fr.devsylone.fallenkingdom.commands.rules.rulescommands.booleancommands;
 
+import fr.devsylone.fallenkingdom.utils.Messages;
 import org.bukkit.entity.Player;
 
 import fr.devsylone.fallenkingdom.commands.rules.FkBooleanRuleCommand;
@@ -9,13 +10,12 @@ public class TntJump extends FkBooleanRuleCommand
 {
 	public TntJump()
 	{
-		super("tntJump", "Autorise ou non le fait de sauter d'une tnt à une autre aux abords d'une base adverse.");
+		super("tntJump", Messages.CMD_MAP_RULES_TNT_JUMP);
 	}
 
 	public void execute(Player sender, FkPlayer fkp, String[] args)
 	{
 		setRuleValue(args[0]);
-		broadcast("Il est maintenant", Boolean.parseBoolean(args[0]) ? "possible" : "impossible",
-				"de sauter d'une tnt à une autre aux abords d'un base adverse");
+		broadcastPossibleImpossible(Boolean.parseBoolean(args[0]), Messages.CMD_RULES_TNT_JUMP);
 	}
 }

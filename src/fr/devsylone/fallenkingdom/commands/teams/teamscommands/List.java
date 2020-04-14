@@ -2,6 +2,7 @@ package fr.devsylone.fallenkingdom.commands.teams.teamscommands;
 
 import java.util.ArrayList;
 
+import fr.devsylone.fallenkingdom.utils.Messages;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -15,12 +16,12 @@ public class List extends FkTeamCommand
 {
 	public List()
 	{
-		super("list", "", 0, "Donne le détail de toutes les équipes.");
+		super("list", "", 0, Messages.CMD_MAP_TEAM_LIST);
 	}
 
 	public void execute(Player sender, FkPlayer fkp, String[] args)
 	{
-		java.util.List<String> list = new ArrayList<String>();
+		java.util.List<String> list = new ArrayList<>();
 
 		list.add(ChatColor.DARK_GREEN + "§m-------------------" + ChatColor.DARK_BLUE + " Liste " + ChatColor.DARK_GREEN + "§m-------------------");
 
@@ -36,7 +37,7 @@ public class List extends FkTeamCommand
 			else
 				list.add(color + "   §4/");
 			
-			list.add(color + "  Coordonées :");
+			list.add(color + "  Coordonnées :");
 
 			if(team.getBase() != null)
 				list.add(color + "     x > §c" + team.getBase().getCenter().getBlockX() + color + " ; y > §c" + team.getBase().getCenter().getBlockY() + color + " ; z > §c" + team.getBase().getCenter().getBlockZ());

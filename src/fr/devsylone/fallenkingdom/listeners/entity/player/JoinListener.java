@@ -1,6 +1,6 @@
 package fr.devsylone.fallenkingdom.listeners.entity.player;
 
-import org.bukkit.ChatColor;
+import fr.devsylone.fallenkingdom.utils.Messages;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
@@ -47,7 +47,7 @@ public class JoinListener implements Listener
 		}
 
 		e.setJoinMessage(null);
-		Fk.broadcast(e.getPlayer().getDisplayName() + ChatColor.GRAY + " a rejoint la partie !");
+		Fk.broadcast(Messages.CHAT_JOIN.getMessage().replace("%player%", e.getPlayer().getDisplayName()));
 		Fk.getInstance().getScoreboardManager().refreshAllScoreboards();
 
 		if(player.getState() == PlayerState.EDITING_SCOREBOARD)
@@ -62,7 +62,7 @@ public class JoinListener implements Listener
 			Fk.getInstance().getPlayerManager().getPlayer(e.getPlayer().getName()).getSbDisplayer().exit();
 
 		e.setQuitMessage(null);
-		Fk.broadcast(e.getPlayer().getDisplayName() + ChatColor.GRAY + " a quitté la partie !");
+		Fk.broadcast(Messages.CHAT_QUIT.getMessage().replace("%player%", e.getPlayer().getDisplayName()));
 	}
 
 	private String kickMessage()

@@ -1,5 +1,6 @@
 package fr.devsylone.fallenkingdom.commands.game.gamescommands;
 
+import fr.devsylone.fallenkingdom.utils.Messages;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -30,7 +31,7 @@ public class Pause extends FkGameCommand
 
 	public Pause()
 	{
-		super("pause", "Met la partie en pause.");
+		super("pause", Messages.CMD_MAP_GAME_PAUSE.getMessage());
 		permission = ADMIN_PERMISSION;
 	}
 
@@ -40,9 +41,9 @@ public class Pause extends FkGameCommand
 		if(sender != null)
 		{
 			if(Fk.getInstance().getGame().getState().equals(Game.GameState.BEFORE_STARTING))
-				throw new FkLightException("La partie n'est pas encore commencée.");
+				throw new FkLightException(Messages.CMD_ERROR_GAME_NOT_STARTED);
 			if(Fk.getInstance().getGame().getState().equals(Game.GameState.PAUSE))
-				throw new FkLightException("La partie est déjà en pause.");
+				throw new FkLightException(Messages.CMD_ERROR_ALREADY_IN_PAUSE);
 		}
 		Fk.getInstance().getGame().setState(Game.GameState.PAUSE);
 
@@ -57,15 +58,14 @@ public class Pause extends FkGameCommand
 		{
 			int id = Fk.getInstance().getPauseRestorer().registerAll();
 			fkp.sendMessage("§b§m-----------");
-			fkp.sendMessage("§cCe message n'est visible que par vous.");
-			fkp.sendMessage("§aLes inventaires, positions, niveaux d'experience, barre de faim, barre de vie et effets de potions ont été sauvegardés.");
+			fkp.sendMessage(Messages.CMD_GAME_PAUSE_SAVE_INFO);
 
-			String message = "{\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/fk game restore " + id + "\"},\"text\":\"Pour tout restaurer, appuyez sur §2§l[Restaurer]\"}";
+			String message = "{\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/fk game restore " + id + "\"},\"text\":\"" + Messages.CMD_GAME_PAUSE_RESTORE_INVITE.getMessage() + "\"}";
 			PacketUtils.sendJSON(sender, message);
 
 			fkp.sendMessage("§b§m-----------");
-			super.broadcast("La partie est maintenant en", "pause", ".");
-			Fk.broadcast("§aCeci est la pause n°" + id, FkSound.NOTE_BASS_GUITAR);
+			super.broadcast(Messages.CMD_GAME_PAUSE.getMessage());
+			Fk.broadcast(Messages.CMD_GAME_PAUSE_ID.getMessage().replace("%id%", String.valueOf(id)), FkSound.NOTE_BASS_GUITAR);
 		}
 	}
 }

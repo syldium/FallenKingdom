@@ -1,5 +1,6 @@
 package fr.devsylone.fallenkingdom.commands.game.gamescommands;
 
+import fr.devsylone.fallenkingdom.utils.Messages;
 import org.bukkit.entity.Player;
 
 import fr.devsylone.fallenkingdom.Fk;
@@ -13,14 +14,14 @@ public class Restore extends FkGameCommand
 {
 	public Restore()
 	{
-		super("restore", "[pause_id] (Par défaut restaure à la dernière pause)", 0, "Permet de restaurer les états des joueurs avant une pause.");
+		super("restore", "[pause_id] (Par défaut restaure à la dernière pause)", 0, Messages.CMD_MAP_GAME_RESTORE.getMessage());
 		permission = ADMIN_PERMISSION;
 	}
 
 	public void execute(Player sender, FkPlayer fkp, String[] args)
 	{
 		if(!Fk.getInstance().getGame().getState().equals(Game.GameState.PAUSE))
-			throw new FkLightException("La partie n'est pas en pause");
+			throw new FkLightException(Messages.CMD_ERROR_NOT_IN_PAUSE);
 		
 		int id = -1;
 		if(args.length > 0)
@@ -29,9 +30,9 @@ public class Restore extends FkGameCommand
 				id = Integer.parseInt(args[0]);
 			}catch(NumberFormatException e)
 			{
-				throw new FkLightException(args[0] + " n'est pas un id valide");
+				throw new FkLightException(Messages.CMD_ERROR_PAUSE_ID.getMessage().replace("%id%", args[0]));
 			}
 		id = Fk.getInstance().getPauseRestorer().restoreAll(id);//Si l'id était -1 ça remet le bon
-		Fk.broadcast("§2Votre inventaire, position, niveaux d'experience, barre de faim, barre de vie, ainsi que vos effets de potions ont été restaurés comme au début de la pause n°" + id, FkSound.NOTE_PLING);
+		Fk.broadcast(Messages.CMD_GAME_RESTORE.getMessage().replace("%id%", String.valueOf(id)), FkSound.NOTE_PLING);
 	}
 }

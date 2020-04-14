@@ -1,5 +1,8 @@
 package fr.devsylone.fallenkingdom.listeners.block;
 
+import fr.devsylone.fallenkingdom.utils.Messages;
+import fr.devsylone.fkpi.FkPI;
+import fr.devsylone.fkpi.rules.Rule;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.block.Block;
@@ -41,12 +44,9 @@ public class PortalCreateListener implements Listener
 				if(p.getLocation().distance(air.getLocation()) <= 15)
 				{
 					if(Fk.getInstance().getGame().getState().equals(GameState.BEFORE_STARTING) && p.getGameMode().equals(GameMode.CREATIVE))
-					{
-						e.setCancelled(false);
-						Fk.getInstance().getPlayerManager().getPlayer(p).sendMessage("§cSi vous cassez ce portail à l'aide d'un seau d'eau, il se \n§créouvrira §4automatiquement§c lors de l'activation du nether");
-					}
+						p.sendMessage(Messages.PLAYER_NETHER_PORTAL_SETUP.getMessage());
 					else
-						Fk.getInstance().getPlayerManager().getPlayer(p).sendMessage("§dLe nether n'est pas encore ouvert, ce portail s'allumera §5automatiquement§d le jour §5" + Fk.getInstance().getFkPI().getRulesManager().getRuleByName("NetherCap").getValue());
+						p.sendMessage(Messages.PLAYER_NETHER_PORTAL_TOO_EARLY.getMessage().replace("%day%", String.valueOf(FkPI.getInstance().getRulesManager().getRule(Rule.NETHER_CAP))));
 
 				}
 		}

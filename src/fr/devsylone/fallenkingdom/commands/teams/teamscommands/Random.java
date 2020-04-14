@@ -2,6 +2,7 @@ package fr.devsylone.fallenkingdom.commands.teams.teamscommands;
 
 import java.util.ArrayList;
 
+import fr.devsylone.fallenkingdom.utils.Messages;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -13,7 +14,7 @@ public class Random extends FkTeamCommand
 {
 	public Random()
 	{
-		super("random", "", 0, "Crée des équipes aléatoires équilibrées.");
+		super("random", "", 0, Messages.CMD_MAP_TEAM_RANDOM);
 	}
 
 	public void execute(Player sender, FkPlayer fkp, String[] args)

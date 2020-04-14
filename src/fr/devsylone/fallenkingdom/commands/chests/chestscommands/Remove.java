@@ -1,5 +1,6 @@
 package fr.devsylone.fallenkingdom.commands.chests.chestscommands;
 
+import fr.devsylone.fallenkingdom.utils.Messages;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -16,7 +17,7 @@ public class Remove extends FkChestsCommand
 {
 	public Remove()
 	{
-		super("remove", "Le coffre devant vous redeviendra normal");
+		super("remove", Messages.CMD_MAP_CHEST_REMOVE.getMessage());
 		permission = ADMIN_PERMISSION;
 	}
 
@@ -26,8 +27,8 @@ public class Remove extends FkChestsCommand
 		LockedChest chest = Fk.getInstance().getFkPI().getLockedChestsManager().getChestAt(target.getLocation());
 		
 		if(!Fk.getInstance().getFkPI().getLockedChestsManager().remove(target.getLocation()))
-			throw new FkLightException("Vous devez regarder un coffre à crocheter pour lui supprimer sa spécificité");
-		broadcast("§cLe coffre à crocheter §5" + chest.getName() + "§c a été supprimé");
+			throw new FkLightException(Messages.CMD_ERROR_NOT_LOCKED_CHEST);
+		broadcast(Messages.CMD_LOCKED_CHEST_REMOVED.getMessage().replace("%name%", chest.getName()));
 
 	}
 }

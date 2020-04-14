@@ -1,7 +1,9 @@
 package fr.devsylone.fallenkingdom.commands;
 
 import java.util.LinkedHashMap;
+import java.util.Map;
 
+import fr.devsylone.fallenkingdom.utils.Messages;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -16,13 +18,8 @@ import fr.devsylone.fallenkingdom.utils.UpdateUtils;
 
 public class FkCommandExecutor implements CommandExecutor
 {
-	public static LinkedHashMap<String, Boolean> logs;
+	public static Map<String, Boolean> logs = new LinkedHashMap<>();
 	private int i = 0;
-
-	public FkCommandExecutor()
-	{
-		logs = new LinkedHashMap<String, Boolean>();
-	}
 
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
 	{
@@ -31,7 +28,7 @@ public class FkCommandExecutor implements CommandExecutor
 			if(args.length > 0 && args[0].equals("updated"))
 				UpdateUtils.deleteUpdater(args[1]);
 			else
-				sender.sendMessage(ChatColor.DARK_RED + "Only player can use this command !");
+				sender.sendMessage(ChatColor.DARK_RED + Messages.CMD_ERROR_MUST_BE_PLAYER.getMessage());
 			return true;
 		}
 
@@ -39,7 +36,7 @@ public class FkCommandExecutor implements CommandExecutor
 		try
 		{
 			Fk.getInstance().getCommandManager().executeCommand(args, (Player) sender);
-			logs.put(++i + ". " + sender.getName() + " ->" + "/fk " + String.join(" ", args), Boolean.valueOf(true));
+			logs.put(++i + ". " + sender.getName() + " ->" + "/fk " + String.join(" ", args), Boolean.TRUE);
 
 		}catch(FkLightException e)
 		{
@@ -53,8 +50,8 @@ public class FkCommandExecutor implements CommandExecutor
 			Fk.getInstance().getLogger().info("Light error : " + e.getMessage());
 		}catch(Exception e)
 		{
-			logs.put(++i + ". " + sender.getName() + " ->" + "/fk " + String.join(" ", args), Boolean.valueOf(false));
-			fkp.sendMessage(ChatColor.RED + "Une erreur inconnue est survenue, merci de la signaler");
+			logs.put(++i + ". " + sender.getName() + " ->" + "/fk " + String.join(" ", args), Boolean.FALSE);
+			fkp.sendMessage(ChatColor.RED + Messages.CMD_ERROR.getMessage());
 			e.printStackTrace();
 		}
 		return true;

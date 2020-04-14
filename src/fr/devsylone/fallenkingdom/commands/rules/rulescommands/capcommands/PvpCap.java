@@ -1,5 +1,6 @@
 package fr.devsylone.fallenkingdom.commands.rules.rulescommands.capcommands;
 
+import fr.devsylone.fallenkingdom.utils.Messages;
 import org.bukkit.entity.Player;
 
 import fr.devsylone.fallenkingdom.commands.rules.FkCapCommand;
@@ -9,11 +10,11 @@ public class PvpCap extends FkCapCommand
 {
 	public PvpCap()
 	{
-		super("pvpCap", "Définit le jour où le pvp devient actif.");
+		super("pvpCap", Messages.CMD_MAP_RULES_PVP_CAP);
 	}
 
 	public void execute(Player sender, FkPlayer fkp, String[] args)
 	{
-		executeCap(args[0], "Le pvp est maintenant actif");
+		executeCap(args[0], Messages.CMD_RULES_CAP_PVP);
 	}
 }

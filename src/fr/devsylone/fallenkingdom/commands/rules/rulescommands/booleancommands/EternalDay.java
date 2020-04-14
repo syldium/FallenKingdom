@@ -1,6 +1,7 @@
 package fr.devsylone.fallenkingdom.commands.rules.rulescommands.booleancommands;
 
 import fr.devsylone.fallenkingdom.Fk;
+import fr.devsylone.fallenkingdom.utils.Messages;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -12,7 +13,7 @@ public class EternalDay extends FkBooleanRuleCommand
 {
 	public EternalDay()
 	{
-		super("eternalDay", "À true, désactive le cycle jour/nuit.");
+		super("eternalDay", Messages.CMD_MAP_RULES_ETERNAL_DAY);
 	}
 
 	@SuppressWarnings("deprecated")
@@ -21,9 +22,10 @@ public class EternalDay extends FkBooleanRuleCommand
 		setRuleValue(args[0]);
 		for(World w : Bukkit.getWorlds())
 		{
-			w.setGameRuleValue("doDaylightCycle", Boolean.valueOf(args[0]).booleanValue() ? "false" : "true");
+			w.setGameRuleValue("doDaylightCycle", Boolean.parseBoolean(args[0]) ? "false" : "true");
 			w.setTime(Fk.getInstance().getGame().getExceptedWorldTime());
 		}
-		broadcast("La nuit est maintenant", (Boolean.valueOf(args[0]).booleanValue() ? "dés" : "") + "activée", " !");
+		broadcastOnOff(Boolean.parseBoolean(args[0]), Messages.CMD_RULES_ETERNAL_DAY);
+		broadcast("La nuit est maintenant", (Boolean.parseBoolean(args[0]) ? "dés" : "") + "activée", " !");
 	}
 }

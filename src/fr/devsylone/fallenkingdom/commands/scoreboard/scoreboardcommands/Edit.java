@@ -1,7 +1,9 @@
 package fr.devsylone.fallenkingdom.commands.scoreboard.scoreboardcommands;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import fr.devsylone.fallenkingdom.utils.Messages;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -12,17 +14,17 @@ import fr.devsylone.fallenkingdom.players.FkPlayer;
 
 public class Edit extends FkScoreboardCommand
 {
-	private ArrayList<String> playersBeingLearningHowToEditTheBeautifulScoreboard = new ArrayList<String>();
+	private final List<String> playersBeingLearningHowToEditTheBeautifulScoreboard = new ArrayList<>();
 
 	public Edit()
 	{
-		super("edit", "", 0, "Ouvre l'interface de configuration du scoreboard");
+		super("edit", "", 0, Messages.CMD_MAP_SCOREBOARD_EDIT);
 	}
 
 	public void execute(final Player sender, final FkPlayer fkp, String[] args)
 	{
 		if(playersBeingLearningHowToEditTheBeautifulScoreboard.contains(sender.getName()))
-			throw new FkLightException("Minutes papillon, t'es déjà en train d'apprendre à modifier le scoreboard :p");
+			throw new FkLightException(Messages.CMD_ERROR_SCOREBOARD_BEING_LEARN_EDIT);
 
 		if(fkp.hasAlreadyLearntHowToEditTheBeautifulScoreboard() && args.length < 2)
 			fkp.newSbDisplayer();
@@ -32,49 +34,19 @@ public class Edit extends FkScoreboardCommand
 			playersBeingLearningHowToEditTheBeautifulScoreboard.add(sender.getName());
 			long time = 0;
 
-			Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), new Runnable()
-			{
-				@Override
-				public void run()
-				{
-					Fk.broadcast("§bPour éditer une ligne du scoreboard, utilisez la commande §e/fk scoreboard SetLine <Numéro de la ligne> <Texte>");
-				}
-			}, time * 20l);
+			Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), () -> fkp.sendMessage(Messages.SCOREBOARD_INTRO_SET_LINE), time * 20L);
 
 			time += 7;
 
-			Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), new Runnable()
-			{
-				@Override
-				public void run()
-				{
-					Fk.broadcast("§bLes numéros sont affichés en §crouge §bà droite de chaque ligne");
-				}
-			}, time * 20l);
+			Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), () -> fkp.sendMessage(Messages.SCOREBOARD_INTRO_NUMBERS), time * 20L);
 
 			time += 6;
 
-			Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), new Runnable()
-			{
-				@Override
-				public void run()
-				{
-					Fk.broadcast("");
-					Fk.broadcast("§bVoici un exemple :\n -> §r/fk scoreboard SetLine 12 &6Temps actuel &7> &d{H}:{M}");
-				}
-			}, time * 20l);
+			Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), () -> fkp.sendMessage(Messages.SCOREBOARD_INTRO_EXAMPLE), time * 20L);
 
 			time += 8;
 
-			Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), new Runnable()
-			{
-				@Override
-				public void run()
-				{
-					Fk.broadcast("");
-					Fk.broadcast("§bAffichera à 13h56 dans votre scoreboard \n§bà la ligne §c12 §b:  §6Jour actuel §7> §d13:56");
-				}
-			}, time * 20l);
+			Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), () -> fkp.sendMessage(Messages.SCOREBOARD_INTRO_EXAMPLE_RESULT), time * 20L);
 
 			time += 6;
 
@@ -83,9 +55,8 @@ public class Edit extends FkScoreboardCommand
 				@Override
 				public void run()
 				{
-					Fk.broadcast("");
-					Fk.broadcast("§bÀ vous de jouer !");
-					Fk.broadcast("§b§m-----------");
+					fkp.sendMessage(Messages.SCOREBOARD_INTRO_TRY_YOURSELF);
+					fkp.sendMessage("§b§m-----------");
 					fkp.newSbDisplayer();
 					playersBeingLearningHowToEditTheBeautifulScoreboard.remove(sender.getName());
 					fkp.knowNowSbEdit();

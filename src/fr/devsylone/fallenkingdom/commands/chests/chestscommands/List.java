@@ -4,6 +4,7 @@ import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.commands.chests.FkChestsCommand;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
+import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fkpi.lockedchests.LockedChest;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -12,7 +13,7 @@ public class List extends FkChestsCommand
 {
     public List()
     {
-        super("list", "", 0, "Affiche la liste des coffres à crocheter");
+        super("list", "", 0, Messages.CMD_MAP_CHEST_LIST.getMessage());
     }
 
     public void execute(Player sender, FkPlayer fkp, String[] args)
@@ -23,9 +24,9 @@ public class List extends FkChestsCommand
         StringBuilder builder = new StringBuilder(ChatColor.DARK_GREEN + "§m-----------------" + ChatColor.BLUE + " Liste " + ChatColor.DARK_GREEN + "§m-----------------" + System.lineSeparator());
         for(LockedChest chest : Fk.getInstance().getFkPI().getLockedChestsManager().getChestList())
         {
-            builder.append(ChatColor.GREEN + chest.getName() + ChatColor.GRAY + " ouvrable " + ChatColor.GOLD + "jour " + chest.getUnlockDay() + ChatColor.GRAY + " en " + ChatColor.GREEN + chest.getUnlockingTime() + " s" + System.lineSeparator());
-            builder.append("Coordonées : x > §c" + chest.getLocation().getBlockX() + " §7; y > §c" + chest.getLocation().getBlockY() + " §7; z > §c" + chest.getLocation().getBlockZ() + System.lineSeparator());
-            builder.append(ChatColor.DARK_GREEN + "§m----------------------------------------" + System.lineSeparator());
+            builder.append(ChatColor.GREEN).append(chest.getName()).append(ChatColor.GRAY).append(" ouvrable ").append(ChatColor.GOLD).append("jour ").append(chest.getUnlockDay()).append(ChatColor.GRAY).append(" en ").append(ChatColor.GREEN).append(chest.getUnlockingTime()).append(" s").append(System.lineSeparator());
+            builder.append("Coordonnées : x > §c").append(chest.getLocation().getBlockX()).append(" §7; y > §c").append(chest.getLocation().getBlockY()).append(" §7; z > §c").append(chest.getLocation().getBlockZ()).append(System.lineSeparator());
+            builder.append(ChatColor.DARK_GREEN + "§m----------------------------------------").append(System.lineSeparator());
         }
         fkp.sendMessage(builder.toString());
     }

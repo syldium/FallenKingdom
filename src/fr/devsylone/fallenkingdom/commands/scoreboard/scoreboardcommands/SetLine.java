@@ -1,5 +1,6 @@
 package fr.devsylone.fallenkingdom.commands.scoreboard.scoreboardcommands;
 
+import fr.devsylone.fallenkingdom.utils.Messages;
 import org.bukkit.entity.Player;
 
 import fr.devsylone.fallenkingdom.Fk;
@@ -12,7 +13,7 @@ public class SetLine extends FkScoreboardCommand
 {
 	public SetLine()
 	{
-		super("setLine", "<number> <text>", 2, "Modifie la ligne du scoreboard.");
+		super("setLine", "<number> <text>", 2, Messages.CMD_MAP_SCOREBOARD_SET_LINE);
 	}
 
 	public void execute(Player sender, FkPlayer fkp, String[] args) throws Exception

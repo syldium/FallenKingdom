@@ -1,5 +1,6 @@
 package fr.devsylone.fallenkingdom.commands.scoreboard.scoreboardcommands;
 
+import fr.devsylone.fallenkingdom.utils.Messages;
 import org.bukkit.entity.Player;
 
 import fr.devsylone.fallenkingdom.commands.scoreboard.FkScoreboardCommand;
@@ -9,7 +10,7 @@ public class LeaveEdit extends FkScoreboardCommand
 {
 	public LeaveEdit()
 	{
-		super("leaveEdit", "", 0, "Sortir du mode de configuration");
+		super("leaveEdit", "", 0, Messages.CMD_MAP_SCOREBOARD_LEAVE_EDIT);
 	}
 
 	public void execute(Player sender, FkPlayer fkp, String[] args)

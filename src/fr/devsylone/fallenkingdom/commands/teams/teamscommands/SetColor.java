@@ -1,5 +1,6 @@
 package fr.devsylone.fallenkingdom.commands.teams.teamscommands;
 
+import fr.devsylone.fallenkingdom.utils.Messages;
 import org.bukkit.entity.Player;
 
 import fr.devsylone.fallenkingdom.Fk;
@@ -13,7 +14,7 @@ public class SetColor extends FkTeamCommand
 {
 	public SetColor()
 	{
-		super("setColor", "<team> <color>", 2, "Change la couleur de l'équipe");
+		super("setColor", "<team> <color>", 2, Messages.CMD_MAP_TEAM_SET_COLOR);
 	}
 
 	public void execute(Player sender, FkPlayer fkp, String[] args)
