@@ -1,6 +1,5 @@
 package fr.devsylone.fallenkingdom.updater;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -12,15 +11,15 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.util.Scanner;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.InvalidPluginException;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.UnknownDependencyException;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
@@ -31,8 +30,6 @@ public class SpigotUpdater extends Thread
 	private final Plugin plugin;
 	private boolean enabled = true;
 	private URL url;
-
-	private boolean outdated = true;
 
 	public SpigotUpdater(Plugin plugin) throws MalformedURLException
 	{
@@ -67,29 +64,22 @@ public class SpigotUpdater extends Thread
 			connection = (HttpURLConnection) this.url.openConnection();
 			connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
 			connection.setRequestMethod("GET");
-			BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 
-			String content = "";
-			String line = null;
-			while((line = in.readLine()) != null)
-			{
-				content = content + line;
-			}
-			in.close();
+			InputStreamReader reader = new InputStreamReader(connection.getInputStream());
 
-			JSONArray fileArray = null;
+			JsonArray jsonArray = null;
 			try
 			{
-				fileArray = (JSONArray) new JSONParser().parse(content);
-			}catch(ParseException e)
+				jsonArray = new JsonParser().parse(reader).getAsJsonArray();
+			}catch(JsonSyntaxException e)
 			{}
 			String currentVersion = null;
-			if((fileArray != null))
+			if(jsonArray != null)
 			{
-				JSONObject latestFile = (JSONObject) fileArray.get(fileArray.size() - 1);
-				String version = ((String) latestFile.get("name")).split("-")[1];
+				JsonObject latestFile = jsonArray.get(jsonArray.size() - 1).getAsJsonObject();
+				String version = latestFile.get("name").getAsString().split("-")[1];
 
-				if((version != null) && (!version.isEmpty()))
+				if(version != null && !version.isEmpty())
 				{
 					currentVersion = version;
 				}
@@ -152,9 +142,8 @@ public class SpigotUpdater extends Thread
 
 				}catch(Exception e)
 				{
-					this.plugin.getLogger().info("[Updater] Echec, veuilez la télécharger manuellement ici : http://www.spigotmc.org/resources/38878");
+					this.plugin.getLogger().info("[Updater] Échec, veuillez la télécharger manuellement ici : http://www.spigotmc.org/resources/38878");
 					Fk.getInstance().addOnConnectWarning("Une nouvelle version est diponible : http://www.spigotmc.org/resources/38878");
-					Fk.getInstance().setUpToDate(false);
 					//TODO REMOVE
 					e.printStackTrace();
 				}
@@ -174,10 +163,5 @@ public class SpigotUpdater extends Thread
 			}
 			e.printStackTrace();
 		}
-	}
-
-	public boolean isOutdated()
-	{
-		return outdated;
 	}
 }

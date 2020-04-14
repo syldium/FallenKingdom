@@ -10,25 +10,18 @@ import org.bukkit.configuration.ConfigurationSection;
 
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.util.Color;
-import fr.devsylone.fkpi.util.CrossversionTeam;
 import fr.devsylone.fkpi.util.Saveable;
 
 public class Team implements ITeam, Saveable
 {
-	private final static boolean IS_BUKKIT_PLUGIN;
-	private String name;
+	private final String name;
 
 	private Base base;
 
-	private org.bukkit.scoreboard.Team scoreboardTeam;
+	private final org.bukkit.scoreboard.Team scoreboardTeam;
 	private List<String> players;
 
 	private Color color;
-
-	static
-	{
-		IS_BUKKIT_PLUGIN = FkPI.getInstance().isBukkitPlugin();
-	}
 
 	public Team(String name)
 	{
@@ -40,34 +33,20 @@ public class Team implements ITeam, Saveable
 
 		players = new ArrayList<String>();
 
-		if(IS_BUKKIT_PLUGIN)
-		{
-			scoreboardTeam = FkPI.getInstance().getTeamManager().getScoreboard().registerNewTeam(name);
-			scoreboardTeam.setPrefix(color.getChatColor() + "");
-		}
-
+		scoreboardTeam = FkPI.getInstance().getTeamManager().getScoreboard().registerNewTeam(name);
+		scoreboardTeam.setPrefix(color.getChatColor() + "");
 	}
 
 	public void addPlayer(String p)
 	{
-		if(IS_BUKKIT_PLUGIN)
-			CrossversionTeam.addEntry(p, scoreboardTeam);
+		scoreboardTeam.addEntry(p);
 		players.add(p);
 	}
 
 	public void removePlayer(String p)
 	{
-		String pl = "";
-		for(String s : players)
-			if(s.equalsIgnoreCase(p))
-			{
-				pl = s;
-				break;
-			}
-
-		players.remove(pl);
-		if(IS_BUKKIT_PLUGIN)
-			CrossversionTeam.removeEntry(pl, scoreboardTeam);
+		players.remove(p);
+		scoreboardTeam.removeEntry(p);
 	}
 
 	public void setBase(Base base)
@@ -103,12 +82,10 @@ public class Team implements ITeam, Saveable
 	public void setColor(Color color)
 	{
 		this.color = color == null ? Color.NO_COLOR : color;
-		if(IS_BUKKIT_PLUGIN) {
-			if(Fk.getInstance().isNewVersion())
-				scoreboardTeam.setColor(this.color.getChatColor());
-			else
-				scoreboardTeam.setPrefix(String.valueOf(this.color.getChatColor()));
-		}
+		if(Fk.getInstance().isNewVersion())
+			scoreboardTeam.setColor(this.color.getChatColor());
+		else
+			scoreboardTeam.setPrefix(String.valueOf(this.color.getChatColor()));
 	}
 
 	public org.bukkit.scoreboard.Team getScoreboardTeam()
@@ -157,12 +134,11 @@ public class Team implements ITeam, Saveable
 	public void load(ConfigurationSection config)
 	{
 		for(String entr : config.getStringList("Members"))
-			CrossversionTeam.addEntry(entr, scoreboardTeam);
+			scoreboardTeam.addEntry(entr);
 
 		players = config.getStringList("Members");
 		color = Color.valueOf(config.getString("Color"));
-		if(IS_BUKKIT_PLUGIN)
-			scoreboardTeam.setPrefix(this.color.getChatColor() + "");
+		scoreboardTeam.setPrefix(this.color.getChatColor() + "");
 
 		if(!config.isConfigurationSection("Base"))
 			return;

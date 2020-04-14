@@ -1,6 +1,9 @@
 package fr.devsylone.fkpi;
 
 import fr.devsylone.fallenkingdom.Fk;
+import fr.devsylone.fkpi.rules.AllowedBlocks;
+import fr.devsylone.fkpi.rules.Rule;
+import fr.devsylone.fkpi.util.BlockDescription;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -9,6 +12,8 @@ import fr.devsylone.fkpi.managers.LockedChestsManager;
 import fr.devsylone.fkpi.managers.RulesManager;
 import fr.devsylone.fkpi.managers.TeamManager;
 import fr.devsylone.fkpi.util.Saveable;
+
+import java.util.List;
 
 public class FkPI implements Saveable
 {
@@ -69,7 +74,10 @@ public class FkPI implements Saveable
 		return crManager;
 	}
 
-	/*public void fromStringArray(List<String> strings)
+	/**
+	 * @deprecated
+	 */
+	public void fromStringArray(List<String> strings)
 	{
 		for(String s : teamManager.getTeamNames())
 			teamManager.removeTeam(s);
@@ -84,27 +92,25 @@ public class FkPI implements Saveable
 			{
 				if(args[1].equalsIgnoreCase("AllowedBlocks"))
 				{
-					List<BlockDescription> blocks = ((AllowedBlocks) rulesManager.getRuleByName("AllowedBlocks")).getValue();
-					blocks.add(new BlockDescription(args[2]));
-					rulesManager.getRuleByName("AllowedBlocks").setValue(blocks);
+					rulesManager.getRule(Rule.ALLOWED_BLOCKS).getValue().add(new BlockDescription(args[2]));
 				}
 
 				else if(args[1].equalsIgnoreCase("PlaceBlockInCave"))
 				{
 					if(args[2].equalsIgnoreCase("value"))
-						rulesManager.getRuleByName(args[1]).setValue(Boolean.parseBoolean(args[3]));
+						rulesManager.getRule(Rule.PLACE_BLOCK_IN_CAVE).setActive(Boolean.parseBoolean(args[3]));
 					else
-						((PlaceBlockInCave) rulesManager.getRuleByName(args[1])).setMinimumBlocks(Integer.parseInt(args[3]));
+						rulesManager.getRule(Rule.PLACE_BLOCK_IN_CAVE).setMinimumBlocks(Integer.parseInt(args[3]));
 				}
 
 				else if(isInteger(args[2]))
-					rulesManager.getRuleByName(args[1]).setValue(Integer.parseInt(args[2]));
+					rulesManager.setRuleByName(args[1], Integer.parseInt(args[2]));
 
 				else if(isBoolean(args[2]))
-					rulesManager.getRuleByName(args[1]).setValue(Boolean.parseBoolean(args[2]));
+					rulesManager.setRuleByName(args[1], Boolean.parseBoolean(args[2]));
 
 				else
-					rulesManager.getRuleByName(args[1]).setValue(args[2]);
+					rulesManager.setRuleByName(args[1], args[2]);
 			}
 			else if(args[0].equalsIgnoreCase("teams"))
 			{
@@ -122,7 +128,7 @@ public class FkPI implements Saveable
 			}
 
 		}
-	}*/
+	}
 
 	private boolean isInteger(String s)
 	{

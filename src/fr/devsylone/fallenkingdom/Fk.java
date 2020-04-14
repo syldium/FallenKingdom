@@ -519,9 +519,8 @@ public class Fk extends JavaPlugin
 		metrics.addCustomChart(new Metrics.SingleLineChart("server_running_1-8_version", () -> Bukkit.getVersion().contains("1.8") ? 1 : 0));
 	}
 
-	public static void main(String[] args)
+	public void addOnConnectWarning(String warning)
 	{
-		System.out.println("Ce fichier est à mettre dans votre dossier plugin et non pas à executer");
+		onConnectWarnings.add(warning);
 	}
-
 }
