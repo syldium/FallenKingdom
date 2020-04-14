@@ -3,6 +3,7 @@ package fr.devsylone.fallenkingdom.game;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.api.event.DayEvent;
 import fr.devsylone.fkpi.api.event.GameEvent;
+import fr.devsylone.fkpi.rules.Rule;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -21,9 +22,9 @@ import fr.devsylone.fkpi.util.Saveable;
 
 public class Game implements Saveable
 {
-	private GameState state;
-	private int day;
-	private int time;
+	private GameState state = GameState.BEFORE_STARTING;
+	private int day = 0;
+	private int time = 23990;
 	private int dayDuration = 24000;
 	private int scoreboardUpdate = 20;
 	private float dayTickFactor = 1;
@@ -36,17 +37,10 @@ public class Game implements Saveable
 
 	public enum GameState
 	{
-		BEFORE_STARTING(),
-		STARTING(),
-		STARTED(),
-		PAUSE();
-	}
-
-	public Game()
-	{
-		state = GameState.BEFORE_STARTING;
-		day = 0;
-		time = (int) FkPI.getInstance().getRulesManager().getRuleByName("DayDuration").getValue() - 10;
+		BEFORE_STARTING,
+		STARTING,
+		STARTED,
+		PAUSE
 	}
 
 	public GameState getState()
@@ -128,7 +122,7 @@ public class Game implements Saveable
 					if(Fk.getInstance().getConfig().getBoolean("enable-mcfunction-support", false))
 						Bukkit.dispatchCommand(Bukkit.getConsoleSender(),"function fallenkingdom:newday");
 
-					if((boolean) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("DoPauseAfterDay").getValue() && day > 1)
+					if(FkPI.getInstance().getRulesManager().getRule(Rule.DO_PAUSE_AFTER_DAY) && day > 1)
 						try
 						{
 							Fk.getInstance().getCommandManager().getCommand("game pause").execute(null, null, new String[0]);
@@ -137,21 +131,21 @@ public class Game implements Saveable
 							Fk.broadcast("§4 Une erreur est survenue lors de la mise en pause. Merci de signaler ce bug.");
 							ex.printStackTrace();
 						}
-					if((int) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("PvpCap").getValue() == day)
+					if(FkPI.getInstance().getRulesManager().getRule(Rule.PVP_CAP) == day)
 					{
 						pvp = true;
 						Fk.broadcast("§cLe pvp est désormais actif !", FkSound.ENDERDRAGON_GROWL);
 						Bukkit.getPluginManager().callEvent(new DayEvent(DayEvent.Type.PVP_ENABLED, day)); //EVENT
 					}
 
-					if((int) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("TntCap").getValue() == day)
+					if(FkPI.getInstance().getRulesManager().getRule(Rule.TNT_CAP) == day)
 					{
 						assault = true;
 						Fk.broadcast("§cLes assauts sont désormais actifs !", FkSound.ENDERDRAGON_GROWL);
 						Bukkit.getPluginManager().callEvent(new DayEvent(DayEvent.Type.TNT_ENABLED, day)); //EVENT
 					}
 
-					if((int) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("NetherCap").getValue() == day)
+					if(FkPI.getInstance().getRulesManager().getRule(Rule.NETHER_CAP) == day)
 					{
 						nether = true;
 						Fk.broadcast("§cLe nether est désormais ouvert !", FkSound.ENDERDRAGON_GROWL);
@@ -159,7 +153,7 @@ public class Game implements Saveable
 						Bukkit.getPluginManager().callEvent(new DayEvent(DayEvent.Type.NETHER_ENABLED, day)); //EVENT
 					}
 
-					if((int) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("EndCap").getValue() == day)
+					if(FkPI.getInstance().getRulesManager().getRule(Rule.END_CAP) == day)
 					{
 						end = true;
 						Fk.broadcast("§cL'end est désormais ouvert !", FkSound.ENDERDRAGON_GROWL);
@@ -187,7 +181,7 @@ public class Game implements Saveable
 		setState(GameState.BEFORE_STARTING);
 
 		day = 0;
-		time = (int) FkPI.getInstance().getRulesManager().getRuleByName("DayDuration").getValue() - 10;
+		time = FkPI.getInstance().getRulesManager().getRule(Rule.DAY_DURATION) - 10;
 		assault = false;
 		pvp = false;
 		nether = false;
@@ -207,7 +201,7 @@ public class Game implements Saveable
 
 	public long getExceptedWorldTime()
 	{
-		if ((boolean) FkPI.getInstance().getRulesManager().getRuleByName("EternalDay").getValue())
+		if (FkPI.getInstance().getRulesManager().getRule(Rule.ETERNAL_DAY))
 			return 6000;
 		else
 			return dayDuration == 24000 ? time : (long) (time / dayTickFactor);
@@ -216,9 +210,9 @@ public class Game implements Saveable
 	public void updateDayDuration()
 	{
 		float previousDayTickFactor = dayTickFactor;
-		dayDuration = (int) FkPI.getInstance().getRulesManager().getRuleByName("DayDuration").getValue();
+		dayDuration = FkPI.getInstance().getRulesManager().getRule(Rule.DAY_DURATION);
 		if (dayDuration < 1200) {
-			FkPI.getInstance().getRulesManager().getRuleByName("DayDuration").setValue(new Integer(24000));
+			FkPI.getInstance().getRulesManager().setRule(Rule.DAY_DURATION, 24000);
 			dayDuration = 24000;
 		}
 		dayTickFactor = dayDuration/24000f;
@@ -282,10 +276,10 @@ public class Game implements Saveable
 		day = config.getInt("Day");
 		time = config.getInt("Time");
 
-		pvp = (int) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("PvpCap").getValue() <= day;
-		assault = (int) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("TntCap").getValue() <= day;
-		nether = (int) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("NetherCap").getValue() <= day;
-		end = (int) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("EndCap").getValue() <= day;
+		pvp = FkPI.getInstance().getRulesManager().getRule(Rule.PVP_CAP) <= day;
+		assault = FkPI.getInstance().getRulesManager().getRule(Rule.TNT_CAP) <= day;
+		nether = FkPI.getInstance().getRulesManager().getRule(Rule.NETHER_CAP) <= day;
+		end = FkPI.getInstance().getRulesManager().getRule(Rule.END_CAP) <= day;
 		startTimer();
 		updateDayDuration();
 
@@ -318,6 +312,7 @@ public class Game implements Saveable
 		if(!state.equals(GameState.BEFORE_STARTING))
 			throw new FkLightException("La partie est déjà commencée.");
 
+		updateDayDuration();
 		setState(GameState.STARTING);
 		long time = 0;
 
@@ -325,104 +320,59 @@ public class Game implements Saveable
 
 		time += 5;
 
-		Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				Fk.broadcast("Pour connaître les règles : §e/fk rules list");
-			}
-		}, time * 20l);
+		Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), () -> Fk.broadcast("Pour connaître les règles : §e/fk rules list"), time * 20l);
 
 		time += 5;
 
-		Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				broadcastStartIn(20);
-			}
-		}, time * 20l);
+		Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), () -> broadcastStartIn(20), time * 20l);
 
 		time += 5;
 
-		Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				Fk.broadcast("Pour connaître la liste des équipes, leurs joueurs et les coordonées de leur base : §e/fk team list");
-			}
-		}, time * 20l);
+		Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), () -> Fk.broadcast("Pour connaître la liste des équipes, leurs joueurs et les coordonnées de leur base : §e/fk team list"), time * 20l);
 
 		time += 5;
 
-		Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				broadcastStartIn(10);
-			}
-		}, time * 20l);
+		Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), () -> broadcastStartIn(10), time * 20l);
 
 		time += 5;
 
-		Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), new Runnable()
-		{
-			@Override
-			public void run()
+		Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), () -> {
+			for(int i = 5; i > 0; i--)
 			{
-				for(int i = 5; i > 0; i--)
-				{
-					final int a = i;
-					Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), new Runnable()
-					{
-						@Override
-						public void run()
-						{
-							broadcastTpIn(6 - a);
-						}
-					}, i * 20);
-				}
+				final int a = i;
+				Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), () -> broadcastTpIn(6 - a), i * 20);
 			}
 		}, time * 20l);
 
 		time += 6;
 
-		Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), new Runnable()
-		{
-			@Override
-			public void run()
+		Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), () -> {
+			for(Player p : Bukkit.getOnlinePlayers())
 			{
-				for(Player p : Bukkit.getOnlinePlayers())
+				if(Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(p.getName()) != null && Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(p.getName()).getBase() != null)
 				{
-					if(Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(p.getName()) != null && Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(p.getName()).getBase() != null)
-					{
-						p.teleport(Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(p.getName()).getBase().getTpPoint());
+					p.teleport(Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(p.getName()).getBase().getTpPoint());
 
-						p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20 * 5, 4));
-						p.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, 20 * 30, 4));
-						p.setGameMode(GameMode.SURVIVAL);
-						p.setHealth(20);
-						p.setFoodLevel(20);
-						p.setSaturation(20);
-						p.setFlying(false);
-						Fk.getInstance().getStarterInventoryManager().applyStarterInv(p);
-					}
-
-					p.playSound(p.getLocation(), FkSound.EXPLODE.bukkitSound(), 1, 1);
+					p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20 * 5, 4));
+					p.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, 20 * 30, 4));
+					p.setGameMode(GameMode.SURVIVAL);
+					p.setHealth(20);
+					p.setFoodLevel(20);
+					p.setSaturation(20);
+					p.setFlying(false);
+					Fk.getInstance().getStarterInventoryManager().applyStarterInv(p);
 				}
 
-				for(World w : Bukkit.getWorlds())
-					w.setTime((boolean) FkPI.getInstance().getRulesManager().getRuleByName("EternalDay").getValue() ? 6000L : 23990L);
-
-				Fk.broadcast("§2La partie commence, bonne chance à tous !");
-				setState(GameState.STARTED);
-				if(task == 0)
-					startTimer();
+				p.playSound(p.getLocation(), FkSound.EXPLODE.bukkitSound(), 1, 1);
 			}
+
+			for(World w : Bukkit.getWorlds())
+				w.setTime(FkPI.getInstance().getRulesManager().getRule(Rule.ETERNAL_DAY) ? 6000L : 23990L);
+
+			Fk.broadcast("§2La partie commence, bonne chance à tous !");
+			setState(GameState.STARTED);
+			if(task == 0)
+				startTimer();
 		}, time * 20l);
 	}
 

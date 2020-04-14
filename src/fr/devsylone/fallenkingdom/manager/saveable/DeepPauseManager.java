@@ -9,6 +9,8 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import fr.devsylone.fkpi.FkPI;
+import fr.devsylone.fkpi.rules.Rule;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
@@ -71,7 +73,7 @@ public class DeepPauseManager implements Saveable
 
 	public void protectDespawnItems()
 	{
-		if((Boolean) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("DeepPause").getValue())
+		if(FkPI.getInstance().getRulesManager().getRule(Rule.DEEP_PAUSE))
 		{
 			for(World world : Bukkit.getWorlds())
 			{
@@ -93,7 +95,7 @@ public class DeepPauseManager implements Saveable
 
 	public void removeAIs()
 	{
-		if((Boolean) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("DeepPause").getValue())
+		if(FkPI.getInstance().getRulesManager().getRule(Rule.DEEP_PAUSE))
 		{
 			for(World world : Bukkit.getWorlds())
 			{

@@ -1,8 +1,10 @@
 package fr.devsylone.fallenkingdom.commands.rules.rulescommands;
 
+import fr.devsylone.fallenkingdom.utils.Messages;
+import fr.devsylone.fkpi.FkPI;
+import fr.devsylone.fkpi.rules.Rule;
 import org.bukkit.entity.Player;
 
-import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.commands.rules.FkRuleCommand;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
@@ -12,7 +14,7 @@ public class ChargedCreepers extends FkRuleCommand
 	public ChargedCreepers()
 	{
 		super("chargedCreepers", "<taux de spawn> <chance de drop> <nombre de tnts>", 3,
-				"Le §ctaux de spawn&r définit la chance en pourcentage qu'un creeper qui apparaît soit un creeper chargé. La §cchance de drop &rest la chance en pourcentage que le creeper chargé donne de la tnt à sa mort. Le §cnombre de tnts &rsera le nombre de tnt qu'un creeper chargé donnera à sa mort, s'il en donne");
+				Messages.CMD_MAP_RULES_CHARGED_CREEPER);
 	}
 
 	public void execute(Player sender, FkPlayer fkp, String[] args)
@@ -24,8 +26,7 @@ public class ChargedCreepers extends FkRuleCommand
 				if ((Integer.parseInt(args[i]) > 100) || (Integer.parseInt(args[i]) < 0))
 					throw new NumberFormatException();
 			}
-			fr.devsylone.fkpi.rules.ChargedCreepers rule = (fr.devsylone.fkpi.rules.ChargedCreepers) Fk.getInstance()
-					.getFkPI().getRulesManager().getRuleByName("ChargedCreepers");
+			fr.devsylone.fkpi.rules.ChargedCreepers rule = FkPI.getInstance().getRulesManager().getRule(Rule.CHARGED_CREEPERS);
 			rule.setSpawn(Integer.parseInt(args[0]));
 			rule.setDrop(Integer.parseInt(args[1]));
 			rule.setTntAmount(Integer.parseInt(args[2]));
@@ -33,12 +34,10 @@ public class ChargedCreepers extends FkRuleCommand
 		catch (NumberFormatException e)
 		{
 			throw new FkLightException(
-					"Chacun des paramètres de la commandes doit être un nombre de 0 inclu à 100 inclu");
+					"Chacun des paramètres de la commandes doit être un nombre de 0 inclus à 100 inclus");
 		}
 
-		broadcast("§6Désormais, lorsqu'un creeper spawn, il a §c" + args[0]
-				+ "%§6 de chance de se transformer en un creeper chargé.");
-		broadcast(
-				"§6Un creeper chargé a §c" + args[1] + "%§6 de chance de donner §c" + args[2] + " TNT(s)§6 à sa mort");
+		broadcast(Messages.CMD_RULES_CHARGED_CREEPERS_SPAWN_RATE.getMessage().replace("%spawn%", args[0]));
+		broadcast(Messages.CMD_RULES_CHARGED_CREEPERS_DROP_RATE.getMessage().replace("%rate%", args[1]).replace("%amount%", args[2]));
 	}
 }

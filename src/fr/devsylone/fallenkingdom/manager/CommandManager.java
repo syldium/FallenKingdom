@@ -2,13 +2,11 @@ package fr.devsylone.fallenkingdom.manager;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import fr.devsylone.fallenkingdom.utils.Messages;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -22,16 +20,14 @@ import fr.devsylone.fallenkingdom.players.FkPlayer;
 
 public class CommandManager
 {
-	private List<FkCommand> commandList;
-	private HashMap<String, Boolean> confirms;
+	private final List<FkCommand> commandList = new ArrayList<>();
+	private final Map<String, Boolean> confirms = new HashMap<>();
 
-	public final static String NO_PERMISSION_MSG =  "Vous n'avez pas la permission d'exécuter cette commande.";
+	public final static String NO_PERMISSION_MSG = Messages.CMD_ERROR_NO_PERMISSION.getMessage();
 	private final boolean permissions = Fk.getInstance().getConfig().getBoolean("enable-permissions", false);
 
 	public CommandManager()
 	{
-		commandList = new ArrayList<>();
-		confirms = new HashMap<>();
 		confirms.put("stop", false);
 		confirms.put("reset", false);
 		confirms.put("sbreset", false);
@@ -68,8 +64,8 @@ public class CommandManager
 						try
 						{
 							blb++;
-							registerNewCommand((FkCommand) Class.forName(name.replaceAll("/", ".").replaceAll(".class", "")).newInstance());
-						}catch(InstantiationException | IllegalAccessException | ClassNotFoundException e)
+							registerNewCommand((FkCommand) Class.forName(name.replaceAll("/", ".").replaceAll(".class", "")).getDeclaredConstructor().newInstance());
+						}catch(ReflectiveOperationException e)
 						{
 							e.printStackTrace();
 						}
@@ -300,7 +296,7 @@ public class CommandManager
 
 	public List<FkCommand> getCommandList()
 	{
-		return (List<FkCommand>) ImmutableList.copyOf(commandList);
+		return ImmutableList.copyOf(commandList);
 	}
 
 	public boolean hasPermission(Player sender, String permission)

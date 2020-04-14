@@ -1,6 +1,8 @@
 package fr.devsylone.fallenkingdom.listeners.entity.player;
 
-import org.bukkit.ChatColor;
+import fr.devsylone.fallenkingdom.utils.Messages;
+import fr.devsylone.fkpi.FkPI;
+import fr.devsylone.fkpi.rules.Rule;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -37,12 +39,12 @@ public class MoveListener implements Listener
 
 		checkTnt(e);
 
-		if(Fk.getInstance().getGame().getState().equals(GameState.PAUSE) && (Boolean) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("DeepPause").getValue() && e.getFrom().getBlockY() == e.getTo().getBlockY())
+		if(Fk.getInstance().getGame().getState().equals(GameState.PAUSE) && FkPI.getInstance().getRulesManager().getRule(Rule.DEEP_PAUSE) && e.getFrom().getBlockY() == e.getTo().getBlockY())
 		{
 			if(e.getPlayer().getGameMode().equals(GameMode.CREATIVE) || e.getPlayer().getGameMode().equals(GameMode.SPECTATOR))
 				return;
 			
-			fkp.sendMessage(ChatColor.RED + "La partie est en pause.");
+			fkp.sendMessage(Messages.PLAYER_PAUSE);
 			Location tp = e.getFrom().getBlock().getLocation().clone().add(0.5, 0.5, 0.5);
 			tp.setPitch(e.getFrom().getPitch());
 			tp.setYaw(e.getFrom().getYaw());
@@ -59,35 +61,35 @@ public class MoveListener implements Listener
 			if(team.getBase() != null)
 			{
 				if(team.getBase().contains(e.getTo()) && !team.getBase().contains(e.getFrom()))
-					if(pTeam != null && team.equals(pTeam))
-						fkp.sendMessage(ChatColor.GREEN + "Vous entrez dans votre base");
+					if(team.equals(pTeam))
+						fkp.sendMessage(Messages.PLAYER_SELF_BASE_ENTER);
 					else
-						fkp.sendMessage("Vous entrez dans la base de l'équipe " + team.toString());
+						fkp.sendMessage(Messages.PLAYER_BASE_ENTER.getMessage().replace("%team%", team.toString()));
 
 				else if(team.getBase().contains(e.getFrom()) && !team.getBase().contains(e.getTo()))
-					if(pTeam != null && team.equals(pTeam))
-						fkp.sendMessage(ChatColor.RED + "Vous sortez de votre base");
+					if(team.equals(pTeam))
+						fkp.sendMessage(Messages.PLAYER_SELF_BASE_EXIT);
 					else
-						fkp.sendMessage("Vous sortez de la base de l'équipe " + team.toString());
+						fkp.sendMessage(Messages.PLAYER_BASE_EXIT.getMessage().replace("%team%", team.toString()));
 
 				if(team.getBase().getChestsRoom() != null && Fk.getInstance().getFkPI().getChestsRoomsManager().isEnabled() && !e.getPlayer().getGameMode().equals(GameMode.SPECTATOR))
 				{
 					if(team.getBase().getChestsRoom().contains(e.getTo()) && !team.getBase().getChestsRoom().contains(e.getFrom()))
 						if(team.equals(pTeam))
-							fkp.sendMessage(ChatColor.DARK_GREEN + "Vous entrez dans votre salle des coffres (§e/fk team ChestsRoom Show§2)");
+							fkp.sendMessage(Messages.PLAYER_CHEST_ROOM_ENTER);
 						else
 						{
-							fkp.sendMessage("§rVous entrez dans la salle des coffres de l'équipe " + team.toString());
+							fkp.sendMessage(Messages.PLAYER_CHEST_ROOM_ENTER.getMessage().replace("%team%", team.toString()));
 							team.getBase().getChestsRoom().addEnemyInside(e.getPlayer().getName());
 						}
 
 					else if(team.getBase().getChestsRoom().contains(e.getFrom()) && !team.getBase().getChestsRoom().contains(e.getTo()))
 						if(team.equals(pTeam))
-							fkp.sendMessage(ChatColor.DARK_RED + "Vous sortez de votre salle des coffres");
+							fkp.sendMessage(Messages.PLAYER_CHEST_ROOM_EXIT);
 						else
 						{
 							team.getBase().getChestsRoom().removeEnemyInside(e.getPlayer().getName());
-							fkp.sendMessage("§rVous sortez de la salle des coffres de l'équipe " + team.toString());
+							fkp.sendMessage(Messages.PLAYER_CHEST_ROOM_EXIT.getMessage().replace("%team%", team.toString()));
 						}
 				}
 			}
@@ -97,7 +99,7 @@ public class MoveListener implements Listener
 	// SURTOUT PAS DE EVENTHANDLER
 	private void checkTnt(PlayerMoveEvent e)
 	{
-		if(!(boolean) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("tntjump").getValue())
+		if(!Fk.getInstance().getFkPI().getRulesManager().getRule(Rule.TNT_JUMP))
 		{
 			if(!e.getTo().clone().add(0, -1, 0).getBlock().getType().equals(Material.AIR) && !e.getTo().clone().add(0, -1, 0).getBlock().getType().equals(Material.TNT) && Fk.getInstance().getPlayerManager().wasOnTnt(e.getPlayer().getName()))
 				Fk.getInstance().getPlayerManager().removeOnTnt(e.getPlayer().getName());
@@ -125,7 +127,7 @@ public class MoveListener implements Listener
 									tp.setPitch(e.getFrom().getPitch());
 									tp.setYaw(e.getFrom().getYaw());
 									e.getPlayer().teleport(tp);
-									e.getPlayer().sendMessage(ChatUtils.PREFIX + "§cVous n'avez pas le droit d'entrer dans une base en sautant/marchant sur de la TNT");
+									ChatUtils.sendMessage(e.getPlayer(), Messages.PLAYER_TNT_JUMP_DENIED);
 									break;
 								}
 								else

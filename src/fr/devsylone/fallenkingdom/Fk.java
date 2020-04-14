@@ -1,7 +1,6 @@
 package fr.devsylone.fallenkingdom;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -11,6 +10,8 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.zip.ZipOutputStream;
 
+import fr.devsylone.fallenkingdom.manager.*;
+import fr.devsylone.fkpi.rules.Rule;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -23,10 +24,6 @@ import fr.devsylone.fallenkingdom.connection.CBServerSocket;
 import fr.devsylone.fallenkingdom.connection.ServerSocket;
 import fr.devsylone.fallenkingdom.connection.SpServerSocket;
 import fr.devsylone.fallenkingdom.game.Game;
-import fr.devsylone.fallenkingdom.manager.CommandManager;
-import fr.devsylone.fallenkingdom.manager.ListenersManager;
-import fr.devsylone.fallenkingdom.manager.SaveablesManager;
-import fr.devsylone.fallenkingdom.manager.TipsManager;
 import fr.devsylone.fallenkingdom.manager.packets.PacketManager;
 import fr.devsylone.fallenkingdom.manager.packets.PacketManager1_13;
 import fr.devsylone.fallenkingdom.manager.packets.PacketManager1_14;
@@ -70,12 +67,10 @@ public class Fk extends JavaPlugin
 
 	private FkPI fkpi;
 
-	private List<String> onConnectWarnings;
+	private final List<String> onConnectWarnings = new ArrayList<>();
 	private String pluginError = "";
 
-	private String lastVersion;
-
-	private boolean uptodate = true;
+	private String lastVersion = getDescription().getVersion();
 
 	private final boolean isNewVersion = NMSUtils.nmsOptionalClass("ScoreboardServer$Action").isPresent();
 
@@ -87,15 +82,11 @@ public class Fk extends JavaPlugin
 	public Fk()
 	{
 		instance = this;
-		onConnectWarnings = new ArrayList<String>();
-		lastVersion = getDescription().getVersion();
 	}
 
 	@Override
 	public void onEnable()
 	{
-		check();
-
 		try
 		{
 			/*
@@ -119,6 +110,12 @@ public class Fk extends JavaPlugin
 
 		if(!getDataFolder().exists())
 			getDataFolder().mkdir();
+
+		ListenersManager.registerListeners(this);
+		if (!check())
+			return;
+
+		LanguageManager.init(this);
 
 		/*
 		 * FkPI
@@ -170,7 +167,7 @@ public class Fk extends JavaPlugin
 			saveableManager.loadAll();
 		}catch(Exception ex)
 		{
-			addOnConnectWarning("Votre configuration était corrompue ou invalide, elle a donc été sauvegardée puis supprimée. Désolé :S");
+			onConnectWarnings.add("§cVotre configuration était corrompue ou invalide, elle a donc été sauvegardée puis supprimée. Désolé :S");
 			File zip = new File(getDataFolder(), "invalid-" + new SimpleDateFormat("YYYY-MM-dd HH-mm-ss").format(Calendar.getInstance().getTimeInMillis()) + ".zip");
 			ZipOutputStream outputStream;
 			try
@@ -180,12 +177,9 @@ public class Fk extends JavaPlugin
 				ZipUtils.zipFile(getDataFolder(), "FallenKingdom", outputStream, false);
 				outputStream.flush();
 				outputStream.close();
-			}catch(FileNotFoundException e1)
+			} catch(IOException e1)
 			{
 				e1.printStackTrace();
-			}catch(IOException e)
-			{
-				e.printStackTrace();
 			}
 			for(File f : getDataFolder().listFiles())
 				if(f.getName().endsWith(".yml"))
@@ -229,8 +223,6 @@ public class Fk extends JavaPlugin
 		getCommand("Fk").setExecutor(new FkCommandExecutor());
 		getCommand("Fk").setTabCompleter(new FkTabCompleter());
 
-		ListenersManager.registerListeners(this);
-
 		/*
 		 * Set le sb a tout le monde si jamais rl
 		 */
@@ -240,7 +232,7 @@ public class Fk extends JavaPlugin
 		/*
 		 * IF EternalDay
 		 */
-		if((Boolean) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("EternalDay").getValue())
+		if(FkPI.getInstance().getRulesManager().getRule(Rule.ETERNAL_DAY))
 			for(World w : Bukkit.getWorlds())
 			{
 				w.setGameRuleValue("doDaylightCycle", "false");
@@ -411,21 +403,6 @@ public class Fk extends JavaPlugin
 		return onConnectWarnings;
 	}
 
-	public void setUpToDate(boolean arg)
-	{
-		uptodate = arg;
-	}
-
-	public boolean isUpToDate()
-	{
-		return uptodate;
-	}
-
-	public void addOnConnectWarning(String s)
-	{
-		onConnectWarnings.add(ChatUtils.PREFIX + ChatUtils.ALERT + "§4" + s);
-	}
-
 	public void addError(String s)
 	{
 		pluginError = s;
@@ -489,9 +466,9 @@ public class Fk extends JavaPlugin
 		getScoreboardManager().recreateAllScoreboards();
 	}
 
-	private void check()
+	private boolean check()
 	{
-		List<String> warns = new ArrayList<String>();
+		List<String> warns = new ArrayList<>();
 
 		if(getConfig().get("Charged_creepers") != null)
 			warns.add("L'option Charged_creepers dans le fichier de configuration n'est plus utilisée, il faut utiliser /fk rules ChargedCreepers");
@@ -511,8 +488,9 @@ public class Fk extends JavaPlugin
 			getLogger().warning(warn);
 			getLogger().warning("------------------------------------------");
 
-			addOnConnectWarning(warn);
+			onConnectWarnings.add(warn);
 		}
+		return warns.isEmpty();
 	}
 
 	public FkPI getFkPI()

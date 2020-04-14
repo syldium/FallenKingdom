@@ -1,21 +1,23 @@
 package fr.devsylone.fallenkingdom.utils;
 
 import java.io.File;
+import java.util.Map;
 
+import fr.devsylone.fkpi.rules.Rule;
+import fr.devsylone.fkpi.rules.RuleValue;
 import org.bukkit.Bukkit;
 
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.commands.FkCommandExecutor;
 import fr.devsylone.fkpi.lockedchests.LockedChest;
-import fr.devsylone.fkpi.rules.Rule;
 
 public class DebuggerUtils
 {
 
-	public static String getLastLineStaskTrace(Thread t)
+	public static String getLastLineStackTrace(Thread t)
 	{
 		for(StackTraceElement element : t.getStackTrace())
-			if(element.getClassName() != DebuggerUtils.class.getName() && !element.getClassName().contains("Thread"))
+			if(!element.getClassName().equals(DebuggerUtils.class.getName()) && !element.getClassName().contains("Thread"))
 			{
 				return element.toString();
 			}
@@ -38,7 +40,7 @@ public class DebuggerUtils
 
 		for(StackTraceElement element : elements)
 		{
-			if(element.getClassName() == DebuggerUtils.class.getName() || element.getClassName().contains("Thread"))
+			if(element.getClassName().equals(DebuggerUtils.class.getName()) || element.getClassName().contains("Thread"))
 				totalStackTrace = "Current trace : \n";
 
 			else if(!element.getClassName().contains("devsylone"))
@@ -88,15 +90,19 @@ public class DebuggerUtils
 		else
 			log("CraftBukkit version : " + Bukkit.getBukkitVersion() + " | " + Bukkit.getVersion());
 		log("Plugin version : v" + Fk.getInstance().getDescription().getVersion());
-		log("---- Comandes depuis reload ----");
+		log("Latest save: " + (Fk.getInstance().getSaveableManager().getLastSave() > 0 ? (System.currentTimeMillis() - Fk.getInstance().getSaveableManager().getLastSave())/1000 + "s" : "unknown"));
+		log("---- Commandes depuis reload ----");
 		if(FkCommandExecutor.logs != null)
 			for(String cmdfor : FkCommandExecutor.logs.keySet())
-				log("  > " + cmdfor + (((Boolean) FkCommandExecutor.logs.get(cmdfor)).booleanValue() ? "" : "  [Error occured]"));
+				log("  > " + cmdfor + (FkCommandExecutor.logs.get(cmdfor) ? "" : "  [Error occured]"));
 		else
 			log("Les logs étaient non-initialisés");
 		log("---- Rules ----");
-		for(Rule rule : Fk.getInstance().getFkPI().getRulesManager().getRulesList())
-			log("  > " + rule.toString());
+		for(Map.Entry<Rule<?>, Object> rule : Fk.getInstance().getFkPI().getRulesManager().getRulesList().entrySet())
+		{
+			String value = rule.getValue() instanceof RuleValue ? ((RuleValue) rule.getValue()).format() : String.valueOf(rule.getValue());
+			log("  > " + rule.getKey().getName() + ": " + value);
+		}
 		log("---- Game ---");
 		log("  > State: " + Fk.getInstance().getGame().getState());
 		log("  > Day: " + Fk.getInstance().getGame().getDays());

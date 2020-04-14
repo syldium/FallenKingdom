@@ -1,7 +1,10 @@
 package fr.devsylone.fallenkingdom.commands.rules.rulescommands;
 
-import java.util.Arrays;
+import java.util.Collections;
 
+import fr.devsylone.fallenkingdom.utils.Messages;
+import fr.devsylone.fkpi.FkPI;
+import fr.devsylone.fkpi.rules.Rule;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -24,30 +27,27 @@ import fr.devsylone.fkpi.util.XPotionData;
 
 public class DisabledPotions extends FkRuleCommand implements Listener
 {
-	private static final String DISABLED_POTIONS_INVENTORY_TITLE = "§cCliquez pour désactiver";
-	private static final String LORE_ENABLED = "§2✔ ACTIVÉE ✔";
-	private static final String LORE_DISABLED = "§4✘ DESACTIVÉE ✘";
-	private static ItemStack DISABLE_AMPLIFIED_POTIONS_ITEM;
+	private static final String DISABLED_POTIONS_INVENTORY_TITLE = Messages.INVENTORY_POTION_TITLE.getMessage();
+	private static final String LORE_ENABLED = Messages.INVENTORY_POTION_ENABLE.getMessage();
+	private static final String LORE_DISABLED = Messages.INVENTORY_POTION_DISABLE.getMessage();
+	private static final ItemStack DISABLE_AMPLIFIED_POTIONS_ITEM;
 	static
 	{
 		DISABLE_AMPLIFIED_POTIONS_ITEM = XMaterial.PLAYER_HEAD.parseItem();
 		SkullMeta meta = SkullUtils.getSkullByValue((SkullMeta) DISABLE_AMPLIFIED_POTIONS_ITEM.getItemMeta(), "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTZmYWI5OTFkMDgzOTkzY2I4M2U0YmNmNDRhMGI2Y2VmYWM2NDdkNDE4OWVlOWNiODIzZTljYzE1NzFlMzgifX19");
-		meta.setDisplayName("§bDésactiver les potions de niveau II");
+		meta.setDisplayName(Messages.INVENTORY_POTION_LEVEL_II.getMessage());
 		DISABLE_AMPLIFIED_POTIONS_ITEM.setItemMeta(meta);
 	}
 
 	public DisabledPotions()
 	{
-		super("disabledPotions", "", 0, "Retirer certaines potions du jeu");
+		super("disabledPotions", "", 0, Messages.CMD_MAP_RULES_DISABLED_POTIONS);
 		Bukkit.getPluginManager().registerEvents(this, Fk.getInstance());
 	}
 
 	public void execute(Player sender, FkPlayer fkp, String[] args)
 	{
-		Player p = org.bukkit.Bukkit.getPlayer(sender.getName());
-
-		p.openInventory(createInventory());
-
+		sender.openInventory(createInventory());
 	}
 
 	@EventHandler
@@ -86,12 +86,12 @@ public class DisabledPotions extends FkRuleCommand implements Listener
 		if(potionItem.getAmount() != 1)
 		{
 			if(getRule().enablePotion(data))
-				broadcast("La potion", data.getType().name() + (data.isExtended() ? " + redstone" : data.isUpgraded() ? " + glowtone" : ""), "est §aréactivée§6 !");
+				broadcast(Messages.INVENTORY_POTION_ENABLE_CLICK.getMessage().replace("%potion%", data.getType().name() + (data.isExtended() ? " + redstone" : data.isUpgraded() ? " + glowstone" : "")));
 		}
 		else
 		{
 			if(getRule().disablePotion(data))
-				broadcast("La potion", data.getType().name() + (data.isExtended() ? " + redstone" : data.isUpgraded() ? " + glowtone" : ""), "est §cdésactivée§6 !");
+				broadcast(Messages.INVENTORY_POTION_DISABLE_CLICK.getMessage().replace("%potion%", data.getType().name() + (data.isExtended() ? " + redstone" : data.isUpgraded() ? " + glowstone" : "")));
 		}
 	}
 
@@ -115,7 +115,7 @@ public class DisabledPotions extends FkRuleCommand implements Listener
 			ItemStack potionItem = XMaterial.POTION.parseItem();
 			PotionMeta potionMeta = (PotionMeta) potionItem.getItemMeta();
 			XPotionData potionData = new XPotionData(type);
-			potionMeta.setLore(Arrays.asList(getRule().isDisabled(potionData) ? LORE_DISABLED : LORE_ENABLED));
+			potionMeta.setLore(Collections.singletonList(getRule().isDisabled(potionData) ? LORE_DISABLED : LORE_ENABLED));
 			potionItem.setItemMeta(potionMeta);
 			potionData.applyTo(potionItem);
 			potionItem.setAmount(getRule().isDisabled(potionData) ? Bukkit.getVersion().contains("1.8") ? 0 : 64 : 1);
@@ -124,7 +124,7 @@ public class DisabledPotions extends FkRuleCommand implements Listener
 			if(XPotionData.isUpgradable(type))
 			{
 				potionData = new XPotionData(type, false, true);
-				potionMeta.setLore(Arrays.asList(getRule().isDisabled(potionData) ? LORE_DISABLED : LORE_ENABLED));
+				potionMeta.setLore(Collections.singletonList(getRule().isDisabled(potionData) ? LORE_DISABLED : LORE_ENABLED));
 				potionItem.setItemMeta(potionMeta);
 				potionData.applyTo(potionItem);
 				potionItem.setAmount(getRule().isDisabled(potionData) ? Bukkit.getVersion().contains("1.8") ? 0 : 64 : 1);
@@ -134,7 +134,7 @@ public class DisabledPotions extends FkRuleCommand implements Listener
 			if(XPotionData.isExtendable(type))
 			{
 				potionData = new XPotionData(type, true, false);
-				potionMeta.setLore(Arrays.asList(getRule().isDisabled(potionData) ? LORE_DISABLED : LORE_ENABLED));
+				potionMeta.setLore(Collections.singletonList(getRule().isDisabled(potionData) ? LORE_DISABLED : LORE_ENABLED));
 				potionItem.setItemMeta(potionMeta);
 				potionData.applyTo(potionItem);
 				potionItem.setAmount(getRule().isDisabled(potionData) ? Bukkit.getVersion().contains("1.8") ? 0 : 64 : 1);
@@ -146,7 +146,7 @@ public class DisabledPotions extends FkRuleCommand implements Listener
 
 	private fr.devsylone.fkpi.rules.DisabledPotions getRule()
 	{
-		return (fr.devsylone.fkpi.rules.DisabledPotions) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("DisabledPotions");
+		return FkPI.getInstance().getRulesManager().getRule(Rule.DISABLED_POTIONS);
 	}
 
 }

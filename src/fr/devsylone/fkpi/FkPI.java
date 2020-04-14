@@ -1,9 +1,6 @@
 package fr.devsylone.fkpi;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import fr.devsylone.fkpi.util.BlockDescription;
+import fr.devsylone.fallenkingdom.Fk;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -11,9 +8,6 @@ import fr.devsylone.fkpi.managers.ChestsRoomsManager;
 import fr.devsylone.fkpi.managers.LockedChestsManager;
 import fr.devsylone.fkpi.managers.RulesManager;
 import fr.devsylone.fkpi.managers.TeamManager;
-import fr.devsylone.fkpi.rules.AllowedBlocks;
-import fr.devsylone.fkpi.rules.PlaceBlockInCave;
-import fr.devsylone.fkpi.rules.Rule;
 import fr.devsylone.fkpi.util.Saveable;
 
 public class FkPI implements Saveable
@@ -23,9 +17,7 @@ public class FkPI implements Saveable
 	private LockedChestsManager lcManager;
 	private ChestsRoomsManager crManager;
 
-	private JavaPlugin plugin;
-
-	private boolean IS_BUKKIT_PLUGIN;
+	private Fk plugin;
 
 	private static FkPI instance;
 
@@ -36,7 +28,6 @@ public class FkPI implements Saveable
 
 	public FkPI()
 	{
-		IS_BUKKIT_PLUGIN = false;
 		instance = this;
 
 		teamManager = new TeamManager();
@@ -45,9 +36,8 @@ public class FkPI implements Saveable
 		crManager = new ChestsRoomsManager();
 	}
 
-	public FkPI(JavaPlugin plugin)
+	public FkPI(Fk plugin)
 	{
-		IS_BUKKIT_PLUGIN = true;
 		instance = this;
 
 		this.plugin = plugin;
@@ -79,53 +69,12 @@ public class FkPI implements Saveable
 		return crManager;
 	}
 
-	public boolean isBukkitPlugin()
-	{
-		return IS_BUKKIT_PLUGIN;
-	}
-
-	public ArrayList<String> toStringArray()
-	{
-		ArrayList<String> response = new ArrayList<String>();
-
-		response.add("START_FKPI");
-
-		for(Rule rule : rulesManager.getRulesList())
-		{
-			if(rule instanceof AllowedBlocks)
-				for(BlockDescription b : ((AllowedBlocks) rule).getValue())
-					response.add("rules " + rule.getName() + " " + b.toString());
-
-			else if(rule instanceof PlaceBlockInCave)
-			{
-				response.add("rules " + rule.getName() + " value " + rule.getValue());
-				response.add("rules " + rule.getName() + " minBlocks " + ((PlaceBlockInCave) rule).getMinimumBlocks());
-			}
-			else
-			{
-				response.add("rules " + rule.getName() + " " + rule.getValue());
-			}
-		}
-
-		for(fr.devsylone.fkpi.teams.Team t : teamManager.getTeams())
-		{
-			response.add("teams create " + t.getName());
-			if(t.getPlayers() != null && !t.getPlayers().isEmpty())
-				for(String s : t.getPlayers())
-					response.add("teams addPlayer " + s + " " + t.getName());
-		}
-
-		response.add("END");
-
-		return response;
-	}
-
-	public void fromStringArray(List<String> strings)
+	/*public void fromStringArray(List<String> strings)
 	{
 		for(String s : teamManager.getTeamNames())
 			teamManager.removeTeam(s);
 
-		rulesManager.getRuleByName("AllowedBlocks").setValue(new ArrayList<String>());
+		rulesManager.setRule(Rule.ALLOWED_BLOCKS, new AllowedBlocks());
 
 		for(String s : strings)
 		{
@@ -173,7 +122,7 @@ public class FkPI implements Saveable
 			}
 
 		}
-	}
+	}*/
 
 	private boolean isInteger(String s)
 	{
@@ -189,9 +138,7 @@ public class FkPI implements Saveable
 
 	private boolean isBoolean(String s)
 	{
-		if(s.equalsIgnoreCase("true") || s.equalsIgnoreCase("false"))
-			return true;
-		return false;
+		return s.equalsIgnoreCase("true") || s.equalsIgnoreCase("false");
 	}
 
 	public void reset()
@@ -200,7 +147,7 @@ public class FkPI implements Saveable
 		rulesManager = new RulesManager();
 		lcManager = new LockedChestsManager();
 		crManager = new ChestsRoomsManager();
-		rulesManager.loadDefaultConfig();
+		//rulesManager.loadDefaultConfig();
 	}
 
 	@Override

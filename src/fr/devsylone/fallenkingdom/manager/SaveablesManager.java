@@ -2,9 +2,8 @@ package fr.devsylone.fallenkingdom.manager;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -17,21 +16,20 @@ public class SaveablesManager
 {
 	public enum State
 	{
-		LOAD(),
-		SAVE(),
-		SLEEP();
+		LOAD,
+		SAVE,
+		SLEEP
 	}
 
-	private HashMap<Saveable, FileConfiguration> saveables;
-	private HashMap<String, FileConfiguration> files;
+	private final Map<Saveable, FileConfiguration> saveables = new HashMap<>();
+	private final Map<String, FileConfiguration> files = new HashMap<>();
 
 	private State state;
+	private long lastSave = 0;
 
 	public SaveablesManager(Fk fk)
 	{
 		state = State.SLEEP;
-		saveables = new HashMap<Saveable, FileConfiguration>();
-		files = new HashMap<String, FileConfiguration>();
 
 		registerSaveable(fk.getGame(), "save.yml");
 		registerSaveable(fk.getFkPI(), "save.yml");
@@ -52,7 +50,7 @@ public class SaveablesManager
 		state = State.SAVE;
 		reset();
 
-		Fk.getInstance().getLogger().info("Une sauvegarde automatique est en cours.");
+		lastSave = System.currentTimeMillis();
 		for(Saveable s : saveables.keySet())
 			s.save(saveables.get(s).createSection(s.getClass().getSimpleName()));
 
@@ -67,7 +65,6 @@ public class SaveablesManager
 				e.printStackTrace();
 			}
 		state = State.SLEEP;
-		Fk.getInstance().getLogger().info("La sauvegarde automatique est terminée.");
 	}
 
 	public void loadAll()
@@ -149,20 +146,14 @@ public class SaveablesManager
 		return file;
 	}
 
-	public ArrayList<Saveable> sort(Set<Saveable> toSort)
+	public List<Saveable> sort(Set<Saveable> toSort)
 	{
-		ArrayList<Saveable> ret = new ArrayList<Saveable>();
-		for(Saveable s : toSort)
-			if(s.getClass().getSimpleName().equals("FkPI"))
-			{
-				ret.add(s);
-				break;
-			}
-		
-		for(Saveable s : toSort)
-			if(!s.getClass().getSimpleName().equals("FkPI"))
-				ret.add(s);
-		
-		return ret;
+		Comparator<Saveable> isFkPI = (e1, e2) -> e1.getClass().getSimpleName().equals("FkPI") && !e2.getClass().getSimpleName().equals("FkPI") ? -1 : 0;
+		return toSort.stream().sorted(isFkPI).collect(Collectors.toList());
+	}
+
+	public long getLastSave()
+	{
+		return lastSave;
 	}
 }

@@ -1,12 +1,12 @@
 package fr.devsylone.fallenkingdom.commands.rules.rulescommands;
 
-import java.util.List;
-
+import fr.devsylone.fallenkingdom.utils.Messages;
+import fr.devsylone.fkpi.FkPI;
+import fr.devsylone.fkpi.rules.Rule;
 import fr.devsylone.fkpi.util.BlockDescription;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.commands.rules.FkRuleCommand;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
@@ -17,7 +17,7 @@ public class DenyBlock extends FkRuleCommand
 	public DenyBlock()
 	{
 		super("denyBlock", "[block] OU /fk rules denyBlock (prendra l'item dans votre main)", 0,
-				"Annule l'effet du allowBlock sur le bloc choisi.");
+				Messages.CMD_MAP_RULES_DENY_BLOCK);
 	}
 
 	public void execute(Player sender, FkPlayer fkp, String[] args)
@@ -29,24 +29,22 @@ public class DenyBlock extends FkRuleCommand
 			String block = args[0];
 			blockDescription = new BlockDescription(block);
 			if(Material.matchMaterial(blockDescription.getBlockName()) == null)
-				throw new FkLightException(block + " n'est pas un bloc ! ");
+				throw new FkLightException(Messages.CMD_ERROR_UNKNOWN_BLOCK.getMessage().replace("%block%", block));
 		} else {
 			if(p == null || p.getItemInHand().getType().equals(Material.AIR))
 				throw new FkLightException(usage);
 			blockDescription = new BlockDescription(p.getItemInHand());
 		}
-		AllowedBlocks rule = (AllowedBlocks) Fk.getInstance().getFkPI().getRulesManager()
-				.getRuleByName("AllowedBlocks");
+		AllowedBlocks rule = FkPI.getInstance().getRulesManager()
+				.getRule(Rule.ALLOWED_BLOCKS);
 
 		if (!rule.isAllowed(blockDescription))
-			throw new FkLightException("Il est déjà interdit de poser ce block ! ");
-		
-		List<BlockDescription> list = rule.getValue();
-		// Si le nom de bloc donné est moins précis que ceux enregistrés (ex : WOOL avec WOOL:2, WOOL:3)
-		// on supprime toutes les occurences de WOOL (donc des fois plusieurs)
-		list.removeIf(b -> b.equals(blockDescription));
-		Fk.getInstance().getFkPI().getRulesManager().getRuleByName("AllowedBlocks").setValue(list);
+			throw new FkLightException(Messages.CMD_RULES_ERROR_ALREADY_DENIED);
 
-		broadcast("Le bloc ", blockDescription.toString(), "ne peut plus être posé en dehors de sa base !");
+		// Si le nom de bloc donné est moins précis que ceux enregistrés (ex : WOOL avec WOOL:2, WOOL:3)
+		// on supprime toutes les occurrences de WOOL (donc des fois plusieurs)
+		rule.getValue().removeIf(b -> b.equals(blockDescription));
+
+		broadcast(Messages.CMD_RULES_DENY_BLOCK.getMessage().replace("%block%", blockDescription.toString()));
 	}
 }

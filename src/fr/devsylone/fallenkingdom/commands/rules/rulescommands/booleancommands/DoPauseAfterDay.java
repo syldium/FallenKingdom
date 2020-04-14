@@ -1,5 +1,6 @@
 package fr.devsylone.fallenkingdom.commands.rules.rulescommands.booleancommands;
 
+import fr.devsylone.fallenkingdom.utils.Messages;
 import org.bukkit.entity.Player;
 
 import fr.devsylone.fallenkingdom.commands.rules.FkBooleanRuleCommand;
@@ -9,13 +10,12 @@ public class DoPauseAfterDay extends FkBooleanRuleCommand
 {
 	public DoPauseAfterDay()
 	{
-		super("doPauseAfterDay", "Faire une pause après chaque jour");
+		super("doPauseAfterDay", Messages.CMD_MAP_RULES_DO_PAUSE_AFTER_DAY);
 	}
 
 	public void execute(Player sender, FkPlayer fkp, String[] args)
 	{
 		setRuleValue(args[0]);
-		broadcast("La partie", Boolean.valueOf(args[0]).booleanValue() ? "se met désormais" : "ne se met pas",
-				"en pause à la fin de chaque jour ! ");
+		broadcastOnOff(Boolean.parseBoolean(args[0]), Messages.CMD_RULES_DO_PAUSE_AFTER_DAY);
 	}
 }
