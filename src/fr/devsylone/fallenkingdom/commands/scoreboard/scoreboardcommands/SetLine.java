@@ -19,7 +19,7 @@ public class SetLine extends FkScoreboardCommand
 	public void execute(Player sender, FkPlayer fkp, String[] args) throws Exception
 	{
 		if(!args[0].matches("\\d+") || Integer.parseInt(args[0]) > 15 || Integer.parseInt(args[0]) < 1)
-			throw new FkLightException("Numéro de ligne invalide");
+			throw new FkLightException(Messages.CMD_ERROR_SCOREBOARD_INVALID_LINE);
 
 		if(fkp.getState() != PlayerState.EDITING_SCOREBOARD)
 		{

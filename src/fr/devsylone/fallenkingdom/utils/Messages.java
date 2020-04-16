@@ -43,7 +43,9 @@ public enum Messages
     CMD_ERROR_PLAYER_NOT_IN_TEAM("cmd.error.team.not-in-team"),
     CMD_ERROR_POSITIVE_INT("cmd.error.format.positive-int"),
     CMD_ERROR_RULES_ALREADY_DEFINED("cmd.error.rules.already-defined"),
+    CMD_ERROR_SCOREBOARD_CANNOT_UNDO("cmd.error.scoreboard.cannot-undo"),
     CMD_ERROR_SCOREBOARD_BEING_LEARN_EDIT("cmd.error.scoreboard.learn"),
+    CMD_ERROR_SCOREBOARD_INVALID_LINE("cmd.error.scoreboard.invalid-line"),
     CMD_ERROR_STARTER_INV_CANNOT_UNDO("cmd.error.game.starterInv.cannot-undo"),
     CMD_ERROR_TEAM_ALREADY_EXIST("cmd.error.team.already-exist"),
     CMD_ERROR_TEAM_INVALID_NAME("cmd.error.team.invalid-name"),
@@ -111,6 +113,7 @@ public enum Messages
     CMD_MAP_SCOREBOARD_RESET("cmd.map.scoreboard.reset"),
     CMD_MAP_SCOREBOARD_SET_LINE("cmd.map.scoreboard.setLine"),
     CMD_MAP_SCOREBOARD_SET_NAME("cmd.map.scoreboard.setName"),
+    CMD_MAP_SCOREBOARD_UNDO("cmd.map.scoreboard.undo"),
 
     CMD_MAP_TEAM_ADD_PLAYER("cmd.map.team.addPlayer"),
     CMD_MAP_TEAM_CHEST_ROOM("cmd.map.team.chestRoom"),
