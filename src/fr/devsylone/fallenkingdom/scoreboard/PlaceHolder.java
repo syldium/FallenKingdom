@@ -1,184 +1,68 @@
 package fr.devsylone.fallenkingdom.scoreboard;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-import java.util.HashMap;
-import java.util.regex.Pattern;
-
+import fr.devsylone.fallenkingdom.Fk;
+import fr.devsylone.fallenkingdom.game.Game;
 import org.bukkit.entity.Player;
 
-import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.utils.PlaceHolderUtils;
+
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public enum PlaceHolder
 {
 
-	DAY("getDays", Fk.getInstance().getGame(), "Jour", "DAY", "DAYS", "JOUR", "JOURS", "D", "J"),
-	HOUR("getHour", Fk.getInstance().getGame(), "Heure", "HOUR", "HOURS", "HEURE", "HEURES", "H"),
-	MINUTE("getMinute", Fk.getInstance().getGame(), "Minute", "MINUTE", "MINUTES", "M"),
-	TEAM("getTeamOf", PlaceHolderUtils.class, new String[] {"player"}, "Équipe du joueur", "PLAYER_TEAM", "TEAM", "EQUIPE"),
-	DEATHS("getDeaths", PlaceHolderUtils.class, new String[] {"player"}, "Nombre de morts", "PLAYER_DEATHS", "DEATHS", "MORTS"),
-	KILLS("getKills", PlaceHolderUtils.class, new String[] {"player"}, "Nombre de kills", "PLAYER_KILLS", "KILLS"),
+	DAY(Fk.getInstance().getGame(), Game::getDays, "Jour", "DAY", "DAYS", "JOUR", "JOURS", "D", "J"),
+	HOUR(Fk.getInstance().getGame(), Game::getHour, "Heure", "Heure", "HOUR", "HOURS", "HEURE", "HEURES", "H"),
+	MINUTE(Fk.getInstance().getGame(), Game::getMinute, "Minutes", "Minute", "MINUTE", "MINUTES", "M"),
+	TEAM(PlaceHolderUtils::getTeamOf, "Équipe du joueur", "PLAYER_TEAM", "TEAM", "EQUIPE"),
+	DEATHS(PlaceHolderUtils::getDeaths, "Nombre de morts", "PLAYER_DEATHS", "DEATHS", "MORTS"),
+	KILLS(PlaceHolderUtils::getKills,"Nombre de kills", "PLAYER_KILLS", "KILLS"),
 
-	BASE_DISTANCE("getBaseDistance", PlaceHolderUtils.class, new String[] {"player"}, "Distance de la base", "PLAYER_DISTANCE_TO_BASE", "BASE_DISTANCE", "DISTANCE", "DIST"),
-	BASE_DIRECTION("getBaseDirection", PlaceHolderUtils.class, new String[] {"player", "arrows"}, "Direction de la base", "PLAYER_BASE_DIRECTION", "BASE_DIRECTION", "DIRECTION", "ARROW", "ARROWS"),
-	BASE_OR_PORTAL("getBaseOrPortal", PlaceHolderUtils.class, new String[] {"player"}, "Base/portail selon la dimension", "BASE_OR_PORTAL", "BASE_PORTAL"),
-	NEAREST_TEAM_BASE("getNearestTeamBase", PlaceHolderUtils.class,  new String[] {"player"}, "Base ennemie la plus proche", "NEAREST_TEAM_BASE", "ENEMY_TEAM_BASE", "ENEMY_BASE"),
-	NEAREST_BASE_DIRECTION("getNearestBaseDirection", PlaceHolderUtils.class,  new String[] {"player", "arrows"}, "Direction de la base ennemie la plus proche", "NEAREST_BASE_DIRECTION", "ENEMY_BASE_DIRECTION", "ENEMY_BASE_DIR", "ENEMY_DIR"),
+	BASE_DISTANCE(PlaceHolderUtils::getBaseDistance,"Distance de la base", "PLAYER_DISTANCE_TO_BASE", "BASE_DISTANCE", "DISTANCE", "DIST"),
+	BASE_DIRECTION(PlaceHolderUtils::getBaseDirection,"Direction de la base", "PLAYER_BASE_DIRECTION", "BASE_DIRECTION", "DIRECTION", "ARROW", "ARROWS"),
+	BASE_OR_PORTAL(PlaceHolderUtils::getBaseOrPortal, "Base/portail selon la dimension", "BASE_OR_PORTAL", "BASE_PORTAL"),
+	NEAREST_TEAM_BASE(PlaceHolderUtils::getNearestTeamBase, "Base ennemie la plus proche", "NEAREST_TEAM_BASE", "ENEMY_TEAM_BASE", "ENEMY_BASE"),
+	NEAREST_BASE_DIRECTION(PlaceHolderUtils::getNearestBaseDirection, "Direction de la base ennemie la plus proche", "NEAREST_BASE_DIRECTION", "ENEMY_BASE_DIRECTION", "ENEMY_BASE_DIR", "ENEMY_DIR"),
 
-	PVPCAP("isPvpEnabled", Fk.getInstance().getGame(), "Pvp actif ?", "PVP?"),
-	TNTCAP("isAssaultsEnabled", Fk.getInstance().getGame(), "Assauts actifs ?", "TNT?"),
-	NETHERCAP("isNetherEnabled", Fk.getInstance().getGame(), "Nether ouvert ?", "NETHER?"),
-	ENDCAP("isEndEnabled", Fk.getInstance().getGame(), "End ouvert ?", "END?");
+	PVPCAP(Fk.getInstance().getGame(), Game::isPvpEnabled, "Pvp actif ?", "PVP?"),
+	TNTCAP(Fk.getInstance().getGame(), Game::isAssaultsEnabled, "Assauts actifs ?", "TNT?"),
+	NETHERCAP(Fk.getInstance().getGame(), Game::isNetherEnabled, "Nether ouvert ?", "NETHER?"),
+	ENDCAP(Fk.getInstance().getGame(), Game::isEndEnabled, "End ouvert ?", "END?");
 
-	private Method method;
-	private Object instance;
-	private String description;
-	private String[] rawKeys;
-	private String[] keys;
-	private String[] methodParametersName;
+	private final Function<Player, ?> callable;
+	private final String description;
+	private final List<String> keys;
 
-	private PlaceHolder(String stringMethod, Class<?> clazz, Object instance, String[] methodParametersName, String description, String... rawKeys)
+	<T> PlaceHolder(T game, Function<T, ?> callable, String description, String... rawKeys)
 	{
-		try
-		{
-			for(Method m : clazz.getMethods())
-				if(m.getName().equalsIgnoreCase(stringMethod))
-				{
-					method = m;
-					break;
-				}
-
-			this.instance = instance;
-			this.description = description;
-			this.rawKeys = rawKeys;
-			this.keys  = new String[rawKeys.length];
-			for(int i = 0; i < rawKeys.length; i++)
-				keys[i] = "(?i)" + Pattern.quote("{" + rawKeys[i] + "}");
-
-			this.methodParametersName = methodParametersName;
-		}catch(SecurityException e)
-		{
-			e.printStackTrace();
-		}catch(IllegalArgumentException e)
-		{
-			e.printStackTrace();
-		}
+		this((Function<Player, ?>) (Player p) -> callable.apply(game), description, rawKeys);
 	}
 
-	private PlaceHolder(String stringMethod, Class<?> clazz, String description, String... rawKeys)
+	PlaceHolder(Function<Player, ?> callable, String description, String... rawKeys)
 	{
-		this(stringMethod, clazz, null, null, description, rawKeys);
+		this.callable = callable;
+		this.description = description;
+		this.keys = Arrays.stream(rawKeys).map(key -> "{" + key + "}").collect(Collectors.toList());
 	}
 
-	private PlaceHolder(String stringMethod, Object instance, String description, String... rawKeys)
+	public String replace(String chainToProcess, Player player)
 	{
-		this(stringMethod, instance.getClass(), instance, null, description, rawKeys);
-	}
-
-	private PlaceHolder(String stringMethod, Class<?> clazz, String[] methodParametersName, String description, String... rawKeys)
-	{
-		this(stringMethod, clazz, null, methodParametersName, description, rawKeys);
-	}
-
-	private PlaceHolder(String stringMethod, Object instance, String[] methodParametersName, String description, String... rawKeys)
-	{
-		this(stringMethod, instance.getClass(), instance, methodParametersName, description, rawKeys);
-	}
-
-	public String replace(String chainToProcess, Player p)
-	{
-		Object returned;
-		try
-		{
-			Parameter[] parametersType = method.getParameters();
-			Object[] parameters = new Object[parametersType.length];
-			for(int i = 0; i < parametersType.length; i++)
-			{
-				if(parametersType[i].getType().equals(Player.class))
-					parameters[i] = p;
-				else if(parametersType[i].getType().equals(String.class) && methodParametersName[i].equalsIgnoreCase("player"))
-					parameters[i] = p.getName();
-				else
-					for(String s : Fk.getInstance().getScoreboardManager().getCustomStrings().keySet())
-						if(methodParametersName[i].equalsIgnoreCase(s))
-						{
-							parameters[i] = Fk.getInstance().getScoreboardManager().getCustomStrings().get(s);
-							break;
-						}
-
-			}
-
-			returned = method.invoke(instance, parameters);
-			HashMap<String, String> defined = Fk.getInstance().getScoreboardManager().getCustomStrings();
-
-			for(String key : keys)
-			{
-				if(chainToProcess.matches(".*" + key + ".*"))
-				{
-
-					String replacement = "";
-					try
-					{
-						if(returned instanceof String)//SI c'est un String
-						{
-							replacement = (String) returned;
-							for(String def : defined.keySet())
-							{
-								if(replacement.contains("{" + def + "}"))
-								{
-									if(!chainToProcess.contains(defined.get(def)))
-										replacement = replacement.replace("{" + def + "}", defined.get(def));
-									else
-									{
-										replacement = replacement.replace("{" + def + "}", "");
-									}
-								}
-							}
-						}
-						else if(returned instanceof Integer)//SI c'est un Integer
-							replacement = String.valueOf((Integer) returned);
-
-						else if(returned instanceof Boolean && defined.containsKey("stringTrue") && defined.containsKey("stringFalse"))//SI c'est un Boolean
-							replacement = String.valueOf((boolean) returned ? defined.get("stringTrue") : defined.get("stringFalse"));
-
-						chainToProcess = chainToProcess.replaceAll(key, replacement);
-
-					}catch(IllegalArgumentException e)
-					{
-						e.printStackTrace();
-					}
-				}
-			}
-		}catch(IllegalAccessException | IllegalArgumentException | InvocationTargetException e1)
-		{
-			e1.printStackTrace();
-		}
-
+		Object replaceValue = callable.apply(player);
+		if(replaceValue instanceof Boolean)
+			replaceValue = String.valueOf((boolean) replaceValue ? Fk.getInstance().getScoreboardManager().getCustomStrings().get("stringTrue") : Fk.getInstance().getScoreboardManager().getCustomStrings().get("stringFalse"));
+		for (String key : keys)
+			chainToProcess = chainToProcess.replace(key, String.valueOf(replaceValue));
 		return chainToProcess;
-	}
-
-	public boolean isInLine(String str)
-	{
-		for(String s : keys)
-		{
-			if(str.matches(".*" + s + ".*"))
-			{
-				return true;
-			}
-		}
-		return false;
 	}
 
 	public String getShortestKey()
 	{
-		String cur = rawKeys[0];
-		for(String s : rawKeys)
-			if(cur.length() > s.length())
-				cur = s;
-
-		return cur;
+		Comparator<String> byLength = (e1, e2) -> e1.length() > e2.length() ? -1 : 1;
+		return keys.stream().max(byLength).get();
 	}
 	
 	public String getDescription()
@@ -186,4 +70,13 @@ public enum PlaceHolder
 		return description;
 	}
 
+	public Function<Player, ?> getFunction()
+	{
+		return callable;
+	}
+
+	public boolean isInLine(String s)
+	{
+		return keys.parallelStream().anyMatch(s::contains);
+	}
 }
