@@ -14,7 +14,7 @@ import java.util.Arrays;
 public class StarterInventoryManager implements Saveable
 {
 	private ItemStack[] armors = new ItemStack[4];
-	private ItemStack[] inventory = new ItemStack[Bukkit.getVersion().contains("1.8") ? 36 : 41];
+	private ItemStack[] inventory = new ItemStack[] {};
 
 	private ItemStack[] lastArmors = armors;
 	private ItemStack[] lastInventory = inventory;

@@ -47,6 +47,7 @@ import fr.devsylone.fallenkingdom.utils.NMSUtils;
 import fr.devsylone.fallenkingdom.utils.ZipUtils;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.teams.Team;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class Fk extends JavaPlugin
 {
@@ -269,7 +270,13 @@ public class Fk extends JavaPlugin
 			e.printStackTrace();
 		}
 
-		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> saveableManager.saveAll(), 5l * 60l * 20l, 5l * 60l * 20l);
+
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				saveableManager.saveAll();
+			}
+		}.runTaskTimerAsynchronously(this, 5L * 60L * 20L, 5L * 60L * 20L);
 	}
 
 	@Override
