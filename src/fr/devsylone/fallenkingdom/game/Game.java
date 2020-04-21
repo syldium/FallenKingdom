@@ -187,7 +187,7 @@ public class Game implements Saveable
 		setState(GameState.BEFORE_STARTING);
 
 		day = 0;
-		time = (int) FkPI.getInstance().getRulesManager().getRuleByName("DayDuration").getValue() - 10;
+		time = 23990;
 		assault = false;
 		pvp = false;
 		nether = false;
@@ -320,6 +320,7 @@ public class Game implements Saveable
 
 		setState(GameState.STARTING);
 		long time = 0;
+		updateDayDuration();
 
 		broadcastStartIn(30);
 
