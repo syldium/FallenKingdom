@@ -9,6 +9,7 @@ import fr.devsylone.fallenkingdom.utils.PlaceHolderUtils;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -33,25 +34,30 @@ public enum PlaceHolder
 	NETHERCAP(Fk.getInstance().getGame(), Game::isNetherEnabled, "Nether ouvert ?", "NETHER?"),
 	ENDCAP(Fk.getInstance().getGame(), Game::isEndEnabled, "End ouvert ?", "END?");
 
-	private final Function<Player, ?> callable;
+	private final BiFunction<Player, Integer, ?> callable;
 	private final String description;
 	private final List<String> keys;
 
 	<T> PlaceHolder(T game, Function<T, ?> callable, String description, String... rawKeys)
 	{
-		this((Function<Player, ?>) (Player p) -> callable.apply(game), description, rawKeys);
+		this((BiFunction<Player, Integer, ?>) (Player p, Integer i) -> callable.apply(game), description, rawKeys);
 	}
 
 	PlaceHolder(Function<Player, ?> callable, String description, String... rawKeys)
+	{
+		this((BiFunction<Player, Integer, ?>) (Player p, Integer i) -> callable.apply(p), description, rawKeys);
+	}
+
+	PlaceHolder(BiFunction<Player, Integer, ?> callable, String description, String... rawKeys)
 	{
 		this.callable = callable;
 		this.description = description;
 		this.keys = Arrays.stream(rawKeys).map(key -> "{" + key + "}").collect(Collectors.toList());
 	}
 
-	public String replace(String chainToProcess, Player player)
+	public String replace(String chainToProcess, Player player, int iteration)
 	{
-		Object replaceValue = callable.apply(player);
+		Object replaceValue = callable.apply(player, iteration);
 		if(replaceValue instanceof Boolean)
 			replaceValue = String.valueOf((boolean) replaceValue ? Fk.getInstance().getScoreboardManager().getCustomStrings().get("stringTrue") : Fk.getInstance().getScoreboardManager().getCustomStrings().get("stringFalse"));
 		for (String key : keys)
@@ -70,7 +76,7 @@ public enum PlaceHolder
 		return description;
 	}
 
-	public Function<Player, ?> getFunction()
+	public BiFunction<Player, Integer, ?> getFunction()
 	{
 		return callable;
 	}

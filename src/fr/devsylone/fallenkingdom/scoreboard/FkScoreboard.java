@@ -26,7 +26,7 @@ public class FkScoreboard
 
 	private final Player player;
 
-	private final HashMap<PlaceHolder, ArrayList<Integer>> placeHolders;
+	private final HashMap<PlaceHolder, List<Integer>> placeHolders;
 
 	private boolean formatted;
 
@@ -144,7 +144,7 @@ public class FkScoreboard
 		{
 			for(PlaceHolder placeHolder : placeHolders.keySet())
 				if(placeHolders.get(placeHolder).contains(i))
-					line = placeHolder.replace(line, player);
+					line = placeHolder.replace(line, player, placeHolders.get(placeHolder).indexOf(i));
 		}
 		else
 		{

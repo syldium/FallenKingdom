@@ -14,20 +14,16 @@ import fr.devsylone.fallenkingdom.players.FkPlayer;
 
 public class ScoreboardDisplayer
 {
-	private String player;
-	private List<Integer> headIds;
-	private List<Integer> footerIds;
-	private List<Integer> placeholdersIds;
+	private final String player;
+	private final List<Integer> headIds = new ArrayList<>();
+	private final List<Integer> footerIds = new ArrayList<>();
+	private final List<Integer> placeholdersIds = new ArrayList<>();
 
-	private List<BukkitRunnable> runnables;
+	private final List<BukkitRunnable> runnables = new ArrayList<>();
 
 	public ScoreboardDisplayer(FkPlayer p)
 	{
 		player = p.getName();
-		headIds = new ArrayList<Integer>();
-		footerIds = new ArrayList<Integer>();
-		placeholdersIds = new ArrayList<Integer>();
-		runnables = new ArrayList<BukkitRunnable>();
 	}
 
 	public void display()
@@ -45,7 +41,7 @@ public class ScoreboardDisplayer
 		placeholdersIds.add(Fk.getInstance().getPacketManager().createFloattingText("§bVoici la liste des variables utilisables !", p, null));
 
 		for(PlaceHolder ph : PlaceHolder.values())
-			placeholdersIds.add(Fk.getInstance().getPacketManager().createFloattingText("§8" + ph.getDescription() + "        §c->§r        " + "{" + ph.getShortestKey() + "}", p, null));
+			placeholdersIds.add(Fk.getInstance().getPacketManager().createFloattingText("§8" + ph.getDescription() + "        §c->§r        " + ph.getShortestKey(), p, null));
 
 		footerIds.add(Fk.getInstance().getPacketManager().createFloattingText("Pour §cquitter §r: §e/fk scoreboard LeaveEdit", p, null));
 
@@ -60,23 +56,20 @@ public class ScoreboardDisplayer
 		loc = getSight(loc, 5);
 		loc.setY(loc.getY() + 0.25 * ((headIds.size() + placeholdersIds.size() + footerIds.size()) / 2) - 1);
 
-		for(int i = 0; i < headIds.size(); i++)
-		{
-			Fk.getInstance().getPacketManager().updateFloattingText(headIds.get(i), loc);
+		for (Integer headId : headIds) {
+			Fk.getInstance().getPacketManager().updateFloattingText(headId, loc);
 			loc.add(0, -0.25, 0);
 		}
 
 		loc.add(0, -0.75, 0);
-		for(int i = 0; i < placeholdersIds.size(); i++)
-		{
-			Fk.getInstance().getPacketManager().updateFloattingText(placeholdersIds.get(i), loc);
+		for (Integer placeholdersId : placeholdersIds) {
+			Fk.getInstance().getPacketManager().updateFloattingText(placeholdersId, loc);
 			loc.add(0, -0.25, 0);
 		}
 		
 		loc.add(0, -0.75, 0);
-		for(int i = 0; i < footerIds.size(); i++)
-		{
-			Fk.getInstance().getPacketManager().updateFloattingText(footerIds.get(i), loc);
+		for (Integer footerId : footerIds) {
+			Fk.getInstance().getPacketManager().updateFloattingText(footerId, loc);
 			loc.add(0, -0.25, 0);
 		}
 
@@ -108,9 +101,9 @@ public class ScoreboardDisplayer
 			Fk.getInstance().getPacketManager().remove(id);
 
 
-		headIds = new ArrayList<Integer>();
-		placeholdersIds = new ArrayList<Integer>();
-		footerIds = new ArrayList<Integer>();
+		headIds.clear();
+		placeholdersIds.clear();
+		footerIds.clear();
 		FkScoreboard scoreboard;
 		if((scoreboard = Fk.getInstance().getPlayerManager().getPlayer(player).getScoreboard()) != null)
 		{

@@ -29,12 +29,13 @@ public class PlaceHolderUtils
 		return null;
 	}
 
-	private static Optional<Team> getNearestTeam(Player player)
+	private static Optional<Team> getNearestTeam(Player player, int iteration)
 	{
 		return Fk.getInstance().getFkPI().getTeamManager().getTeams().stream()
 				.filter(team -> team.getBase() != null && !team.getPlayers().contains(player.getName()))
 				.filter(team -> team.getBase().getCenter().getWorld().equals(player.getWorld()))
 				.sorted(Comparator.comparingDouble(team -> team.getBase().getCenter().distance(player.getLocation())))
+				.skip(iteration)
 				.findFirst();
 	}
 
@@ -70,23 +71,23 @@ public class PlaceHolderUtils
 		return Fk.getInstance().getScoreboardManager().getNoInfo(); // ?
 	}
 
-	public static String getNearestTeamBase(Player player)
+	public static String getNearestTeamBase(Player player, int iteration)
 	{
 		if(Fk.getInstance().getFkPI().getTeamManager().getTeams().size() < 1)
 			return Fk.getInstance().getScoreboardManager().getNoTeam();
 
-		Optional<Team> nearestTeam = getNearestTeam(player);
+		Optional<Team> nearestTeam = getNearestTeam(player, iteration);
 		return nearestTeam
 				.map(team -> team.getChatColor() + team.getName())
 				.orElseGet(() -> Fk.getInstance().getScoreboardManager().getNoInfo());
 	}
 
-	public static String getNearestBaseDirection(Player player)
+	public static String getNearestBaseDirection(Player player, int iteration)
 	{
 		if(Fk.getInstance().getFkPI().getTeamManager().getTeams().size() < 1)
 			return Fk.getInstance().getScoreboardManager().getNoTeam();
 
-		Optional<Team> nearestTeam = getNearestTeam(player);
+		Optional<Team> nearestTeam = getNearestTeam(player, iteration);
 		return nearestTeam
 				.map(team -> getDirectionOf(player.getLocation(), team.getBase().getCenter()))
 				.orElseGet(() -> Fk.getInstance().getScoreboardManager().getNoInfo());
