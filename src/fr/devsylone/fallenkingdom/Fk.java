@@ -3,7 +3,6 @@ package fr.devsylone.fallenkingdom;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -11,6 +10,7 @@ import java.util.List;
 import java.util.zip.ZipOutputStream;
 
 import fr.devsylone.fallenkingdom.manager.*;
+import fr.devsylone.fallenkingdom.scoreboard.PlaceHolderExpansion;
 import fr.devsylone.fkpi.rules.Rule;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -44,6 +44,7 @@ import fr.devsylone.fallenkingdom.utils.NMSUtils;
 import fr.devsylone.fallenkingdom.utils.ZipUtils;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.teams.Team;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class Fk extends JavaPlugin
 {
@@ -193,19 +194,10 @@ public class Fk extends JavaPlugin
 		 * ServerSocket & load du config.yml
 		 */
 
-		try
-		{
-			File conf = new File(getDataFolder(), "config.yml");
-			if(conf.length() == 0L)
-				conf.delete();
-			if(!conf.exists())
-			{
-				Files.copy(getClass().getClassLoader().getResourceAsStream("config.yml"), conf.toPath());
-			}
-		}catch(IOException e)
-		{
-			e.printStackTrace();
-		}
+		saveDefaultConfig();
+		File conf = new File(getDataFolder(), "config.yml");
+		if(conf.length() == 0L)
+			conf.delete();
 
 		if(getConfig().getBoolean("Application.Enabled"))
 		{
@@ -215,6 +207,9 @@ public class Fk extends JavaPlugin
 				server = new CBServerSocket();
 			server.start();
 		}
+
+		if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null)
+			new PlaceHolderExpansion().register();
 
 		/*
 		 * command /fk, events et le reste
@@ -261,7 +256,12 @@ public class Fk extends JavaPlugin
 			e.printStackTrace();
 		}
 
-		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> saveableManager.saveAll(), 5l * 60l * 20l, 5l * 60l * 20l);
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				saveableManager.saveAll();
+			}
+		}.runTaskTimerAsynchronously(this, 5L * 60L * 20L, 5L * 60L * 20L);
 	}
 
 	@Override
@@ -269,18 +269,10 @@ public class Fk extends JavaPlugin
 	{
 		saveableManager.saveAll();
 
-		// Même si la partie est en pause et est sauvegardée dans cet état,
-		// on essaye de remettre dans un état normal, c'est-à-dire avec l'IA des mobs.
-		// Au redémarrage, la commande "game pause" sera exécutée si cela a été enregistré.
 		if(game.getState().equals(Game.GameState.PAUSE))
 		{
-			try
-			{
-				getCommandManager().getCommand("game resume").execute(null, null, new String[0]);
-			}catch(Exception e)
-			{
-				e.printStackTrace();
-			}
+			getDeepPauseManager().unprotectItems();
+			getDeepPauseManager().resetAIs();
 		}
 
 		if(server != null)
@@ -381,8 +373,6 @@ public class Fk extends JavaPlugin
 
 	public static void debug(Object message)
 	{
-		//		if(message.toString().length() < 20)
-		//			DebuggerUtils.printCurrentStackTrace();
 		if(DEBUG_MODE)
 		{
 			if(!Fk.getInstance().isEnabled())
