@@ -22,6 +22,10 @@ public class RespawnListener implements Listener
 	{
 		final Team team = Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(e.getPlayer().getName());
 
+		if(FkPI.getInstance().getRulesManager().getRule(Rule.DEATH_LIMIT) > 0)
+			if(Fk.getInstance().getPlayerManager().getPlayer(e.getPlayer().getName()).getDeaths() >= FkPI.getInstance().getRulesManager().getRule(Rule.DEATH_LIMIT))
+				return;
+
 		if(!e.isBedSpawn() && FkPI.getInstance().getRulesManager().getRule(Rule.RESPAWN_AT_HOME) && team != null && team.getBase() != null)
 		{
 
