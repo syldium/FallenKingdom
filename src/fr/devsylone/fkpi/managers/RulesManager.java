@@ -1,9 +1,9 @@
 package fr.devsylone.fkpi.managers;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.google.common.base.Preconditions;
 import fr.devsylone.fkpi.rules.Rule;
 import fr.devsylone.fkpi.rules.RuleValue;
 import org.bukkit.configuration.ConfigurationSection;
@@ -17,6 +17,7 @@ public class RulesManager implements Saveable
 	@SuppressWarnings("unchecked")
 	public <T> T getRule(Rule<T> rule)
 	{
+		Preconditions.checkArgument(rules.containsKey(rule), "The rule doesn't seem to be loaded. Has the manager been initialized?");
 		return (T) rules.get(rule);
 	}
 
@@ -33,7 +34,7 @@ public class RulesManager implements Saveable
 	@Override
 	public void load(ConfigurationSection config)
 	{
-		Rule.values().forEach((Rule rule) -> {
+		Rule.values().forEach((Rule<?> rule) -> {
 			String configPath = "Rules." + rule.getName();
 
 			if (rule.getDefaultValue() instanceof RuleValue) {
@@ -52,7 +53,7 @@ public class RulesManager implements Saveable
 	@Override
 	public void save(ConfigurationSection config)
 	{
-		rules.forEach((Rule rule, Object value) -> {
+		rules.forEach((Rule<?> rule, Object value) -> {
 			if (value instanceof RuleValue) {
 				((RuleValue) value).save(config.createSection("Rules." + rule.getName()));
 			} else {

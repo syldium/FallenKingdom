@@ -40,6 +40,7 @@ public class Rule<T>
 	public static final Rule<Boolean> TNT_JUMP = new Rule<>("TntJump", true);
 	public static final Rule<Boolean> RESPAWN_AT_HOME = new Rule<>("RespawnAtHome", false);
 	public static final Rule<Boolean> HEALTH_BELOW_NAME = new Rule<>("HealthBelowName", true);
+	public static final Rule<Boolean> ENDERPEARL_ASSAULT = new Rule<>("EnderpearlAssault", true);
 
 	// Valeurs complexes
 	public static final Rule<AllowedBlocks> ALLOWED_BLOCKS = new Rule<>("AllowedBlocks", new AllowedBlocks());

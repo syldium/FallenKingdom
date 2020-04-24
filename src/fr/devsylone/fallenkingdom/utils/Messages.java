@@ -157,6 +157,7 @@ public enum Messages
     CMD_RULES_DEEP_PAUSE_LIGHT("cmd.rules.deep-pause.light"),
     CMD_RULES_DENY_BLOCK("cmd.rules.allow-block.denied"),
     CMD_RULES_DO_PAUSE_AFTER_DAY("cmd.rules.do-pause-after-day"),
+    CMD_RULES_ENDERPEARL_ASSAULT("cmd.rules.enderpearl-assault"),
     CMD_RULES_ERROR_ALREADY_ALLOWED("cmd.rules.allow-block.already-allowed"),
     CMD_RULES_ERROR_ALREADY_DENIED("cmd.rules.allow-block.already-denied"),
     CMD_RULES_ETERNAL_DAY("cmd.rules.eternal-day"),
@@ -224,6 +225,7 @@ public enum Messages
     PLAYER_SELF_CHEST_ROOM_ENTER("player.base.chest-room.self.enter"),
     PLAYER_SELF_CHEST_ROOM_EXIT("player.base.chest-room.self.exit"),
     PLAYER_TNT_JUMP_DENIED("player.tntjump-denied"),
+    PLAYER_TP_IN_BASE("player.tp-in-base"),
     PLAYER_TNT_NOT_ACTIVE("player.not-active.tnt"),
 
     SCOREBOARD_INTRO_EXAMPLE("scoreboard.intro.example"),

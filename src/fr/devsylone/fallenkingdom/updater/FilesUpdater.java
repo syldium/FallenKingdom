@@ -127,10 +127,7 @@ public class FilesUpdater
 			set("CaptureTime", 60);
 			set("Offset", 2);
 
-			if(!GameState.valueOf(file.getString("Game.State")).equals(GameState.BEFORE_STARTING))
-				set("Enabled", false);
-			else
-				set("Enabled", true);
+			set("Enabled", GameState.valueOf(file.getString("Game.State")).equals(GameState.BEFORE_STARTING));
 
 		}
 
@@ -209,9 +206,13 @@ public class FilesUpdater
 		String[] parsedv1 = v1.split("\\.");
 		String[] parsedv2 = v2.split("\\.");
 
-		for(int i = 0; i < Math.min(parsedv1.length, parsedv2.length); i++)
-			if(!parsedv1[i].equals(parsedv2[i]))
-				return Integer.parseInt(parsedv1[i]) < Integer.parseInt(parsedv2[i]);
+		try {
+			for (int i = 0; i < Math.min(parsedv1.length, parsedv2.length); i++)
+				if (!parsedv1[i].equals(parsedv2[i]))
+					return Integer.parseInt(parsedv1[i]) < Integer.parseInt(parsedv2[i]);
+		} catch (NumberFormatException e) {
+			Fk.getInstance().getLogger().info("Can't parse version.");
+		}
 
 		return parsedv1.length < parsedv2.length;
 	}

@@ -10,7 +10,7 @@ import fr.devsylone.fkpi.rules.RuleValue;
 
 public class RulesFormatter
 {
-	private static <T> String format(Rule rule, T ruleValue)
+	private static <T> String format(Rule<?> rule, T ruleValue)
 	{
 		String format = "§6" + rule.getName() + " » ";
 
@@ -22,9 +22,9 @@ public class RulesFormatter
 		return format + "§e" + ruleValue;
 	}
 
-	public static List<String> formatRules(Rule... withouts)
+	public static List<String> formatRules(Rule<?>... withouts)
 	{
-		List<Rule> withoutsList = Arrays.asList(withouts);
+		List<Rule<?>> withoutsList = Arrays.asList(withouts);
 
 		return FkPI.getInstance().getRulesManager().getRulesList().entrySet().stream()
 				.filter(e -> !withoutsList.contains(e.getKey()))
