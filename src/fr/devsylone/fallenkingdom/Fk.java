@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.zip.ZipOutputStream;
 
+import fr.devsylone.fallenkingdom.commands.FkAsyncCommandExecutor;
+import fr.devsylone.fallenkingdom.commands.FkAsyncRegisteredCommandExecutor;
 import fr.devsylone.fallenkingdom.manager.*;
 import fr.devsylone.fallenkingdom.scoreboard.PlaceHolderExpansion;
 import fr.devsylone.fkpi.rules.Rule;
@@ -128,7 +130,15 @@ public class Fk extends JavaPlugin
 		 */
 
 		PluginCommand command = Objects.requireNonNull(getCommand("fk"), "Unable to register /fk command");
-		this.cmdManager = new FkCommandExecutor(this, command);
+		if (isAsyncTabCompleteSupported())
+			if (isAsyncPlayerSendCommandsEventSupported())
+				this.cmdManager = new FkAsyncRegisteredCommandExecutor(this, command);
+			else
+				this.cmdManager = new FkAsyncCommandExecutor(this, command);
+		else
+			this.cmdManager = new FkCommandExecutor(this, command);
+
+		// @todo Faire fonctionner sous Spigot le BrigadierManager
 
 		/*
 		 * MANAGER
@@ -406,6 +416,27 @@ public class Fk extends JavaPlugin
 	public String getError()
 	{
 		return pluginError;
+	}
+
+	private static boolean isBrigadierSupported() {
+		return classExists("com.mojang.brigadier.CommandDispatcher");
+	}
+
+	private static boolean isAsyncTabCompleteSupported() {
+		return classExists("com.destroystokyo.paper.event.server.AsyncTabCompleteEvent");
+	}
+
+	private static boolean isAsyncPlayerSendCommandsEventSupported() {
+		return classExists("com.destroystokyo.paper.event.brigadier.CommandRegisteredEvent");
+	}
+
+	private static boolean classExists(String name) {
+		try {
+			Class.forName(name);
+			return true;
+		} catch (ClassNotFoundException notFound) {
+			return false;
+		}
 	}
 
 	public void reset()
