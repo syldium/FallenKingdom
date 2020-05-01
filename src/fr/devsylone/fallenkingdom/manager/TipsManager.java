@@ -1,27 +1,25 @@
 package fr.devsylone.fallenkingdom.manager;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Random;
-import java.util.Set;
 
-import org.bukkit.Bukkit;
-import org.bukkit.scheduler.BukkitRunnable;
-
-import fr.devsylone.fallenkingdom.Fk;
-import fr.devsylone.fallenkingdom.commands.Bug;
-import fr.devsylone.fallenkingdom.commands.FkCommand;
-import fr.devsylone.fallenkingdom.commands.chests.chestscommands.Add;
+import fr.devsylone.fallenkingdom.commands.abstraction.AbstractCommand;
 import fr.devsylone.fallenkingdom.commands.game.gamescommands.Restore;
 import fr.devsylone.fallenkingdom.commands.game.gamescommands.StarterInv;
 import fr.devsylone.fallenkingdom.commands.rules.rulescommands.ChargedCreepers;
+import fr.devsylone.fallenkingdom.commands.rules.rulescommands.DayDuration;
+import fr.devsylone.fallenkingdom.commands.rules.rulescommands.DisabledPotions;
 import fr.devsylone.fallenkingdom.commands.rules.rulescommands.PlaceBlockInCave;
 import fr.devsylone.fallenkingdom.commands.rules.rulescommands.booleancommands.DoPauseAfterDay;
 import fr.devsylone.fallenkingdom.commands.rules.rulescommands.booleancommands.TntJump;
 import fr.devsylone.fallenkingdom.commands.scoreboard.scoreboardcommands.Edit;
+import org.bukkit.Bukkit;
+import org.bukkit.scheduler.BukkitRunnable;
+
+import fr.devsylone.fallenkingdom.Fk;
+import fr.devsylone.fallenkingdom.commands.chests.chestscommands.Add;
 import fr.devsylone.fallenkingdom.game.Game.GameState;
 import fr.devsylone.fallenkingdom.players.Tip;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
@@ -29,52 +27,51 @@ import fr.devsylone.fallenkingdom.utils.FkSound;
 
 public class TipsManager
 {
-	private HashMap<Integer, Tip> tips;
-	private int last = 0;
-	private List<Integer> displayed;
-	private Set<Integer> used;
+	private final List<Tip> tips = new ArrayList<>();
+	private final List<Tip> displayed = new ArrayList<>();
+	private final List<Tip> used = new ArrayList<>();
+	private final int tipsSize;
 	private int task;
 
 	public TipsManager()
 	{
-		this.tips = new HashMap<Integer, Tip>();
-		this.displayed = new ArrayList<Integer>();
-		this.used = new HashSet<Integer>();
+		newTip(DoPauseAfterDay.class, "Mettre en pause à la fin de la journée !");
+		newTip(TntJump.class, "Empêcher les tours en §cTNT&r !");
+		newTip(ChargedCreepers.class, "Gérer les creepers chargés qui donnent de la §cTNT&r !");
+		newTip(Edit.class, "Modifier le scoreboard à votre guise ! ");
+		//newTip(, "Un problème ? Alertez l'équipe de développement en une commande !");
+		newTip(Restore.class, "À utiliser après une pause !");
+		newTip(StarterInv.class, "Personnalisez le stuff de départ !");
+		newTip(PlaceBlockInCave.class, "Pour poser des blocs en caverne !");
+		newTip(Add.class, "Créez des coffres à crocheter !");
+		newTip(DayDuration.class, "Changer la durée d'un jour !");
+		newTip(DisabledPotions.class, "Désactivez certaines potions de la partie !");
 
-		newTip(new DoPauseAfterDay(), "Mettre en pause à la fin de la journée !");
-		newTip(new TntJump(), "Empêcher les tours en §cTNT&r !");
-		newTip(new ChargedCreepers(), "Gérer les creepers chargés qui donnent de la §cTNT&r !");
-		newTip(new Edit(), "Modifier le scoreboard à votre guise ! ");
-		newTip(new Bug(), "Un problème ? Alertez l'équipe de développement en une commande !");
-		newTip(new Restore(), "À utiliser après une pause !");
-		newTip(new StarterInv(), "Personnalisez le stuff de départ !");
-		newTip(new PlaceBlockInCave(), "Pour poser des blocs en caverne !");
-		newTip(new Add(), "Créez des coffres à crocheter !");
-
-		newTip(null, "Faites §l[tab] &ren écrivant votre commande, elle s'ecrira toute seule !");
+		newTip(null, "Faites §l[tab] &ren écrivant votre commande, elle s'écrira toute seule !");
 		newTip(null, "Notre discord : §e§lhttps://discord.gg/NwqFNa6 &r !");
 		newTip(null, "Les seaux ne peuvent être posés contre une muraille adverse !");
+
+		tipsSize = tips.size();
 	}
 
-	private void newTip(FkCommand cmd, String tip)
+	private void newTip(Class<? extends AbstractCommand> cmd, String tip)
 	{
-		tips.put(Integer.valueOf(this.last++), new Tip(cmd, tip));
+		tips.add(new Tip(cmd, tip));
 	}
 
 	public void sendRandomTip()
 	{
 		Random rdm = new Random();
 
-		int rdmi = -1;
-		while(displayed.contains(rdmi) || used.contains(rdmi) || rdmi == -1)
-			rdmi = rdm.nextInt(last);
+		Tip tip = null;
+		while(tip == null || displayed.contains(tip) || used.contains(tip))
+			tip = tips.get(rdm.nextInt(tipsSize));
 
-		Tip tip = tips.get(rdmi);
-		displayed.add(rdmi);
+		displayed.add(tip);
 
-		Fk.broadcast("");
+		Fk.broadcast(" ");
 		Fk.broadcast(tip.getChatFormatted(), ChatUtils.TIP, FkSound.NOTE_PLING);
-		Fk.broadcast("");
+		Fk.broadcast(" ");
 		if(displayed.size()+used.size() >= tips.size())
 			displayed.clear();
 	}
@@ -89,17 +86,11 @@ public class TipsManager
 		}.runTaskTimerAsynchronously(Fk.getInstance(), 3 * 60 * 20, 3 * 60 * 20).getTaskId();
 	}
 
-	public void addUsed(FkCommand cmd)
+	public void addUsed(AbstractCommand cmd)
 	{
-		Entry<Integer, Tip> usedTip = null;
-		for(Entry<Integer, Tip> tip : tips.entrySet())
-			if(tip.getValue().getCommand() != null && tip.getValue().getCommand().getClass().equals(cmd.getClass()))
-			{
-				usedTip = tip;
-				break;
-			}
-		if(usedTip != null && !used.contains(usedTip.getKey()))
-			used.add(usedTip.getKey());
+		Optional<Tip> usedTip = tips.stream().filter(t -> t.getCommandClass() != null && t.getCommandClass().equals(cmd.getClass())).findFirst();
+		if(usedTip.isPresent() && !used.contains(usedTip.get()))
+			used.add(usedTip.get());
 	}
 
 	public void cancelBroadcasts()

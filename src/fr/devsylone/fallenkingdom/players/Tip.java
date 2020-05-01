@@ -1,21 +1,31 @@
 package fr.devsylone.fallenkingdom.players;
 
-import fr.devsylone.fallenkingdom.commands.FkCommand;
+import fr.devsylone.fallenkingdom.Fk;
+import fr.devsylone.fallenkingdom.commands.abstraction.AbstractCommand;
+import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
+
+import java.util.Optional;
 
 public class Tip
 {
-	private FkCommand command;
-	private String tip;
+	private AbstractCommand command = null;
+	private final String tip;
 
-	public Tip(FkCommand cmd, String tip)
+	public Tip(Class<? extends AbstractCommand> cmd, String tip)
 	{
-		command = cmd;
+		if (cmd != null) {
+			Optional<? extends AbstractCommand> e = Fk.getInstance().getCommandManager().search(cmd);
+			if (!e.isPresent()) {
+				throw new RuntimeException("Manager don't have command " + cmd.getName() + " registered!");
+			}
+			command = e.get();
+		}
 		this.tip = tip;
 	}
 
-	public FkCommand getCommand()
+	public Class<? extends FkCommand> getCommandClass()
 	{
-		return command;
+		return null;
 	}
 
 	public String getTip()
@@ -27,7 +37,7 @@ public class Tip
 	{
 		if(command != null)
 		{
-			String formatted = "  §c➤ §l§d/fk " + command.getPath() + "\n";
+			String formatted = "  §c➤ §l§d/fk " + command.getUsage() + "\n";
 			formatted = formatted + "     §b↪ " + tip.replace("&r", "§b");
 			return formatted;
 		}

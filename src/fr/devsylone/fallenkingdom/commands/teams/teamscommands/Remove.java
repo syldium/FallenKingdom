@@ -1,31 +1,35 @@
 package fr.devsylone.fallenkingdom.commands.teams.teamscommands;
 
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
+import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
 import fr.devsylone.fallenkingdom.utils.Messages;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
+import fr.devsylone.fkpi.teams.Team;
+import org.bukkit.command.CommandSender;
 
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
-import fr.devsylone.fallenkingdom.players.FkPlayer;
 
-public class Remove extends fr.devsylone.fallenkingdom.commands.teams.FkTeamCommand
+import java.util.List;
+
+public class Remove extends FkCommand
 {
 	public Remove()
 	{
-		super("remove", "<team>", 1, Messages.CMD_MAP_TEAM_REMOVE);
+		super("remove", "<team>", Messages.CMD_MAP_TEAM_REMOVE, CommandPermission.ADMIN);
 	}
 
-	public void execute(Player sender, FkPlayer fkp, String[] args) throws Exception
+	@Override
+	public CommandResult execute(Fk plugin, CommandSender sender, List<String> args, String label)
 	{
-		if(Fk.getInstance().getFkPI().getTeamManager().getTeam(args[0]) == null)
-			throw new FkLightException("Cette équipe n'existe pas !");
+		Team team = plugin.getFkPI().getTeamManager().getTeam(args.get(0));
+		if(team == null)
+			throw new FkLightException(Messages.CMD_ERROR_UNKNOWN_TEAM);
 
-		ChatColor color = Fk.getInstance().getFkPI().getTeamManager().getTeam(args[0]).getChatColor();
-		Object[] players = Fk.getInstance().getFkPI().getTeamManager().getTeam(args[0]).getPlayers().toArray();
-		for(Object player : players)
-			Fk.getInstance().getCommandManager().executeCommand(new String[] {"team", "removeplayer", String.valueOf(player)}, sender);
-
-		Fk.getInstance().getFkPI().getTeamManager().removeTeam(args[0]);
-		broadcast("L'équipe " + color + args[0] + " §6a été supprimée ! ");
+		team.getPlayers().forEach(team::removePlayer);
+		plugin.getFkPI().getTeamManager().removeTeam(args.get(0));
+		broadcast("L'équipe " + team.toString() + " §6a été supprimée !",1, args);
+		plugin.getScoreboardManager().refreshAllScoreboards();
+		return CommandResult.SUCCESS;
 	}
 }

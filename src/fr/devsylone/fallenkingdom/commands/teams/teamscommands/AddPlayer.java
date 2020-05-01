@@ -1,38 +1,46 @@
 package fr.devsylone.fallenkingdom.commands.teams.teamscommands;
 
+import fr.devsylone.fallenkingdom.commands.ArgumentParser;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
+import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import fr.devsylone.fallenkingdom.Fk;
-import fr.devsylone.fallenkingdom.commands.teams.FkTeamCommand;
-import fr.devsylone.fallenkingdom.players.FkPlayer;
 
-public class AddPlayer extends FkTeamCommand
+import java.util.List;
+
+public class AddPlayer extends FkCommand
 {
 	public AddPlayer()
 	{
-		super("addPlayer", "<player> <team>", 2, Messages.CMD_MAP_TEAM_SET_COLOR);
+		super("addPlayer", "<player> <team>", Messages.CMD_MAP_TEAM_SET_COLOR, CommandPermission.ADMIN);
 	}
 
-	public void execute(Player sender, FkPlayer fkp, String[] args)
+	@Override
+	public CommandResult execute(Fk plugin, CommandSender sender, List<String> args, String label)
 	{
-		Player player = Bukkit.getPlayer(args[0]);
+		Player player = Bukkit.getPlayer(args.get(0));
 		if(player != null)
-			args[0] = player.getName();
+			args.set(0, player.getName());
 
-		Fk.getInstance().getFkPI().getTeamManager().addPlayer(args[0], args[1]);
-		ChatColor color = Fk.getInstance().getFkPI().getTeamManager().getTeam(args[1]).getChatColor();
-		if(player != null)
-		{
-			Player p = Bukkit.getPlayer(args[0]);
-			p.setDisplayName(color + p.getName() + ChatColor.WHITE);
-		}
-		if(args.length < 3 || !args[2].equalsIgnoreCase("nobroadcast"))
+		List<String> players = ArgumentParser.parsePlayers(sender, args.get(0));
+		for (String p : players) {
+			plugin.getFkPI().getTeamManager().addPlayer(p, args.get(1));
+			ChatColor color = plugin.getFkPI().getTeamManager().getTeam(args.get(1)).getChatColor();
+			if (player != null)
+				player.setDisplayName(color + player.getName() + ChatColor.WHITE);
 			broadcast(Messages.CMD_TEAM_ADD_PLAYER.getMessage()
-					.replace("%player%", color + args[0])
-					.replace("%team%", color + args[1])
-			);
+					.replace("%player%", color + p)
+					.replace("%team%", color + args.get(1)),
+			2, args);
+		}
+		if (!players.isEmpty())
+			plugin.getScoreboardManager().refreshAllScoreboards();
+		return CommandResult.SUCCESS;
 	}
 }

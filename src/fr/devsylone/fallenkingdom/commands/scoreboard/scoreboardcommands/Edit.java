@@ -2,36 +2,40 @@ package fr.devsylone.fallenkingdom.commands.scoreboard.scoreboardcommands;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
+import fr.devsylone.fallenkingdom.commands.abstraction.FkPlayerCommand;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import fr.devsylone.fallenkingdom.Fk;
-import fr.devsylone.fallenkingdom.commands.scoreboard.FkScoreboardCommand;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
 
-public class Edit extends FkScoreboardCommand
+public class Edit extends FkPlayerCommand
 {
-	private final List<String> playersBeingLearningHowToEditTheBeautifulScoreboard = new ArrayList<>();
+	private final List<UUID> playersBeingLearningHowToEditTheBeautifulScoreboard = new ArrayList<>();
 
 	public Edit()
 	{
-		super("edit", "", 0, Messages.CMD_MAP_SCOREBOARD_EDIT);
+		super("edit", Messages.CMD_MAP_SCOREBOARD_EDIT, CommandPermission.ADMIN);
 	}
 
-	public void execute(final Player sender, final FkPlayer fkp, String[] args)
+	@Override
+	public CommandResult execute(Fk plugin, Player sender, FkPlayer fkp, List<String> args, String label)
 	{
-		if(playersBeingLearningHowToEditTheBeautifulScoreboard.contains(sender.getName()))
+		if(playersBeingLearningHowToEditTheBeautifulScoreboard.contains(sender.getUniqueId()))
 			throw new FkLightException(Messages.CMD_ERROR_SCOREBOARD_BEING_LEARN_EDIT);
 
-		if(fkp.hasAlreadyLearntHowToEditTheBeautifulScoreboard() && args.length < 2)
+		if(fkp.hasAlreadyLearntHowToEditTheBeautifulScoreboard() && args.size() < 2)
 			fkp.newSbDisplayer();
 
 		else
 		{
-			playersBeingLearningHowToEditTheBeautifulScoreboard.add(sender.getName());
+			playersBeingLearningHowToEditTheBeautifulScoreboard.add(sender.getUniqueId());
 			long time = 0;
 
 			Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), () -> fkp.sendMessage(Messages.SCOREBOARD_INTRO_SET_LINE), time * 20L);
@@ -58,10 +62,11 @@ public class Edit extends FkScoreboardCommand
 					fkp.sendMessage(Messages.SCOREBOARD_INTRO_TRY_YOURSELF);
 					fkp.sendMessage("§b§m-----------");
 					fkp.newSbDisplayer();
-					playersBeingLearningHowToEditTheBeautifulScoreboard.remove(sender.getName());
+					playersBeingLearningHowToEditTheBeautifulScoreboard.remove(sender.getUniqueId());
 					fkp.knowNowSbEdit();
 				}
-			}, time * 20l);
+			}, time * 20L);
 		}
+		return CommandResult.SUCCESS;
 	}
 }

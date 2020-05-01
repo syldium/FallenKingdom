@@ -8,7 +8,6 @@ import fr.devsylone.fkpi.rules.RuleValue;
 import org.bukkit.Bukkit;
 
 import fr.devsylone.fallenkingdom.Fk;
-import fr.devsylone.fallenkingdom.commands.FkCommandExecutor;
 import fr.devsylone.fkpi.lockedchests.LockedChest;
 
 public class DebuggerUtils
@@ -36,23 +35,23 @@ public class DebuggerUtils
 
 	public static String getStackTrace(StackTraceElement[] elements)
 	{
-		String totalStackTrace = "";
+		StringBuilder totalStackTrace = new StringBuilder();
 
 		for(StackTraceElement element : elements)
 		{
 			if(element.getClassName().equals(DebuggerUtils.class.getName()) || element.getClassName().contains("Thread"))
-				totalStackTrace = "Current trace : \n";
+				totalStackTrace.append("Current trace : \n");
 
 			else if(!element.getClassName().contains("devsylone"))
 			{
-				totalStackTrace += "And more...";
+				totalStackTrace.append("And more...");
 				break;
 			}
 
 			else
-				totalStackTrace += " |- " + element.toString() + "\n";
+				totalStackTrace.append(" |- ").append(element.toString()).append("\n");
 		}
-		return totalStackTrace;
+		return totalStackTrace.toString();
 	}
 
 	public static void printCurrentStackTrace()
@@ -92,11 +91,11 @@ public class DebuggerUtils
 		log("Plugin version : v" + Fk.getInstance().getDescription().getVersion());
 		log("Latest save: " + (Fk.getInstance().getSaveableManager().getLastSave() > 0 ? (System.currentTimeMillis() - Fk.getInstance().getSaveableManager().getLastSave())/1000 + "s" : "unknown"));
 		log("---- Commandes depuis reload ----");
-		if(FkCommandExecutor.logs != null)
+		/*if(FkCommandExecutor.logs != null)
 			for(String cmdfor : FkCommandExecutor.logs.keySet())
-				log("  > " + cmdfor + (FkCommandExecutor.logs.get(cmdfor) ? "" : "  [Error occured]"));
-		else
-			log("Les logs étaient non-initialisés");
+				log("  > " + cmdfor + (FkCommandExecutor.logs.get(cmdfor) ? "" : "  [Error occured]"));*/
+		/*else
+			log("Les logs étaient non-initialisés");*/
 		log("---- Rules ----");
 		for(Map.Entry<Rule<?>, Object> rule : Fk.getInstance().getFkPI().getRulesManager().getRulesList().entrySet())
 		{

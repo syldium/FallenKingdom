@@ -1,60 +1,42 @@
 package fr.devsylone.fallenkingdom.commands;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
+import fr.devsylone.fallenkingdom.Fk;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
+import fr.devsylone.fallenkingdom.manager.CommandManager;
+import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+import org.bukkit.command.*;
 
-import fr.devsylone.fallenkingdom.Fk;
-import fr.devsylone.fallenkingdom.exception.FkLightException;
-import fr.devsylone.fallenkingdom.players.FkPlayer;
-import fr.devsylone.fallenkingdom.utils.DebuggerUtils;
-import fr.devsylone.fallenkingdom.utils.UpdateUtils;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-public class FkCommandExecutor implements CommandExecutor
+public class FkCommandExecutor extends CommandManager implements CommandExecutor, TabExecutor
 {
-	public static Map<String, Boolean> logs = new LinkedHashMap<>();
-	private int i = 0;
+	protected final Fk plugin;
+	protected final PluginCommand pluginCommand;
 
-	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
-	{
-		if(!(sender instanceof Player))
-		{
-			if(args.length > 0 && args[0].equals("updated"))
-				UpdateUtils.deleteUpdater(args[1]);
-			else
-				sender.sendMessage(ChatColor.DARK_RED + Messages.CMD_ERROR_MUST_BE_PLAYER.getMessage());
-			return true;
-		}
+	public FkCommandExecutor(Fk plugin, PluginCommand command) {
+		this.plugin = plugin;
+		this.pluginCommand = command;
+		command.setExecutor(this);
+		command.setTabCompleter(this);
+	}
 
-		FkPlayer fkp = Fk.getInstance().getPlayerManager().getPlayer(sender.getName());
-		try
-		{
-			Fk.getInstance().getCommandManager().executeCommand(args, (Player) sender);
-			logs.put(++i + ". " + sender.getName() + " ->" + "/fk " + String.join(" ", args), Boolean.TRUE);
-
-		}catch(FkLightException e)
-		{
-			if(e.getMessage() !=null && e.getMessage().contains("debug_fake_error"))
-			{
-				DebuggerUtils.debugGame();
-				fkp.sendMessage("Done");
-				return true;
-			}
-			fkp.sendMessage(ChatColor.RED + e.getMessage());
-			Fk.getInstance().getLogger().info("Light error : " + e.getMessage());
-		}catch(Exception e)
-		{
-			logs.put(++i + ". " + sender.getName() + " ->" + "/fk " + String.join(" ", args), Boolean.FALSE);
-			fkp.sendMessage(ChatColor.RED + Messages.CMD_ERROR.getMessage());
-			e.printStackTrace();
-		}
+	@Override
+	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+		List<String> arguments = new ArrayList<>(Arrays.asList(args)); // Copie de la liste pour pouvoir modifier sa taille
+		CommandResult result = executeCommand(plugin, sender, label, arguments);
+		if (result.equals(CommandResult.NO_PERMISSION))
+			ChatUtils.sendMessage(sender, ChatColor.RED + Messages.CMD_ERROR_NO_PERMISSION.getMessage());
+		else if (result.equals(CommandResult.NOT_VALID_EXECUTOR))
+			ChatUtils.sendMessage(sender, ChatColor.RED + Messages.CMD_ERROR_MUST_BE_PLAYER.getMessage());
 		return true;
 	}
 
+	@Override
+	public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
+		return tabCompleteCommand(plugin, sender, new ArrayList<>(Arrays.asList(args)));
+	}
 }

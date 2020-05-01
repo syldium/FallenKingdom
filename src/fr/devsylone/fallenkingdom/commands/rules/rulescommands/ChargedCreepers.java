@@ -1,43 +1,34 @@
 package fr.devsylone.fallenkingdom.commands.rules.rulescommands;
 
+import fr.devsylone.fallenkingdom.Fk;
+import fr.devsylone.fallenkingdom.commands.ArgumentParser;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
+import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.rules.Rule;
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 
-import fr.devsylone.fallenkingdom.commands.rules.FkRuleCommand;
-import fr.devsylone.fallenkingdom.exception.FkLightException;
-import fr.devsylone.fallenkingdom.players.FkPlayer;
+import java.util.List;
 
-public class ChargedCreepers extends FkRuleCommand
+public class ChargedCreepers extends FkCommand
 {
 	public ChargedCreepers()
 	{
-		super("chargedCreepers", "<taux de spawn> <chance de drop> <nombre de tnts>", 3,
-				Messages.CMD_MAP_RULES_CHARGED_CREEPER);
+		super("chargedCreepers", "<i0;100:taux de spawn> <i0;100:chance de drop> <i0;100:nombre de tnts>",
+				Messages.CMD_MAP_RULES_CHARGED_CREEPER, CommandPermission.ADMIN);
 	}
 
-	public void execute(Player sender, FkPlayer fkp, String[] args)
-	{
-		try
-		{
-			for (int i = 0; i < 3; i++)
-			{
-				if ((Integer.parseInt(args[i]) > 100) || (Integer.parseInt(args[i]) < 0))
-					throw new NumberFormatException();
-			}
-			fr.devsylone.fkpi.rules.ChargedCreepers rule = FkPI.getInstance().getRulesManager().getRule(Rule.CHARGED_CREEPERS);
-			rule.setSpawn(Integer.parseInt(args[0]));
-			rule.setDrop(Integer.parseInt(args[1]));
-			rule.setTntAmount(Integer.parseInt(args[2]));
-		}
-		catch (NumberFormatException e)
-		{
-			throw new FkLightException(
-					"Chacun des paramètres de la commandes doit être un nombre de 0 inclus à 100 inclus");
-		}
+	@Override
+	public CommandResult execute(Fk plugin, CommandSender sender, List<String> args, String label) {
+		fr.devsylone.fkpi.rules.ChargedCreepers rule = FkPI.getInstance().getRulesManager().getRule(Rule.CHARGED_CREEPERS);
+		rule.setSpawn(ArgumentParser.parsePercentage(args.get(0), Messages.CMD_ERROR_PERCENTAGE_FORMAT));
+		rule.setDrop(ArgumentParser.parsePercentage(args.get(1), Messages.CMD_ERROR_PERCENTAGE_FORMAT));
+		rule.setTntAmount(ArgumentParser.parsePositiveInt(args.get(2), true, Messages.CMD_ERROR_POSITIVE_INT));
 
-		broadcast(Messages.CMD_RULES_CHARGED_CREEPERS_SPAWN_RATE.getMessage().replace("%spawn%", args[0]));
-		broadcast(Messages.CMD_RULES_CHARGED_CREEPERS_DROP_RATE.getMessage().replace("%rate%", args[1]).replace("%amount%", args[2]));
+		broadcast(Messages.CMD_RULES_CHARGED_CREEPERS_SPAWN_RATE.getMessage().replace("%spawn%", args.get(0)));
+		broadcast(Messages.CMD_RULES_CHARGED_CREEPERS_DROP_RATE.getMessage().replace("%rate%", args.get(1)).replace("%amount%", args.get(2)));
+		return CommandResult.SUCCESS;
 	}
 }

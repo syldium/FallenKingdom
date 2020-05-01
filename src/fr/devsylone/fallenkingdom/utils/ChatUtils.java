@@ -25,8 +25,8 @@ public class ChatUtils
 
 	public static void sendMessage(CommandSender sender, String message)
 	{
-		if (message.isEmpty()) return;
-		sender.sendMessage(message);
+		if (message == null || message.isEmpty()) return;
+		sender.sendMessage(PREFIX + message);
 	}
 
 	public static void sendMessage(CommandSender sender, Messages message)

@@ -1,20 +1,26 @@
 package fr.devsylone.fallenkingdom.commands.scoreboard.scoreboardcommands;
 
+import fr.devsylone.fallenkingdom.Fk;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
+import fr.devsylone.fallenkingdom.commands.abstraction.FkPlayerCommand;
+import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import org.bukkit.entity.Player;
 
-import fr.devsylone.fallenkingdom.commands.scoreboard.FkScoreboardCommand;
-import fr.devsylone.fallenkingdom.players.FkPlayer;
+import java.util.List;
 
-public class LeaveEdit extends FkScoreboardCommand
+public class LeaveEdit extends FkPlayerCommand
 {
 	public LeaveEdit()
 	{
-		super("leaveEdit", "", 0, Messages.CMD_MAP_SCOREBOARD_LEAVE_EDIT);
+		super("leaveEdit", Messages.CMD_MAP_SCOREBOARD_LEAVE_EDIT, CommandPermission.ADMIN);
 	}
 
-	public void execute(Player sender, FkPlayer fkp, String[] args)
+	@Override
+	public CommandResult execute(Fk plugin, Player sender, FkPlayer fkp, List<String> args, String label)
 	{
 		fkp.exitSbDisplayer();
+		return CommandResult.SUCCESS;
 	}
 }

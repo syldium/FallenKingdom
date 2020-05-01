@@ -1,22 +1,27 @@
 package fr.devsylone.fallenkingdom.commands.game.gamescommands;
 
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
+import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
 import fr.devsylone.fallenkingdom.utils.Messages;
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 
 import fr.devsylone.fallenkingdom.Fk;
-import fr.devsylone.fallenkingdom.commands.game.FkGameCommand;
-import fr.devsylone.fallenkingdom.players.FkPlayer;
 
-public class Start extends FkGameCommand
+import java.util.List;
+
+public class Start extends FkCommand
 {
 	public Start()
 	{
-		super("start", Messages.CMD_MAP_GAME_START.getMessage());
-		permission = ADMIN_PERMISSION;
+		super("start", Messages.CMD_MAP_GAME_START, CommandPermission.ADMIN);
 	}
 
-	public void execute(Player sender, FkPlayer fkp, String[] args)
+	@Override
+	public CommandResult execute(Fk plugin, CommandSender sender, List<String> args, String label)
 	{
-		Fk.getInstance().getGame().start();
+		plugin.getGame().start();
+		plugin.getScoreboardManager().recreateAllScoreboards();
+		return CommandResult.SUCCESS;
 	}
 }

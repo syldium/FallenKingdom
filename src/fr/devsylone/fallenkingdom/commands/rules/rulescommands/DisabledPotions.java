@@ -1,7 +1,12 @@
 package fr.devsylone.fallenkingdom.commands.rules.rulescommands;
 
 import java.util.Collections;
+import java.util.List;
 
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
+import fr.devsylone.fallenkingdom.commands.abstraction.FkPlayerCommand;
+import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.rules.Rule;
@@ -21,11 +26,9 @@ import com.cryptomorin.xseries.SkullUtils;
 import com.cryptomorin.xseries.XMaterial;
 
 import fr.devsylone.fallenkingdom.Fk;
-import fr.devsylone.fallenkingdom.commands.rules.FkRuleCommand;
-import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fkpi.util.XPotionData;
 
-public class DisabledPotions extends FkRuleCommand implements Listener
+public class DisabledPotions extends FkPlayerCommand implements Listener
 {
 	private static final String DISABLED_POTIONS_INVENTORY_TITLE = Messages.INVENTORY_POTION_TITLE.getMessage();
 	private static final String LORE_ENABLED = Messages.INVENTORY_POTION_ENABLE.getMessage();
@@ -41,13 +44,8 @@ public class DisabledPotions extends FkRuleCommand implements Listener
 
 	public DisabledPotions()
 	{
-		super("disabledPotions", "", 0, Messages.CMD_MAP_RULES_DISABLED_POTIONS);
+		super("disabledPotions", Messages.CMD_MAP_RULES_DISABLED_POTIONS, CommandPermission.ADMIN);
 		Bukkit.getPluginManager().registerEvents(this, Fk.getInstance());
-	}
-
-	public void execute(Player sender, FkPlayer fkp, String[] args)
-	{
-		sender.openInventory(createInventory());
 	}
 
 	@EventHandler
@@ -149,4 +147,9 @@ public class DisabledPotions extends FkRuleCommand implements Listener
 		return FkPI.getInstance().getRulesManager().getRule(Rule.DISABLED_POTIONS);
 	}
 
+	@Override
+	public CommandResult execute(Fk plugin, Player sender, FkPlayer fkp, List<String> args, String label) {
+		sender.openInventory(createInventory());
+		return CommandResult.SUCCESS;
+	}
 }

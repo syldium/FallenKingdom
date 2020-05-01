@@ -1,42 +1,43 @@
 package fr.devsylone.fallenkingdom.commands.rules.rulescommands;
 
+import fr.devsylone.fallenkingdom.Fk;
+import fr.devsylone.fallenkingdom.commands.ArgumentParser;
+import fr.devsylone.fallenkingdom.commands.abstraction.Argument;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
+import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.rules.Rule;
 import fr.devsylone.fkpi.util.BlockDescription;
-import org.bukkit.Material;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import fr.devsylone.fallenkingdom.commands.rules.FkRuleCommand;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
-import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fkpi.rules.AllowedBlocks;
 
-public class DenyBlock extends FkRuleCommand
+import java.util.List;
+
+public class DenyBlock extends FkCommand
 {
 	public DenyBlock()
 	{
-		super("denyBlock", "[block] OU /fk rules denyBlock (prendra l'item dans votre main)", 0,
-				Messages.CMD_MAP_RULES_DENY_BLOCK);
+		super("denyBlock", Argument.list(Argument.create("block", false, "sinon prendra le bloc tenu en main")),
+				Messages.CMD_MAP_RULES_DENY_BLOCK, CommandPermission.ADMIN);
 	}
 
-	public void execute(Player sender, FkPlayer fkp, String[] args)
-	{
-		Player p = org.bukkit.Bukkit.getPlayer(sender.getName());
-
+	@Override
+	public CommandResult execute(Fk plugin, CommandSender sender, List<String> args, String label) {
 		final BlockDescription blockDescription;
-		if(args.length > 0) {
-			String block = args[0];
-			blockDescription = new BlockDescription(block);
-			if(Material.matchMaterial(blockDescription.getBlockName()) == null)
-				throw new FkLightException(Messages.CMD_ERROR_UNKNOWN_BLOCK.getMessage().replace("%block%", block));
+		if (!(sender instanceof Player)) {
+			if (args.size() <= 0) {
+				return CommandResult.NOT_VALID_EXECUTOR;
+			}
+			blockDescription = ArgumentParser.parseBlock(args.get(0));
 		} else {
-			if(p == null || p.getItemInHand().getType().equals(Material.AIR))
-				throw new FkLightException(usage);
-			blockDescription = new BlockDescription(p.getItemInHand());
+			blockDescription = ArgumentParser.parseBlock(0, args, (Player) sender,true);
 		}
-		AllowedBlocks rule = FkPI.getInstance().getRulesManager()
-				.getRule(Rule.ALLOWED_BLOCKS);
+		AllowedBlocks rule = FkPI.getInstance().getRulesManager().getRule(Rule.ALLOWED_BLOCKS);
 
 		if (!rule.isAllowed(blockDescription))
 			throw new FkLightException(Messages.CMD_RULES_ERROR_ALREADY_DENIED);
@@ -46,5 +47,7 @@ public class DenyBlock extends FkRuleCommand
 		rule.getValue().removeIf(b -> b.equals(blockDescription));
 
 		broadcast(Messages.CMD_RULES_DENY_BLOCK.getMessage().replace("%block%", blockDescription.toString()));
+
+		return CommandResult.SUCCESS;
 	}
 }

@@ -1,40 +1,31 @@
 package fr.devsylone.fallenkingdom.commands.chests;
 
+import com.google.common.collect.ImmutableList;
+import fr.devsylone.fallenkingdom.Fk;
+import fr.devsylone.fallenkingdom.commands.abstraction.FkParentCommand;
+import fr.devsylone.fallenkingdom.commands.chests.chestscommands.Add;
+import fr.devsylone.fallenkingdom.commands.chests.chestscommands.ChestsList;
+import fr.devsylone.fallenkingdom.commands.chests.chestscommands.Remove;
+import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
+import fr.devsylone.fallenkingdom.utils.ChatUtils;
+import fr.devsylone.fallenkingdom.utils.Messages;
 import org.bukkit.ChatColor;
 
-import fr.devsylone.fallenkingdom.commands.FkCommand;
-import fr.devsylone.fallenkingdom.utils.ChatUtils;
-import fr.devsylone.fallenkingdom.utils.FkSound;
-
-public abstract class FkChestsCommand extends FkCommand
+public class FkChestsCommand extends FkParentCommand
 {
-	public FkChestsCommand(String name, String description)
+	public FkChestsCommand()
 	{
-		super("chests " + name, "", 0, description);
+		super("chests", ImmutableList.<FkCommand>builder()
+				.add(new Add())
+				.add(new ChestsList())
+				.add(new Remove())
+				.build()
+		, Messages.CMD_MAP_CHEST);
 	}
 
-	public FkChestsCommand(String path, String args, int nbrArgs, String description)
+	@Override
+	protected void broadcast(String message)
 	{
-		super("chests " + path, args, nbrArgs, description);
-	}
-
-	protected void broadcast(String message, String value, String end)
-	{
-		broadcast(message, value, end, null);
-	}
-
-	protected void broadcast(String message, String value, String end, FkSound sound)
-	{
-		broadcast(message + " " + ChatColor.DARK_PURPLE + value + ChatColor.GOLD + end, sound);
-	}
-	
-	protected void broadcast(String msg)
-	{
-		broadcast(msg, null);
-	}
-
-	protected void broadcast(String msg, FkSound sound)
-	{
-		super.broadcast(ChatColor.GOLD + msg, ChatUtils.CHESTS, sound);
+		Fk.broadcast(ChatColor.GOLD + message, ChatUtils.CHESTS);
 	}
 }

@@ -1,6 +1,9 @@
 package fr.devsylone.fallenkingdom.commands.teams.teamscommands;
 
+import fr.devsylone.fallenkingdom.commands.ArgumentParser;
+import fr.devsylone.fallenkingdom.commands.abstraction.*;
 import fr.devsylone.fallenkingdom.utils.Messages;
+import fr.devsylone.fkpi.util.BlockDescription;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -9,45 +12,31 @@ import fr.devsylone.fallenkingdom.exception.FkLightException;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fkpi.teams.Base;
 
-public class SetBase extends fr.devsylone.fallenkingdom.commands.teams.FkTeamCommand
+import java.util.List;
+
+public class SetBase extends FkPlayerCommand
 {
 	public SetBase()
 	{
-		super("setBase", "<team> <radius> [block] Ou item dans la main", 2, Messages.CMD_MAP_TEAM_SET_BASE);
+		super("setBase", "<team> <i4:radius> [block]", Messages.CMD_MAP_TEAM_SET_BASE, CommandPermission.ADMIN);
 	}
 
-	@SuppressWarnings("deprecation")
-	public void execute(Player sender, FkPlayer fkp, String[] args)
-	{
-		int radius;
-		Material m;
-		byte data = 0;
-		if(!args[1].matches("\\d+") || (radius = Integer.parseInt(args[1])) <= 3)
-			throw new FkLightException("Le rayon doit être un nombre supérieur à 3");
+	@Override
+	public CommandResult execute(Fk plugin, Player sender, FkPlayer fkp, List<String> args, String label) {
+		int radius = ArgumentParser.parseInt(args.get(1), Messages.CMD_ERROR_RADIUS_FORMAT);
+		BlockDescription block = ArgumentParser.parseBlock(2, args, sender, false);
 
-		if(args.length >= 3)
-		{
-			m = Material.matchMaterial(args[2]);
-			if(m == null)
-				throw new FkLightException(Messages.CMD_ERROR_UNKNOWN_BLOCK.getMessage().replace("%block%", args[2]));
-		}
-		else
-		{
-			m = sender.getItemInHand().getType();
-			// getData() implique d'initialiser le support des anciens Material à partir de la 1.15.2 (le charger dure entre 1 et 3 secondes)
-			data = Fk.getInstance().isNewVersion() ? 0 : sender.getItemInHand().getData().getData();
-		}
+		if(!plugin.getFkPI().getTeamManager().getTeamNames().contains(args.get(0)))
+			throw new FkLightException(Messages.CMD_ERROR_UNKNOWN_TEAM.getMessage().replace("%team%", args.get(0)));
 
-		if(!m.isBlock())
-			throw new FkLightException(Messages.CMD_ERROR_UNKNOWN_BLOCK.getMessage().replace("%block%", m.name().toLowerCase()));
+		if(!Fk.getInstance().getWorldManager().isAffected(sender.getWorld()))
+			throw new FkLightException(Messages.CMD_ERROR_NOT_AFFECTED_WORLD.getMessage());
 
-		if(!Fk.getInstance().getFkPI().getTeamManager().getTeamNames().contains(args[0]))
-			throw new FkLightException(Messages.CMD_ERROR_UNKNOWN_TEAM.getMessage().replace("%team%", args[0]));
-
-		Fk.getInstance().getFkPI().getTeamManager().getTeam(args[0]).setBase(new Base(Fk.getInstance().getFkPI().getTeamManager().getTeam(args[0]), sender.getLocation(), radius, m, data));
-		Base base = Fk.getInstance().getFkPI().getTeamManager().getTeam(args[0]).getBase();
+		Base base = new Base(plugin.getFkPI().getTeamManager().getTeam(args.get(0)), sender.getLocation(), radius, Material.getMaterial(block.getBlockName()), block.getData());
+		plugin.getFkPI().getTeamManager().getTeam(args.get(0)).setBase(base);
 		base.construct();
-		broadcast("La base de l'équipe " + args[0] + " définie en :§b X > " + base.getCenter().getBlockX() + "; Z > " + base.getCenter().getBlockZ());
+		broadcast("La base de l'équipe " + args.get(0) + " définie en :§b X > " + base.getCenter().getBlockX() + "; Z > " + base.getCenter().getBlockZ(), 4, args);
+		plugin.getScoreboardManager().refreshAllScoreboards();
+		return CommandResult.SUCCESS;
 	}
-
 }

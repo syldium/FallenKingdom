@@ -48,12 +48,13 @@ public class ScoreboardManager implements Saveable
 	{
 		this.name = name.replaceAll("&", "§");
 
-		for(FkPlayer player : Fk.getInstance().getPlayerManager().getConnectedPlayers())
-			player.recreateScoreboard();
+		recreateAllScoreboards();
 	}
 
-	public void setLine(int line, String newl)
+	public boolean setLine(int line, String newl)
 	{
+		if (line < 0 || line >= sidebar.size())
+			return false;
 		if(newl.length() < 3)
 			newl = randomFakeEmpty() + newl;
 		line = 15 - line;
@@ -62,6 +63,7 @@ public class ScoreboardManager implements Saveable
 			sidebar.add(randomFakeEmpty());
 		sidebar.set(line, newl);
 		recreateAllScoreboards();
+		return true;
 	}
 
 	public boolean removeLine(int line)

@@ -9,6 +9,14 @@ lang: "fr"
 #Essayer de traduire les arguments de commandes
 translate-commands-args: false
 
+# Choisir si le plugin s'active seulement dans certains mondes
+world-check: false
+# Mondes affectés par le plugin
+affected-worlds:
+  - world
+  - world_nether
+  - world_the_end
+
 Application:
   #Activer/Désactiver la possibilité de connection depuis un Fk config. N'est plus supporté !
   Enabled: false

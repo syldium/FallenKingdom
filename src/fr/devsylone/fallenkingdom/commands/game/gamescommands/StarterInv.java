@@ -1,44 +1,51 @@
 package fr.devsylone.fallenkingdom.commands.game.gamescommands;
 
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
+import fr.devsylone.fallenkingdom.commands.abstraction.FkPlayerCommand;
 import fr.devsylone.fallenkingdom.utils.Messages;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.Player;
 
 import fr.devsylone.fallenkingdom.Fk;
-import fr.devsylone.fallenkingdom.commands.game.FkGameCommand;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
-import fr.devsylone.fallenkingdom.manager.CommandManager;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
-import fr.devsylone.fallenkingdom.utils.PacketUtils;
 
-public class StarterInv extends FkGameCommand
+import java.util.List;
+
+public class StarterInv extends FkPlayerCommand
 {
 	public StarterInv()
 	{
-		super("starterInv", "<save|undo|show>", 1, Messages.CMD_MAP_GAME_STARTER_INV.getMessage());
+		super("starterInv", "<save|undo|show>", Messages.CMD_MAP_GAME_STARTER_INV, CommandPermission.PLAYER);
 	}
 
-	public void execute(Player sender, FkPlayer fkp, String[] args)
+	@Override
+	public CommandResult execute(Fk plugin, Player sender, FkPlayer fkp, List<String> args, String label)
 	{
-		if(!args[0].equalsIgnoreCase("show") && !Fk.getInstance().getCommandManager().hasPermission(sender, ADMIN_PERMISSION))
-			throw new FkLightException(CommandManager.NO_PERMISSION_MSG);
+		if(!args.get(0).equalsIgnoreCase("show") && !plugin.getCommandManager().hasPermission(sender, CommandPermission.ADMIN.get()))
+			return CommandResult.NO_PERMISSION;
 
-		if(args[0].equalsIgnoreCase("undo"))
+		if(args.get(0).equalsIgnoreCase("undo"))
 		{
-			if(Fk.getInstance().getStarterInventoryManager().undo())
-				fkp.sendMessage(Messages.CMD_GAME_STARTER_INV_UNDO);
+			if(plugin.getStarterInventoryManager().undo())
+				sender.sendMessage(Messages.CMD_GAME_STARTER_INV_UNDO.getMessage());
 			else
 				throw new FkLightException(Messages.CMD_ERROR_STARTER_INV_CANNOT_UNDO);
 		}
-		else if(args[0].equalsIgnoreCase("save"))
+		else if(args.get(0).equalsIgnoreCase("save"))
 		{
-			Fk.getInstance().getStarterInventoryManager().setStarterInv(sender.getInventory());
+			plugin.getStarterInventoryManager().setStarterInv(sender.getInventory());
 
-			String message = "{\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/fk game starterInv undo\"},\"text\":\"" + Messages.CMD_GAME_STARTER_INV_CANCEL + "\"}";
-			PacketUtils.sendJSON(sender, message);
+			TextComponent message = new TextComponent(Messages.CMD_GAME_STARTER_INV_CANCEL.getMessage());
+			message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/fk game starterInv undo"));
+			sender.spigot().sendMessage(message);
 		}
-		else if(args[0].equalsIgnoreCase("show"))
+		else if(args.get(0).equalsIgnoreCase("show"))
 		{
-			Fk.getInstance().getStarterInventoryManager().show(sender);
+			plugin.getStarterInventoryManager().show(sender);
 		}
+		return CommandResult.SUCCESS;
 	}
 }

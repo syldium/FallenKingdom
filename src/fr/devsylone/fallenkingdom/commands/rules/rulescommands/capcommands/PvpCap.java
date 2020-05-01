@@ -1,20 +1,14 @@
 package fr.devsylone.fallenkingdom.commands.rules.rulescommands.capcommands;
 
 import fr.devsylone.fallenkingdom.utils.Messages;
-import org.bukkit.entity.Player;
+import fr.devsylone.fkpi.rules.Rule;
 
 import fr.devsylone.fallenkingdom.commands.rules.FkCapCommand;
-import fr.devsylone.fallenkingdom.players.FkPlayer;
 
 public class PvpCap extends FkCapCommand
 {
 	public PvpCap()
 	{
-		super("pvpCap", Messages.CMD_MAP_RULES_PVP_CAP);
-	}
-
-	public void execute(Player sender, FkPlayer fkp, String[] args)
-	{
-		executeCap(args[0], Messages.CMD_RULES_CAP_PVP);
+		super("pvpCap", Messages.CMD_MAP_RULES_PVP_CAP, Rule.PVP_CAP, Messages.CMD_RULES_CAP_PVP);
 	}
 }

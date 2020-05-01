@@ -1,25 +1,30 @@
 package fr.devsylone.fallenkingdom.commands.teams.teamscommands;
 
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
+import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
 import fr.devsylone.fallenkingdom.utils.Messages;
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 
 import fr.devsylone.fallenkingdom.Fk;
-import fr.devsylone.fallenkingdom.commands.teams.FkTeamCommand;
-import fr.devsylone.fallenkingdom.players.FkPlayer;
 
-public class Create extends FkTeamCommand
+import java.util.List;
+
+public class Create extends FkCommand
 {
 	public Create()
 	{
-		super("create", "<team>", 1, Messages.CMD_MAP_TEAM_CREATE);
+		super("create", "<newteam>", Messages.CMD_MAP_TEAM_CREATE, CommandPermission.ADMIN);
 	}
 
-	public void execute(Player sender, FkPlayer fkp, String[] args)
+	@Override
+	public CommandResult execute(Fk plugin, CommandSender sender, List<String> args, String label)
 	{
-		if(!Fk.getInstance().getFkPI().getTeamManager().createTeam(args[0]))
-			fkp.sendMessage(createWarning(Messages.WARNING_UNKNOWN_COLOR, false));
+		if(!plugin.getFkPI().getTeamManager().createTeam(args.get(0)))
+			sender.sendMessage(Messages.WARNING_UNKNOWN_COLOR.getMessage());
 
-		broadcast("L'équipe " + Fk.getInstance().getFkPI().getTeamManager().getTeam(args[0]).toString() + " §6a été créée !");
-		
+		broadcast("L'équipe " + plugin.getFkPI().getTeamManager().getTeam(args.get(0)).toString() + " §6a été créée !", 1, args);
+		plugin.getScoreboardManager().refreshAllScoreboards();
+		return CommandResult.SUCCESS;
 	}
 }

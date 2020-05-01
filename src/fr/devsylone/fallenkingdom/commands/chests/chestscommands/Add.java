@@ -1,36 +1,42 @@
 package fr.devsylone.fallenkingdom.commands.chests.chestscommands;
 
-import java.util.Set;
-
+import fr.devsylone.fallenkingdom.Fk;
+import fr.devsylone.fallenkingdom.commands.ArgumentParser;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
+import fr.devsylone.fallenkingdom.commands.abstraction.FkPlayerCommand;
+import fr.devsylone.fallenkingdom.exception.FkLightException;
+import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fallenkingdom.utils.Messages;
+import fr.devsylone.fkpi.lockedchests.LockedChest;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
-import fr.devsylone.fallenkingdom.Fk;
-import fr.devsylone.fallenkingdom.commands.chests.FkChestsCommand;
-import fr.devsylone.fallenkingdom.exception.FkLightException;
-import fr.devsylone.fallenkingdom.players.FkPlayer;
-import fr.devsylone.fkpi.lockedchests.LockedChest;
+import java.util.List;
 
-public class Add extends FkChestsCommand
+public class Add extends FkPlayerCommand
 {
 	public Add()
 	{
-		super("add", "<day> <time> (en " + Messages.UNIT_SECONDS + ") [name] ", 2, Messages.CMD_MAP_CHEST_ADD.getMessage());
-		permission = ADMIN_PERMISSION;
+		super("add", "<i1:day> <i:time> [name]", Messages.CMD_MAP_CHEST_ADD, CommandPermission.ADMIN);
 	}
 
-	public void execute(Player sender, FkPlayer fkp, String[] args)
+	@Override
+	public CommandResult execute(Fk plugin, Player sender, FkPlayer fkp, List<String> args, String label)
 	{
-		int day = assertPositiveNumber(args[0], false, Messages.CMD_ERROR_DAY_FORMAT);
-		int time = assertPositiveNumber(args[0], false, Messages.CMD_ERROR_TIME_FORMAT);
-		Block target = sender.getTargetBlock((Set<Material>) null, 10);
-		
+		int day = ArgumentParser.parsePositiveInt(args.get(0), false, Messages.CMD_ERROR_DAY_FORMAT);
+		int time = ArgumentParser.parsePositiveInt(args.get(1), false, Messages.CMD_ERROR_TIME_FORMAT);
+
+		Block target = sender.getTargetBlock(null, 10);
+
 		if(!target.getType().equals(Material.CHEST))
 			throw new FkLightException(Messages.CMD_ERROR_NOT_CHEST);
 
-		String name = args.length >= 3 ? args[2] : String.valueOf(Fk.getInstance().getFkPI().getLockedChestsManager().getChestList().size());
+		if(!Fk.getInstance().getWorldManager().isAffected(sender.getWorld()))
+			throw new FkLightException(Messages.CMD_ERROR_NOT_AFFECTED_WORLD.getMessage());
+
+		String name = args.size() >= 3 ? args.get(2) : "" + Fk.getInstance().getFkPI().getLockedChestsManager().getChestList().size();
 
 		Fk.getInstance().getFkPI().getLockedChestsManager().addOrEdit(new LockedChest(target.getLocation(), time, day, name));
 
@@ -40,8 +46,8 @@ public class Add extends FkChestsCommand
 				.replace("%y%", String.valueOf(target.getLocation().getBlockY()))
 				.replace("%z%", String.valueOf(target.getLocation().getBlockZ()))
 				.replace("%time%", String.valueOf(time))
-				.replace("%unit%", Messages.Unit.SECONDS.tl(time))
-		);
-
+				.replace("%unit%", Messages.Unit.SECONDS.tl(time)),
+		3, args);
+		return CommandResult.SUCCESS;
 	}
 }

@@ -1,14 +1,22 @@
 package fr.devsylone.fallenkingdom.utils;
 
+import org.bukkit.command.CommandSender;
+
 import java.text.ChoiceFormat;
 import java.util.Arrays;
 
 public enum Messages
 {
+    BROADCAST_DAY_ASSAULT("broadcast.day.assault"),
+    BROADCAST_DAY_CHEST("broadcast.day.chest"),
+    BROADCAST_DAY_END("broadcast.day.end"),
+    BROADCAST_DAY_NETHER("broadcast.day.nether"),
+    BROADCAST_DAY_PVP("broadcast.day.pvp"),
     BROADCAST_LOCKED_CHEST_ABORT("broadcast.locked-chest.abort"),
     BROADCAST_LOCKED_CHEST_START("broadcast.locked-chest.start"),
     BROADCAST_LOCKED_CHEST_UNLOCKED("broadcast.locked-chest.unlocked"),
     BROADCAST_PLAYER_ELIMINATED("broadcast.player.eliminated"),
+    BROADCAST_START("broadcast.start"),
     BROADCAST_SUN_WILL_RISE("broadcast.sun-will-rise"),
 
     CHAT_GLOBAL("chat.global"),
@@ -16,9 +24,11 @@ public enum Messages
     CHAT_QUIT("chat.quit"),
     CHAT_TEAM("chat.team"),
 
-    CMD_ERROR("cmd.error"),
+    CMD_ERROR("cmd.error.unknown"),
+    CMD_ERROR_UNKNOWN("cmd.error.unknown-cmd"),
     CMD_ERROR_ALREADY_IN_PAUSE("cmd.error.already-in-pause"),
     CMD_ERROR_BOOL_FORMAT("cmd.error.format.bool"),
+    CMD_ERROR_PERCENTAGE_FORMAT("cmd.error.format.percentage"),
     CMD_ERROR_CAP_PASSED("cmd.error.rules.cap.passed"),
     CMD_ERROR_CHEST_ROOM_CAPTURE_TIME_FORMAT("cmd.error.team.chestRoom.captureTime-format"),
     CMD_ERROR_CHEST_ROOM_DISABLED("cmd.error.team.chestRoom.show.disabled"),
@@ -27,21 +37,26 @@ public enum Messages
     CMD_ERROR_CHEST_ROOM_NONE("cmd.error.team.chestRoom.show.none"),
     CMD_ERROR_CHEST_ROOM_STARTED("cmd.error.team.chestRoom.edit.started"),
     CMD_ERROR_DAY_FORMAT("cmd.error.format.day"),
+    CMD_ERROR_DAY_DURATION_FORMAT("cmd.error.format.day-duration"),
     CMD_ERROR_DAY_PASSED("cmd.error.rules.day.passed"),
+    CMD_ERROR_GAME_ALREADY_STARTED("cmd.game.already-started"),
     CMD_ERROR_GAME_NOT_STARTED("cmd.game.not-started"),
 
     CMD_ERROR_INVALID_PLAYER("cmd.error.invalid.player"),
     CMD_ERROR_MUST_BE_PLAYER("cmd.error.must-be-player"),
     CMD_ERROR_NAN("cmd.error.format.not-a-number"),
-    CMD_ERROR_NOT_CHEST("cmd.error.chest.look-at-chest"),
+    CMD_ERROR_EMPTY_CHESTS_LIST("cmd.error.chests.empty-list"),
+    CMD_ERROR_NOT_CHEST("cmd.error.chests.look-at-chest"),
     CMD_ERROR_NOT_IN_PAUSE("cmd.error.not-in-pause"),
-    CMD_ERROR_NOT_LOCKED_CHEST("cmd.error.chest.look-at-locked-chest"),
+    CMD_ERROR_NOT_LOCKED_CHEST("cmd.error.chests.look-at-locked-chest"),
     CMD_ERROR_NO_PERMISSION("cmd.error.no-permission"),
+    CMD_ERROR_NOT_AFFECTED_WORLD("cmd.error.not-affected-world"),
     CMD_ERROR_NO_TEAM("cmd.error.team.no-team"),
     CMD_ERROR_PAUSE_ID("cmd.error.format.pause-id"),
     CMD_ERROR_PLAYER_ALREADY_HAS_TEAM("cmd.error.team.already-has-team"),
     CMD_ERROR_PLAYER_NOT_IN_TEAM("cmd.error.team.not-in-team"),
     CMD_ERROR_POSITIVE_INT("cmd.error.format.positive-int"),
+    CMD_ERROR_RADIUS_FORMAT("cmd.error.format.radius"),
     CMD_ERROR_RULES_ALREADY_DEFINED("cmd.error.rules.already-defined"),
     CMD_ERROR_SCOREBOARD_CANNOT_UNDO("cmd.error.scoreboard.cannot-undo"),
     CMD_ERROR_SCOREBOARD_BEING_LEARN_EDIT("cmd.error.scoreboard.learn"),
@@ -68,13 +83,20 @@ public enum Messages
     CMD_LANG_TRY_LOAD("cmd.lang.tryLoad"),
     CMD_LANG_TRY_LOAD_MISSING("cmd.lang.tryLoad.missing"),
 
-    CMD_LOCKED_CHEST_CREATED("cmd.chest.created"),
-    CMD_LOCKED_CHEST_REMOVED("cmd.chest.removed"),
+    CMD_LIST_POSITION("cmd.list.position"),
 
-    CMD_MAP_CHEST_ADD("cmd.map.chest.add"),
-    CMD_MAP_CHEST_LIST("cmd.map.chest.list"),
-    CMD_MAP_CHEST_REMOVE("cmd.map.chest.remove"),
+    CMD_LOCKED_CHEST_CREATED("cmd.chests.created"),
+    CMD_LOCKED_CHEST_LIST_INFO("cmd.chests.list.info"),
+    CMD_LOCKED_CHEST_REMOVED("cmd.chests.removed"),
 
+    CMD_MAP_BUG("cmd.map.bug"),
+
+    CMD_MAP_CHEST("cmd.map.chests"),
+    CMD_MAP_CHEST_ADD("cmd.map.chests.add"),
+    CMD_MAP_CHEST_LIST("cmd.map.chests.list"),
+    CMD_MAP_CHEST_REMOVE("cmd.map.chests.remove"),
+
+    CMD_MAP_GAME("cmd.map.game"),
     CMD_MAP_GAME_PAUSE("cmd.map.game.pause"),
     CMD_MAP_GAME_RESET("cmd.map.game.reset"),
     CMD_MAP_GAME_RESTORE("cmd.map.game.restore"),
@@ -85,6 +107,7 @@ public enum Messages
 
     CMD_MAP_LANG_TRY_LOAD("cmd.map.lang.tryLoad"),
 
+    CMD_MAP_RULES("cmd.map.rules"),
     CMD_MAP_RULES_ALLOW_BLOCK("cmd.map.rules.allowBlock"),
     CMD_MAP_RULES_CHARGED_CREEPER("cmd.map.rules.chargedCreeper"),
     CMD_MAP_RULES_CHEST_LIMIT("cmd.map.rules.chestLimit"),
@@ -107,6 +130,7 @@ public enum Messages
     CMD_MAP_RULES_TNT_CAP("cmd.map.rules.tntCap"),
     CMD_MAP_RULES_TNT_JUMP("cmd.map.rules.tntJump"),
 
+    CMD_MAP_SCOREBOARD("cmd.map.scoreboard"),
     CMD_MAP_SCOREBOARD_EDIT("cmd.map.scoreboard.edit"),
     CMD_MAP_SCOREBOARD_LEAVE_EDIT("cmd.map.scoreboard.leaveEdit"),
     CMD_MAP_SCOREBOARD_REMOVE_LINE("cmd.map.scoreboard.removeLine"),
@@ -115,8 +139,13 @@ public enum Messages
     CMD_MAP_SCOREBOARD_SET_NAME("cmd.map.scoreboard.setName"),
     CMD_MAP_SCOREBOARD_UNDO("cmd.map.scoreboard.undo"),
 
+    CMD_MAP_TEAM("cmd.map.team"),
     CMD_MAP_TEAM_ADD_PLAYER("cmd.map.team.addPlayer"),
-    CMD_MAP_TEAM_CHEST_ROOM("cmd.map.team.chestRoom"),
+    CMD_MAP_CHEST_ROOM("cmd.map.team.chestRoom"),
+    CMD_MAP_CHEST_ROOM_CAPTURE("cmd.map.team.capture"),
+    CMD_MAP_CHEST_ROOM_ENABLED("cmd.map.team.enabled"),
+    CMD_MAP_CHEST_ROOM_OFFSET("cmd.map.team.offset"),
+    CMD_MAP_CHEST_ROOM_SHOW("cmd.map.team.show"),
     CMD_MAP_TEAM_CREATE("cmd.map.team.create"),
     CMD_MAP_TEAM_LIST("cmd.map.team.list"),
     CMD_MAP_TEAM_RANDOM("cmd.map.team.random"),
@@ -157,9 +186,9 @@ public enum Messages
     CMD_RULES_DEEP_PAUSE_LIGHT("cmd.rules.deep-pause.light"),
     CMD_RULES_DENY_BLOCK("cmd.rules.allow-block.denied"),
     CMD_RULES_DO_PAUSE_AFTER_DAY("cmd.rules.do-pause-after-day"),
-    CMD_RULES_ENDERPEARL_ASSAULT("cmd.rules.enderpearl-assault"),
     CMD_RULES_ERROR_ALREADY_ALLOWED("cmd.rules.allow-block.already-allowed"),
     CMD_RULES_ERROR_ALREADY_DENIED("cmd.rules.allow-block.already-denied"),
+    CMD_RULES_ENDERPEARL_ASSAULT("cmd.rules.enderpearl-assault"),
     CMD_RULES_ETERNAL_DAY("cmd.rules.eternal-day"),
     CMD_RULES_FRIENDLY_FIRE("cmd.rules.friendly-fire"),
     CMD_RULES_HEALTH_BELOW_NAME_HIDDEN("cmd.rules.health-below-name.hidden"),
@@ -276,21 +305,25 @@ public enum Messages
         return ChatUtils.colorMessage(this);
     }
 
+    public void send(CommandSender sender) {
+        ChatUtils.sendMessage(sender, this);
+    }
+
     @Override
     public String toString() {
         return getMessage();
     }
 
     public enum Unit {
-        DAYS(Messages.UNIT_DAY, Messages.UNIT_DAYS),
-        DEATHS(Messages.UNIT_DEATH, Messages.UNIT_DEATHS),
-        BLOCKS(Messages.UNIT_BLOCK, Messages.UNIT_BLOCKS),
-        HOURS(Messages.UNIT_HOUR, Messages.UNIT_HOURS),
-        MINUTES(Messages.UNIT_MINUTE, Messages.UNIT_MINUTES),
-        NAMES(Messages.UNIT_NAME, Messages.UNIT_NAMES),
-        SECONDS(Messages.UNIT_SECOND, Messages.UNIT_SECONDS),
-        TIME(Messages.UNIT_TIME, Messages.UNIT_TIMES),
-        TRY(Messages.UNIT_TRY, Messages.UNIT_TRIES);
+        DAYS(UNIT_DAY, UNIT_DAYS),
+        DEATHS(UNIT_DEATH, UNIT_DEATHS),
+        BLOCKS(UNIT_BLOCK, UNIT_BLOCKS),
+        HOURS(UNIT_HOUR, UNIT_HOURS),
+        MINUTES(UNIT_MINUTE, UNIT_MINUTES),
+        NAMES(UNIT_NAME, UNIT_NAMES),
+        SECONDS(UNIT_SECOND, UNIT_SECONDS),
+        TIME(UNIT_TIME, UNIT_TIMES),
+        TRY(UNIT_TRY, UNIT_TRIES);
 
         private final String key;
         private final ChoiceFormat choiceFormat;

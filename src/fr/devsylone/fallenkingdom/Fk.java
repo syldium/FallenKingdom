@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 import java.util.zip.ZipOutputStream;
 
 import fr.devsylone.fallenkingdom.manager.*;
@@ -15,14 +16,11 @@ import fr.devsylone.fkpi.rules.Rule;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import fr.devsylone.fallenkingdom.commands.FkCommandExecutor;
-import fr.devsylone.fallenkingdom.commands.FkTabCompleter;
-import fr.devsylone.fallenkingdom.connection.CBServerSocket;
-import fr.devsylone.fallenkingdom.connection.ServerSocket;
-import fr.devsylone.fallenkingdom.connection.SpServerSocket;
 import fr.devsylone.fallenkingdom.game.Game;
 import fr.devsylone.fallenkingdom.manager.packets.PacketManager;
 import fr.devsylone.fallenkingdom.manager.packets.PacketManager1_13;
@@ -53,6 +51,7 @@ public class Fk extends JavaPlugin
 	private Game game;
 	private CommandManager cmdManager;
 	private PlayerManager pManager;
+	private WorldManager wManager;
 	private PauseRestorer pRestorer;
 	private StarterInventoryManager siManager;
 	private ScoreboardManager sbManager;
@@ -62,7 +61,7 @@ public class Fk extends JavaPlugin
 	private SaveablesManager saveableManager;
 	private PortalsManager portalManager;
 
-	private ServerSocket server;
+	//private ServerSocket server;
 
 	private static Fk instance;
 
@@ -125,15 +124,20 @@ public class Fk extends JavaPlugin
 		fkpi = new FkPI(this);
 
 		/*
-		 * MANAGER
+		 * command /fk
 		 */
 
-		cmdManager = new CommandManager();
-		cmdManager.registerCommands();
+		PluginCommand command = Objects.requireNonNull(getCommand("fk"), "Unable to register /fk command");
+		this.cmdManager = new FkCommandExecutor(this, command);
+
+		/*
+		 * MANAGER
+		 */
 		pManager = new PlayerManager();
 		pRestorer = new PauseRestorer();
 		siManager = new StarterInventoryManager();
 		sbManager = new ScoreboardManager();
+		wManager = new WorldManager(this);
 
 		if(Bukkit.getBukkitVersion().contains("1.8"))
 			pcktManager = new PacketManager1_8();
@@ -169,7 +173,7 @@ public class Fk extends JavaPlugin
 		}catch(Exception ex)
 		{
 			onConnectWarnings.add("§cVotre configuration était corrompue ou invalide, elle a donc été sauvegardée puis supprimée. Désolé :S");
-			File zip = new File(getDataFolder(), "invalid-" + new SimpleDateFormat("YYYY-MM-dd HH-mm-ss").format(Calendar.getInstance().getTimeInMillis()) + ".zip");
+			File zip = new File(getDataFolder(), "invalid-" + new SimpleDateFormat("yyyy-MM-dd HH-mm-ss").format(Calendar.getInstance().getTimeInMillis()) + ".zip");
 			ZipOutputStream outputStream;
 			try
 			{
@@ -194,29 +198,22 @@ public class Fk extends JavaPlugin
 		 * ServerSocket & load du config.yml
 		 */
 
-		saveDefaultConfig();
 		File conf = new File(getDataFolder(), "config.yml");
 		if(conf.length() == 0L)
 			conf.delete();
+		saveDefaultConfig();
 
-		if(getConfig().getBoolean("Application.Enabled"))
+		/*if(getConfig().getBoolean("Application.Enabled"))
 		{
 			if(Bukkit.getVersion().contains("Spigot"))
 				server = new SpServerSocket();
 			else
 				server = new CBServerSocket();
 			server.start();
-		}
+		}*/
 
 		if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null)
 			new PlaceHolderExpansion().register();
-
-		/*
-		 * command /fk, events et le reste
-		 */
-
-		getCommand("Fk").setExecutor(new FkCommandExecutor());
-		getCommand("Fk").setTabCompleter(new FkTabCompleter());
 
 		/*
 		 * Set le sb a tout le monde si jamais rl
@@ -227,7 +224,7 @@ public class Fk extends JavaPlugin
 		/*
 		 * IF EternalDay
 		 */
-		if(FkPI.getInstance().getRulesManager().getRule(Rule.ETERNAL_DAY))
+		if(fkpi.getRulesManager().getRulesList().containsKey(Rule.ETERNAL_DAY) && fkpi.getRulesManager().getRule(Rule.ETERNAL_DAY))
 			for(World w : Bukkit.getWorlds())
 			{
 				w.setGameRuleValue("doDaylightCycle", "false");
@@ -275,8 +272,8 @@ public class Fk extends JavaPlugin
 			getDeepPauseManager().resetAIs();
 		}
 
-		if(server != null)
-			server.interrupt();
+		/*if(server != null)
+			server.interrupt();*/
 
 		sbManager.removeAllScoreboards();
 
@@ -297,6 +294,11 @@ public class Fk extends JavaPlugin
 	public PlayerManager getPlayerManager()
 	{
 		return pManager;
+	}
+
+	public WorldManager getWorldManager()
+	{
+		return wManager;
 	}
 
 	public ScoreboardManager getScoreboardManager()
@@ -334,10 +336,10 @@ public class Fk extends JavaPlugin
 		return saveableManager;
 	}
 
-	public ServerSocket getServerSocket()
+	/*public ServerSocket getServerSocket()
 	{
 		return server;
-	}
+	}*/
 
 	public PortalsManager getPortalsManager()
 	{
@@ -351,6 +353,9 @@ public class Fk extends JavaPlugin
 
 	public static void broadcast(String message, String prefix, FkSound sound)
 	{
+		if (message == null || message.isEmpty()) {
+			return;
+		}
 		message = "§r" + message;
 		for(FkPlayer p : getInstance().getPlayerManager().getConnectedPlayers())
 			p.sendMessage(message, prefix, sound);

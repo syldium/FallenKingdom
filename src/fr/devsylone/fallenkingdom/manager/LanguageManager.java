@@ -9,6 +9,8 @@ import java.util.Properties;
 
 public class LanguageManager
 {
+    private static String langPrefix;
+
     private static final Properties defaultLocale = new Properties();
     private static final Properties locale = new Properties();
 
@@ -18,6 +20,8 @@ public class LanguageManager
 
     public static void init(Fk plugin)
     {
+        langPrefix = plugin.getConfig().getString("lang", "fr");
+
         // Copie des fichiers de langue par défaut pour permettre d'éditer
         String[] locales = new String[] {"fr"};
         for (String locale : locales) {
@@ -34,10 +38,10 @@ public class LanguageManager
             e.printStackTrace();
         }
         // Chargement de la langue de l'utilisateur
-        try (InputStreamReader reader = new InputStreamReader(new FileInputStream(plugin.getDataFolder() + "/locales/" + plugin.getConfig().getString("lang", "fr") + ".properties"), StandardCharsets.UTF_8)) {
+        try (InputStreamReader reader = new InputStreamReader(new FileInputStream(plugin.getDataFolder() + "/locales/" + langPrefix + ".properties"), StandardCharsets.UTF_8)) {
             locale.load(reader);
         } catch (IOException e) {
-            plugin.getLogger().warning("Unable to load language file " + plugin.getConfig().getString("lang", "fr") + ". Using default one (french)!");
+            plugin.getLogger().warning("Unable to load language file " + langPrefix + ". Using default one (french)!");
             plugin.getLogger().warning("Cause: " + e.getMessage());
         }
     }
@@ -55,5 +59,9 @@ public class LanguageManager
             return defaultLocale.getProperty(path);
         }
         return prop;
+    }
+
+    public static String getLocalePrefix() {
+        return langPrefix;
     }
 }
