@@ -13,6 +13,8 @@ public class ChangeGamemodeListener implements Listener
 	@EventHandler
 	public void change(PlayerGameModeChangeEvent e)
 	{
+		if(!Fk.getInstance().getWorldManager().isAffected(e.getPlayer().getWorld()))
+			return;
 		if(e.getNewGameMode() == GameMode.CREATIVE)
 		{
 			Fk.getInstance().getPacketManager().sendTitle(e.getPlayer(), Messages.PLAYER_CREATIVE_TITLE.getMessage(), Messages.PLAYER_CREATIVE_SUBTITLE.getMessage(), 20, 100,20);

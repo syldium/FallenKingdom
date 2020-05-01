@@ -127,7 +127,7 @@ public class Team implements ITeam, Saveable
 	@Override
 	public boolean equals(Object other)
 	{
-		return other != null && other instanceof Team ? name.equals(((Team) other).getName()) : false;
+		return other instanceof Team && name.equals(((Team) other).getName());
 	}
 
 	@Override

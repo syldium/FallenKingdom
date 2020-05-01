@@ -18,6 +18,9 @@ public class MobSpawn implements Listener
 	@EventHandler
 	public void spawn(CreatureSpawnEvent e)
 	{
+		if (!Fk.getInstance().getWorldManager().isAffected(e.getEntity().getWorld()))
+			return;
+
 		/*
 		 * PAUSE
 		 */

@@ -3,6 +3,7 @@ package fr.devsylone.fallenkingdom.listeners.entity.player;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
+import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fkpi.rules.Rule;
 import org.bukkit.Bukkit;
@@ -35,6 +36,8 @@ public class DisabledPotionsListener implements Listener
 	@EventHandler
 	public void event(BrewEvent e)
 	{
+		if(!Fk.getInstance().getWorldManager().isAffected(e.getBlock().getWorld()))
+			return;
 		if(isForbiddenBrewing(Arrays.copyOf(e.getContents().getContents(), 3), e.getContents().getContents()[3]))
 			e.setCancelled(true);
 	}
@@ -42,7 +45,7 @@ public class DisabledPotionsListener implements Listener
 	@EventHandler
 	public void event(InventoryDragEvent e)
 	{
-		if(!(e.getInventory() instanceof BrewerInventory))
+		if(!(e.getInventory() instanceof BrewerInventory) || !Fk.getInstance().getWorldManager().isAffected(e.getWhoClicked().getWorld()))
 			return;
 		ItemStack[] potions = Arrays.copyOf(e.getInventory().getContents(), 3);
 		ItemStack ingredient = e.getInventory().getItem(3);
@@ -61,7 +64,7 @@ public class DisabledPotionsListener implements Listener
 	@EventHandler
 	public void event(InventoryClickEvent e)
 	{
-		if(!(e.getInventory() instanceof BrewerInventory) || e.getRawSlot() == 4) // 4 = blaze fuel
+		if(!(e.getInventory() instanceof BrewerInventory) || !Fk.getInstance().getWorldManager().isAffected(e.getWhoClicked().getWorld()) || e.getRawSlot() == 4) // 4 = blaze fuel
 			return;
 
 		ItemStack newItem = null;
@@ -97,7 +100,7 @@ public class DisabledPotionsListener implements Listener
 
 	public boolean isForbiddenBrewing(ItemStack[] potions, ItemStack ingredient)
 	{
-		if(ingredient == null || potions.equals(new ItemStack[]{null, null, null}))
+		if(ingredient == null || Arrays.equals(potions, new ItemStack[]{null, null, null}))
 			return false;
 
 		if(Bukkit.getVersion().contains("1.8"))

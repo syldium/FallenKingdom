@@ -29,7 +29,7 @@ public class BucketListener implements Listener
 		Player p = e.getPlayer();
 		Location bloc = e.getBlockClicked().getRelative(e.getBlockFace()).getLocation();
 
-		if(p.getGameMode() == GameMode.CREATIVE)
+		if(p.getGameMode() == GameMode.CREATIVE || !Fk.getInstance().getWorldManager().isAffected(e.getPlayer().getWorld()))
 			return;
 
 		if(p.getWorld().getEnvironment() != Environment.NORMAL || Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(p.getName()) == null || plugin.getGame().getState().equals(GameState.BEFORE_STARTING))

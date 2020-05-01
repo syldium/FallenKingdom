@@ -59,7 +59,7 @@ public class BlockListener implements Listener
 				if(e.getPlayer().getLocation().getBlockX() == e.getBlock().getLocation().getBlockX() && e.getPlayer().getLocation().getBlockY() == e.getBlock().getLocation().getBlockY() + 1 && e.getPlayer().getLocation().getBlockZ() == e.getBlock().getLocation().getBlockZ() && e.getBlock().getType().equals(Material.TNT))
 
 					for(Team t : Fk.getInstance().getFkPI().getTeamManager().getTeams())
-						if(team != null && !team.equals(t) && t.getBase() != null)
+						if(!team.equals(t) && t.getBase() != null)
 							if(bLoc.getBlockY() + 3 > t.getBase().getCenter().getBlockY())
 							{
 								if(t.getBase().contains(bLoc, -3))
@@ -127,7 +127,7 @@ public class BlockListener implements Listener
 					ChatUtils.sendMessage(e.getPlayer(), Messages.PLAYER_CHEST_TOO_FAR);
 					e.setCancelled(true);
 				}
-				else if(team != null && team.getBase() != null && !e.isCancelled() && team.getBase().contains(e.getBlock().getLocation()) && Fk.getInstance().getFkPI().getChestsRoomsManager().isEnabled())
+				else if(team.getBase() != null && !e.isCancelled() && team.getBase().contains(e.getBlock().getLocation()) && Fk.getInstance().getFkPI().getChestsRoomsManager().isEnabled())
 				{
 					team.getBase().getChestsRoom().newChest(e.getBlock().getLocation());
 				}

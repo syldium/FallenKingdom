@@ -25,7 +25,7 @@ public class MoveListener implements Listener
 	@EventHandler(ignoreCancelled = true)
 	public void move(PlayerMoveEvent e)
 	{
-		if(e.getTo() == null)
+		if(e.getTo() == null || Fk.getInstance().getWorldManager().isAffected(e.getTo().getWorld()))
 			return;
 
 		/*

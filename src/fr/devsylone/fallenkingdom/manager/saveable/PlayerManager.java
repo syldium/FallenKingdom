@@ -3,7 +3,10 @@ package fr.devsylone.fallenkingdom.manager.saveable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
+import fr.devsylone.fallenkingdom.Fk;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
@@ -14,24 +17,17 @@ import fr.devsylone.fkpi.util.Saveable;
 
 public class PlayerManager implements Saveable
 {
-	private HashMap<String, Location> onTnt;
-
-	private List<FkPlayer> players;
-
-	public PlayerManager()
-	{
-		onTnt = new HashMap<String, Location>();
-
-		players = new ArrayList<FkPlayer>();
-	}
+	private final Map<String, Location> onTnt = new HashMap<>();
+	private final List<FkPlayer> players = new ArrayList<>();
 
 	public List<FkPlayer> getConnectedPlayers()
 	{
-		List<FkPlayer> list = new ArrayList<FkPlayer>();
-		for(FkPlayer p : players)
-			if(Bukkit.getPlayer(p.getName()) != null)
-				list.add(p);
-		return list;
+		return players.stream()
+				.filter(player -> {
+					Player p = Bukkit.getPlayer(player.getName());
+					return p != null && Fk.getInstance().getWorldManager().isAffected(p.getWorld());
+				})
+				.collect(Collectors.toList());
 	}
 
 	public void putOnTnt(String player, Location tnt)
@@ -51,10 +47,7 @@ public class PlayerManager implements Saveable
 
 	public Location getTntLoc(String player)
 	{
-		if(wasOnTnt(player))
-			return onTnt.get(player);
-		else
-			return null;
+		return onTnt.getOrDefault(player, null);
 	}
 
 	public void registerNewPlayer(FkPlayer p)
@@ -75,6 +68,15 @@ public class PlayerManager implements Saveable
 	public FkPlayer getPlayer(Player p)
 	{
 		return getPlayer(p.getName());
+	}
+
+	public FkPlayer getPlayerIfExist(String name)
+	{
+		for(FkPlayer player : players)
+			if(player.getName().equalsIgnoreCase(name))
+				return player;
+
+		return null;
 	}
 
 	@Override

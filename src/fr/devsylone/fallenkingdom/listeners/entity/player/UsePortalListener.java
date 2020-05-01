@@ -18,7 +18,10 @@ public class UsePortalListener implements Listener
 	{
 		if(e.getTo() == null || e.getTo().getWorld() == null || e.getPlayer().getGameMode().equals(GameMode.CREATIVE))
 			return;
-		
+
+		if(!Fk.getInstance().getWorldManager().isAffected(e.getTo().getWorld()))
+			return;
+
 		if(e.getTo().getWorld().getEnvironment().equals(Environment.NETHER))
 		{
 			if(!Fk.getInstance().getGame().isNetherEnabled() && Fk.getInstance().getGame().getState() != GameState.BEFORE_STARTING)

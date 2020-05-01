@@ -16,6 +16,9 @@ public class PvpListener implements Listener
 	@EventHandler
 	public void pvp(EntityDamageByEntityEvent e)
 	{
+		if(!Fk.getInstance().getWorldManager().isAffected(e.getEntity().getWorld()))
+			return;
+
 		if(Fk.getInstance().getGame().getState().equals(GameState.PAUSE) && FkPI.getInstance().getRulesManager().getRule(Rule.DEEP_PAUSE))
 		{
 			e.setCancelled(true);
