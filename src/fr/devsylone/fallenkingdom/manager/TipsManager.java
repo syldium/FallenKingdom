@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.Random;
 
 import fr.devsylone.fallenkingdom.commands.abstraction.AbstractCommand;
+import fr.devsylone.fallenkingdom.commands.debug.Bug;
 import fr.devsylone.fallenkingdom.commands.game.gamescommands.Restore;
 import fr.devsylone.fallenkingdom.commands.game.gamescommands.StarterInv;
 import fr.devsylone.fallenkingdom.commands.rules.rulescommands.ChargedCreepers;
@@ -39,7 +40,7 @@ public class TipsManager
 		newTip(TntJump.class, "Empêcher les tours en §cTNT&r !");
 		newTip(ChargedCreepers.class, "Gérer les creepers chargés qui donnent de la §cTNT&r !");
 		newTip(Edit.class, "Modifier le scoreboard à votre guise ! ");
-		//newTip(, "Un problème ? Alertez l'équipe de développement en une commande !");
+		newTip(Bug.class, "Un problème ? Alertez l'équipe de développement !");
 		newTip(Restore.class, "À utiliser après une pause !");
 		newTip(StarterInv.class, "Personnalisez le stuff de départ !");
 		newTip(PlaceBlockInCave.class, "Pour poser des blocs en caverne !");

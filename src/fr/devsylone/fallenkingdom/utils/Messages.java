@@ -83,10 +83,9 @@ public enum Messages
     CMD_LANG_TRY_LOAD("cmd.lang.tryLoad"),
     CMD_LANG_TRY_LOAD_MISSING("cmd.lang.tryLoad.missing"),
 
-    CMD_LIST_POSITION("cmd.list.position"),
-
     CMD_LOCKED_CHEST_CREATED("cmd.chests.created"),
     CMD_LOCKED_CHEST_LIST_INFO("cmd.chests.list.info"),
+    CMD_LOCKED_CHEST_LIST_POSITION("cmd.chests.list.position"),
     CMD_LOCKED_CHEST_REMOVED("cmd.chests.removed"),
 
     CMD_MAP_BUG("cmd.map.bug"),
@@ -208,6 +207,7 @@ public enum Messages
     CMD_TEAM_CHEST_ROOM_OFFSET("cmd.team.chestRoom.offset"),
     CMD_TEAM_CHEST_ROOM_SHOW("cmd.team.chestRoom.show"),
     CMD_TEAM_CREATE("cmd.team.create"),
+    CMD_TEAM_LIST_POSITION("cmd.team.list.position"),
     CMD_TEAM_RANDOM("cmd.team.random"),
     CMD_TEAM_REMOVE("cmd.team.remove"),
     CMD_TEAM_REMOVE_PLAYER("cmd.team.removePlayer"),

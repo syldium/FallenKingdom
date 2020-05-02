@@ -12,6 +12,7 @@ import java.util.zip.ZipOutputStream;
 
 import fr.devsylone.fallenkingdom.commands.FkAsyncCommandExecutor;
 import fr.devsylone.fallenkingdom.commands.FkAsyncRegisteredCommandExecutor;
+import fr.devsylone.fallenkingdom.commands.brigadier.BrigadierSpigotManager;
 import fr.devsylone.fallenkingdom.manager.*;
 import fr.devsylone.fallenkingdom.scoreboard.PlaceHolderExpansion;
 import fr.devsylone.fkpi.rules.Rule;
@@ -138,7 +139,8 @@ public class Fk extends JavaPlugin
 		else
 			this.cmdManager = new FkCommandExecutor(this, command);
 
-		// @todo Faire fonctionner sous Spigot le BrigadierManager
+		if (isBrigadierSupported() && !isAsyncPlayerSendCommandsEventSupported())
+			new BrigadierSpigotManager<>(this).register(this.cmdManager, command);
 
 		/*
 		 * MANAGER

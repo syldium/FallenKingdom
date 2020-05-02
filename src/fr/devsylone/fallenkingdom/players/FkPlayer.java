@@ -110,7 +110,7 @@ public class FkPlayer implements Saveable
 			if(sound != null)
 				p.playSound(p.getLocation(), sound.bukkitSound(), 1.0F, 1.0F);
 
-			String full = ChatUtils.PREFIX + prefix;
+			String full = message.length() < 4 ? "" : ChatUtils.PREFIX + prefix;
 
 			message = "\n" + message;
 			message = message.replaceAll("\\n(?=(§.)*?[^(§.)\\n])", "\n" + full);

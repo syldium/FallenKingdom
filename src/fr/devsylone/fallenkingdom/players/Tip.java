@@ -37,7 +37,7 @@ public class Tip
 	{
 		if(command != null)
 		{
-			String formatted = "  §c➤ §l§d/fk " + command.getUsage() + "\n";
+			String formatted = "  §c➤ §l§d/fk " + command.getFullUsage() + "\n";
 			formatted = formatted + "     §b↪ " + tip.replace("&r", "§b");
 			return formatted;
 		}

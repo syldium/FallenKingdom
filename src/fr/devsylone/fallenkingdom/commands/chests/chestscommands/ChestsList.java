@@ -10,6 +10,7 @@ import fr.devsylone.fkpi.lockedchests.LockedChest;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ChestsList extends FkCommand
@@ -24,27 +25,23 @@ public class ChestsList extends FkCommand
     {
         if(Fk.getInstance().getFkPI().getLockedChestsManager().getChestList().size() == 0)
             throw new FkLightException(Messages.CMD_ERROR_EMPTY_CHESTS_LIST);
-        StringBuilder builder = new StringBuilder(ChatColor.DARK_GREEN + "§m-----------------" + ChatColor.BLUE + " Liste " + ChatColor.DARK_GREEN + "§m-----------------" + System.lineSeparator());
+        List<String> builder = new ArrayList<>();
+        builder.add(ChatColor.DARK_GREEN + "§m-----------------" + ChatColor.BLUE + " Liste " + ChatColor.DARK_GREEN + "§m-----------------");
         for(LockedChest chest : Fk.getInstance().getFkPI().getLockedChestsManager().getChestList())
         {
-            builder.append(Messages.CMD_LOCKED_CHEST_LIST_INFO.getMessage()
+            builder.add(Messages.CMD_LOCKED_CHEST_LIST_INFO.getMessage()
                     .replace("%name%", chest.getName())
                     .replace("%day%", String.valueOf(chest.getUnlockDay()))
                     .replace("%time%", String.valueOf(chest.getUnlockingTime()))
             );
-            builder.append(Messages.CMD_LIST_POSITION.getMessage()
+            builder.add(Messages.CMD_LOCKED_CHEST_LIST_POSITION.getMessage()
                     .replace("%x%", String.valueOf(chest.getLocation().getBlockX()))
                     .replace("%y%", String.valueOf(chest.getLocation().getBlockY()))
                     .replace("%z%", String.valueOf(chest.getLocation().getBlockZ()))
             );
-            builder.append(ChatColor.DARK_GREEN + "§m----------------------------------------").append(System.lineSeparator());
+            builder.add(ChatColor.DARK_GREEN + "§m----------------------------------------");
         }
-        sender.sendMessage(builder.toString());
+        sender.sendMessage(builder.toArray(new String[0]));
         return CommandResult.SUCCESS;
-    }
-
-    @Override
-    public java.util.List<String> tabComplete(Fk plugin, CommandSender sender, java.util.List<String> args) {
-        return null;
     }
 }
