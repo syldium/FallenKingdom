@@ -1,11 +1,9 @@
 package fr.devsylone.fallenkingdom.manager.saveable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-
+import fr.devsylone.fallenkingdom.utils.Version;
+import fr.devsylone.fkpi.FkPI;
+import fr.devsylone.fkpi.teams.Team;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 
 import fr.devsylone.fallenkingdom.Fk;
@@ -13,6 +11,9 @@ import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fallenkingdom.scoreboard.PlaceHolder;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fkpi.util.Saveable;
+import org.bukkit.scoreboard.Scoreboard;
+
+import java.util.*;
 
 public class ScoreboardManager implements Saveable
 {
@@ -154,8 +155,20 @@ public class ScoreboardManager implements Saveable
 
 	public void refreshNicks()
 	{
+		Scoreboard scoreboard = FkPI.getInstance().getTeamManager().getScoreboard();
+		for(Team team : FkPI.getInstance().getTeamManager().getTeams())
+		{
+			if(Version.VersionType.V1_13.isHigherOrEqual())
+				team.getScoreboardTeam().setColor(team.getChatColor());
+			else
+				team.getScoreboardTeam().setPrefix(String.valueOf(team.getChatColor()));
+
+			for(String entry : team.getPlayers())
+				if (!team.getScoreboardTeam().hasEntry(entry))
+					team.getScoreboardTeam().addEntry(entry);
+		}
 		for(FkPlayer player : Fk.getInstance().getPlayerManager().getConnectedPlayers())
-			player.getScoreboard().refreshNicks();
+			Objects.requireNonNull(Bukkit.getPlayer(player.getName()), "Player is offline.").setScoreboard(scoreboard);
 	}
 
 	public void reset()
@@ -166,7 +179,7 @@ public class ScoreboardManager implements Saveable
 		noTeam = "§4No team";
 		noBase = "§4No Base";
 		noInfo = "§4?";
-		arrows = Fk.getInstance().isNewVersion() ? "⇑⇗⇒⇘⇓⇙⇐⇖" : "↑↗→↘↓↙←↖";
+		arrows = Version.VersionType.V1_13.isHigherOrEqual() ? "⇑⇗⇒⇘⇓⇙⇐⇖" : "↑↗→↘↓↙←↖";
 		sidebar.clear();
 		sidebar.add("§f§a§k§e");
 		sidebar.add("§6Jour {D} §2{H}h{M}");

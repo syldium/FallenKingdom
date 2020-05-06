@@ -7,11 +7,9 @@ import java.util.List;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.rules.Rule;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.Team;
 
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.game.Game.GameState;
@@ -35,11 +33,11 @@ public class FkScoreboard
 		formatted = true;
 		this.player = player;
 		this.placeHolders = new HashMap<>();
-		this.bukkitBoard = Bukkit.getScoreboardManager().getNewScoreboard();
+		this.bukkitBoard = FkPI.getInstance().getTeamManager().getScoreboard();
 
 		sidebarBoard = new ScoreboardSign(player, Fk.getInstance().getScoreboardManager().getName());
 
-		if(FkPI.getInstance().getRulesManager().getRule(Rule.HEALTH_BELOW_NAME))
+		if(FkPI.getInstance().getRulesManager().getRule(Rule.HEALTH_BELOW_NAME) && bukkitBoard.getObjective("§c❤") == null)
 			bukkitBoard.registerNewObjective("§c❤", "health").setDisplaySlot(DisplaySlot.BELOW_NAME);
 
 		List<String> sidebarConfig = Fk.getInstance().getScoreboardManager().getSidebar();
@@ -92,7 +90,7 @@ public class FkScoreboard
 			for(int i = 0; i < Fk.getInstance().getScoreboardManager().getSidebar().size(); i++)
 				refreshLine(i);
 		}
-		refreshNicks();
+		Fk.getInstance().getScoreboardManager().refreshNicks();
 
 		try
 		{
@@ -154,26 +152,6 @@ public class FkScoreboard
 
 		if(!sidebarBoard.getLine(i).equals(line))
 			sidebarBoard.setLine(line, i);
-	}
-
-	public void refreshNicks()
-	{
-		for(Team team : Fk.getInstance().getFkPI().getTeamManager().getScoreboard().getTeams())
-			if(bukkitBoard.getTeam(team.getName()) != null)
-				bukkitBoard.getTeam(team.getName()).unregister();
-
-		for(Team team : Fk.getInstance().getFkPI().getTeamManager().getScoreboard().getTeams())
-		{
-			bukkitBoard.registerNewTeam(team.getName());
-			if(Fk.getInstance().isNewVersion())
-				bukkitBoard.getTeam(team.getName()).setColor(team.getColor());
-			else
-				bukkitBoard.getTeam(team.getName()).setPrefix(team.getPrefix());
-
-			for(String entry : team.getEntries())
-				if(Bukkit.getPlayer(entry) != null)
-					team.addEntry(entry);
-		}
 	}
 
 	public void remove()

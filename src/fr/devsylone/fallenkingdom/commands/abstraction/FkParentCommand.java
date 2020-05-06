@@ -44,7 +44,7 @@ public abstract class FkParentCommand extends AbstractCommand
 		}
 		List<String> complete = children.stream()
 				.filter(s -> s.getName().toLowerCase().startsWith(args.get(0).toLowerCase()))
-				.filter(s -> s.hasPermission(sender))
+				.filter(s -> plugin.getCommandManager().hasPermission(sender, s.permission.get()))
 				.map(AbstractCommand::getName)
 				.collect(Collectors.toList());
 

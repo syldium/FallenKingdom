@@ -5,6 +5,7 @@ import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
 import fr.devsylone.fallenkingdom.utils.Messages;
+import fr.devsylone.fallenkingdom.utils.Version;
 import org.bukkit.command.CommandSender;
 
 import fr.devsylone.fallenkingdom.Fk;
@@ -25,7 +26,7 @@ public class SetLine extends FkCommand
 	{
 		int line = ArgumentParser.parseScoreboardLine(args.get(0), Messages.CMD_ERROR_SCOREBOARD_INVALID_LINE);
 		String content = args.stream().skip(1).collect(Collectors.joining(" "));
-		if (plugin.isNewVersion() && content.length() > 64 || !plugin.isNewVersion() && content.length() > 32) {
+		if (Version.VersionType.V1_13.isHigherOrEqual() && content.length() > 64 || content.length() > 32) {
 			throw new FkLightException("La ligne contient trop de caractères.");
 		}
 		plugin.getScoreboardManager().setLine(line, content.replace("&", "§"));

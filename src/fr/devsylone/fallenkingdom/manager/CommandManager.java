@@ -112,7 +112,7 @@ public class CommandManager
 			return mainCommands.stream()
 					.filter(AbstractCommand::shouldDisplay)
 					.filter(c -> c.getName().startsWith(arguments.get(0)))
-					.filter(c -> permissions || c.hasPermission(sender))
+					.filter(c -> !permissions || c.hasPermission(sender))
 					.map(AbstractCommand::getName)
 					.collect(Collectors.toList());
 		}

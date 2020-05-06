@@ -65,7 +65,7 @@ public abstract class FkCommand extends AbstractCommand
 
     @Override
     public List<String> tabComplete(Fk plugin, CommandSender sender, List<java.lang.String> args) {
-        if (args.size() < 1 || !hasPermission(sender)) {
+        if (args.size() < 1 || !plugin.getCommandManager().hasPermission(sender, permission.get())) {
             return Collections.emptyList();
         }
         if (args.size() <= arguments.size()) {

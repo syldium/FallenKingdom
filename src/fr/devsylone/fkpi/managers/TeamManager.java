@@ -6,11 +6,11 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 import fr.devsylone.fallenkingdom.utils.Messages;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.scoreboard.Scoreboard;
 
 import fr.devsylone.fallenkingdom.exception.FkLightException;
-import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.teams.Team;
 import fr.devsylone.fkpi.util.Color;
 import fr.devsylone.fkpi.util.Saveable;
@@ -18,7 +18,7 @@ import fr.devsylone.fkpi.util.Saveable;
 public class TeamManager implements Saveable
 {
 	private final List<Team> teams = new ArrayList<>();
-	private final Scoreboard board = FkPI.getInstance().getPlugin().getServer().getScoreboardManager().getNewScoreboard();
+	private final Scoreboard board = Bukkit.getScoreboardManager().getNewScoreboard();
 
 	public boolean createTeam(String name)
 	{

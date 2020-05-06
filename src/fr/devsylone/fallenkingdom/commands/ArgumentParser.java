@@ -1,8 +1,8 @@
 package fr.devsylone.fallenkingdom.commands;
 
-import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.exception.ArgumentParseException;
 import fr.devsylone.fallenkingdom.utils.Messages;
+import fr.devsylone.fallenkingdom.utils.Version;
 import fr.devsylone.fkpi.util.BlockDescription;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.TranslatableComponent;
@@ -20,7 +20,7 @@ import static org.bukkit.Bukkit.getServer;
 public class ArgumentParser {
 
     public static List<String> parsePlayers(CommandSender sender, String players) {
-        if (Fk.getInstance().isNewVersion() && players.startsWith("@")) {
+        if (Version.VersionType.V1_13.isHigherOrEqual() && players.startsWith("@")) {
             try {
                 List<String> affected = getServer().selectEntities(sender, players).stream()
                         .filter(entity -> entity instanceof Player)

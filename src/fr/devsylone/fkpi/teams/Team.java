@@ -3,7 +3,7 @@ package fr.devsylone.fkpi.teams;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.devsylone.fallenkingdom.Fk;
+import fr.devsylone.fallenkingdom.utils.Version;
 import fr.devsylone.fkpi.api.ITeam;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
@@ -26,15 +26,10 @@ public class Team implements ITeam, Saveable
 	public Team(String name)
 	{
 		this.name = name;
-
-		color = Color.forName(name);
-		if(color == null)
-			color = Color.NO_COLOR;
-
-		players = new ArrayList<String>();
+		players = new ArrayList<>();
 
 		scoreboardTeam = FkPI.getInstance().getTeamManager().getScoreboard().registerNewTeam(name);
-		scoreboardTeam.setPrefix(color.getChatColor() + "");
+		setColor(Color.forName(name));
 	}
 
 	public void addPlayer(String p)
@@ -82,7 +77,7 @@ public class Team implements ITeam, Saveable
 	public void setColor(Color color)
 	{
 		this.color = color == null ? Color.NO_COLOR : color;
-		if(Fk.getInstance().isNewVersion())
+		if(Version.VersionType.V1_13.isHigherOrEqual())
 			scoreboardTeam.setColor(this.color.getChatColor());
 		else
 			scoreboardTeam.setPrefix(String.valueOf(this.color.getChatColor()));
@@ -137,7 +132,7 @@ public class Team implements ITeam, Saveable
 			scoreboardTeam.addEntry(entr);
 
 		players = config.getStringList("Members");
-		color = Color.valueOf(config.getString("Color"));
+		setColor(Color.valueOf(config.getString("Color")));
 		scoreboardTeam.setPrefix(this.color.getChatColor() + "");
 
 		if(!config.isConfigurationSection("Base"))

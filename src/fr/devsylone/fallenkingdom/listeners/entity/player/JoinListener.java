@@ -51,7 +51,6 @@ public class JoinListener implements Listener
 
 		e.setJoinMessage(null);
 		Fk.broadcast(Messages.CHAT_JOIN.getMessage().replace("%player%", e.getPlayer().getDisplayName()));
-		player.recreateScoreboard();
 
 		if(player.getState() == PlayerState.EDITING_SCOREBOARD)
 			player.getSbDisplayer().display();

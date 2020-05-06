@@ -41,7 +41,7 @@ import fr.devsylone.fallenkingdom.updater.SpigotUpdater;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fallenkingdom.utils.DebuggerUtils;
 import fr.devsylone.fallenkingdom.utils.FkSound;
-import fr.devsylone.fallenkingdom.utils.NMSUtils;
+import fr.devsylone.fallenkingdom.utils.Version;
 import fr.devsylone.fallenkingdom.utils.ZipUtils;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.teams.Team;
@@ -74,8 +74,6 @@ public class Fk extends JavaPlugin
 	private String pluginError = "";
 
 	private String lastVersion = getDescription().getVersion();
-
-	private final boolean isNewVersion = NMSUtils.nmsOptionalClass("ScoreboardServer$Action").isPresent();
 
 	public static Fk getInstance()
 	{
@@ -131,15 +129,15 @@ public class Fk extends JavaPlugin
 		 */
 
 		PluginCommand command = Objects.requireNonNull(getCommand("fk"), "Unable to register /fk command");
-		if (isAsyncTabCompleteSupported())
-			if (isAsyncPlayerSendCommandsEventSupported())
+		if (Version.isAsyncTabCompleteSupported())
+			if (Version.isAsyncPlayerSendCommandsEventSupported())
 				this.cmdManager = new FkAsyncRegisteredCommandExecutor(this, command);
 			else
 				this.cmdManager = new FkAsyncCommandExecutor(this, command);
 		else
 			this.cmdManager = new FkCommandExecutor(this, command);
 
-		if (isBrigadierSupported() && !isAsyncPlayerSendCommandsEventSupported())
+		if (Version.isBrigadierSupported() && !Version.isAsyncPlayerSendCommandsEventSupported())
 			new BrigadierSpigotManager<>(this).register(this.cmdManager, command);
 
 		/*
@@ -150,17 +148,7 @@ public class Fk extends JavaPlugin
 		siManager = new StarterInventoryManager();
 		sbManager = new ScoreboardManager();
 		wManager = new WorldManager(this);
-
-		if(Bukkit.getBukkitVersion().contains("1.8"))
-			pcktManager = new PacketManager1_8();
-		else if(isNewVersion)
-			if(Bukkit.getBukkitVersion().contains("1.13"))
-				pcktManager = new PacketManager1_13();
-			else
-				pcktManager = new PacketManager1_14();
-		else
-			pcktManager = new PacketManager1_9();
-
+		pcktManager = initPacketManager();
 		dpManager = new DeepPauseManager();
 		tipsManager = new TipsManager();
 		tipsManager.startBroadcasts();
@@ -420,27 +408,6 @@ public class Fk extends JavaPlugin
 		return pluginError;
 	}
 
-	private static boolean isBrigadierSupported() {
-		return classExists("com.mojang.brigadier.CommandDispatcher");
-	}
-
-	private static boolean isAsyncTabCompleteSupported() {
-		return classExists("com.destroystokyo.paper.event.server.AsyncTabCompleteEvent");
-	}
-
-	private static boolean isAsyncPlayerSendCommandsEventSupported() {
-		return classExists("com.destroystokyo.paper.event.brigadier.CommandRegisteredEvent");
-	}
-
-	private static boolean classExists(String name) {
-		try {
-			Class.forName(name);
-			return true;
-		} catch (ClassNotFoundException notFound) {
-			return false;
-		}
-	}
-
 	public void reset()
 	{
 		Bukkit.getScheduler().cancelTasks(instance);
@@ -501,14 +468,11 @@ public class Fk extends JavaPlugin
 		if(getConfig().get("Charged_creepers") != null)
 			warns.add("L'option Charged_creepers dans le fichier de configuration n'est plus utilisée, il faut utiliser /fk rules ChargedCreepers");
 
-		if(Bukkit.getVersion().contains("Bukkit"))
-			addError("Ce plugin n'est pas compatible avec CraftBukkit, veuillez utiliser spigot.");
+		if(!Version.hasSpigotApi())
+			addError("Le serveur n'est pas supporté par le plugin. Seuls les serveurs basés sur Spigot sont supportés.");
 
-		if(Bukkit.getVersion().contains("1.8") && getMinorVersionNumber() < 3)
-			addError("Votre version de spigot n'est pas compatible avec le plugin,\nmerci d'utiliser au minimum la version §l§n1.8.3 de spigot");
-
-		if(!System.getProperty("java.version").startsWith("1.8") && !System.getProperty("java.version").startsWith("11.") && !System.getProperty("java.version").startsWith("14"))
-			addError("Votre version de java n'est pas compatible avec le plugin. Merci d'utiliser Java 8 ou LTS supérieure");
+		if(Version.isTooOldApi())
+			addError("La version du serveur n'est pas compatible avec le plugin,\nmerci d'utiliser au minimum la version §l§n1.8.3 de Spigot.");
 
 		for(String warn : warns)
 		{
@@ -518,27 +482,27 @@ public class Fk extends JavaPlugin
 
 			onConnectWarnings.add(warn);
 		}
-		return warns.isEmpty();
+		return true;
+	}
+
+	public PacketManager initPacketManager() {
+		switch (Version.VERSION_TYPE) {
+			case V1_8:
+				return new PacketManager1_8();
+			case V1_9_V1_12:
+				return new PacketManager1_9();
+			case V1_13:
+				return new PacketManager1_13();
+			case V1_14_PLUS:
+				return new PacketManager1_14();
+			default:
+				throw new RuntimeException("Could not get packet manager by version!");
+		}
 	}
 
 	public FkPI getFkPI()
 	{
 		return fkpi;
-	}
-
-	public boolean isNewVersion()
-	{
-		return isNewVersion;
-	}
-
-	private int getMinorVersionNumber()
-	{
-		int count = (int) Bukkit.getVersion().chars().filter(ch -> ch == '.').count();
-		if (count > 1) {
-			int minorVersionIndex = Bukkit.getVersion().lastIndexOf('.') + 1;
-			return Integer.parseInt(Bukkit.getVersion().substring(minorVersionIndex, minorVersionIndex + 1));
-		}
-		return 0;
 	}
 
 	private void metrics() throws NoClassDefFoundError // gson en 1.8.0

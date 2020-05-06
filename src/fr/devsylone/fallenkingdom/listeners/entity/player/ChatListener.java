@@ -23,7 +23,10 @@ public class ChatListener implements Listener
 		ChatColor teamColor = team == null ? ChatColor.WHITE : team.getChatColor();
 
 		if(msg.startsWith("!") || team == null)
+		{
+			e.setMessage(msg.substring(1));
 			e.setFormat(Messages.CHAT_GLOBAL.getMessage() + teamColor + "%s : " + ChatColor.WHITE + "%s");
+		}
 		else
 		{
 			e.setCancelled(true);
