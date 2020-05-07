@@ -11,6 +11,7 @@ import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fallenkingdom.scoreboard.PlaceHolder;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fkpi.util.Saveable;
+import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
 
 import java.util.*;
@@ -164,8 +165,12 @@ public class ScoreboardManager implements Saveable
 				team.getScoreboardTeam().setPrefix(String.valueOf(team.getChatColor()));
 
 			for(String entry : team.getPlayers())
-				if (!team.getScoreboardTeam().hasEntry(entry))
+			{
+				Player player = Bukkit.getPlayer(entry);
+				team.getScoreboardTeam().removeEntry(entry);
+				if (player != null && Fk.getInstance().getWorldManager().isAffected(player.getWorld()))
 					team.getScoreboardTeam().addEntry(entry);
+			}
 		}
 		for(FkPlayer player : Fk.getInstance().getPlayerManager().getConnectedPlayers())
 			Objects.requireNonNull(Bukkit.getPlayer(player.getName()), "Player is offline.").setScoreboard(scoreboard);

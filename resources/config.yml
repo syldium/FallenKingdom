@@ -5,7 +5,7 @@ enable-permissions: false
 enable-mcfunction-support: false
 
 #Fichier de langue chargé
-lang: "fr"
+lang: "unknown"
 #Essayer de traduire les arguments de commandes
 translate-commands-args: false
 

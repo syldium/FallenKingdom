@@ -1,9 +1,15 @@
 package fr.devsylone.fallenkingdom.updater;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import fr.devsylone.fallenkingdom.manager.LanguageManager;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -19,7 +25,7 @@ public class FilesUpdater
 	private ConfigurationSection setSection;
 
 	private FileConfiguration file;
-	private String lastv;
+	private final String lastv;
 
 	public FilesUpdater(String lastVersion)
 	{
@@ -169,7 +175,7 @@ public class FilesUpdater
 //
 //			file = Fk.getInstance().getSaveableManager().getFileConfiguration("scoreboard.yml");
 //
-//			List<String> lines = file.getStringList("ScoreboardManager.Sidebar");
+//			RulesList<String> lines = file.getStringList("ScoreboardManager.Sidebar");
 //			for(int i=0;i<lines.size();i++)
 //				if(lines.get(i).startsWith("Base : "))
 //				{
@@ -179,6 +185,17 @@ public class FilesUpdater
 //			System.out.println(String.join(" - ", lines));
 //			file.set("ScoreboardManager.Sidebar", lines);
 //		}
+
+		if(isGrowing(lastv, "2.19.0"))
+		{
+			Path path = new File(Fk.getInstance().getDataFolder(), "config.yml").toPath();
+			try {
+				Files.write(path, "lang: \"fr\"".getBytes(), StandardOpenOption.APPEND);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			LanguageManager.init(Fk.getInstance());
+		}
 	}
 
 	public boolean isSection(String path)

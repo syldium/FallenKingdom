@@ -23,6 +23,6 @@ public class EternalDay extends FkBooleanRuleCommand
 			w.setGameRuleValue("doDaylightCycle", newValue ? "false" : "true");
 			w.setTime(Fk.getInstance().getGame().getExceptedWorldTime());
 		}
-		broadcastOnOff(newValue, Messages.CMD_RULES_ETERNAL_DAY);
+		broadcastOnOff(!newValue, Messages.CMD_RULES_ETERNAL_DAY);
 	}
 }

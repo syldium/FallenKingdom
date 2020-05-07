@@ -11,6 +11,7 @@ public class FkLangCommand extends FkParentCommand
 
     public FkLangCommand() {
         super("lang", ImmutableList.<FkCommand>builder()
+                        .add(new SetLang())
                         .add(new TryLoad())
                         .build()
         , Messages.CMD_MAP_LANG_TRY_LOAD, CommandPermission.ADMIN);

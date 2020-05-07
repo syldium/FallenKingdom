@@ -13,9 +13,6 @@ public class GoToNetherListener implements Listener
 	@EventHandler
 	public void event(PlayerChangedWorldEvent e)
 	{
-		if (Fk.getInstance().getWorldManager().isAffected(e.getPlayer().getWorld()))
-			Fk.getInstance().getPlayerManager().getPlayer(e.getPlayer());
-
 		if(!e.getPlayer().getWorld().getEnvironment().equals(Environment.THE_END))
 			Fk.getInstance().getPlayerManager().getPlayer(e.getPlayer()).setPortal(e.getPlayer().getLocation());
 
@@ -29,6 +26,7 @@ public class GoToNetherListener implements Listener
 			FkPlayer player = Fk.getInstance().getPlayerManager().getPlayerIfExist(e.getPlayer().getName());
 			if(player != null)
 				player.removeScoreboard();
+			Fk.getInstance().getScoreboardManager().refreshNicks();
 		}
 	}
 }

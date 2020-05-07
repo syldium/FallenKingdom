@@ -315,11 +315,11 @@ public class Game implements Saveable
 		broadcastStartIn(30);
 
 		time += 5;
-		delayedRunnable(() -> Fk.broadcast("Pour connaître les règles : §e/fk rules list"), time);
+		delayedRunnable(() -> Fk.broadcast(Messages.BROADCAST_PREGAME_RULES.getMessage()), time);
 		time += 5;
 		delayedRunnable(() -> broadcastStartIn(20), time);
 		time += 5;
-		delayedRunnable(() -> Fk.broadcast("Pour connaître la liste des équipes, leurs joueurs et les coordonnées de leur base : §e/fk team list"), time);
+		delayedRunnable(() -> Fk.broadcast(Messages.BROADCAST_PREGAME_TEAMS.getMessage()), time);
 		time += 5;
 		delayedRunnable(() -> broadcastStartIn(10), time);
 		time += 5;
@@ -370,14 +370,14 @@ public class Game implements Saveable
 
 	private void broadcastStartIn(int time)
 	{
-		Fk.broadcast("La partie démarre dans §c" + time + "§r seconde(s)");
+		Fk.broadcast(Messages.BROADCAST_PREGAME_START.getMessage().replace("%time%", String.valueOf(time)));
 		for(Player p : Bukkit.getOnlinePlayers())
 			p.playSound(p.getLocation(), FkSound.NOTE_PLING.bukkitSound(), 1, 1);
 	}
 
 	private void broadcastTpIn(int time)
 	{
-		Fk.broadcast("Vous serez téléporté dans §c" + time + "§r seconde(s)");
+		Fk.broadcast(Messages.BROADCAST_PREGAME_TP.getMessage().replace("%time%", String.valueOf(time)));
 		for(Player p : Bukkit.getOnlinePlayers())
 			p.playSound(p.getLocation(), FkSound.NOTE_BASS.bukkitSound(), 1, 1);
 	}
