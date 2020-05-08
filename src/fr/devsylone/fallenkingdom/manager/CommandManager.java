@@ -199,8 +199,8 @@ public class CommandManager
 		if(argsString.startsWith("help"))
 			command = getCommand("help");
 
-		else if(argsString.startsWith("bug"))
-			command = getCommand("bug");
+        else if(argsString.startsWith("bug"))
+            command = getCommand("bug");
 
 		else if(args.length > 1)
 			for(FkCommand c : commandList)
@@ -209,13 +209,10 @@ public class CommandManager
 					command = c;
 			}
 		/*
-		 * Si on n'a pas trouvé une exception est levée. OU /fk debug
+		 * Si on n'a pas trouvé une exception est levée.
 		 */
 		if(command == null)
 		{
-			if(argsString.toLowerCase().startsWith("debug"))
-				throw new FkLightException("debug_fake_error");
-
 			if(argsString.toLowerCase().startsWith("team"))
 				throw new FkLightException("Commande inconnue. §e/fk team help §cpour la liste des commandes relatives aux équipes.");
 

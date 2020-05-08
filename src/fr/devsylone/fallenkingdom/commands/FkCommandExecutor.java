@@ -16,48 +16,51 @@ import fr.devsylone.fallenkingdom.utils.UpdateUtils;
 
 public class FkCommandExecutor implements CommandExecutor
 {
-	public static LinkedHashMap<String, Boolean> logs;
-	private int i = 0;
+    public static LinkedHashMap<String, Boolean> logs;
+    private int i = 0;
 
-	public FkCommandExecutor()
-	{
-		logs = new LinkedHashMap<String, Boolean>();
-	}
+    public FkCommandExecutor()
+    {
+        logs = new LinkedHashMap<String, Boolean>();
+    }
 
-	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
-	{
-		if(!(sender instanceof Player))
-		{
-			if(args.length > 0 && args[0].equals("updated"))
-				UpdateUtils.deleteUpdater(args[1]);
-			else
-				sender.sendMessage(ChatColor.DARK_RED + "Only player can use this command !");
-			return true;
-		}
+    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
+    {
+        if(args.length > 0 && args[0].equalsIgnoreCase("debug"))
+        {
+            boolean send = args.length > 1 && args[1].equalsIgnoreCase("send");
+            boolean result = DebuggerUtils.debugGame(send, sender.getName());
+            sender.sendMessage(result ? "§aFait" : "§cError");
+            System.out.println("DEBUG DONE - send=" + send + " result=" + result + " username=" + sender.getName());
+            return true;
+        }
+        
+        if(!(sender instanceof Player))
+        {
+            if(args.length > 0 && args[0].equals("updated"))
+                UpdateUtils.deleteUpdater(args[1]);
+            else
+                sender.sendMessage(ChatColor.DARK_RED + "Only player can use this command !");
+            return true;
+        }
 
-		FkPlayer fkp = Fk.getInstance().getPlayerManager().getPlayer(sender.getName());
-		try
-		{
-			Fk.getInstance().getCommandManager().executeCommand(args, (Player) sender);
-			logs.put(++i + ". " + sender.getName() + " ->" + "/fk " + String.join(" ", args), Boolean.valueOf(true));
+        FkPlayer fkp = Fk.getInstance().getPlayerManager().getPlayer(sender.getName());
+        try
+        {
+            Fk.getInstance().getCommandManager().executeCommand(args, (Player) sender);
+            logs.put(++i + ". " + sender.getName() + " ->" + "/fk " + String.join(" ", args), Boolean.valueOf(true));
 
-		}catch(FkLightException e)
-		{
-			if(e.getMessage() !=null && e.getMessage().contains("debug_fake_error"))
-			{
-				DebuggerUtils.debugGame();
-				fkp.sendMessage("Done");
-				return true;
-			}
-			fkp.sendMessage(ChatColor.RED + e.getMessage());
-			Fk.getInstance().getLogger().info("Light error : " + e.getMessage());
-		}catch(Exception e)
-		{
-			logs.put(++i + ". " + sender.getName() + " ->" + "/fk " + String.join(" ", args), Boolean.valueOf(false));
-			fkp.sendMessage(ChatColor.RED + "Une erreur inconnue est survenue, merci de la signaler");
-			e.printStackTrace();
-		}
-		return true;
-	}
+        }catch(FkLightException e)
+        {
+            fkp.sendMessage(ChatColor.RED + e.getMessage());
+            Fk.getInstance().getLogger().info("Light error : " + e.getMessage());
+        }catch(Exception e)
+        {
+            logs.put(++i + ". " + sender.getName() + " ->" + "/fk " + String.join(" ", args), Boolean.valueOf(false));
+            fkp.sendMessage(ChatColor.RED + "Une erreur inconnue est survenue, merci de la signaler");
+            e.printStackTrace();
+        }
+        return true;
+    }
 
 }
