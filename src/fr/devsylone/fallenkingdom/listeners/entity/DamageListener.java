@@ -47,6 +47,9 @@ public class DamageListener implements Listener
 	@EventHandler
 	public void dead(PlayerDeathEvent e)
 	{
+		if(e.getEntity().hasMetadata("NPC"))
+			return;
+
 		e.setDeathMessage(ChatUtils.PREFIX + e.getDeathMessage());
 
 		/*

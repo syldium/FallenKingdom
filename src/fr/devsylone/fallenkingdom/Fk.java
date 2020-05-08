@@ -482,7 +482,7 @@ public class Fk extends JavaPlugin
 
 			onConnectWarnings.add(warn);
 		}
-		return true;
+		return warns.isEmpty();
 	}
 
 	public PacketManager initPacketManager() {
