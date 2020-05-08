@@ -325,3 +325,23 @@ RETRAIT      = [-]
 [*] Amélioration de la détection des versions non supportées
 [*] Fix de la visualisation de l'inventaire de départ
 [*] Fix d'une erreur au lancement avec Mohist
+--------
+
+      >> 2.19.0-beta
+[+] Édition et traduction de la quasi totalité des messages
+[+] Introduction des commandes et fichiers de langue
+[+] Nouvelle commande de debug
+[+] Les placeholders des bases ennemies peuvent pointer vers différentes bases
+[+] Règle enderpearlAssault
+[+] Commandes /fk scoreboard removeLine et undo
+[+] Support du plugin PlaceHolderAPI
+[+] Support complet des commandes vanilla 1.13+ Brigadier
+[+] Le plugin peut être activé seulement pour certains mondes
+[*] Les complétions proposées avec tab dépendent des permissions
+[*] De nombreuses commandes peuvent désormais être utilisées en console
+[*] Les serveurs sous Paper peuvent profiter de la complétion asynchrone des arguments
+[*] Les morts de NPC ne sont plus prises en compte par le plugin
+[*] Les couleurs dans le tab changées avec setColor apparaîtront
+[*] Fix des permissions des commandes /fk chest
+[*] Avec la règle respawnAtHome et une deathLimit dépassée, un joueur ne respawnera pas
+[-] Retrait des commandes acceptApp et denyApp
