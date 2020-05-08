@@ -8,7 +8,7 @@ public class Bug extends FkCommand
 {
 	public Bug()
 	{
-		super("bug", "<message>", 0, "Obtenir le lien pour signaler un bug");
+		super("bug", "", 0, "Obtenir le lien pour signaler un bug");
 	}
 
 	public void execute(Player sender, FkPlayer fkp, String[] args)
