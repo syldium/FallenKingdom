@@ -1,65 +1,71 @@
 package fr.devsylone.fkpi.rules;
 
-import org.bukkit.configuration.ConfigurationSection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
-import fr.devsylone.fallenkingdom.exception.FkLightException;
-import fr.devsylone.fkpi.util.Saveable;
-
-
-public class Rule implements Saveable
+public class Rule<T>
 {
-	protected String name;
-	protected Object value;
+	protected final String name;
+	protected final T defaultValue;
 
-	public Rule(String name, Object value)
+	private static final Map<String, Rule<?>> RULES = new HashMap<>();
+
+	Rule(String name, T defaultValue)
 	{
 		this.name = name;
-		this.value = value;
+		this.defaultValue = defaultValue;
+		RULES.put(name, this);
 	}
 
-	public Rule(String name)
-	{
-		this.name = name;
-	}
+	// Caps
+	public static final Rule<Integer> PVP_CAP = new Rule<>("PvpCap", 3);
+	public static final Rule<Integer> TNT_CAP = new Rule<>("TntCap", 6);
+	public static final Rule<Integer> NETHER_CAP = new Rule<>("NetherCap", 1);
+	public static final Rule<Integer> END_CAP = new Rule<>("EndCap", 1);
 
-	public void setValue(Object value)
-	{
-		if(!value.getClass().isAssignableFrom(getValueType()))
-			throw new FkLightException("Le type de valeur ne convient pas à la règle");
+	// Limites
+	public static final Rule<Integer> DEATH_LIMIT = new Rule<>("DeathLimit", 0);
+	public static final Rule<Integer> CHEST_LIMIT = new Rule<>("ChestLimit", 20);
 
-		this.value = value;
-	}
+	// Entiers
+	public static final Rule<Integer> DAY_DURATION = new Rule<>("DayDuration", 24000);
 
-	public Object getValue()
-	{
-		return value;
-	}
+	// Booléens
+	public static final Rule<Boolean> FRIENDLY_FIRE = new Rule<>("FriendlyFire", true);
+	public static final Rule<Boolean> ETERNAL_DAY = new Rule<>("EternalDay", false);
+	public static final Rule<Boolean> DO_PAUSE_AFTER_DAY = new Rule<>("DoPauseAfterDay", false);
+	public static final Rule<Boolean> DEEP_PAUSE = new Rule<>("DeepPause", true);
+	public static final Rule<Boolean> TNT_JUMP = new Rule<>("TntJump", true);
+	public static final Rule<Boolean> RESPAWN_AT_HOME = new Rule<>("RespawnAtHome", false);
+	public static final Rule<Boolean> HEALTH_BELOW_NAME = new Rule<>("HealthBelowName", true);
+	public static final Rule<Boolean> ENDERPEARL_ASSAULT = new Rule<>("EnderpearlAssault", true);
+
+	// Valeurs complexes
+	public static final Rule<AllowedBlocks> ALLOWED_BLOCKS = new Rule<>("AllowedBlocks", new AllowedBlocks());
+	public static final Rule<ChargedCreepers> CHARGED_CREEPERS = new Rule<>("ChargedCreepers", new ChargedCreepers());
+	public static final Rule<DisabledPotions> DISABLED_POTIONS = new Rule<>("DisabledPotions", new DisabledPotions());
+	public static final Rule<PlaceBlockInCave> PLACE_BLOCK_IN_CAVE = new Rule<>("PlaceBlockInCave", new PlaceBlockInCave());
 
 	public String getName()
 	{
 		return name;
 	}
 
-	public Class<?> getValueType()
+	public T getDefaultValue()
 	{
-		return value.getClass();
+		return defaultValue;
 	}
 
-	@Override
-	public void load(ConfigurationSection config)
+	@SuppressWarnings("unchecked")
+	public static <T> Rule<T> getByName(String name)
 	{
-		value = config.get("value");
+		return (Rule<T>) RULES.get(name);
 	}
 
-	@Override
-	public void save(ConfigurationSection config)
+	public static Set<Rule<?>> values()
 	{
-		config.set("value", value);
-	}
-
-	@Override
-	public String toString()
-	{
-		return "Name [" + name + "], Value [" + value+"]";
+		return new HashSet<>(RULES.values());
 	}
 }

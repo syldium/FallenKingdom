@@ -1,5 +1,9 @@
 package fr.devsylone.fallenkingdom.listeners.entity.player;
 
+import fr.devsylone.fallenkingdom.utils.ChatUtils;
+import fr.devsylone.fallenkingdom.utils.Messages;
+import fr.devsylone.fkpi.FkPI;
+import fr.devsylone.fkpi.rules.Rule;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -18,7 +22,11 @@ public class RespawnListener implements Listener
 	{
 		final Team team = Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(e.getPlayer().getName());
 
-		if(!e.isBedSpawn() && (boolean) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("RespawnAtHome").getValue() && team != null && team.getBase() != null)
+		if(FkPI.getInstance().getRulesManager().getRule(Rule.DEATH_LIMIT) > 0)
+			if(Fk.getInstance().getPlayerManager().getPlayer(e.getPlayer().getName()).getDeaths() >= FkPI.getInstance().getRulesManager().getRule(Rule.DEATH_LIMIT))
+				return;
+
+		if(!e.isBedSpawn() && FkPI.getInstance().getRulesManager().getRule(Rule.RESPAWN_AT_HOME) && team != null && team.getBase() != null)
 		{
 
 			for(int x = -2; x < 2; x++)
@@ -29,26 +37,14 @@ public class RespawnListener implements Listener
 						{
 							final Location loc = team.getBase().getCenter().add((double) x + 0.5d, (double) y + 0.2d, (double) z + 0.5d).clone();
 							e.getPlayer().setGameMode(GameMode.SPECTATOR);
-							Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), new Runnable()
-							{
-								@Override
-								public void run()
-								{
-									e.getPlayer().teleport(loc);
-									e.getPlayer().setGameMode(GameMode.SURVIVAL);
-								}
+							Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), () -> {
+								e.getPlayer().teleport(loc);
+								e.getPlayer().setGameMode(GameMode.SURVIVAL);
 							}, 60l);
 							return;
 						}
 					}
-			Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), new Runnable()
-			{
-				@Override
-				public void run()
-				{
-					Fk.getInstance().getPlayerManager().getPlayer(e.getPlayer()).sendMessage("§cLa zone de spawn de votre base est obstruée ! Pensez à dégager le centre de la base.");
-				}
-			}, 20l);
+			Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), () -> ChatUtils.sendMessage(e.getPlayer(), Messages.PLAYER_BASE_OBSTRUCTED), 20l);
 		}
 	}
 	

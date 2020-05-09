@@ -1,45 +1,34 @@
 package fr.devsylone.fallenkingdom.commands.game.gamescommands;
 
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
+import fr.devsylone.fallenkingdom.commands.abstraction.Confirmable;
+import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
+import fr.devsylone.fallenkingdom.utils.Messages;
+import org.bukkit.command.CommandSender;
 
 import fr.devsylone.fallenkingdom.Fk;
-import fr.devsylone.fallenkingdom.commands.game.FkGameCommand;
-import fr.devsylone.fallenkingdom.players.FkPlayer;
 
-public class Reset extends FkGameCommand
+import java.util.List;
+
+public class Reset extends FkCommand implements Confirmable
 {
 	public Reset()
 	{
-		super("reset", "Enlève toutes les configurations du plugin.");
-		permission = ADMIN_PERMISSION;
+		super("reset", Messages.CMD_MAP_GAME_RESET, CommandPermission.ADMIN);
 	}
 
-	public void execute(Player sender, FkPlayer fkp, String[] args)
+	@Override
+	public CommandResult execute(Fk plugin, CommandSender sender, List<String> args, String label)
 	{
-		if(!Fk.getInstance().getCommandManager().isConfirmed("reset"))
-		{
-			String msg = "";
-			msg = msg + ChatColor.RED + "§m--------------§c ATTENTION §c§m--------------\n";
-			msg = msg + ChatColor.RED + "Vous êtes sur le point de supprimer\n";
-			msg = msg + ChatColor.DARK_RED + "§ltous les réglages definis ! §cCela remettra le\n";
-			msg = msg + ChatColor.RED + "plugin comme au premier lancement !\n";
-			msg = msg + ChatColor.RED + "\n";
-			msg = msg + ChatColor.RED + "Si c'est bien ce que vous voulez faire, \n";
-			msg = msg + ChatColor.RED + "merci de retaper la commande.\n";
-			msg = msg + ChatColor.RED + "§m--------------------------------------";
-
-			fkp.sendMessage(msg);
-
-			Fk.getInstance().getCommandManager().setConfirmed("reset", true);
-
+		if (isConfirmed(sender)) {
+			broadcast(Messages.CMD_GAME_RESET.getMessage());
+			plugin.reset();
+			return CommandResult.SUCCESS;
 		}
-		else
-		{
-			broadcast(ChatColor.RED + "La partie a été " + ChatColor.DARK_RED + ChatColor.BOLD + "complètement" + ChatColor.RED + " réinitialisée");
-			Fk.getInstance().reset();
-			Fk.getInstance().getCommandManager().setConfirmed("reset", false);
-			
-		}
+
+		sender.sendMessage(createWarning(Messages.WARNING_GAME_RESET, true));
+		addConfirmed(sender);
+		return CommandResult.SUCCESS;
 	}
 }

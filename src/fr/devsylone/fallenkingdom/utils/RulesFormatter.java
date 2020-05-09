@@ -1,73 +1,39 @@
 package fr.devsylone.fallenkingdom.utils;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import fr.devsylone.fallenkingdom.Fk;
-import fr.devsylone.fkpi.rules.AllowedBlocks;
-import fr.devsylone.fkpi.rules.ChargedCreepers;
-import fr.devsylone.fkpi.rules.DisabledPotions;
-import fr.devsylone.fkpi.rules.PlaceBlockInCave;
+import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.rules.Rule;
-import fr.devsylone.fkpi.util.BlockDescription;
-import fr.devsylone.fkpi.util.XPotionData;
+import fr.devsylone.fkpi.rules.RuleValue;
 
 public class RulesFormatter
 {
-	private static String format(Rule rule)
+	private static <T> String format(Rule<?> rule, T ruleValue)
 	{
 		String format = "§6" + rule.getName() + " » ";
-		String value = "";
 
-		if(rule instanceof ChargedCreepers)
-		{
-			ChargedCreepers cgRule = (ChargedCreepers) rule;
-			value = "§e" + cgRule.getSpawn() + "% spawn - " + cgRule.getDrop() + "% drop - " + cgRule.getTntAmount() + " tnt(s)";
-		}
+		if (ruleValue instanceof RuleValue)
+			return format + ((RuleValue) ruleValue).format();
+		else if(ruleValue instanceof Boolean)
+			return format + ((boolean) ruleValue ? "§2✔" : "§4✘");
 
-		else if(rule instanceof PlaceBlockInCave)
-		{
-			PlaceBlockInCave pbicRule = (PlaceBlockInCave) rule;
-
-			value = "§e" + pbicRule.getValue() + ((boolean) pbicRule.getValue() ? " - " + pbicRule.getMinimumBlocks() + " blocs" : "");
-		}
-
-		else if(rule instanceof AllowedBlocks)
-		{
-			for(BlockDescription b : ((AllowedBlocks) rule).reducedList())
-				value += ("\n" + "§a✔ " + b.toString());
-		}
-
-		else if(rule instanceof DisabledPotions)
-		{
-			for(XPotionData data : ((DisabledPotions) rule).getValue())
-				value += ("\n" + "§c✘ " + data.getType().name() + (data.isExtended() ? " + redstone" : data.isUpgraded() ? " + glowtone" : ""));
-		}
-
-		else if(rule.getValue() instanceof Boolean)
-			value = (Boolean) rule.getValue() ? "§2✔" : "§4✘";
-
-		else if(rule.getValue() instanceof Integer)
-			value = "§e" + rule.getValue();
-
-		return format + value;
+		return format + "§e" + ruleValue;
 	}
 
-	public static List<String> formatRules(String... withouts)
+	public static List<String> formatRules(Rule<?>... withouts)
 	{
-		List<String> withoutsList = Arrays.asList(withouts);
-		List<String> response = new ArrayList<String>();
+		List<Rule<?>> withoutsList = Arrays.asList(withouts);
 
-		for(Rule rule : Fk.getInstance().getFkPI().getRulesManager().getRulesList())
-			if(!withoutsList.contains(rule.getName().toLowerCase()))
-				response.add(format(rule));
-
-		return response;
+		return FkPI.getInstance().getRulesManager().getRulesList().entrySet().stream()
+				.filter(e -> !withoutsList.contains(e.getKey()))
+				.map(e -> format(e.getKey(), e.getValue()))
+				.collect(Collectors.toList());
 	}
 
 	public static List<String> formatRules()
 	{
-		return formatRules(new String[0]);
+		return formatRules(new Rule[0]);
 	}
 }

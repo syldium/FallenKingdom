@@ -3,6 +3,7 @@ package fr.devsylone.fallenkingdom.pause;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
@@ -14,14 +15,8 @@ import fr.devsylone.fkpi.util.Saveable;
 
 public class PauseRestorer implements Saveable
 {
-	private int lastID;
-	HashMap<Integer, List<PausedPlayer>> pauses;
-
-	public PauseRestorer()
-	{
-		pauses = new HashMap<Integer, List<PausedPlayer>>();
-		lastID = 0;
-	}
+	private int lastID = 0;
+	private final Map<Integer, List<PausedPlayer>> pauses = new HashMap<>();
 
 	public void registerPlayer(int id, Player p)
 	{
@@ -31,10 +26,9 @@ public class PauseRestorer implements Saveable
 	public void registerPlayer(int id, PausedPlayer pp)
 	{
 		if(!pauses.containsKey(id))
-			pauses.put(id, new ArrayList<PausedPlayer>());
+			pauses.put(id, new ArrayList<>());
 
-		if(pauses.get(id).contains(pp))
-			pauses.get(id).remove(pp);
+		pauses.get(id).remove(pp);
 
 		pauses.get(id).add(pp);
 	}
@@ -54,7 +48,7 @@ public class PauseRestorer implements Saveable
 		
 		if(!pauses.containsKey(id))
 			throw new FkLightException("id invalide");
-		List<String> failed = new ArrayList<String>();
+		List<String> failed = new ArrayList<>();
 		for(PausedPlayer p : pauses.get(id))
 			if(!p.tryRestore())
 				failed.add(p.getPlayer());

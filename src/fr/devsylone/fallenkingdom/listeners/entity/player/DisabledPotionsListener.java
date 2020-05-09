@@ -3,6 +3,9 @@ package fr.devsylone.fallenkingdom.listeners.entity.player;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
+import fr.devsylone.fallenkingdom.Fk;
+import fr.devsylone.fallenkingdom.utils.Messages;
+import fr.devsylone.fkpi.rules.Rule;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
@@ -26,7 +29,6 @@ import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fallenkingdom.utils.NMSUtils;
 import fr.devsylone.fallenkingdom.utils.Utils;
 import fr.devsylone.fkpi.FkPI;
-import fr.devsylone.fkpi.rules.DisabledPotions;
 import fr.devsylone.fkpi.util.XPotionData;
 
 public class DisabledPotionsListener implements Listener
@@ -34,6 +36,8 @@ public class DisabledPotionsListener implements Listener
 	@EventHandler
 	public void event(BrewEvent e)
 	{
+		if(!Fk.getInstance().getWorldManager().isAffected(e.getBlock().getWorld()))
+			return;
 		if(isForbiddenBrewing(Arrays.copyOf(e.getContents().getContents(), 3), e.getContents().getContents()[3]))
 			e.setCancelled(true);
 	}
@@ -41,7 +45,7 @@ public class DisabledPotionsListener implements Listener
 	@EventHandler
 	public void event(InventoryDragEvent e)
 	{
-		if(!(e.getInventory() instanceof BrewerInventory))
+		if(!(e.getInventory() instanceof BrewerInventory) || !Fk.getInstance().getWorldManager().isAffected(e.getWhoClicked().getWorld()))
 			return;
 		ItemStack[] potions = Arrays.copyOf(e.getInventory().getContents(), 3);
 		ItemStack ingredient = e.getInventory().getItem(3);
@@ -52,7 +56,7 @@ public class DisabledPotionsListener implements Listener
 
 		if(isForbiddenBrewing(potions, ingredient))
 		{
-			e.getWhoClicked().sendMessage(ChatUtils.PREFIX + "§cLa potion que vous essayez de produire est désactivée");
+			ChatUtils.sendMessage(e.getWhoClicked(), Messages.PLAYER_DISABLED_POTION_CRAFT);
 			e.setCancelled(true);
 		}
 	}
@@ -60,7 +64,7 @@ public class DisabledPotionsListener implements Listener
 	@EventHandler
 	public void event(InventoryClickEvent e)
 	{
-		if(!(e.getInventory() instanceof BrewerInventory) || e.getRawSlot() == 4) // 4 = blaze fuel
+		if(!(e.getInventory() instanceof BrewerInventory) || !Fk.getInstance().getWorldManager().isAffected(e.getWhoClicked().getWorld()) || e.getRawSlot() == 4) // 4 = blaze fuel
 			return;
 
 		ItemStack newItem = null;
@@ -87,23 +91,23 @@ public class DisabledPotionsListener implements Listener
 		if(isForbiddenBrewing(potions, ingredient))
 		{
 			if(!Bukkit.getVersion().contains("1.8") && newItem.getType() == XMaterial.BLAZE_POWDER.parseMaterial() && e.isShiftClick())
-				e.getWhoClicked().sendMessage(ChatUtils.PREFIX + "§dN'utilisez pas le shift click pour la blaze powder !");
+				e.getWhoClicked().sendMessage(ChatUtils.PREFIX + Messages.PLAYER_DISABLED_POTION_BLAZE_POWDER_SHIFT.getMessage());
 			else
-				e.getWhoClicked().sendMessage(ChatUtils.PREFIX + "§cLa potion que vous essayez de produire est désactivée");
+				ChatUtils.sendMessage(e.getWhoClicked(), Messages.PLAYER_DISABLED_POTION_CRAFT);
 			e.setCancelled(true);
 		}
 	}
 
 	public boolean isForbiddenBrewing(ItemStack[] potions, ItemStack ingredient)
 	{
-		if(ingredient == null || potions == new ItemStack[] {null, null, null})
+		if(ingredient == null || Arrays.equals(potions, new ItemStack[]{null, null, null}))
 			return false;
 
 		if(Bukkit.getVersion().contains("1.8"))
 			try
 			{
 				Class<?> tileEntityStandClass = NMSUtils.nmsClass("TileEntityBrewingStand");
-				Object fakeTileEntityStand = tileEntityStandClass.newInstance();
+				Object fakeTileEntityStand = tileEntityStandClass.getDeclaredConstructor().newInstance();
 				for(int i = 0; i < potions.length; i++)
 					if(potions[i] != null)
 						tileEntityStandClass.getDeclaredMethod("setItem", int.class, NMSUtils.nmsClass("ItemStack")).invoke(fakeTileEntityStand, i, NMSUtils.obcClass("inventory.CraftItemStack").getDeclaredMethod("asNMSCopy", ItemStack.class).invoke(null, potions[i]));
@@ -120,7 +124,7 @@ public class DisabledPotionsListener implements Listener
 				for(int i = 0; i < 3; i++) // items[3] = ingredient
 				{
 					ItemStack potion = (ItemStack) NMSUtils.obcClass("inventory.CraftItemStack").getDeclaredMethod("asCraftMirror", NMSUtils.nmsClass("ItemStack")).invoke(null, tileEntityStandClass.getDeclaredMethod("getItem", int.class).invoke(fakeTileEntityStand, i));
-					if(((DisabledPotions) FkPI.getInstance().getRulesManager().getRuleByName("DisabledPotions")).isDisabled(XPotionData.fromItemStack(potion)))
+					if(FkPI.getInstance().getRulesManager().getRule(Rule.DISABLED_POTIONS).isDisabled(XPotionData.fromItemStack(potion)))
 						return true;
 				}
 			}catch(Exception ex)
@@ -133,7 +137,7 @@ public class DisabledPotionsListener implements Listener
 				if(potion != null && (potion.getType() == XMaterial.POTION.parseMaterial() || potion.getType() == XMaterial.SPLASH_POTION.parseMaterial() || potion.getType() == XMaterial.LINGERING_POTION.parseMaterial()))
 				{
 					ItemStack predicatedResult = Utils.getPredicatedBrewedPotion(potion, ingredient);
-					if(predicatedResult.getItemMeta() instanceof PotionMeta && ((DisabledPotions) FkPI.getInstance().getRulesManager().getRuleByName("DisabledPotions")).isDisabled(XPotionData.fromItemStack(predicatedResult)))
+					if(predicatedResult.getItemMeta() instanceof PotionMeta && FkPI.getInstance().getRulesManager().getRule(Rule.DISABLED_POTIONS).isDisabled(XPotionData.fromItemStack(predicatedResult)))
 						return true;
 				}
 		return false;
@@ -142,21 +146,21 @@ public class DisabledPotionsListener implements Listener
 	@EventHandler
 	public void event(PlayerItemConsumeEvent e)
 	{
-		if(e.getItem() != null && e.getItem().getItemMeta() instanceof PotionMeta && ((DisabledPotions) FkPI.getInstance().getRulesManager().getRuleByName("DisabledPotions")).isDisabled(XPotionData.fromItemStack(e.getItem())))
+		if(e.getItem() != null && e.getItem().getItemMeta() instanceof PotionMeta && FkPI.getInstance().getRulesManager().getRule(Rule.DISABLED_POTIONS).isDisabled(XPotionData.fromItemStack(e.getItem())))
 		{
 			e.setCancelled(true);
-			e.getPlayer().sendMessage(ChatUtils.PREFIX + "§cCette potion est désactivée");
+			ChatUtils.sendMessage(e.getPlayer(), Messages.PLAYER_DISABLED_POTION_CONSUME);
 		}
 	}
 
 	@EventHandler
 	public void event(ProjectileLaunchEvent e)
 	{
-		if(e.getEntityType() == EntityType.SPLASH_POTION && ((DisabledPotions) FkPI.getInstance().getRulesManager().getRuleByName("DisabledPotions")).isDisabled(XPotionData.fromItemStack(((ThrownPotion) e.getEntity()).getItem())))
+		if(e.getEntityType() == EntityType.SPLASH_POTION && FkPI.getInstance().getRulesManager().getRule(Rule.DISABLED_POTIONS).isDisabled(XPotionData.fromItemStack(((ThrownPotion) e.getEntity()).getItem())))
 		{
 			e.setCancelled(true);
 			if(e.getEntity().getShooter() instanceof CommandSender)
-				((CommandSender) e.getEntity().getShooter()).sendMessage(ChatUtils.PREFIX + "§cCette potion est désactivée");
+				ChatUtils.sendMessage((CommandSender) e.getEntity().getShooter(), Messages.PLAYER_DISABLED_POTION_CONSUME);
 		}
 	}
 }

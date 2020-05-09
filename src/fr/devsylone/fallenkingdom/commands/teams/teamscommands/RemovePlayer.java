@@ -1,24 +1,39 @@
 package fr.devsylone.fallenkingdom.commands.teams.teamscommands;
 
+import fr.devsylone.fallenkingdom.commands.ArgumentParser;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
+import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
+import fr.devsylone.fallenkingdom.utils.Messages;
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import fr.devsylone.fallenkingdom.Fk;
-import fr.devsylone.fallenkingdom.commands.teams.FkTeamCommand;
-import fr.devsylone.fallenkingdom.players.FkPlayer;
 
-public class RemovePlayer extends FkTeamCommand
+import java.util.List;
+
+public class RemovePlayer extends FkCommand
 {
 	public RemovePlayer()
 	{
-		super("removePlayer", "<player>", 1, "Enlever un joueur d'une équipe.");
+		super("removePlayer", "<player>", Messages.CMD_MAP_TEAM_REMOVE_PLAYER, CommandPermission.ADMIN);
 	}
 
-	public void execute(Player sender, FkPlayer fkp, String[] args)
+	@Override
+	public CommandResult execute(Fk plugin, CommandSender sender, List<String> args, String label)
 	{
-		Fk.getInstance().getFkPI().getTeamManager().removePlayerOfHisTeam(args[0]);
-		sender.setDisplayName(sender.getName());
+		List<String> players = ArgumentParser.parsePlayers(sender, args.get(0));
+		for (String p : players) {
+			plugin.getFkPI().getTeamManager().removePlayerOfHisTeam(p);
+			Player player = Bukkit.getPlayer(p);
+			if (player != null)
+				player.setDisplayName(player.getDisplayName());
 
-		if(args.length < 2 || !args[1].equalsIgnoreCase("nobroadcast"))
-			broadcast(args[0] + " a été exclu de son équipe ! ");
+			broadcast(p + " a été exclu de son équipe !", 1, args);
+		}
+		if (!players.isEmpty())
+			plugin.getScoreboardManager().refreshAllScoreboards();
+		return CommandResult.SUCCESS;
 	}
 }

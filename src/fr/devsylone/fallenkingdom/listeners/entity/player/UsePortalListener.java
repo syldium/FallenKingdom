@@ -1,5 +1,6 @@
 package fr.devsylone.fallenkingdom.listeners.entity.player;
 
+import fr.devsylone.fallenkingdom.utils.Messages;
 import org.bukkit.GameMode;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -17,12 +18,15 @@ public class UsePortalListener implements Listener
 	{
 		if(e.getTo() == null || e.getTo().getWorld() == null || e.getPlayer().getGameMode().equals(GameMode.CREATIVE))
 			return;
-		
+
+		if(!Fk.getInstance().getWorldManager().isAffected(e.getTo().getWorld()))
+			return;
+
 		if(e.getTo().getWorld().getEnvironment().equals(Environment.NETHER))
 		{
 			if(!Fk.getInstance().getGame().isNetherEnabled() && Fk.getInstance().getGame().getState() != GameState.BEFORE_STARTING)
 			{
-				e.getPlayer().sendMessage(ChatUtils.PREFIX + "§cLe nether n'est pas encore actif !");
+				ChatUtils.sendMessage(e.getPlayer(), Messages.PLAYER_NETHER_NOT_ACTIVE);
 				e.setCancelled(true);
 			}
 		}
@@ -30,7 +34,7 @@ public class UsePortalListener implements Listener
 		{
 			if(!Fk.getInstance().getGame().isEndEnabled() && Fk.getInstance().getGame().getState() != GameState.BEFORE_STARTING)
 			{
-				e.getPlayer().sendMessage(ChatUtils.PREFIX + "§cL'end n'est pas encore actif !");
+				ChatUtils.sendMessage(e.getPlayer(), Messages.PLAYER_END_NOT_ACTIVE);
 				e.setCancelled(true);
 			}
 		}

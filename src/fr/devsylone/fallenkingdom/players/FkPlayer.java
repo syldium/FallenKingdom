@@ -1,5 +1,7 @@
 package fr.devsylone.fallenkingdom.players;
 
+import fr.devsylone.fallenkingdom.utils.Messages;
+import fr.devsylone.fkpi.util.Saveable;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
@@ -12,19 +14,19 @@ import fr.devsylone.fallenkingdom.scoreboard.ScoreboardDisplayer;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fallenkingdom.utils.FkSound;
 
-public class FkPlayer implements fr.devsylone.fkpi.util.Saveable
+public class FkPlayer implements Saveable
 {
-	private boolean knowsSbEdit;
-	private PlayerState state;
-	private String name;
+	private boolean knowsSbEdit = false;
+	private PlayerState state = PlayerState.INGAME;
+	private final String name;
 	private FkScoreboard board;
 	private ScoreboardDisplayer sbDisplayer;
 	private Location portal;
 
-	public static enum PlayerState
+	public enum PlayerState
 	{
 		INGAME,
-		EDITING_SCOREBOARD;
+		EDITING_SCOREBOARD
 	}
 
 	private int kills = 0;
@@ -32,15 +34,10 @@ public class FkPlayer implements fr.devsylone.fkpi.util.Saveable
 
 	public FkPlayer(String name)
 	{
-		knowsSbEdit = false;
 		Fk.getInstance().getPlayerManager().registerNewPlayer(this);
 		this.name = name;
-		state = PlayerState.INGAME;
 		if(Bukkit.getPlayerExact(name) != null)
 			board = new FkScoreboard(Bukkit.getPlayer(name));
-		sbDisplayer = null;
-
-		portal = null;
 	}
 
 	public String getName()
@@ -93,6 +90,13 @@ public class FkPlayer implements fr.devsylone.fkpi.util.Saveable
 		sendMessage(message, "", null);
 	}
 
+	public void sendMessage(Messages message)
+	{
+		if (message.getMessage().isEmpty())
+			return;
+		sendMessage(message.getMessage(), "", null);
+	}
+
 	public void sendMessage(String message, String prefix)
 	{
 		sendMessage(message, prefix, null);
@@ -100,15 +104,13 @@ public class FkPlayer implements fr.devsylone.fkpi.util.Saveable
 
 	public void sendMessage(String message, String prefix, FkSound sound)
 	{
-		if(Bukkit.getPlayer(name) != null)
+		Player p = Bukkit.getPlayer(name);
+		if(p != null)
 		{
-			Player p = Bukkit.getPlayer(name);
 			if(sound != null)
-			{
 				p.playSound(p.getLocation(), sound.bukkitSound(), 1.0F, 1.0F);
-			}
 
-			String full = ChatUtils.PREFIX + prefix;
+			String full = message.length() < 4 ? "" : ChatUtils.PREFIX + prefix;
 
 			message = "\n" + message;
 			message = message.replaceAll("\\n(?=(§.)*?[^(§.)\\n])", "\n" + full);
@@ -160,6 +162,12 @@ public class FkPlayer implements fr.devsylone.fkpi.util.Saveable
 		board = new FkScoreboard(Bukkit.getPlayer(name));
 	}
 
+	public void removeScoreboard()
+	{
+		if(board != null)
+			board.remove();
+	}
+
 	public Location getPortal()
 	{
 		return portal;
@@ -196,8 +204,8 @@ public class FkPlayer implements fr.devsylone.fkpi.util.Saveable
 
 	public void save(ConfigurationSection config)
 	{
-		config.set("Kills", Integer.valueOf(kills));
-		config.set("Deaths", Integer.valueOf(deaths));
+		config.set("Kills", kills);
+		config.set("Deaths", deaths);
 		config.set("State", state.name());
 		config.set("KnowsSbEdit", knowsSbEdit);
 
@@ -208,9 +216,9 @@ public class FkPlayer implements fr.devsylone.fkpi.util.Saveable
 		if(portal != null && portal.getWorld() != null)
 		{
 			config.set("Portal.World", portal.getWorld().getName());
-			config.set("Portal.X", Integer.valueOf(portal.getBlockX()));
-			config.set("Portal.Y", Integer.valueOf(portal.getBlockY()));
-			config.set("Portal.Z", Integer.valueOf(portal.getBlockZ()));
+			config.set("Portal.X", portal.getBlockX());
+			config.set("Portal.Y", portal.getBlockY());
+			config.set("Portal.Z", portal.getBlockZ());
 		}
 	}
 }

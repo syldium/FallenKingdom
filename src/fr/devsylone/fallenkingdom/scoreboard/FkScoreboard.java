@@ -4,27 +4,27 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.bukkit.Bukkit;
+import fr.devsylone.fallenkingdom.utils.Messages;
+import fr.devsylone.fkpi.FkPI;
+import fr.devsylone.fkpi.rules.Rule;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.Team;
 
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.game.Game.GameState;
 import fr.devsylone.fallenkingdom.manager.saveable.ScoreboardManager;
 import fr.devsylone.fallenkingdom.players.FkPlayer.PlayerState;
 import fr.devsylone.fallenkingdom.utils.RulesFormatter;
-import fr.devsylone.fkpi.util.CrossversionTeam;
 
 public class FkScoreboard
 {
-	private Scoreboard bukkitBoard;
-	private ScoreboardSign sidebarBoard;
+	private final Scoreboard bukkitBoard;
+	private final ScoreboardSign sidebarBoard;
 
-	private Player player;
+	private final Player player;
 
-	private HashMap<PlaceHolder, ArrayList<Integer>> placeHolders;
+	private final HashMap<PlaceHolder, List<Integer>> placeHolders;
 
 	private boolean formatted;
 
@@ -33,18 +33,18 @@ public class FkScoreboard
 		formatted = true;
 		this.player = player;
 		this.placeHolders = new HashMap<>();
-		this.bukkitBoard = Bukkit.getScoreboardManager().getNewScoreboard();
+		this.bukkitBoard = FkPI.getInstance().getTeamManager().getScoreboard();
 
 		sidebarBoard = new ScoreboardSign(player, Fk.getInstance().getScoreboardManager().getName());
 
-		if((boolean) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("HealthBelowName").getValue())
+		if(FkPI.getInstance().getRulesManager().getRule(Rule.HEALTH_BELOW_NAME) && bukkitBoard.getObjective("§c❤") == null)
 			bukkitBoard.registerNewObjective("§c❤", "health").setDisplaySlot(DisplaySlot.BELOW_NAME);
 
 		List<String> sidebarConfig = Fk.getInstance().getScoreboardManager().getSidebar();
 
 		for(PlaceHolder placeHolder : PlaceHolder.values())
 		{
-			placeHolders.put(placeHolder, new ArrayList<Integer>());
+			placeHolders.put(placeHolder, new ArrayList<>());
 			for(int i = 0; i < sidebarConfig.size(); i++)
 				if(placeHolder.isInLine(sidebarConfig.get(i)))
 					placeHolders.get(placeHolder).add(i);
@@ -64,7 +64,7 @@ public class FkScoreboard
 
 		if(Fk.getInstance().getGame().getState().equals(GameState.BEFORE_STARTING) && !Fk.getInstance().getPlayerManager().getPlayer(player).getState().equals(PlayerState.EDITING_SCOREBOARD))
 		{
-			sidebarBoard.setLine("§bÉquipes :", ++index);
+			sidebarBoard.setLine(Messages.SCOREBOARD_TEAMS.getMessage(), ++index);
 
 			if(Fk.getInstance().getFkPI().getTeamManager().getTeams().size() <= 10)
 				for(fr.devsylone.fkpi.teams.Team team : Fk.getInstance().getFkPI().getTeamManager().getTeams())
@@ -77,9 +77,9 @@ public class FkScoreboard
 				}
 
 			sidebarBoard.setLine("§1", ++index);
-			sidebarBoard.setLine("§bRègles :", ++index);
+			sidebarBoard.setLine(Messages.SCOREBOARD_RULES.getMessage(), ++index);
 
-			for(String s : RulesFormatter.formatRules("allowedblocks", "chargedcreepers", "disabledpotions"))
+			for(String s : RulesFormatter.formatRules(Rule.ALLOWED_BLOCKS, Rule.CHARGED_CREEPERS, Rule.DISABLED_POTIONS))
 				if(index < 14)
 					sidebarBoard.setLine(" " + s, ++index);
 				else
@@ -90,7 +90,7 @@ public class FkScoreboard
 			for(int i = 0; i < Fk.getInstance().getScoreboardManager().getSidebar().size(); i++)
 				refreshLine(i);
 		}
-		refreshNicks();
+		Fk.getInstance().getScoreboardManager().refreshNicks();
 
 		try
 		{
@@ -111,7 +111,7 @@ public class FkScoreboard
 		if(Fk.getInstance().getGame().getState() == GameState.BEFORE_STARTING && !Fk.getInstance().getPlayerManager().getPlayer(player).getState().equals(PlayerState.EDITING_SCOREBOARD))
 			return;
 
-		ArrayList<Integer> linesToRefresh = new ArrayList<>();
+		List<Integer> linesToRefresh = new ArrayList<>();
 
 		for(PlaceHolder p : placeHolders)
 		{
@@ -142,7 +142,7 @@ public class FkScoreboard
 		{
 			for(PlaceHolder placeHolder : placeHolders.keySet())
 				if(placeHolders.get(placeHolder).contains(i))
-					line = placeHolder.replace(line, player);
+					line = placeHolder.replace(line, player, placeHolders.get(placeHolder).indexOf(i));
 		}
 		else
 		{
@@ -152,26 +152,6 @@ public class FkScoreboard
 
 		if(!sidebarBoard.getLine(i).equals(line))
 			sidebarBoard.setLine(line, i);
-	}
-
-	public void refreshNicks()
-	{
-		for(Team team : Fk.getInstance().getFkPI().getTeamManager().getScoreboard().getTeams())
-			if(bukkitBoard.getTeam(team.getName()) != null)
-				bukkitBoard.getTeam(team.getName()).unregister();
-
-		for(Team team : Fk.getInstance().getFkPI().getTeamManager().getScoreboard().getTeams())
-		{
-			bukkitBoard.registerNewTeam(team.getName());
-			if(Fk.getInstance().isNewVersion())
-				bukkitBoard.getTeam(team.getName()).setColor(team.getColor());
-			else
-				bukkitBoard.getTeam(team.getName()).setPrefix(team.getPrefix());
-
-			for(String entry : CrossversionTeam.getEntries(team))
-				if(Bukkit.getPlayer(entry) != null)
-					CrossversionTeam.addEntry(entry, bukkitBoard.getTeam(team.getName()));
-		}
 	}
 
 	public void remove()

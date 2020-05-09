@@ -6,7 +6,7 @@
 
     <groupId>fr.devsylone</groupId>
     <artifactId>fallenkingdom</artifactId>
-    <version>2.18.1</version>
+    <version>2.19.0-beta</version>
     <packaging>jar</packaging>
     <name>FallenKingdom</name>
 
@@ -75,8 +75,8 @@
 
     <repositories>
         <repository>
-            <id>spigotmc-repo</id>
-            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+            <id>papermc</id>
+            <url>https://papermc.io/repo/repository/maven-public/</url>
         </repository>
         <repository>
             <id>sonatype</id>
@@ -85,6 +85,15 @@
         <repository>
             <id>CodeMC</id>
             <url>https://repo.codemc.org/repository/maven-public</url>
+        </repository>
+        <repository>
+            <id>placeholderapi</id>
+            <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
+        </repository>
+        <repository>
+            <id>minecraft-libraries</id>
+            <name>Minecraft Libraries</name>
+            <url>https://libraries.minecraft.net</url>
         </repository>
     </repositories>
 
@@ -97,10 +106,22 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/../spigot-1.15.2.jar</systemPath>
         </dependency>-->
-         <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
+        <dependency>
+            <groupId>com.destroystokyo.paper</groupId>
+            <artifactId>paper-api</artifactId>
             <version>1.15.2-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.destroystokyo.paper</groupId>
+            <artifactId>paper-mojangapi</artifactId>
+            <version>1.15.2-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.mojang</groupId>
+            <artifactId>brigadier</artifactId>
+            <version>1.0.17</version>
             <scope>provided</scope>
         </dependency>
         <!-- Structure of 1.8 NMS packets -->
@@ -110,12 +131,6 @@
 <!--             <version>1.8.8-R0.1-SNAPSHOT</version> -->
 <!--             <scope>provided</scope> -->
 <!--         </dependency> -->
-        <dependency>
-            <groupId>com.googlecode.json-simple</groupId>
-            <artifactId>json-simple</artifactId>
-            <version>1.1</version>
-            <scope>provided</scope>
-        </dependency>
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-buffer</artifactId>
@@ -132,6 +147,12 @@
             <artifactId>bstats-bukkit</artifactId>
             <version>1.7</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>me.clip</groupId>
+            <artifactId>placeholderapi</artifactId>
+            <version>2.10.5</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

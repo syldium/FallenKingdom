@@ -1,5 +1,6 @@
 package fr.devsylone.fallenkingdom.listeners.entity.player;
 
+import fr.devsylone.fallenkingdom.utils.Messages;
 import org.bukkit.GameMode;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -12,10 +13,12 @@ public class ChangeGamemodeListener implements Listener
 	@EventHandler
 	public void change(PlayerGameModeChangeEvent e)
 	{
+		if(!Fk.getInstance().getWorldManager().isAffected(e.getPlayer().getWorld()))
+			return;
 		if(e.getNewGameMode() == GameMode.CREATIVE)
 		{
-			Fk.getInstance().getPacketManager().sendTitle(e.getPlayer(), "§cAttention", "§6⇩ Lis le chat ⇩", 20, 100,20);
-			Fk.getInstance().getPlayerManager().getPlayer(e.getPlayer()).sendMessage("§cAttention ! En créatif vous pouvez faire des actions impossibles en survie au niveau du plugin, telles que casser et poser des blocs en territoire ennemi, ouvrir des coffres à crocheter, aller dans le nether, etc...");
+			Fk.getInstance().getPacketManager().sendTitle(e.getPlayer(), Messages.PLAYER_CREATIVE_TITLE.getMessage(), Messages.PLAYER_CREATIVE_SUBTITLE.getMessage(), 20, 100,20);
+			Fk.getInstance().getPlayerManager().getPlayer(e.getPlayer()).sendMessage(Messages.PLAYER_CREATIVE_CHAT);
 		}
 	}
 }

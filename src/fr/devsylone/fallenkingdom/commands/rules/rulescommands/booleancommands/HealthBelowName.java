@@ -1,24 +1,22 @@
 package fr.devsylone.fallenkingdom.commands.rules.rulescommands.booleancommands;
 
-import org.bukkit.entity.Player;
+import fr.devsylone.fallenkingdom.utils.Messages;
+import fr.devsylone.fkpi.rules.Rule;
 
-import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.commands.rules.FkBooleanRuleCommand;
-import fr.devsylone.fallenkingdom.players.FkPlayer;
 
 public class HealthBelowName extends FkBooleanRuleCommand
 {
 	public HealthBelowName()
 	{
-		super("healthBelowName", "Permet de voir/ne plus voir la vie des joueurs sous leur pseudo");
+		super("healthBelowName", Messages.CMD_MAP_RULES_HEALTH_BELOW_NAME, Rule.HEALTH_BELOW_NAME);
 	}
 
-	public void execute(Player sender, FkPlayer fkp, String[] args) throws ReflectiveOperationException
-	{
-		setRuleValue(args[0]);
-
-		broadcast("Désormais, la vie des joueurs", Boolean.valueOf(args[0]).booleanValue() ? "est" : "n'est plus", "visible sous leur pseudo !");
-
-		Fk.getInstance().getScoreboardManager().recreateAllScoreboards();
+	@Override
+	protected void sendMessage(boolean newValue) {
+		if (newValue)
+			broadcast(Messages.CMD_RULES_HEALTH_BELOW_NAME_VISIBLE.getMessage());
+		else
+			broadcast(Messages.CMD_RULES_HEALTH_BELOW_NAME_HIDDEN.getMessage());
 	}
 }

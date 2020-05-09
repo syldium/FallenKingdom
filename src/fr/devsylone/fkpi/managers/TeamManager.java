@@ -3,53 +3,39 @@ package fr.devsylone.fkpi.managers;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
+import fr.devsylone.fallenkingdom.utils.Messages;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.scoreboard.Scoreboard;
 
 import fr.devsylone.fallenkingdom.exception.FkLightException;
-import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.teams.Team;
 import fr.devsylone.fkpi.util.Color;
 import fr.devsylone.fkpi.util.Saveable;
 
 public class TeamManager implements Saveable
 {
-	private List<Team> teams;
-
-	private Scoreboard board;
-
-	public TeamManager()
-	{
-		if(FkPI.getInstance().isBukkitPlugin())
-			board = FkPI.getInstance().getPlugin().getServer().getScoreboardManager().getNewScoreboard();
-
-		teams = new ArrayList<Team>();
-	}
+	private final List<Team> teams = new ArrayList<>();
+	private final Scoreboard board = Bukkit.getScoreboardManager().getNewScoreboard();
 
 	public boolean createTeam(String name)
 	{
 		if(getTeam(name) != null)
-			throw new FkLightException("Cette équipe existe déjà !");
+			throw new FkLightException(Messages.CMD_ERROR_TEAM_ALREADY_EXIST);
 
-		if(name.isEmpty())
-			throw new FkLightException("Nom de l'équipe invalide !");
-
-		if(name.contains(" "))
-			throw new FkLightException("L'équipe ne peut pas contenir d'espace dans son nom !");
+		if(name.isEmpty() || name.contains(" "))
+			throw new FkLightException(Messages.CMD_ERROR_TEAM_INVALID_NAME);
 
 		if(name.length() > 25)
-			throw new FkLightException("Le nom de l'équipe ne peut exceder 25 caractères !");
+			throw new FkLightException(Messages.CMD_ERROR_TEAM_NAME_TOO_LONG);
 
 		Team team = new Team(name);
 		team.setColor(Color.forName(name));
 		teams.add(team);
 
-		if(FkPI.getInstance().isBukkitPlugin())
-			return Color.forName(name) != null;
-
-		else
-			return true;
+		return Color.forName(name) != null;
 	}
 
 	public Scoreboard getScoreboard()
@@ -60,10 +46,9 @@ public class TeamManager implements Saveable
 	public void removeTeam(String name)
 	{
 		if(getTeam(name) == null)
-			throw new FkLightException("Cette équipe n'existe pas !");
+			throw new FkLightException(Messages.CMD_ERROR_UNKNOWN_TEAM.getMessage().replace("%team%", name));
 
-		if(FkPI.getInstance().isBukkitPlugin())
-			getTeam(name).getScoreboardTeam().unregister();
+		getTeam(name).getScoreboardTeam().unregister();
 
 		teams.remove(getTeam(name));
 	}
@@ -84,11 +69,7 @@ public class TeamManager implements Saveable
 
 	public List<String> getTeamNames()
 	{
-		List<String> names = new ArrayList<String>();
-		for(Team t : teams)
-			names.add(t.getName());
-
-		return names;
+		return teams.stream().map(Team::getName).collect(Collectors.toList());
 	}
 
 	public Team getPlayerTeam(String player)
@@ -107,13 +88,13 @@ public class TeamManager implements Saveable
 	public void addPlayer(String player, String teamName)
 	{
 		if(getPlayerTeam(player) != null)
-			throw new FkLightException("Le joueur fait déjà partie d'une équipe !");
+			throw new FkLightException(Messages.CMD_ERROR_PLAYER_ALREADY_HAS_TEAM);
 
 		if(getTeam(teamName) == null)
-			throw new FkLightException("Cette équipe n'existe pas !");
+			throw new FkLightException(Messages.CMD_ERROR_UNKNOWN_TEAM.getMessage().replace("%team%", teamName));
 
 		if(player.isEmpty() || player.contains(" "))
-			throw new FkLightException("Pseudo invalide !");
+			throw new FkLightException(Messages.CMD_ERROR_INVALID_PLAYER.getMessage());
 
 		getTeam(teamName).addPlayer(player);
 	}
@@ -121,7 +102,7 @@ public class TeamManager implements Saveable
 	public void removePlayerOfHisTeam(String player)
 	{
 		if(getPlayerTeam(player) == null)
-			throw new FkLightException("Le joueur ne fait pas partie d'une équipe !");
+			throw new FkLightException(Messages.CMD_ERROR_PLAYER_NOT_IN_TEAM);
 
 		for(Team t : teams)
 			for(String s : t.getPlayers())
@@ -134,11 +115,8 @@ public class TeamManager implements Saveable
 
 	public void random(List<String> players)
 	{
-		//		if(!FkPI.getInstance().isBukkitPlugin())
-		//			return;
-		//
 		if(getTeams().isEmpty())
-			throw new FkLightException("Il n'y a pas d'équipes !");
+			throw new FkLightException(Messages.CMD_ERROR_NO_TEAM);
 
 		Random rdm = new Random();
 		final int originalSize = players.size();

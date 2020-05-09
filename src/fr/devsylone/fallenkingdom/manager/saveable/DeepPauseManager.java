@@ -9,6 +9,9 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import fr.devsylone.fallenkingdom.utils.Version;
+import fr.devsylone.fkpi.FkPI;
+import fr.devsylone.fkpi.rules.Rule;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
@@ -18,7 +21,6 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
-import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.utils.NMSUtils;
 import fr.devsylone.fallenkingdom.utils.PacketUtils;
 import fr.devsylone.fkpi.util.Saveable;
@@ -71,7 +73,7 @@ public class DeepPauseManager implements Saveable
 
 	public void protectDespawnItems()
 	{
-		if((Boolean) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("DeepPause").getValue())
+		if(FkPI.getInstance().getRulesManager().getRule(Rule.DEEP_PAUSE))
 		{
 			for(World world : Bukkit.getWorlds())
 			{
@@ -93,7 +95,7 @@ public class DeepPauseManager implements Saveable
 
 	public void removeAIs()
 	{
-		if((Boolean) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("DeepPause").getValue())
+		if(FkPI.getInstance().getRulesManager().getRule(Rule.DEEP_PAUSE))
 		{
 			for(World world : Bukkit.getWorlds())
 			{
@@ -147,7 +149,7 @@ public class DeepPauseManager implements Saveable
 
 	private Entity getEntity(UUID uuid)
 	{
-		if (Fk.getInstance().isNewVersion())
+		if (Version.VersionType.V1_13.isHigherOrEqual())
 			return Bukkit.getEntity(uuid);
 		for (World world : Bukkit.getWorlds())
 		{

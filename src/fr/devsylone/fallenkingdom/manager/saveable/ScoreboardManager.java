@@ -1,10 +1,9 @@
 package fr.devsylone.fallenkingdom.manager.saveable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
-
+import fr.devsylone.fallenkingdom.utils.Version;
+import fr.devsylone.fkpi.FkPI;
+import fr.devsylone.fkpi.teams.Team;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 
 import fr.devsylone.fallenkingdom.Fk;
@@ -12,6 +11,10 @@ import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fallenkingdom.scoreboard.PlaceHolder;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fkpi.util.Saveable;
+import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.Scoreboard;
+
+import java.util.*;
 
 public class ScoreboardManager implements Saveable
 {
@@ -20,22 +23,24 @@ public class ScoreboardManager implements Saveable
 			stringFalse,
 			noTeam,
 			noBase,
+			noInfo = "§4?",
 			arrows;
-	private List<String> sidebar;
+	private List<String> sidebar = new ArrayList<>();
+	private final List<List<String>> revisions = new ArrayList<>();
 
 	public ScoreboardManager()
 	{
-		sidebar = new ArrayList<>();
 		reset();
 	}
 
-	public HashMap<String, String> getCustomStrings()
+	public Map<String, String> getCustomStrings()
 	{
-		HashMap<String, String> hash = new HashMap<String, String>();
+		Map<String, String> hash = new HashMap<>();
 		hash.put("stringTrue", stringTrue);
 		hash.put("stringFalse", stringFalse);
 		hash.put("noTeam", noTeam);
 		hash.put("noBase", noBase);
+		hash.put("noInfo", noBase);
 		hash.put("arrows", arrows);
 
 		return hash;
@@ -45,31 +50,49 @@ public class ScoreboardManager implements Saveable
 	{
 		this.name = name.replaceAll("&", "§");
 
-		for(FkPlayer player : Fk.getInstance().getPlayerManager().getConnectedPlayers())
-			player.recreateScoreboard();
+		recreateAllScoreboards();
 	}
 
-	public void setLine(int line, String newl)
+	public boolean setLine(int line, String newl)
 	{
-		if(newl.matches("(§\\w)+"))
-			newl = randomFakeEmpty();
-		else if(newl.length() < 5)
-			newl += randomFakeEmpty();
-
+		if (line < 0 || line >= sidebar.size())
+			return false;
+		if(newl.length() < 3)
+			newl = randomFakeEmpty() + newl;
 		line = 15 - line;
-		List<String> newSidebar = new ArrayList<String>();
-		for(int i = 0; i < Math.max(line + 1, sidebar.size()); i++)
-		{
-			if(i == line)
-				newSidebar.add(newl);
-
-			else if(sidebar.size() <= i)
-				newSidebar.add(randomFakeEmpty());
-			else
-				newSidebar.add(sidebar.get(i));
-		}
-		sidebar = newSidebar;
+		createSnapshot();
+		for(int i = sidebar.size(); i <= line; i++)
+			sidebar.add(randomFakeEmpty());
+		sidebar.set(line, newl);
 		recreateAllScoreboards();
+		return true;
+	}
+
+	public boolean removeLine(int line)
+	{
+		line = 15 - line;
+		createSnapshot();
+		if (line < 0 || line >= sidebar.size())
+			return false;
+		sidebar.remove(line);
+		recreateAllScoreboards();
+		return true;
+	}
+
+	public boolean undo()
+	{
+		if (revisions.size() < 1)
+			return false;
+		sidebar = revisions.remove(revisions.size() - 1);
+		recreateAllScoreboards();
+		return true;
+	}
+
+	public void createSnapshot()
+	{
+		revisions.add(new ArrayList<>(sidebar));
+		if (revisions.size() > 5)
+			revisions.remove(0);
 	}
 
 	public String getName()
@@ -102,6 +125,11 @@ public class ScoreboardManager implements Saveable
 		return noBase;
 	}
 
+	public String getNoInfo()
+	{
+		return noInfo;
+	}
+
 	public String getArrows()
 	{
 		return arrows;
@@ -128,8 +156,24 @@ public class ScoreboardManager implements Saveable
 
 	public void refreshNicks()
 	{
+		Scoreboard scoreboard = FkPI.getInstance().getTeamManager().getScoreboard();
+		for(Team team : FkPI.getInstance().getTeamManager().getTeams())
+		{
+			if(Version.VersionType.V1_13.isHigherOrEqual())
+				team.getScoreboardTeam().setColor(team.getChatColor());
+			else
+				team.getScoreboardTeam().setPrefix(String.valueOf(team.getChatColor()));
+
+			for(String entry : team.getPlayers())
+			{
+				Player player = Bukkit.getPlayer(entry);
+				team.getScoreboardTeam().removeEntry(entry);
+				if (player != null && Fk.getInstance().getWorldManager().isAffected(player.getWorld()))
+					team.getScoreboardTeam().addEntry(entry);
+			}
+		}
 		for(FkPlayer player : Fk.getInstance().getPlayerManager().getConnectedPlayers())
-			player.getScoreboard().refreshNicks();
+			Objects.requireNonNull(Bukkit.getPlayer(player.getName()), "Player is offline.").setScoreboard(scoreboard);
 	}
 
 	public void reset()
@@ -139,7 +183,8 @@ public class ScoreboardManager implements Saveable
 		stringFalse = "§4✘";
 		noTeam = "§4No team";
 		noBase = "§4No Base";
-		arrows = Fk.getInstance().isNewVersion() ? "⇑⇗⇒⇘⇓⇙⇐⇖" : "↑↗→↘↓↙←↖";
+		noInfo = "§4?";
+		arrows = Version.VersionType.V1_13.isHigherOrEqual() ? "⇑⇗⇒⇘⇓⇙⇐⇖" : "↑↗→↘↓↙←↖";
 		sidebar.clear();
 		sidebar.add("§f§a§k§e");
 		sidebar.add("§6Jour {D} §2{H}h{M}");
@@ -161,14 +206,14 @@ public class ScoreboardManager implements Saveable
 	{
 		if(!config.contains("Name"))
 			return;
-		name = config.getString("Name");
+		name = config.getString("Name", name);
 		sidebar = config.getStringList("Sidebar");
 
-		stringTrue = config.getString("Boolean").split(":")[0];
-		stringFalse = config.getString("Boolean").split(":")[1];
-		noTeam = config.getString("NoTeam");
-
-		noBase = config.getString("NoBase");
+		stringTrue = config.getString("Boolean", "§2✔:§4✘").split(":")[0];
+		stringFalse = config.getString("Boolean", "§2✔:§4✘").split(":")[1];
+		noTeam = config.getString("NoTeam", noTeam);
+		noBase = config.getString("NoBase", noBase);
+		noInfo = config.getString("NoInfo", noInfo);
 	}
 
 	@Override
@@ -179,6 +224,7 @@ public class ScoreboardManager implements Saveable
 		config.set("Boolean", stringTrue + ":" + stringFalse);
 		config.set("NoTeam", noTeam);
 		config.set("NoBase", noBase);
+		config.set("NoInfo", noInfo);
 		config.set("Arrows", arrows);
 	}
 
@@ -199,11 +245,11 @@ public class ScoreboardManager implements Saveable
 
 	public static String randomFakeEmpty()
 	{
-		String rdms = "";
+		StringBuilder rdms = new StringBuilder();
 		Random rdm = new Random();
 		for(int i = 0; i < 3; i++)
-			rdms += "§" + (char) (rdm.nextInt(26) + 97);
+			rdms.append("§").append((char) (rdm.nextInt(26) + 97));
 
-		return rdms;
+		return rdms.toString();
 	}
 }

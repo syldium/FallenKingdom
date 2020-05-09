@@ -1,6 +1,6 @@
 package fr.devsylone.fallenkingdom.listeners.entity.player;
 
-import org.bukkit.ChatColor;
+import fr.devsylone.fallenkingdom.utils.Messages;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
@@ -31,6 +31,9 @@ public class JoinListener implements Listener
 		if(!Fk.getInstance().getError().isEmpty()) // Bukkit n'a pas l'air d'invoquer l'AsyncPlayerPreLoginEvent
 			e.getPlayer().kickPlayer(kickMessage());
 
+		if (!Fk.getInstance().getWorldManager().isAffected(e.getPlayer().getWorld()))
+			return;
+
 		FkPlayer player = Fk.getInstance().getPlayerManager().getPlayer(e.getPlayer());
 		
 		if(e.getPlayer().isOp())
@@ -47,8 +50,7 @@ public class JoinListener implements Listener
 		}
 
 		e.setJoinMessage(null);
-		Fk.broadcast(e.getPlayer().getDisplayName() + ChatColor.GRAY + " a rejoint la partie !");
-		Fk.getInstance().getScoreboardManager().refreshAllScoreboards();
+		Fk.broadcast(Messages.CHAT_JOIN.getMessage().replace("%player%", e.getPlayer().getDisplayName()));
 
 		if(player.getState() == PlayerState.EDITING_SCOREBOARD)
 			player.getSbDisplayer().display();
@@ -61,8 +63,11 @@ public class JoinListener implements Listener
 		if(Fk.getInstance().getPlayerManager().getPlayer(e.getPlayer().getName()).getState() == PlayerState.EDITING_SCOREBOARD)
 			Fk.getInstance().getPlayerManager().getPlayer(e.getPlayer().getName()).getSbDisplayer().exit();
 
+		if (!Fk.getInstance().getWorldManager().isAffected(e.getPlayer().getWorld()))
+			return;
+
 		e.setQuitMessage(null);
-		Fk.broadcast(e.getPlayer().getDisplayName() + ChatColor.GRAY + " a quitté la partie !");
+		Fk.broadcast(Messages.CHAT_QUIT.getMessage().replace("%player%", e.getPlayer().getDisplayName()));
 	}
 
 	private String kickMessage()

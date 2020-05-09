@@ -205,9 +205,9 @@ public enum FkSound
 	VILLAGER_NO("VILLAGER_NO", "ENTITY_VILLAGER_NO"),
 	VILLAGER_YES("VILLAGER_YES", "ENTITY_VILLAGER_YES");
 
-	private String pre19sound;
-	private String post19sound;
-	private String post113sound;
+	private final String pre19sound;
+	private final String post19sound;
+	private final String post113sound;
 	
 	private Sound resolvedSound = null;
 
@@ -259,7 +259,7 @@ public enum FkSound
 		for (FkSound fSound : values()) {
 			Sound s = get(fSound.pre19sound);
 			if (s == null) {
-				if (Fk.getInstance().isNewVersion())
+				if (Version.VersionType.V1_13.isHigherOrEqual())
 					s = get(fSound.post113sound);
 				else
 					s = get(fSound.post19sound);
