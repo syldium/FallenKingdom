@@ -16,6 +16,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import fr.devsylone.fallenkingdom.commands.FkCommandExecutor;
 import fr.devsylone.fallenkingdom.commands.FkTabCompleter;
@@ -39,7 +40,7 @@ import fr.devsylone.fallenkingdom.manager.saveable.ScoreboardManager;
 import fr.devsylone.fallenkingdom.manager.saveable.StarterInventoryManager;
 import fr.devsylone.fallenkingdom.pause.PauseRestorer;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
-import fr.devsylone.fallenkingdom.updater.SpigotUpdater;
+import fr.devsylone.fallenkingdom.updater.PluginUpdater;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fallenkingdom.utils.DebuggerUtils;
 import fr.devsylone.fallenkingdom.utils.FkSound;
@@ -47,7 +48,6 @@ import fr.devsylone.fallenkingdom.utils.NMSUtils;
 import fr.devsylone.fallenkingdom.utils.ZipUtils;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.teams.Team;
-import org.bukkit.scheduler.BukkitRunnable;
 
 public class Fk extends JavaPlugin
 {
@@ -261,15 +261,8 @@ public class Fk extends JavaPlugin
 		 * Updater
 		 */
 
-		try
-		{
-			SpigotUpdater updater = new SpigotUpdater(Fk.getInstance());
-			updater.start();
-		}catch(IOException e)
-		{
-			e.printStackTrace();
-		}
-
+        PluginUpdater updater = new PluginUpdater(Fk.getInstance());
+        updater.runTaskAsynchronously(this);
 
 		new BukkitRunnable() {
 			@Override

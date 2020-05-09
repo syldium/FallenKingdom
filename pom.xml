@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>fr.devsylone</groupId>
@@ -51,7 +51,8 @@
                             <minimizeJar>true</minimizeJar>
                             <relocations>
                                 <relocation>
-                                    <!-- Keeps consistency with the modified version of XBlock -->
+                                    <!-- Keeps consistency with the modified 
+                                        version of XBlock -->
                                     <pattern>com.cryptomorin.xseries</pattern>
                                     <shadedPattern>fr.devsylone.fallenkingdom.utils</shadedPattern>
                                 </relocation>
@@ -90,26 +91,22 @@
 
     <dependencies>
         <!-- Used to check the structure of NMS packets -->
-        <!--<dependency>
-            <groupId>1.15.2_R0.1</groupId>
-            <artifactId>spigot_1_15_2</artifactId>
-            <version>1.15.2-R0.1</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/../spigot-1.15.2.jar</systemPath>
-        </dependency>-->
-         <dependency>
+        <!--<dependency> <groupId>1.15.2_R0.1</groupId> <artifactId>spigot_1_15_2</artifactId> 
+            <version>1.15.2-R0.1</version> <scope>system</scope> <systemPath>${project.basedir}/../spigot-1.15.2.jar</systemPath> 
+            </dependency> -->
+        <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
             <version>1.15.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <!-- Structure of 1.8 NMS packets -->
-<!--          <dependency> -->
-<!--             <groupId>org.spigotmc</groupId> -->
-<!--             <artifactId>spigot</artifactId> -->
-<!--             <version>1.8.8-R0.1-SNAPSHOT</version> -->
-<!--             <scope>provided</scope> -->
-<!--         </dependency> -->
+        <!-- <dependency> -->
+        <!-- <groupId>org.spigotmc</groupId> -->
+        <!-- <artifactId>spigot</artifactId> -->
+        <!-- <version>1.8.8-R0.1-SNAPSHOT</version> -->
+        <!-- <scope>provided</scope> -->
+        <!-- </dependency> -->
         <dependency>
             <groupId>com.googlecode.json-simple</groupId>
             <artifactId>json-simple</artifactId>
@@ -133,5 +130,13 @@
             <version>1.7</version>
             <scope>compile</scope>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.12</version>
+            <scope>provided</scope>
+        </dependency>
+
     </dependencies>
 </project>

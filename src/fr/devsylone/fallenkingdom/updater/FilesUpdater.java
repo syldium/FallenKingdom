@@ -3,6 +3,7 @@ package fr.devsylone.fallenkingdom.updater;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -205,14 +206,20 @@ public class FilesUpdater
 	}
 
 	public static boolean isGrowing(String v1, String v2)
-	{
-		String[] parsedv1 = v1.split("\\.");
-		String[] parsedv2 = v2.split("\\.");
+    {
+        if(v1.equals(v2))
+            return false;
 
-		for(int i = 0; i < Math.min(parsedv1.length, parsedv2.length); i++)
-			if(!parsedv1[i].equals(parsedv2[i]))
-				return Integer.parseInt(parsedv1[i]) < Integer.parseInt(parsedv2[i]);
+        String[] parsedv1 = v1.replaceAll("-beta\\d*$", "").split("\\.");
+        String[] parsedv2 = v2.replaceAll("-beta\\d*$", "").split("\\.");
 
-		return parsedv1.length < parsedv2.length;
-	}
+        for(int i = 0; i < Math.min(parsedv1.length, parsedv2.length); i++)
+            if(!parsedv1[i].equals(parsedv2[i]))
+                return Integer.parseInt(parsedv1[i]) < Integer.parseInt(parsedv2[i]);
+        
+        if(v1.matches(Pattern.quote(v2) + "-beta\\d*"))
+            return true;
+
+        return parsedv1.length < parsedv2.length;
+    }
 }
