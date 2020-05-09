@@ -1,41 +1,36 @@
 package fr.devsylone.fallenkingdom.commands.scoreboard.scoreboardcommands;
 
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
+import fr.devsylone.fallenkingdom.commands.abstraction.Confirmable;
+import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
+import fr.devsylone.fallenkingdom.utils.Messages;
+import org.bukkit.command.CommandSender;
 
 import fr.devsylone.fallenkingdom.Fk;
-import fr.devsylone.fallenkingdom.commands.scoreboard.FkScoreboardCommand;
-import fr.devsylone.fallenkingdom.players.FkPlayer;
 
-public class Reset extends FkScoreboardCommand
+import java.util.List;
+
+public class Reset extends FkCommand implements Confirmable
 {
 	public Reset()
 	{
-		super("reset", "", 0, "Réinitialise l'agencement du scoreboard");
+		super("reset", Messages.CMD_MAP_SCOREBOARD_RESET, CommandPermission.ADMIN);
 	}
 
-	public void execute(final Player sender, final FkPlayer fkp, String[] args)
+	@Override
+	public CommandResult execute(Fk plugin, CommandSender sender, List<String> args, String label)
 	{
-		if(!Fk.getInstance().getCommandManager().isConfirmed("sbreset"))
-		{
-			String msg = "";
-			msg = msg + ChatColor.RED + "§m--------------§c ATTENTION §c§m--------------\n";
-			msg = msg + ChatColor.RED + "Vous êtes sur le point de supprimer\n";
-			msg = msg + ChatColor.DARK_RED + "tous les réglages §ldu scoreboard§c\n\n";
-			msg = msg + ChatColor.RED + "Si c'est bien ce que vous voulez faire, \n";
-			msg = msg + ChatColor.RED + "merci de retaper la commande.\n";
-			msg = msg + ChatColor.RED + "§m--------------------------------------";
-
-			fkp.sendMessage(msg);
-
-			Fk.getInstance().getCommandManager().setConfirmed("sbreset", true);
+		if (isConfirmed(sender)) {
+			sender.sendMessage(Messages.CMD_SCOREBOARD_RESET.getMessage());
+			plugin.getScoreboardManager().reset();
+			plugin.getScoreboardManager().recreateAllScoreboards();
+			plugin.getScoreboardManager().refreshAllScoreboards();
+			return CommandResult.SUCCESS;
 		}
-		else
-		{
-			fkp.sendMessage("§aLe scoreboard a été réinitialisé !");
-			Fk.getInstance().getScoreboardManager().reset();
-			Fk.getInstance().getScoreboardManager().recreateAllScoreboards();
-			Fk.getInstance().getScoreboardManager().refreshAllScoreboards();
-		}
+
+		sender.sendMessage(createWarning(Messages.WARNING_SCOREBOARD_RESET, true));
+		addConfirmed(sender);
+		return CommandResult.SUCCESS;
 	}
 }

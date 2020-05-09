@@ -6,5 +6,5 @@ public enum TitleType
 	RESET,
 	SUBTITLE,
 	TITLE,
-	TIMES;
+	TIMES
 }

@@ -12,6 +12,8 @@ public class FoodListener implements Listener
 	@EventHandler
 	public void food(FoodLevelChangeEvent e)
 	{
+		if (!Fk.getInstance().getWorldManager().isAffected(e.getEntity().getWorld()))
+			return;
 		e.setCancelled(!Fk.getInstance().getGame().getState().equals(GameState.STARTED));
 	}
 }

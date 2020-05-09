@@ -1,34 +1,40 @@
 package fr.devsylone.fallenkingdom.commands.game.gamescommands;
 
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
+import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
+import fr.devsylone.fallenkingdom.utils.Messages;
+import fr.devsylone.fkpi.FkPI;
+import fr.devsylone.fkpi.rules.Rule;
 import org.bukkit.World;
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 
 import fr.devsylone.fallenkingdom.Fk;
-import fr.devsylone.fallenkingdom.commands.game.FkGameCommand;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
 import fr.devsylone.fallenkingdom.game.Game;
-import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fallenkingdom.utils.FkSound;
 
-public class Resume extends FkGameCommand
+import java.util.List;
+
+public class Resume extends FkCommand
 {
 	public Resume()
 	{
-		super("resume", "Reprend la partie après une pause.");
-		permission = ADMIN_PERMISSION;
+		super("resume", Messages.CMD_MAP_GAME_RESUME, CommandPermission.ADMIN);
 	}
 
-	@SuppressWarnings("deprecated")
-	public void execute(Player sender, FkPlayer fkp, String[] args)
+	@Override
+	@SuppressWarnings("deprecation")
+	public CommandResult execute(Fk plugin, CommandSender sender, List<String> args, String label)
 	{
 		if(Fk.getInstance().getGame().getState().equals(Game.GameState.BEFORE_STARTING))
-			throw new FkLightException("La partie n'a pas encore commencé.");
+			throw new FkLightException(Messages.CMD_ERROR_GAME_NOT_STARTED);
 		if(Fk.getInstance().getGame().getState().equals(Game.GameState.STARTED))
-			throw new FkLightException("La partie n'est pas en pause.");
+			throw new FkLightException(Messages.CMD_ERROR_NOT_IN_PAUSE);
 
 		Fk.getInstance().getGame().setState(Game.GameState.STARTED);
 
-		if(!(Boolean) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("EternalDay").getValue())
+		if(!FkPI.getInstance().getRulesManager().getRule(Rule.ETERNAL_DAY))
 		{
 			for(World w : org.bukkit.Bukkit.getWorlds())
 				w.setGameRuleValue("doDaylightCycle", "true");
@@ -37,8 +43,7 @@ public class Resume extends FkGameCommand
 		Fk.getInstance().getDeepPauseManager().resetAIs();
 		Fk.getInstance().getDeepPauseManager().unprotectItems();
 
-		if(sender != null)
-			super.broadcast("La partie", "reprend", ".", FkSound.NOTE_PIANO);
-
+		Fk.broadcast(Messages.CMD_GAME_RESUME.getMessage(), FkSound.NOTE_PIANO);
+		return CommandResult.SUCCESS;
 	}
 }

@@ -1,5 +1,7 @@
 package fr.devsylone.fallenkingdom.listeners.entity.player;
 
+import fr.devsylone.fkpi.FkPI;
+import fr.devsylone.fkpi.rules.Rule;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
@@ -14,7 +16,10 @@ public class PvpListener implements Listener
 	@EventHandler
 	public void pvp(EntityDamageByEntityEvent e)
 	{
-		if(Fk.getInstance().getGame().getState().equals(GameState.PAUSE) && (Boolean) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("DeepPause").getValue())
+		if(!Fk.getInstance().getWorldManager().isAffected(e.getEntity().getWorld()))
+			return;
+
+		if(Fk.getInstance().getGame().getState().equals(GameState.PAUSE) && FkPI.getInstance().getRulesManager().getRule(Rule.DEEP_PAUSE))
 		{
 			e.setCancelled(true);
 			return;
@@ -31,10 +36,10 @@ public class PvpListener implements Listener
 		else
 			return;
 		
-		if(Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(((Player)e.getEntity()).getName()) == null)
+		if(Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(e.getEntity().getName()) == null)
 			return;
 
-		else if(Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(damager.getName()) != null && Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(((Player)e.getEntity()).getName()).equals(Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(damager.getName())) && !(Boolean) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("FriendlyFire").getValue())
+		else if(Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(damager.getName()) != null && Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(e.getEntity().getName()).equals(Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(damager.getName())) && !FkPI.getInstance().getRulesManager().getRule(Rule.FRIENDLY_FIRE))
 			e.setCancelled(true);
 
 		else if(!Fk.getInstance().getGame().isPvpEnabled())

@@ -1,8 +1,8 @@
 Fallenkingdom
 ===
-[Téléchargez le plugin ici](https://www.spigotmc.org/resources/fallenkingdom.38878/)
-[Lisez le wiki](https://github.com/Etrenak/FallenKingdom/wiki)
-[Rejoigniez le discord](https://discord.gg/SmAAFxh)
+- [Téléchargez le plugin ici](https://www.spigotmc.org/resources/fallenkingdom.38878/)
+- [Lisez le wiki](https://github.com/Etrenak/FallenKingdom/wiki)
+- [Rejoigniez le discord](https://discord.gg/SmAAFxh)
 
 Le plugin est sous la Licence publique Creative Commons Attribution - Utilisation non commerciale - Pas d'œuvre dérivée 4.0 International.
 

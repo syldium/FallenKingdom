@@ -1,5 +1,7 @@
 package fr.devsylone.fkpi.lockedchests;
 
+import fr.devsylone.fallenkingdom.utils.Messages;
+import fr.devsylone.fkpi.FkPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
@@ -7,6 +9,7 @@ import org.bukkit.configuration.ConfigurationSection;
 
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fkpi.util.Saveable;
+import org.bukkit.entity.Player;
 
 public class LockedChest implements Saveable
 {
@@ -66,9 +69,9 @@ public class LockedChest implements Saveable
 		return name;
 	}
 
-	public void changeUnlocker(String newPlayer)
+	public void changeUnlocker(Player newPlayer)
 	{
-		unlocker = newPlayer;
+		unlocker = newPlayer.getName();
 		startUnlocking = System.currentTimeMillis();
 
 		if(newPlayer == null)
@@ -107,21 +110,20 @@ public class LockedChest implements Saveable
 		}
 	}
 
-	public void startUnlocking(String player)
+	public void startUnlocking(Player player)
 	{
 		if(unlocker != null)
-			Fk.broadcast("§7Crochetage du coffre §5" + name + "§7 abandonné par " + (Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(unlocker) != null ? Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(unlocker).getChatColor() : "§r") + unlocker);
+			Fk.broadcast(Messages.BROADCAST_LOCKED_CHEST_ABORT.getMessage().replace("%name%", name).replace("%player%", getColoredPlayerName()));
 
 		changeUnlocker(player);
-
-		Fk.broadcast("§7Le coffre §5" + name + "§7 commence a être crocheté par " + (Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(unlocker) != null ? Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(unlocker).getChatColor() : "§r") + unlocker);
+		Fk.broadcast(Messages.BROADCAST_LOCKED_CHEST_START.getMessage().replace("%name%", name).replace("%player%", getColoredPlayerName()));
 
 		if(task > 0)
 			Bukkit.getScheduler().cancelTask(task);
 
 		lastInteract = System.currentTimeMillis();
 
-		final int armorstand = Fk.getInstance().getPacketManager().createFloattingText("§b0%", Bukkit.getPlayer(player), loc.clone().add(0.5, yFix, 0.5));
+		final int armorstand = Fk.getInstance().getPacketManager().createFloattingText("§b0%", player, loc.clone().add(0.5, yFix, 0.5));
 
 		task = Bukkit.getScheduler().scheduleSyncRepeatingTask(Fk.getInstance(), new Runnable()
 		{
@@ -129,11 +131,11 @@ public class LockedChest implements Saveable
 			@Override
 			public void run()
 			{
-				Fk.getInstance().getPacketManager().updateFloattingText(armorstand, "§b" + (int) (((double) ((double) (System.currentTimeMillis() - startUnlocking) / 1000.0d) / (double) time) * 100.0d) + "%");
+				Fk.getInstance().getPacketManager().updateFloattingText(armorstand, "§b" + (int) (((double) (System.currentTimeMillis() - startUnlocking) / 1000.0d / (double) time) * 100.0d) + "%");
 				if(lastInteract + 1000 < System.currentTimeMillis())
 				{
 					if(!getState().equals(ChestState.UNLOCKED))
-						Fk.broadcast("§7Crochetage du coffre §5" + name + "§7 abandonné par " + (Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(unlocker) != null ? Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(unlocker).getChatColor() : "§r") + unlocker);
+						Fk.broadcast(Messages.BROADCAST_LOCKED_CHEST_ABORT.getMessage().replace("%name%", name).replace("%player%", getColoredPlayerName()));
 					Bukkit.getScheduler().cancelTask(task);
 					changeUnlocker(null);
 					Fk.getInstance().getPacketManager().remove(armorstand);
@@ -142,12 +144,17 @@ public class LockedChest implements Saveable
 				if(startUnlocking + time * 1000 <= System.currentTimeMillis())
 				{
 					setState(ChestState.UNLOCKED);
-					Fk.broadcast("§7Le coffre §5" + name + "§7 a été crocheté par " + (Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(unlocker) != null ? Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(unlocker).getChatColor() : "§r") + unlocker);
+					Fk.broadcast(Messages.BROADCAST_LOCKED_CHEST_UNLOCKED.getMessage().replace("%name%", name).replace("%player%", getColoredPlayerName()));
 					Bukkit.getScheduler().cancelTask(task);
 					Fk.getInstance().getPacketManager().remove(armorstand);
 				}
 			}
-		}, 1l, 1l);
+		}, 1L, 1L);
+	}
+
+	private String getColoredPlayerName()
+	{
+		return (FkPI.getInstance().getTeamManager().getPlayerTeam(unlocker) != null ? FkPI.getInstance().getTeamManager().getPlayerTeam(unlocker).getChatColor() : "§r") + unlocker;
 	}
 
 	@Override

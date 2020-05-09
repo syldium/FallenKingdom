@@ -1,40 +1,31 @@
 package fr.devsylone.fallenkingdom.commands.game;
 
+import com.google.common.collect.ImmutableList;
+import fr.devsylone.fallenkingdom.Fk;
+import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
+import fr.devsylone.fallenkingdom.commands.abstraction.FkParentCommand;
+import fr.devsylone.fallenkingdom.commands.game.gamescommands.*;
+import fr.devsylone.fallenkingdom.utils.ChatUtils;
+import fr.devsylone.fallenkingdom.utils.Messages;
 import org.bukkit.ChatColor;
 
-import fr.devsylone.fallenkingdom.commands.FkCommand;
-import fr.devsylone.fallenkingdom.utils.ChatUtils;
-import fr.devsylone.fallenkingdom.utils.FkSound;
-
-public abstract class FkGameCommand extends FkCommand
+public class FkGameCommand extends FkParentCommand
 {
-	public FkGameCommand(String name, String description)
-	{
-		super("game " + name, "", 0, description);
+	public FkGameCommand() {
+		super("game", ImmutableList.<FkCommand>builder()
+				.add(new Pause())
+				.add(new Reset())
+				.add(new Restore())
+				.add(new Resume())
+				.add(new Start())
+				.add(new StarterInv())
+				.add(new Stop())
+				.build()
+		, Messages.CMD_MAP_GAME);
 	}
 
-	public FkGameCommand(String path, String args, int nbrArgs, String description)
-	{
-		super("game " + path, args, nbrArgs, description);
-	}
-
-	protected void broadcast(String message, String value, String end)
-	{
-		broadcast(message, value, end, null);
-	}
-
-	protected void broadcast(String message, String value, String end, FkSound sound)
-	{
-		broadcast(message + " " + ChatColor.DARK_PURPLE + value + ChatColor.GOLD + end, sound);
-	}
-	
-	protected void broadcast(String msg)
-	{
-		broadcast(msg, null);
-	}
-
-	protected void broadcast(String msg, FkSound sound)
-	{
-		super.broadcast(ChatColor.GOLD + msg, ChatUtils.GAME, sound);
+	@Override
+	protected void broadcast(String message) {
+		Fk.broadcast(ChatColor.GOLD + message, ChatUtils.GAME);
 	}
 }

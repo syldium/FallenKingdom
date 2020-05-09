@@ -1,57 +1,67 @@
 package fr.devsylone.fkpi.rules;
 
-public class ChargedCreepers extends Rule
+import org.bukkit.configuration.ConfigurationSection;
+
+public class ChargedCreepers implements RuleValue
 {
-	public ChargedCreepers(int spawn, int drop, int tnts)
+	private int spawn = 10;
+	private int drop = 50;
+	private int tntAmount = 1;
+
+	public int getSpawn()
 	{
-		super("ChargedCreepers", 0);
-		setValue(spawn, drop, tnts);
+		return spawn;
 	}
 
-	public ChargedCreepers()
+	public int getDrop()
 	{
-		this(0, 0, 0);
+		return drop;
 	}
 
-	public Integer getValue()
+	public int getTntAmount()
 	{
-		return (Integer) value;
+		return tntAmount;
 	}
 
-	public void setValue(int spawn, int drop, int tnts)
+	public void setSpawn(int spawn)
 	{
-		super.setValue(spawn * 1000000 + drop * 1000 + tnts);
-		value = spawn * 1000000 + drop * 1000 + tnts;
+		this.spawn = spawn;
 	}
 
-	public Integer getSpawn()
+	public void setDrop(int drop)
 	{
-		return getValue() / 1000000;
+		this.drop = drop;
 	}
 
-	public Integer getDrop()
+	public void setTntAmount(int amount)
 	{
-		return (getValue() / 1000) - (getValue() / 1000000) * 1000;
+		this.tntAmount = amount;
 	}
 
-	public Integer getTntAmount()
+	@Override
+	public String format()
 	{
-		return getValue() - ((getValue() / 1000) * 1000);
+		return "§e" + spawn + "% spawn - " + drop + "% drop - " + tntAmount + " tnt(s)";
 	}
 
-	public void setSpawn(int v)
+	@Override
+	public void save(ConfigurationSection config)
 	{
-		setValue(v, getDrop(), getTntAmount());
+		config.set("value", spawn * 1000000 + drop * 1000 + tntAmount);
 	}
 
-	public void setDrop(int v)
+	@Override
+	public void load(ConfigurationSection config)
 	{
-		setValue(getSpawn(), v, getTntAmount());
+		int value = config.getInt("value", 10050001);
+		spawn = value / 1000000;
+		drop = (value / 1000) - (value / 1000000) * 1000;
+		tntAmount = value - ((value / 1000) * 1000);
 	}
 
-	public void setTntAmount(int v)
+	@Override
+	public String toString()
 	{
-		setValue(getSpawn(), getDrop(), v);
+		return "[" + spawn + ", " + drop + ", " + tntAmount + "]";
 	}
-
 }

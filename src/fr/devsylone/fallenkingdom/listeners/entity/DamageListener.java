@@ -2,6 +2,9 @@ package fr.devsylone.fallenkingdom.listeners.entity;
 
 import java.util.Random;
 
+import fr.devsylone.fallenkingdom.utils.Messages;
+import fr.devsylone.fkpi.FkPI;
+import fr.devsylone.fkpi.rules.Rule;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -36,7 +39,7 @@ public class DamageListener implements Listener
 	@EventHandler
 	public void creeperDeath(EntityDeathEvent e)
 	{
-		ChargedCreepers rule = (ChargedCreepers) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("ChargedCreepers");
+		ChargedCreepers rule = FkPI.getInstance().getRulesManager().getRule(Rule.CHARGED_CREEPERS);
 		if(e.getEntity() instanceof Creeper && ((Creeper) e.getEntity()).isPowered() && (new Random().nextInt(100) <= rule.getDrop()))
 			e.getDrops().add(new ItemStack(Material.TNT, rule.getTntAmount()));
 	}
@@ -44,6 +47,9 @@ public class DamageListener implements Listener
 	@EventHandler
 	public void dead(PlayerDeathEvent e)
 	{
+		if(e.getEntity().hasMetadata("NPC"))
+			return;
+
 		e.setDeathMessage(ChatUtils.PREFIX + e.getDeathMessage());
 
 		/*
@@ -88,14 +94,14 @@ public class DamageListener implements Listener
 		/*
 		 * DeathLimit > 0
 		 */
-		if((int) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("DeathLimit").getValue() > 0)
-			if(Fk.getInstance().getPlayerManager().getPlayer(e.getEntity().getName()).getDeaths() >= (int) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("DeathLimit").getValue())
+		if(FkPI.getInstance().getRulesManager().getRule(Rule.DEATH_LIMIT) > 0)
+			if(Fk.getInstance().getPlayerManager().getPlayer(e.getEntity().getName()).getDeaths() >= FkPI.getInstance().getRulesManager().getRule(Rule.DEATH_LIMIT))
 			{
 				/*
 				 * Elimination
 				 */
 
-				Fk.broadcast(e.getEntity().getDisplayName() + " §4est éliminé !");
+				Fk.broadcast(Messages.BROADCAST_PLAYER_ELIMINATED.getMessage().replace("%player%", e.getEntity().getDisplayName()));
 				e.getEntity().setGameMode(GameMode.SPECTATOR);
 
 				for(Player p : Bukkit.getOnlinePlayers())
@@ -105,7 +111,11 @@ public class DamageListener implements Listener
 			 * Info nbre de vie
 			 */
 			else
-				e.getEntity().sendMessage("§cVous avez déjà perdu " + Fk.getInstance().getPlayerManager().getPlayer(e.getEntity().getName()).getDeaths() + "/" + Fk.getInstance().getFkPI().getRulesManager().getRuleByName("DeathLimit").getValue() + " vie(s)");
+				ChatUtils.sendMessage(e.getEntity(), Messages.PLAYER_LIFES_REMAINING.getMessage()
+						.replace("%amount%", String.valueOf(Fk.getInstance().getPlayerManager().getPlayer(e.getEntity().getName()).getDeaths()))
+						.replace("%over%", String.valueOf(FkPI.getInstance().getRulesManager().getRule(Rule.DEATH_LIMIT))
+						.replace("%unit%", Messages.Unit.TRY.tl(Fk.getInstance().getPlayerManager().getPlayer(e.getEntity().getName()).getDeaths())))
+				);
 
 		FkPlayer fkP = Fk.getInstance().getPlayerManager().getPlayer(e.getEntity().getName());
 		if(fkP.getState() == PlayerState.EDITING_SCOREBOARD)

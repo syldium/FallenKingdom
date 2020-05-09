@@ -9,11 +9,11 @@ class FkListener implements Listener
 		event.getDay(); //retourne un int indiquant le jour actuel
 		event.getType(); //retourne le type d'évenement
 	}
-    @EventHandler
+        @EventHandler
 	public void onGameEvent(final GameEvent event) { // Début, pause ou reprise d'une partie
 		event.getType(); //retourne le type d'évenement
 	}
-    @EventHandler
+        @EventHandler
 	public void onCaptureEvent(final TeamCaptureEvent event) { // Lors d'une capture de salle des coffres
 		if (event.isSuccess()) {
 		    Bukkit.broadcastMessage("Félicitations à l'équipe " + event.getAssailantsTeam().toString() + ChatColor.RESET + " !");

@@ -4,9 +4,22 @@ enable-permissions: false
 #Activer ou non le support des .mcfunction personnalisées (à partir de la 1.12)
 enable-mcfunction-support: false
 
+#Fichier de langue chargé
+lang: "unknown"
+#Essayer de traduire les arguments de commandes
+translate-commands-args: false
+
+# Choisir si le plugin s'active seulement dans certains mondes
+world-check: false
+# Mondes affectés par le plugin
+affected-worlds:
+  - world
+  - world_nether
+  - world_the_end
+
 Application:
-  #Activer/Désactiver la possibilté de connection depuis un Fk config.
-  Enabled: true
+  #Activer/Désactiver la possibilité de connection depuis un Fk config. N'est plus supporté !
+  Enabled: false
   #Si vous louez votre serveur, certains ports sont dédiés aux plugins, mais il faudra peut-être le réserver
   Port: 50000
   #Il est très fortement conseillé de changer de mot de passe.

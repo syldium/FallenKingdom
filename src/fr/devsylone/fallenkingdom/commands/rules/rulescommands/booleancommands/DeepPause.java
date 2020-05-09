@@ -1,36 +1,32 @@
 package fr.devsylone.fallenkingdom.commands.rules.rulescommands.booleancommands;
 
-import org.bukkit.entity.Player;
+import fr.devsylone.fallenkingdom.utils.Messages;
+import fr.devsylone.fkpi.rules.Rule;
 
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.commands.rules.FkBooleanRuleCommand;
-import fr.devsylone.fallenkingdom.game.Game;
-import fr.devsylone.fallenkingdom.players.FkPlayer;
 
 public class DeepPause extends FkBooleanRuleCommand
 {
 	public DeepPause()
 	{
-		super("deepPause", "Permet d'activer/désactiver la pause approfondie");
+		super("deepPause", Messages.CMD_MAP_RULES_DEEP_PAUSE, Rule.DO_PAUSE_AFTER_DAY);
 	}
 
-	public void execute(Player sender, FkPlayer fkp, String[] args) throws ReflectiveOperationException
-	{
-		setRuleValue(args[0]);
+	@Override
+	protected void sendMessage(boolean newValue) {
+		Messages value = newValue ? Messages.CMD_RULES_DEEP_PAUSE_IN_DEPTH : Messages.CMD_RULES_DEEP_PAUSE_LIGHT;
+		broadcast(Messages.CMD_RULES_DEEP_PAUSE.getMessage().replace("%state%", value.getMessage()));
 
-		broadcast("La pause est désormais", Boolean.valueOf(args[0]).booleanValue() ? "approfondie" : "légère", " ! ");
-
-		if(Fk.getInstance().getGame().getState().equals(Game.GameState.PAUSE)){
-			if (Boolean.valueOf(args[0]).booleanValue())
-			{
-				Fk.getInstance().getDeepPauseManager().removeAIs();
-				Fk.getInstance().getDeepPauseManager().protectDespawnItems();
-			}
-			else
-			{
-				Fk.getInstance().getDeepPauseManager().resetAIs();
-				Fk.getInstance().getDeepPauseManager().unprotectItems();
-			}
+		if (newValue)
+		{
+			Fk.getInstance().getDeepPauseManager().removeAIs();
+			Fk.getInstance().getDeepPauseManager().protectDespawnItems();
+		}
+		else
+		{
+			Fk.getInstance().getDeepPauseManager().resetAIs();
+			Fk.getInstance().getDeepPauseManager().unprotectItems();
 		}
 	}
 }

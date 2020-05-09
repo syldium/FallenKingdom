@@ -1,21 +1,33 @@
 package fr.devsylone.fallenkingdom.commands.teams;
 
+import com.google.common.collect.ImmutableList;
+import fr.devsylone.fallenkingdom.Fk;
+import fr.devsylone.fallenkingdom.commands.abstraction.AbstractCommand;
+import fr.devsylone.fallenkingdom.commands.abstraction.FkParentCommand;
+import fr.devsylone.fallenkingdom.commands.teams.teamscommands.*;
+import fr.devsylone.fallenkingdom.utils.ChatUtils;
+import fr.devsylone.fallenkingdom.utils.Messages;
 import org.bukkit.ChatColor;
 
-import fr.devsylone.fallenkingdom.commands.FkCommand;
-import fr.devsylone.fallenkingdom.utils.ChatUtils;
-
-public abstract class FkTeamCommand extends FkCommand
+public class FkTeamCommand extends FkParentCommand
 {
-	public FkTeamCommand(String name, String args, int nbrArgs, String description)
-	{
-		super("team " + name, args, nbrArgs, description);
-		if(!name.equalsIgnoreCase("help") && !name.equalsIgnoreCase("List") && !name.equalsIgnoreCase("ChestsRoom"))
-			permission = ADMIN_PERMISSION;
-	}
+    public FkTeamCommand() {
+        super("team", ImmutableList.<AbstractCommand>builder()
+                .add(new AddPlayer())
+                .add(new ChestsRoom())
+                .add(new Create())
+                .add(new TeamsList())
+                .add(new Random())
+                .add(new Remove())
+                .add(new RemovePlayer())
+                .add(new SetBase())
+                .add(new SetColor())
+                .build()
+        , Messages.CMD_MAP_TEAM);
+    }
 
-	protected void broadcast(String message)
-	{
-		super.broadcast(ChatColor.GOLD + message, ChatUtils.TEAM, null);
-	}
+    @Override
+    protected void broadcast(String message) {
+        Fk.broadcast(ChatColor.GOLD + message, ChatUtils.TEAM);
+    }
 }

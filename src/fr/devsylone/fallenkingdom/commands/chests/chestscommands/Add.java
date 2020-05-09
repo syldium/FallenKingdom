@@ -1,43 +1,53 @@
 package fr.devsylone.fallenkingdom.commands.chests.chestscommands;
 
-import java.util.Set;
-
+import fr.devsylone.fallenkingdom.Fk;
+import fr.devsylone.fallenkingdom.commands.ArgumentParser;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
+import fr.devsylone.fallenkingdom.commands.abstraction.FkPlayerCommand;
+import fr.devsylone.fallenkingdom.exception.FkLightException;
+import fr.devsylone.fallenkingdom.players.FkPlayer;
+import fr.devsylone.fallenkingdom.utils.Messages;
+import fr.devsylone.fkpi.lockedchests.LockedChest;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
-import fr.devsylone.fallenkingdom.Fk;
-import fr.devsylone.fallenkingdom.commands.chests.FkChestsCommand;
-import fr.devsylone.fallenkingdom.exception.FkLightException;
-import fr.devsylone.fallenkingdom.players.FkPlayer;
-import fr.devsylone.fkpi.lockedchests.LockedChest;
+import java.util.List;
 
-public class Add extends FkChestsCommand
+public class Add extends FkPlayerCommand
 {
 	public Add()
 	{
-		super("add", "<day> <time> (en secondes) [name] ", 2, "Le coffre devant vous deviendra un coffre à crocheter durant le temps défini, crochetable à partir du jour défini, avec un nom ou pas");
-		permission = ADMIN_PERMISSION;
+		super("add", "<i1:day> <i:time> [name]", Messages.CMD_MAP_CHEST_ADD, CommandPermission.ADMIN);
 	}
 
-	public void execute(Player sender, FkPlayer fkp, String[] args)
+	@Override
+	public CommandResult execute(Fk plugin, Player sender, FkPlayer fkp, List<String> args, String label)
 	{
-		if(!args[0].matches("\\d+") || Integer.parseInt(args[0]) < 1)
-			throw new FkLightException("Le jour doit être un nombre entier supérieur à 1");
+		int day = ArgumentParser.parsePositiveInt(args.get(0), false, Messages.CMD_ERROR_DAY_FORMAT);
+		int time = ArgumentParser.parsePositiveInt(args.get(1), false, Messages.CMD_ERROR_TIME_FORMAT);
 
-		if(!args[1].matches("\\d+") || Integer.parseInt(args[1]) < 0)
-			throw new FkLightException("Le temps en seconde doit être un nombre entier supérieur à 0");
+		Block target = sender.getTargetBlock(null, 10);
 
-		Block target = sender.getTargetBlock((Set<Material>)null, 10);
-		
 		if(!target.getType().equals(Material.CHEST))
-			throw new FkLightException("Vous devez regarder (pointer) vers un coffre pour le transformer en coffre à crocheter");
+			throw new FkLightException(Messages.CMD_ERROR_NOT_CHEST);
 
-		String name = args.length >= 3 ? args[2] : "" + Fk.getInstance().getFkPI().getLockedChestsManager().getChestList().size();
+		if(!Fk.getInstance().getWorldManager().isAffected(sender.getWorld()))
+			throw new FkLightException(Messages.CMD_ERROR_NOT_AFFECTED_WORLD.getMessage());
 
-		Fk.getInstance().getFkPI().getLockedChestsManager().addOrEdit(new LockedChest(target.getLocation(), Integer.parseInt(args[1]), Integer.parseInt(args[0]), name));
+		String name = args.size() >= 3 ? args.get(2) : "" + Fk.getInstance().getFkPI().getLockedChestsManager().getChestList().size();
 
-		broadcast("§2Un nouveau coffre à crocheter a été créé : §5" + name + " §2à la position x:" + target.getLocation().getBlockX() + " y:" + target.getLocation().getBlockY() + " z:" + target.getLocation().getBlockZ() + " \n§aIl sera crochetable à partir du jour " + args[0] + ". La durée de crochetage est de " + args[1] + " seconde(s)");
+		Fk.getInstance().getFkPI().getLockedChestsManager().addOrEdit(new LockedChest(target.getLocation(), time, day, name));
 
+		broadcast(Messages.CMD_LOCKED_CHEST_CREATED.getMessage()
+				.replace("%name%", name)
+				.replace("%x%", String.valueOf(target.getLocation().getBlockX()))
+				.replace("%y%", String.valueOf(target.getLocation().getBlockY()))
+				.replace("%z%", String.valueOf(target.getLocation().getBlockZ()))
+				.replace("%time%", String.valueOf(time))
+				.replace("%unit%", Messages.Unit.SECONDS.tl(time)),
+		3, args);
+		return CommandResult.SUCCESS;
 	}
 }

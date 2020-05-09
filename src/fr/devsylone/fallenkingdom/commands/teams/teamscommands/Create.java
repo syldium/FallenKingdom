@@ -1,35 +1,30 @@
 package fr.devsylone.fallenkingdom.commands.teams.teamscommands;
 
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
+import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
+import fr.devsylone.fallenkingdom.utils.Messages;
+import org.bukkit.command.CommandSender;
 
 import fr.devsylone.fallenkingdom.Fk;
-import fr.devsylone.fallenkingdom.commands.teams.FkTeamCommand;
-import fr.devsylone.fallenkingdom.players.FkPlayer;
 
-public class Create extends FkTeamCommand
+import java.util.List;
+
+public class Create extends FkCommand
 {
 	public Create()
 	{
-		super("create", "<team>", 1, "Crée une équipe.");
+		super("create", "<newteam>", Messages.CMD_MAP_TEAM_CREATE, CommandPermission.ADMIN);
 	}
 
-	public void execute(Player sender, FkPlayer fkp, String[] args)
+	@Override
+	public CommandResult execute(Fk plugin, CommandSender sender, List<String> args, String label)
 	{
-		if(!Fk.getInstance().getFkPI().getTeamManager().createTeam(args[0]))
-		{
-			String msg = "";
-			msg = msg + ChatColor.RED + "§m--------------§c ATTENTION §c§m--------------\n";
-			msg = msg + ChatColor.DARK_AQUA + " Le nom de l'équipe ne fait pas parti\n";
-			msg = msg + ChatColor.DARK_AQUA + " des couleurs gérées par le plugin.\n";
-			msg = msg + ChatColor.DARK_AQUA + " L'équipe a donc reçu la couleur blanche.\n";
-			msg = msg + ChatColor.DARK_AQUA + " §e/fk team SetColor " + ChatColor.DARK_AQUA + "pour modifier.\n";
-			msg = msg + ChatColor.RED + "§m--------------------------------------";
+		if(!plugin.getFkPI().getTeamManager().createTeam(args.get(0)))
+			sender.sendMessage(Messages.WARNING_UNKNOWN_COLOR.getMessage());
 
-			fkp.sendMessage(msg);
-		}
-
-		broadcast("L'équipe " + Fk.getInstance().getFkPI().getTeamManager().getTeam(args[0]).toString() + " §6a été créée !");
-		
+		broadcast("L'équipe " + plugin.getFkPI().getTeamManager().getTeam(args.get(0)).toString() + " §6a été créée !", 1, args);
+		plugin.getScoreboardManager().refreshAllScoreboards();
+		return CommandResult.SUCCESS;
 	}
 }

@@ -10,15 +10,16 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
+import fr.devsylone.fallenkingdom.commands.FkCommandExecutor;
+import fr.devsylone.fkpi.rules.Rule;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
 import fr.devsylone.fallenkingdom.Fk;
-import fr.devsylone.fallenkingdom.commands.FkCommandExecutor;
 import fr.devsylone.fkpi.lockedchests.LockedChest;
-import fr.devsylone.fkpi.rules.Rule;
 
 public class DebuggerUtils
 {
@@ -127,18 +128,17 @@ public class DebuggerUtils
         log("Java version : " + System.getProperty("java.version"));
         if(Bukkit.getVersion().contains("Spigot"))
             log("Spigot version : " + Bukkit.getBukkitVersion() + " | " + Bukkit.getVersion());
+        else if(Bukkit.getVersion().contains("Paper"))
+            log("Paper version : " + Bukkit.getBukkitVersion() + " | " + Bukkit.getVersion());
         else
             log("CraftBukkit version : " + Bukkit.getBukkitVersion() + " | " + Bukkit.getVersion());
         log("Plugin version : v" + Fk.getInstance().getDescription().getVersion());
-        log("---- Comandes depuis reload ----");
-        if(FkCommandExecutor.logs != null)
-            for(String cmdfor : FkCommandExecutor.logs.keySet())
-                log("  > " + cmdfor + (((Boolean) FkCommandExecutor.logs.get(cmdfor)).booleanValue() ? "" : "  [Error occured]"));
-        else
-            log("Les logs étaient non-initialisés");
+        log("---- Commandes depuis reload ----");
+        for(Map.Entry<String, Boolean> cmd : FkCommandExecutor.logs.entrySet())
+            log("  > " + cmd.getKey() + (cmd.getValue() ? "" : "  [Error occurred]"));
         log("---- Rules ----");
-        for(Rule rule : Fk.getInstance().getFkPI().getRulesManager().getRulesList())
-            log("  > " + rule.toString());
+        for(Map.Entry<Rule<?>, Object> rule : Fk.getInstance().getFkPI().getRulesManager().getRulesList().entrySet())
+            log("  > " + rule.getKey().getName() + ": " + rule.getValue().toString());
         log("---- Game ---");
         log("  > State: " + Fk.getInstance().getGame().getState());
         log("  > Day: " + Fk.getInstance().getGame().getDays());
@@ -184,5 +184,4 @@ public class DebuggerUtils
         }
         return true;
     }
-
 }

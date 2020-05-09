@@ -147,7 +147,6 @@ public class PluginUpdater extends BukkitRunnable
                 {
                     this.plugin.getLogger().info("[Updater] Echec, veuilez la télécharger manuellement ici : http://www.spigotmc.org/resources/38878");
                     Fk.getInstance().addOnConnectWarning("Une nouvelle version est diponible : http://www.spigotmc.org/resources/38878");
-                    Fk.getInstance().setUpToDate(false);
                 }
             }
         }catch(ServiceUnavailableException ex)

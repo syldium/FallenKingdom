@@ -1,33 +1,31 @@
 package fr.devsylone.fallenkingdom;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 import java.util.zip.ZipOutputStream;
 
+import fr.devsylone.fallenkingdom.commands.FkAsyncCommandExecutor;
+import fr.devsylone.fallenkingdom.commands.FkAsyncRegisteredCommandExecutor;
+import fr.devsylone.fallenkingdom.commands.brigadier.BrigadierSpigotManager;
+import fr.devsylone.fallenkingdom.manager.*;
+import fr.devsylone.fallenkingdom.scoreboard.PlaceHolderExpansion;
+import fr.devsylone.fkpi.rules.Rule;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import fr.devsylone.fallenkingdom.commands.FkCommandExecutor;
-import fr.devsylone.fallenkingdom.commands.FkTabCompleter;
-import fr.devsylone.fallenkingdom.connection.CBServerSocket;
-import fr.devsylone.fallenkingdom.connection.ServerSocket;
-import fr.devsylone.fallenkingdom.connection.SpServerSocket;
 import fr.devsylone.fallenkingdom.game.Game;
-import fr.devsylone.fallenkingdom.manager.CommandManager;
-import fr.devsylone.fallenkingdom.manager.ListenersManager;
-import fr.devsylone.fallenkingdom.manager.SaveablesManager;
-import fr.devsylone.fallenkingdom.manager.TipsManager;
 import fr.devsylone.fallenkingdom.manager.packets.PacketManager;
 import fr.devsylone.fallenkingdom.manager.packets.PacketManager1_13;
 import fr.devsylone.fallenkingdom.manager.packets.PacketManager1_14;
@@ -44,7 +42,7 @@ import fr.devsylone.fallenkingdom.updater.PluginUpdater;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fallenkingdom.utils.DebuggerUtils;
 import fr.devsylone.fallenkingdom.utils.FkSound;
-import fr.devsylone.fallenkingdom.utils.NMSUtils;
+import fr.devsylone.fallenkingdom.utils.Version;
 import fr.devsylone.fallenkingdom.utils.ZipUtils;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.teams.Team;
@@ -56,6 +54,7 @@ public class Fk extends JavaPlugin
 	private Game game;
 	private CommandManager cmdManager;
 	private PlayerManager pManager;
+	private WorldManager wManager;
 	private PauseRestorer pRestorer;
 	private StarterInventoryManager siManager;
 	private ScoreboardManager sbManager;
@@ -65,20 +64,16 @@ public class Fk extends JavaPlugin
 	private SaveablesManager saveableManager;
 	private PortalsManager portalManager;
 
-	private ServerSocket server;
+	//private ServerSocket server;
 
 	private static Fk instance;
 
 	private FkPI fkpi;
 
-	private List<String> onConnectWarnings;
+	private final List<String> onConnectWarnings = new ArrayList<>();
 	private String pluginError = "";
 
-	private String lastVersion;
-
-	private boolean uptodate = true;
-
-	private final boolean isNewVersion = NMSUtils.nmsOptionalClass("ScoreboardServer$Action").isPresent();
+	private String lastVersion = getDescription().getVersion();
 
 	public static Fk getInstance()
 	{
@@ -88,15 +83,11 @@ public class Fk extends JavaPlugin
 	public Fk()
 	{
 		instance = this;
-		onConnectWarnings = new ArrayList<String>();
-		lastVersion = getDescription().getVersion();
 	}
 
 	@Override
 	public void onEnable()
 	{
-		check();
-
 		try
 		{
 			/*
@@ -121,6 +112,12 @@ public class Fk extends JavaPlugin
 		if(!getDataFolder().exists())
 			getDataFolder().mkdir();
 
+		ListenersManager.registerListeners(this);
+		if (!check())
+			return;
+
+		LanguageManager.init(this);
+
 		/*
 		 * FkPI
 		 */
@@ -128,26 +125,30 @@ public class Fk extends JavaPlugin
 		fkpi = new FkPI(this);
 
 		/*
-		 * MANAGER
+		 * command /fk
 		 */
 
-		cmdManager = new CommandManager();
-		cmdManager.registerCommands();
+		PluginCommand command = Objects.requireNonNull(getCommand("fk"), "Unable to register /fk command");
+		if (Version.isAsyncTabCompleteSupported())
+			if (Version.isAsyncPlayerSendCommandsEventSupported())
+				this.cmdManager = new FkAsyncRegisteredCommandExecutor(this, command);
+			else
+				this.cmdManager = new FkAsyncCommandExecutor(this, command);
+		else
+			this.cmdManager = new FkCommandExecutor(this, command);
+
+		if (Version.isBrigadierSupported() && !Version.isAsyncPlayerSendCommandsEventSupported())
+			new BrigadierSpigotManager<>(this).register(this.cmdManager, command);
+
+		/*
+		 * MANAGER
+		 */
 		pManager = new PlayerManager();
 		pRestorer = new PauseRestorer();
 		siManager = new StarterInventoryManager();
 		sbManager = new ScoreboardManager();
-
-		if(Bukkit.getBukkitVersion().contains("1.8"))
-			pcktManager = new PacketManager1_8();
-		else if(isNewVersion)
-			if(Bukkit.getBukkitVersion().contains("1.13"))
-				pcktManager = new PacketManager1_13();
-			else
-				pcktManager = new PacketManager1_14();
-		else
-			pcktManager = new PacketManager1_9();
-
+		wManager = new WorldManager(this);
+		pcktManager = initPacketManager();
 		dpManager = new DeepPauseManager();
 		tipsManager = new TipsManager();
 		tipsManager.startBroadcasts();
@@ -171,8 +172,8 @@ public class Fk extends JavaPlugin
 			saveableManager.loadAll();
 		}catch(Exception ex)
 		{
-			addOnConnectWarning("Votre configuration était corrompue ou invalide, elle a donc été sauvegardée puis supprimée. Désolé :S");
-			File zip = new File(getDataFolder(), "invalid-" + new SimpleDateFormat("YYYY-MM-dd HH-mm-ss").format(Calendar.getInstance().getTimeInMillis()) + ".zip");
+			onConnectWarnings.add("§cVotre configuration était corrompue ou invalide, elle a donc été sauvegardée puis supprimée. Désolé :S");
+			File zip = new File(getDataFolder(), "invalid-" + new SimpleDateFormat("yyyy-MM-dd HH-mm-ss").format(Calendar.getInstance().getTimeInMillis()) + ".zip");
 			ZipOutputStream outputStream;
 			try
 			{
@@ -181,12 +182,9 @@ public class Fk extends JavaPlugin
 				ZipUtils.zipFile(getDataFolder(), "FallenKingdom", outputStream, false);
 				outputStream.flush();
 				outputStream.close();
-			}catch(FileNotFoundException e1)
+			} catch(IOException e1)
 			{
 				e1.printStackTrace();
-			}catch(IOException e)
-			{
-				e.printStackTrace();
 			}
 			for(File f : getDataFolder().listFiles())
 				if(f.getName().endsWith(".yml"))
@@ -200,37 +198,22 @@ public class Fk extends JavaPlugin
 		 * ServerSocket & load du config.yml
 		 */
 
-		try
-		{
-			File conf = new File(getDataFolder(), "config.yml");
-			if(conf.length() == 0L)
-				conf.delete();
-			if(!conf.exists())
-			{
-				Files.copy(getClass().getClassLoader().getResourceAsStream("config.yml"), conf.toPath());
-			}
-		}catch(IOException e)
-		{
-			e.printStackTrace();
-		}
+		File conf = new File(getDataFolder(), "config.yml");
+		if(conf.length() == 0L)
+			conf.delete();
+		saveDefaultConfig();
 
-		if(getConfig().getBoolean("Application.Enabled"))
+		/*if(getConfig().getBoolean("Application.Enabled"))
 		{
 			if(Bukkit.getVersion().contains("Spigot"))
 				server = new SpServerSocket();
 			else
 				server = new CBServerSocket();
 			server.start();
-		}
+		}*/
 
-		/*
-		 * command /fk, events et le reste
-		 */
-
-		getCommand("Fk").setExecutor(new FkCommandExecutor());
-		getCommand("Fk").setTabCompleter(new FkTabCompleter());
-
-		ListenersManager.registerListeners(this);
+		if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null)
+			new PlaceHolderExpansion().register();
 
 		/*
 		 * Set le sb a tout le monde si jamais rl
@@ -241,7 +224,7 @@ public class Fk extends JavaPlugin
 		/*
 		 * IF EternalDay
 		 */
-		if((Boolean) Fk.getInstance().getFkPI().getRulesManager().getRuleByName("EternalDay").getValue())
+		if(fkpi.getRulesManager().getRulesList().containsKey(Rule.ETERNAL_DAY) && fkpi.getRulesManager().getRule(Rule.ETERNAL_DAY))
 			for(World w : Bukkit.getWorlds())
 			{
 				w.setGameRuleValue("doDaylightCycle", "false");
@@ -264,6 +247,7 @@ public class Fk extends JavaPlugin
         PluginUpdater updater = new PluginUpdater(Fk.getInstance());
         updater.runTaskAsynchronously(this);
 
+
 		new BukkitRunnable() {
 			@Override
 			public void run() {
@@ -277,22 +261,14 @@ public class Fk extends JavaPlugin
 	{
 		saveableManager.saveAll();
 
-		// Même si la partie est en pause et est sauvegardée dans cet état,
-		// on essaye de remettre dans un état normal, c'est-à-dire avec l'IA des mobs.
-		// Au redémarrage, la commande "game pause" sera exécutée si cela a été enregistré.
 		if(game.getState().equals(Game.GameState.PAUSE))
 		{
-			try
-			{
-				getCommandManager().getCommand("game resume").execute(null, null, new String[0]);
-			}catch(Exception e)
-			{
-				e.printStackTrace();
-			}
+			getDeepPauseManager().unprotectItems();
+			getDeepPauseManager().resetAIs();
 		}
 
-		if(server != null)
-			server.interrupt();
+		/*if(server != null)
+			server.interrupt();*/
 
 		sbManager.removeAllScoreboards();
 
@@ -313,6 +289,11 @@ public class Fk extends JavaPlugin
 	public PlayerManager getPlayerManager()
 	{
 		return pManager;
+	}
+
+	public WorldManager getWorldManager()
+	{
+		return wManager;
 	}
 
 	public ScoreboardManager getScoreboardManager()
@@ -350,10 +331,10 @@ public class Fk extends JavaPlugin
 		return saveableManager;
 	}
 
-	public ServerSocket getServerSocket()
+	/*public ServerSocket getServerSocket()
 	{
 		return server;
-	}
+	}*/
 
 	public PortalsManager getPortalsManager()
 	{
@@ -367,6 +348,9 @@ public class Fk extends JavaPlugin
 
 	public static void broadcast(String message, String prefix, FkSound sound)
 	{
+		if (message == null || message.isEmpty()) {
+			return;
+		}
 		message = "§r" + message;
 		for(FkPlayer p : getInstance().getPlayerManager().getConnectedPlayers())
 			p.sendMessage(message, prefix, sound);
@@ -389,8 +373,6 @@ public class Fk extends JavaPlugin
 
 	public static void debug(Object message)
 	{
-		//		if(message.toString().length() < 20)
-		//			DebuggerUtils.printCurrentStackTrace();
 		if(DEBUG_MODE)
 		{
 			if(!Fk.getInstance().isEnabled())
@@ -409,21 +391,6 @@ public class Fk extends JavaPlugin
 	public List<String> getOnConnectWarnings()
 	{
 		return onConnectWarnings;
-	}
-
-	public void setUpToDate(boolean arg)
-	{
-		uptodate = arg;
-	}
-
-	public boolean isUpToDate()
-	{
-		return uptodate;
-	}
-
-	public void addOnConnectWarning(String s)
-	{
-		onConnectWarnings.add(ChatUtils.PREFIX + ChatUtils.ALERT + "§4" + s);
 	}
 
 	public void addError(String s)
@@ -489,21 +456,18 @@ public class Fk extends JavaPlugin
 		getScoreboardManager().recreateAllScoreboards();
 	}
 
-	private void check()
+	private boolean check()
 	{
-		List<String> warns = new ArrayList<String>();
+		List<String> warns = new ArrayList<>();
 
 		if(getConfig().get("Charged_creepers") != null)
 			warns.add("L'option Charged_creepers dans le fichier de configuration n'est plus utilisée, il faut utiliser /fk rules ChargedCreepers");
 
-		if(Bukkit.getVersion().contains("Bukkit"))
-			addError("Ce plugin n'est pas compatible avec CraftBukkit, veuillez utiliser spigot.");
+		if(!Version.hasSpigotApi())
+			addError("Le serveur n'est pas supporté par le plugin. Seuls les serveurs basés sur Spigot sont supportés.");
 
-		if(Bukkit.getVersion().contains("1.8") && getMinorVersionNumber() < 3)
-			addError("Votre version de spigot n'est pas compatible avec le plugin,\nmerci d'utiliser au minimum la version §l§n1.8.3 de spigot");
-
-		if(!System.getProperty("java.version").startsWith("1.8") && !System.getProperty("java.version").startsWith("11.") && !System.getProperty("java.version").startsWith("14"))
-			addError("Votre version de java n'est pas compatible avec le plugin. Merci d'utiliser Java 8 ou LTS supérieure");
+		if(Version.isTooOldApi())
+			addError("La version du serveur n'est pas compatible avec le plugin,\nmerci d'utiliser au minimum la version §l§n1.8.3 de Spigot.");
 
 		for(String warn : warns)
 		{
@@ -511,7 +475,23 @@ public class Fk extends JavaPlugin
 			getLogger().warning(warn);
 			getLogger().warning("------------------------------------------");
 
-			addOnConnectWarning(warn);
+			onConnectWarnings.add(warn);
+		}
+		return warns.isEmpty();
+	}
+
+	public PacketManager initPacketManager() {
+		switch (Version.VERSION_TYPE) {
+			case V1_8:
+				return new PacketManager1_8();
+			case V1_9_V1_12:
+				return new PacketManager1_9();
+			case V1_13:
+				return new PacketManager1_13();
+			case V1_14_PLUS:
+				return new PacketManager1_14();
+			default:
+				throw new RuntimeException("Could not get packet manager by version!");
 		}
 	}
 
@@ -520,30 +500,14 @@ public class Fk extends JavaPlugin
 		return fkpi;
 	}
 
-	public boolean isNewVersion()
-	{
-		return isNewVersion;
-	}
-
-	private int getMinorVersionNumber()
-	{
-		int count = (int) Bukkit.getVersion().chars().filter(ch -> ch == '.').count();
-		if (count > 1) {
-			int minorVersionIndex = Bukkit.getVersion().lastIndexOf('.') + 1;
-			return Integer.parseInt(Bukkit.getVersion().substring(minorVersionIndex, minorVersionIndex + 1));
-		}
-		return 0;
-	}
-
 	private void metrics() throws NoClassDefFoundError // gson en 1.8.0
 	{
 		Metrics metrics = new Metrics(this, 6738);
 		metrics.addCustomChart(new Metrics.SingleLineChart("server_running_1-8_version", () -> Bukkit.getVersion().contains("1.8") ? 1 : 0));
 	}
 
-	public static void main(String[] args)
+	public void addOnConnectWarning(String warning)
 	{
-		System.out.println("Ce fichier est à mettre dans votre dossier plugin et non pas à executer");
+		onConnectWarnings.add(warning);
 	}
-
 }

@@ -2,36 +2,24 @@ package fr.devsylone.fkpi.rules;
 
 import org.bukkit.configuration.ConfigurationSection;
 
-public class PlaceBlockInCave extends Rule
+public class PlaceBlockInCave implements RuleValue
 {
-	private int minimumBlocks;
+	private boolean active = false;
+	private int minimumBlocks = 3;
 
-	public PlaceBlockInCave(Boolean value)
+	public boolean isActive()
 	{
-		this(value, 3);
-	}
-
-	public PlaceBlockInCave(Boolean value, int blocs)
-	{
-		super("PlaceBlockInCave", value);
-		minimumBlocks = blocs;
-		this.value = value;
-	}
-
-	public PlaceBlockInCave()
-	{
-		this(null);
-	}
-
-	@Override
-	public Boolean getValue()
-	{
-		return (Boolean) value;
+		return active;
 	}
 
 	public int getMinimumBlocks()
 	{
 		return minimumBlocks;
+	}
+
+	public void setActive(boolean active)
+	{
+		this.active = active;
 	}
 
 	public void setMinimumBlocks(int value)
@@ -40,22 +28,28 @@ public class PlaceBlockInCave extends Rule
 	}
 
 	@Override
+	public String format()
+	{
+		return active ? "§e" + minimumBlocks + " blocs" : "§4✘";
+	}
+
+	@Override
 	public void save(ConfigurationSection config)
 	{
-		super.save(config);
+		config.set("value", active);
 		config.set("MinimumBlocs", minimumBlocks);
 	}
 
 	@Override
 	public void load(ConfigurationSection config)
 	{
-		super.load(config);
-		minimumBlocks = config.getInt("MinimumBlocs");
+		active = config.getBoolean("value", this.active);
+		minimumBlocks = config.getInt("MinimumBlocs", this.minimumBlocks);
 	}
 
 	@Override
 	public String toString()
 	{
-		return super.toString() + ", MinBlocks [" + minimumBlocks + "]";
+		return active + "(" + minimumBlocks + ")";
 	}
 }

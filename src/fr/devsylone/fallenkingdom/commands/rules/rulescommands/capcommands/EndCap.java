@@ -1,19 +1,14 @@
 package fr.devsylone.fallenkingdom.commands.rules.rulescommands.capcommands;
 
-import org.bukkit.entity.Player;
+import fr.devsylone.fallenkingdom.utils.Messages;
 
 import fr.devsylone.fallenkingdom.commands.rules.FkCapCommand;
-import fr.devsylone.fallenkingdom.players.FkPlayer;
+import fr.devsylone.fkpi.rules.Rule;
 
 public class EndCap extends FkCapCommand
 {
 	public EndCap()
 	{
-		super("endCap", "Définit le jour où l'end devient actif.");
-	}
-
-	public void execute(Player sender, FkPlayer fkp, String[] args)
-	{
-		executeCap(args[0], "L'end est maintenant actif");
+		super("endCap", Messages.CMD_MAP_RULES_END_CAP, Rule.END_CAP, Messages.CMD_RULES_CAP_END);
 	}
 }

@@ -11,49 +11,13 @@ import com.cryptomorin.xseries.XMaterial;
 
 import fr.devsylone.fkpi.util.BlockDescription;
 
-public class AllowedBlocks extends Rule
+public class AllowedBlocks implements RuleValue
 {
-	public AllowedBlocks(List<BlockDescription> value)
-	{
-		super("AllowedBlocks", value);
-		this.value = value;
-	}
+	private final List<BlockDescription> allowed = new ArrayList<>();
 
-	public AllowedBlocks()
-	{
-		this(new ArrayList<BlockDescription>());
-	}
-
-	@Override
 	public List<BlockDescription> getValue()
 	{
-		return (List<BlockDescription>) value;
-	}
-
-	@Override
-	public String toString()
-	{
-		String str = "Name [" + name + "], Blocks [";
-		for(BlockDescription block : getValue())
-			str += block+", ";
-		str = str.substring(0, str.length() -2);
-		str +="]";
-		
-		return str;
-	}
-
-	@Override
-	public void load(ConfigurationSection config)
-	{
-		List<String> blocksString = config.getStringList("value");
-		value = blocksString.stream().map(BlockDescription::new).collect(Collectors.toList());
-	}
-
-	@Override
-	public void save(ConfigurationSection config)
-	{
-		List<String> blocksString = getValue().stream().map(BlockDescription::toString).collect(Collectors.toList());
-		config.set("value", blocksString);
+		return allowed;
 	}
 
 	public boolean isAllowed(BlockDescription block)
@@ -71,20 +35,21 @@ public class AllowedBlocks extends Rule
 		return list;
 	}
 
-	public void fillWithDefaultValues()
+	@Override
+	public void fillWithDefaultValue()
 	{
-		getValue().add(new BlockDescription("TORCH"));
-		getValue().add(new BlockDescription("WALL_TORCH"));
+		allowed.add(new BlockDescription("TORCH"));
+		allowed.add(new BlockDescription("WALL_TORCH"));
 		if (XMaterial.isNewVersion()) {
-			getValue().add(new BlockDescription(XMaterial.REDSTONE_TORCH.parseMaterial()));
-			getValue().add(new BlockDescription(XMaterial.REDSTONE_WALL_TORCH.parseMaterial()));
+			allowed.add(new BlockDescription(XMaterial.REDSTONE_TORCH.parseMaterial()));
+			allowed.add(new BlockDescription(XMaterial.REDSTONE_WALL_TORCH.parseMaterial()));
 		} else {
-			getValue().add(new BlockDescription("REDSTONE_TORCH_ON"));
+			allowed.add(new BlockDescription("REDSTONE_TORCH_ON"));
 		}
 
-		getValue().add(new BlockDescription("FIRE"));
-		getValue().addAll(allSigns());
-		getValue().add(new BlockDescription("TNT"));
+		allowed.add(new BlockDescription("FIRE"));
+		allowed.addAll(allSigns());
+		allowed.add(new BlockDescription("TNT"));
 
 	}
 
@@ -110,5 +75,33 @@ public class AllowedBlocks extends Rule
 			signs.add(new BlockDescription(XMaterial.SPRUCE_WALL_SIGN.parseMaterial()));
 		}
 		return signs;
+	}
+
+	public String format()
+	{
+		StringBuilder formatted = new StringBuilder();
+		for(BlockDescription b : reducedList())
+			formatted.append("\n§a✔ ").append(b.toString());
+		return formatted.toString();
+	}
+
+	public void load(ConfigurationSection config)
+	{
+		List<String> blocksString = config.getStringList("value");
+		allowed.addAll(blocksString.stream().map(BlockDescription::new).collect(Collectors.toList()));
+	}
+
+	public void save(ConfigurationSection config)
+	{
+		List<String> blocksString = getValue().stream().map(BlockDescription::toString).collect(Collectors.toList());
+		config.set("value", blocksString);
+	}
+
+	@Override
+	public String toString()
+	{
+		return "Blocks[" + getValue().stream()
+				.map(BlockDescription::toString)
+				.collect(Collectors.joining(", ")) + "]";
 	}
 }

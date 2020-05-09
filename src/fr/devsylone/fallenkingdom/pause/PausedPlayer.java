@@ -107,15 +107,12 @@ public class PausedPlayer implements Saveable
 	@Override
 	public boolean equals(Object obj)
 	{
-		if(obj instanceof PausedPlayer && ((PausedPlayer) obj).getPlayer().equalsIgnoreCase(getPlayer()))
-			return true;
-		else
-			return false;
+		return obj instanceof PausedPlayer && ((PausedPlayer) obj).getPlayer().equalsIgnoreCase(getPlayer());
 	}
 	
 	private ItemStack cloneIfNotNull(ItemStack item)
 	{
-		return item == null ? item : item.clone();
+		return item == null ? null : item.clone();
 	}
 
 	@Override

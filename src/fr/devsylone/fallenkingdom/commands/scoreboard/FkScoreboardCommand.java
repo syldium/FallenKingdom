@@ -1,21 +1,33 @@
 package fr.devsylone.fallenkingdom.commands.scoreboard;
 
+import com.google.common.collect.ImmutableList;
+import fr.devsylone.fallenkingdom.Fk;
+import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
+import fr.devsylone.fallenkingdom.commands.abstraction.FkParentCommand;
+import fr.devsylone.fallenkingdom.commands.scoreboard.scoreboardcommands.*;
+import fr.devsylone.fallenkingdom.utils.ChatUtils;
+import fr.devsylone.fallenkingdom.utils.Messages;
 import org.bukkit.ChatColor;
 
-import fr.devsylone.fallenkingdom.commands.FkCommand;
-import fr.devsylone.fallenkingdom.utils.ChatUtils;
-
-public abstract class FkScoreboardCommand extends FkCommand
+public class FkScoreboardCommand extends FkParentCommand
 {
-	public FkScoreboardCommand(String name, String args, int nbrArgs, String description)
+	public FkScoreboardCommand()
 	{
-		super("scoreboard " + name, args, nbrArgs, description);
-		if(path != "help")
-			permission = ADMIN_PERMISSION;
+		super("scoreboard", ImmutableList.<FkCommand>builder()
+				.add(new Edit())
+				.add(new LeaveEdit())
+				.add(new RemoveLine())
+				.add(new Reset())
+				.add(new SetLine())
+				.add(new SetName())
+				.add(new Undo())
+				.build()
+		, Messages.CMD_MAP_SCOREBOARD);
 	}
 
+	@Override
 	protected void broadcast(String message)
 	{
-		super.broadcast(ChatColor.GOLD + message, ChatUtils.SCOREBOARD, null);
+		Fk.broadcast(ChatColor.GOLD + message, ChatUtils.SCOREBOARD);
 	}
 }
