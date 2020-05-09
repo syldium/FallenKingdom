@@ -46,4 +46,10 @@ public class PlaceBlockInCave implements RuleValue
 		active = config.getBoolean("value", this.active);
 		minimumBlocks = config.getInt("MinimumBlocs", this.minimumBlocks);
 	}
+
+	@Override
+	public String toString()
+	{
+		return active + "(" + minimumBlocks + ")";
+	}
 }

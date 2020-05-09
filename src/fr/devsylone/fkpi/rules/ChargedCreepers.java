@@ -23,13 +23,6 @@ public class ChargedCreepers implements RuleValue
 		return tntAmount;
 	}
 
-	public void setValue(int spawn, int drop, int amount)
-	{
-		setSpawn(spawn);
-		setDrop(drop);
-		setTntAmount(amount);
-	}
-
 	public void setSpawn(int spawn)
 	{
 		this.spawn = spawn;
@@ -64,5 +57,11 @@ public class ChargedCreepers implements RuleValue
 		spawn = value / 1000000;
 		drop = (value / 1000) - (value / 1000000) * 1000;
 		tntAmount = value - ((value / 1000) * 1000);
+	}
+
+	@Override
+	public String toString()
+	{
+		return "[" + spawn + ", " + drop + ", " + tntAmount + "]";
 	}
 }

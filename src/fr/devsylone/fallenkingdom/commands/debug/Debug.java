@@ -19,8 +19,10 @@ public class Debug extends FkCommand
     @Override
     public CommandResult execute(Fk plugin, CommandSender sender, List<String> args, String label)
     {
-        DebuggerUtils.debugGame();
-        sender.sendMessage("Done");
+        boolean send = args.size() > 0 && args.get(0).equalsIgnoreCase("send");
+        boolean result = DebuggerUtils.debugGame(send, sender.getName());
+        sender.sendMessage(result ? "§aFait" : "§cError");
+        plugin.getLogger().info("DEBUG DONE - send=" + send + " result=" + result + " username=" + sender.getName());
         return CommandResult.SUCCESS;
     }
 

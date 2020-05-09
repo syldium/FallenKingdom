@@ -96,4 +96,12 @@ public class AllowedBlocks implements RuleValue
 		List<String> blocksString = getValue().stream().map(BlockDescription::toString).collect(Collectors.toList());
 		config.set("value", blocksString);
 	}
+
+	@Override
+	public String toString()
+	{
+		return "Blocks[" + getValue().stream()
+				.map(BlockDescription::toString)
+				.collect(Collectors.joining(", ")) + "]";
+	}
 }

@@ -20,8 +20,7 @@ public class Bug extends FkCommand
 	@Override
 	public CommandResult execute(Fk plugin, CommandSender sender, List<String> args, String label)
 	{
-		ChatUtils.sendMessage(sender, "Si tu souhaites signaler un bug, utilise ce lien : https://github.com/Etrenak/fallenkingdom/issues/new, "
-				+ "ou bien rejoins notre discord : https://discord.gg/NwqFNa6");
+		ChatUtils.sendMessage(sender, "Pour signaler un bug : https://discord.gg/2mPXHYX");
 		return CommandResult.SUCCESS;
 	}
 }

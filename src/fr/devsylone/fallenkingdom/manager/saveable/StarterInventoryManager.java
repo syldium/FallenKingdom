@@ -14,7 +14,7 @@ import java.util.Arrays;
 public class StarterInventoryManager implements Saveable
 {
 	private ItemStack[] armors = new ItemStack[4];
-	private ItemStack[] inventory = new ItemStack[Bukkit.getVersion().contains("1.8") ? 36 : 41];
+	private ItemStack[] inventory = new ItemStack[] {};
 
 	private ItemStack[] lastArmors = armors;
 	private ItemStack[] lastInventory = inventory;
@@ -72,8 +72,12 @@ public class StarterInventoryManager implements Saveable
 				armors[Integer.parseInt(key)] = config.getItemStack("armors." + key);
 
 		if(config.contains("inventory"))
-			for(String key : config.getConfigurationSection("inventory").getKeys(false))
-				inventory[Integer.parseInt(key)] = config.getItemStack("inventory." + key);
+		{
+			Integer[] keys = config.getConfigurationSection("inventory").getKeys(false).stream().map(Integer::parseInt).toArray(Integer[]::new);
+			inventory = new ItemStack[keys[keys.length-1]+1];
+			for (int key : keys)
+				inventory[key] = config.getItemStack("inventory." + key);
+		}
 	}
 
 	@Override

@@ -308,7 +308,6 @@ public class Game implements Saveable
 		if(!state.equals(GameState.BEFORE_STARTING))
 			throw new FkLightException(Messages.CMD_ERROR_GAME_ALREADY_STARTED);
 
-		updateDayDuration();
 		setState(GameState.STARTING);
 		long time = 0;
 
@@ -354,6 +353,7 @@ public class Game implements Saveable
 				p.playSound(p.getLocation(), FkSound.EXPLODE.bukkitSound(), 1, 1);
 			}
 
+			updateDayDuration();
 			for(World w : Bukkit.getWorlds())
 				w.setTime(FkPI.getInstance().getRulesManager().getRule(Rule.ETERNAL_DAY) ? 6000L : 23990L);
 

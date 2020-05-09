@@ -2,6 +2,7 @@ package fr.devsylone.fkpi.rules;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import fr.devsylone.fkpi.util.XPotionData;
 import org.bukkit.configuration.ConfigurationSection;
@@ -59,5 +60,13 @@ public class DisabledPotions implements RuleValue
 	{
 		for(String key : config.getKeys(false))
 			effects.add(new XPotionData(PotionType.valueOf(config.getString(key + ".Type")), config.getBoolean(key + ".Extended"), config.getBoolean(key + ".Upgraded")));
+	}
+
+	@Override
+	public String toString()
+	{
+		return "[" + effects.stream()
+				.map(XPotionData::toString)
+				.collect(Collectors.joining(", ")) + "]";
 	}
 }
