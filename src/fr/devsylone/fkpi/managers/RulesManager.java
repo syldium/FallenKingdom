@@ -14,6 +14,11 @@ public class RulesManager implements Saveable
 {
 	private final Map<Rule<?>, Object> rules = new LinkedHashMap<>();
 
+	public RulesManager()
+	{
+		Rule.values().forEach((Rule<?> rule) -> rules.put(rule, rule.getDefaultValue()));
+	}
+
 	@SuppressWarnings("unchecked")
 	public <T> T getRule(Rule<T> rule)
 	{
@@ -34,20 +39,20 @@ public class RulesManager implements Saveable
 	@Override
 	public void load(ConfigurationSection config)
 	{
-		Rule.values().forEach((Rule<?> rule) -> {
-			String configPath = "Rules." + rule.getName();
+		for (Map.Entry<Rule<?>, Object> entry : rules.entrySet()) {
+			String configPath = "Rules." + entry.getKey().getName();
 
-			if (rule.getDefaultValue() instanceof RuleValue) {
-				RuleValue loaded = ((RuleValue) rule.getDefaultValue());
+			if (entry.getKey().getDefaultValue() instanceof RuleValue) {
+				RuleValue loaded = ((RuleValue) entry.getKey().getDefaultValue());
 				if (config.contains(configPath))
 					loaded.load(config.getConfigurationSection(configPath));
 				else
 					loaded.fillWithDefaultValue();
-				rules.put(rule, loaded);
+				rules.put(entry.getKey(), loaded);
 			} else {
-				rules.put(rule, config.get(configPath + ".value", rule.getDefaultValue()));
+				rules.put(entry.getKey(), config.get(configPath + ".value", entry.getKey().getDefaultValue()));
 			}
-		});
+		}
 	}
 
 	@Override
