@@ -1,7 +1,9 @@
 package fr.devsylone.fallenkingdom.manager.saveable;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
@@ -14,12 +16,7 @@ import fr.devsylone.fkpi.util.Saveable;
 
 public class PortalsManager implements Saveable
 {
-	private List<Location> portals;
-
-	public PortalsManager()
-	{
-		portals = new ArrayList<Location>();
-	}
+	private final Set<Location> portals = new HashSet<>();
 
 	public void addPortal(Location loc)
 	{
@@ -57,7 +54,7 @@ public class PortalsManager implements Saveable
 	@Override
 	public void save(ConfigurationSection config)
 	{
-		List<String> sList = new ArrayList<String>();
+		List<String> sList = new ArrayList<>();
 
 		for(Location l : portals)
 			if(l != null && l.getWorld() != null)
