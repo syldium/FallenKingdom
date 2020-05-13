@@ -104,7 +104,7 @@ public class PluginUpdater extends BukkitRunnable
         try
         {
             ReleaseInfo[] releases = GSON.fromJson(new InputStreamReader(new URL(URL_RELEASE_LIST).openConnection().getInputStream()), ReleaseInfo[].class);
-            ReleaseInfo latestRelease = Streams.findLast(Arrays.stream(releases).filter(info -> info.getReleaseType().isRelease())).orElse(null);
+            ReleaseInfo latestRelease = Streams.findLast(Arrays.stream(releases).filter(info -> info.getReleaseType().isRelease() && info.getName().startsWith("FallenKingdom"))).orElse(null);
 
             if(latestRelease == null)
                 throw new ServiceUnavailableException();
