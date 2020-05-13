@@ -187,7 +187,7 @@ public class FilesUpdater
 //			file.set("ScoreboardManager.Sidebar", lines);
 //		}
 
-		if(isGrowing(lastv, "2.19.0"))
+		if(isGrowing(lastv, "2.18.2")) //TODO Remplacer par 2.19.0 ( 2.18.2 = moins propre mais obligé pour les betas)
 		{
 			Path path = new File(Fk.getInstance().getDataFolder(), "config.yml").toPath();
 			try {
