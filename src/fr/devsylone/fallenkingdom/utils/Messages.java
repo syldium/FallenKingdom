@@ -7,6 +7,7 @@ import java.util.Arrays;
 
 public enum Messages
 {
+    BROADCAST_DAY("broadcast.day"),
     BROADCAST_DAY_ASSAULT("broadcast.day.assault"),
     BROADCAST_DAY_CHEST("broadcast.day.chest"),
     BROADCAST_DAY_END("broadcast.day.end"),

@@ -18,6 +18,7 @@ import fr.devsylone.fallenkingdom.utils.XBlock;
 
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Objects;
 
 
 public class PortalCreateListener implements Listener
@@ -44,10 +45,12 @@ public class PortalCreateListener implements Listener
 				if(p.getLocation().distance(air.getLocation()) <= 15)
 				{
 					if(Fk.getInstance().getGame().getState().equals(GameState.BEFORE_STARTING) && p.getGameMode().equals(GameMode.CREATIVE))
+					{
+						e.setCancelled(false);
 						p.sendMessage(Messages.PLAYER_NETHER_PORTAL_SETUP.getMessage());
+					}
 					else
 						p.sendMessage(Messages.PLAYER_NETHER_PORTAL_TOO_EARLY.getMessage().replace("%day%", String.valueOf(FkPI.getInstance().getRulesManager().getRule(Rule.NETHER_CAP))));
-
 				}
 		}
 	}

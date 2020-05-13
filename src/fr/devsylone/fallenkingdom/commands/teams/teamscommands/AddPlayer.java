@@ -5,6 +5,7 @@ import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
 import fr.devsylone.fallenkingdom.utils.Messages;
+import fr.devsylone.fkpi.api.ITeam;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -30,8 +31,8 @@ public class AddPlayer extends FkCommand
 
 		List<String> players = ArgumentParser.parsePlayers(sender, args.get(0));
 		for (String p : players) {
-			plugin.getFkPI().getTeamManager().addPlayer(p, args.get(1));
-			ChatColor color = plugin.getFkPI().getTeamManager().getTeam(args.get(1)).getChatColor();
+			ITeam team = plugin.getFkPI().getTeamManager().addPlayer(p, args.get(1));
+			ChatColor color = team.getChatColor();
 			if (player != null)
 				player.setDisplayName(color + player.getName() + ChatColor.WHITE);
 			broadcast(Messages.CMD_TEAM_ADD_PLAYER.getMessage()

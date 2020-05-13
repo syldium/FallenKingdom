@@ -2,6 +2,7 @@ package fr.devsylone.fkpi.lockedchests;
 
 import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fkpi.FkPI;
+import fr.devsylone.fkpi.api.event.PlayerLockedChestInteractEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
@@ -112,6 +113,11 @@ public class LockedChest implements Saveable
 
 	public void startUnlocking(Player player)
 	{
+		PlayerLockedChestInteractEvent event = new PlayerLockedChestInteractEvent(player, this); // EVENT
+		Bukkit.getPluginManager().callEvent(event);
+		if(event.isCancelled())
+			return;
+
 		if(unlocker != null)
 			Fk.broadcast(Messages.BROADCAST_LOCKED_CHEST_ABORT.getMessage().replace("%name%", name).replace("%player%", getColoredPlayerName()));
 
@@ -125,29 +131,28 @@ public class LockedChest implements Saveable
 
 		final int armorstand = Fk.getInstance().getPacketManager().createFloattingText("§b0%", player, loc.clone().add(0.5, yFix, 0.5));
 
-		task = Bukkit.getScheduler().scheduleSyncRepeatingTask(Fk.getInstance(), new Runnable()
-		{
-
-			@Override
-			public void run()
+		task = Bukkit.getScheduler().scheduleSyncRepeatingTask(Fk.getInstance(), () -> {
+			Fk.getInstance().getPacketManager().updateFloattingText(armorstand, "§b" + (int) (((double) (System.currentTimeMillis() - startUnlocking) / 1000.0d / (double) time) * 100.0d) + "%");
+			if(lastInteract + 1000 < System.currentTimeMillis())
 			{
-				Fk.getInstance().getPacketManager().updateFloattingText(armorstand, "§b" + (int) (((double) (System.currentTimeMillis() - startUnlocking) / 1000.0d / (double) time) * 100.0d) + "%");
-				if(lastInteract + 1000 < System.currentTimeMillis())
-				{
-					if(!getState().equals(ChestState.UNLOCKED))
-						Fk.broadcast(Messages.BROADCAST_LOCKED_CHEST_ABORT.getMessage().replace("%name%", name).replace("%player%", getColoredPlayerName()));
-					Bukkit.getScheduler().cancelTask(task);
-					changeUnlocker(null);
-					Fk.getInstance().getPacketManager().remove(armorstand);
-				}
+				if(!getState().equals(ChestState.UNLOCKED))
+					Fk.broadcast(Messages.BROADCAST_LOCKED_CHEST_ABORT.getMessage().replace("%name%", name).replace("%player%", getColoredPlayerName()));
+				Bukkit.getScheduler().cancelTask(task);
+				changeUnlocker(null);
+				Fk.getInstance().getPacketManager().remove(armorstand);
+			}
 
-				if(startUnlocking + time * 1000 <= System.currentTimeMillis())
+			if(startUnlocking + time * 1000 <= System.currentTimeMillis())
+			{
+				PlayerLockedChestInteractEvent endEvent = new PlayerLockedChestInteractEvent(player, this); // EVENT
+				Bukkit.getPluginManager().callEvent(endEvent); // EVENT
+				if(!endEvent.isCancelled())
 				{
 					setState(ChestState.UNLOCKED);
 					Fk.broadcast(Messages.BROADCAST_LOCKED_CHEST_UNLOCKED.getMessage().replace("%name%", name).replace("%player%", getColoredPlayerName()));
-					Bukkit.getScheduler().cancelTask(task);
-					Fk.getInstance().getPacketManager().remove(armorstand);
 				}
+				Bukkit.getScheduler().cancelTask(task);
+				Fk.getInstance().getPacketManager().remove(armorstand);
 			}
 		}, 1L, 1L);
 	}
