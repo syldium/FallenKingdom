@@ -1,5 +1,7 @@
 package fr.devsylone.fkpi.rules;
 
+import fr.devsylone.fkpi.api.event.RuleChangeEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 
 public class ChargedCreepers implements RuleValue
@@ -36,6 +38,14 @@ public class ChargedCreepers implements RuleValue
 	public void setTntAmount(int amount)
 	{
 		this.tntAmount = amount;
+	}
+
+	public void setValue(int spawn, int drop, int amount)
+	{
+		Bukkit.getPluginManager().callEvent(new RuleChangeEvent<>(Rule.CHARGED_CREEPERS, this));
+		setSpawn(spawn);
+		setDrop(drop);
+		setTntAmount(amount);
 	}
 
 	@Override

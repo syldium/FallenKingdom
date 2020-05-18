@@ -48,7 +48,7 @@ public class AllowBlock extends FkCommand
 		if(rule.isAllowed(blockDescription))
 			throw new FkLightException(Messages.CMD_RULES_ERROR_ALREADY_ALLOWED);
 
-		rule.getValue().add(blockDescription);
+		rule.add(blockDescription);
 		broadcast(Messages.CMD_RULES_ALLOW_BLOCK.getMessage().replace("%block%", blockDescription.toString()));
 
 		return CommandResult.SUCCESS;

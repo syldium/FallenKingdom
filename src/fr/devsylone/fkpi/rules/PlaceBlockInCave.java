@@ -1,5 +1,7 @@
 package fr.devsylone.fkpi.rules;
 
+import fr.devsylone.fkpi.api.event.RuleChangeEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 
 public class PlaceBlockInCave implements RuleValue
@@ -19,11 +21,15 @@ public class PlaceBlockInCave implements RuleValue
 
 	public void setActive(boolean active)
 	{
+		if (active != this.active)
+			Bukkit.getPluginManager().callEvent(new RuleChangeEvent<>(Rule.PLACE_BLOCK_IN_CAVE, this));
 		this.active = active;
 	}
 
 	public void setMinimumBlocks(int value)
 	{
+		if (value != this.minimumBlocks)
+			Bukkit.getPluginManager().callEvent(new RuleChangeEvent<>(Rule.PLACE_BLOCK_IN_CAVE, this));
 		minimumBlocks = value;
 	}
 

@@ -78,6 +78,9 @@ public abstract class FkParentCommand extends AbstractCommand
 
 	@Override
 	public AbstractCommand get(Class<? extends AbstractCommand> cmd) {
+		if (this.getClass().equals(cmd)) {
+			return this;
+		}
 		for (AbstractCommand command : children) {
 			AbstractCommand c = command.get(cmd);
 			if (c != null) {

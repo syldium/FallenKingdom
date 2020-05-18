@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import fr.devsylone.fkpi.api.event.RuleChangeEvent;
 import fr.devsylone.fkpi.util.XPotionData;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.potion.PotionType;
 
@@ -20,7 +22,10 @@ public class DisabledPotions implements RuleValue
 	public boolean disablePotion(XPotionData potionData)
 	{
 		if(!isDisabled(potionData))
+		{
+			Bukkit.getPluginManager().callEvent(new RuleChangeEvent<>(Rule.DISABLED_POTIONS, this));
 			effects.add(potionData);
+		}
 		else
 			return false;
 		return true;
@@ -29,7 +34,10 @@ public class DisabledPotions implements RuleValue
 	public boolean enablePotion(XPotionData potionData)
 	{
 		if(isDisabled(potionData))
+		{
+			Bukkit.getPluginManager().callEvent(new RuleChangeEvent<>(Rule.DISABLED_POTIONS, this));
 			effects.remove(potionData);
+		}
 		else
 			return false;
 		return true;

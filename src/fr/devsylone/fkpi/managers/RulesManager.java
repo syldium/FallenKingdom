@@ -4,8 +4,10 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.google.common.base.Preconditions;
+import fr.devsylone.fkpi.api.event.RuleChangeEvent;
 import fr.devsylone.fkpi.rules.Rule;
 import fr.devsylone.fkpi.rules.RuleValue;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 
 import fr.devsylone.fkpi.util.Saveable;
@@ -28,6 +30,7 @@ public class RulesManager implements Saveable
 
 	public <T> void setRule(Rule<T> rule, T value)
 	{
+		Bukkit.getPluginManager().callEvent(new RuleChangeEvent<>(rule, value));
 		rules.put(rule, value);
 	}
 

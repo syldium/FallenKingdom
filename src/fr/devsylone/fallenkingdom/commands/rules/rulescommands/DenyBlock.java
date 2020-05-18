@@ -44,7 +44,7 @@ public class DenyBlock extends FkCommand
 
 		// Si le nom de bloc donné est moins précis que ceux enregistrés (ex : WOOL avec WOOL:2, WOOL:3)
 		// on supprime toutes les occurrences de WOOL (donc des fois plusieurs)
-		rule.getValue().removeIf(b -> b.equals(blockDescription));
+		rule.removeIf(b -> b.equals(blockDescription));
 
 		broadcast(Messages.CMD_RULES_DENY_BLOCK.getMessage().replace("%block%", blockDescription.toString()));
 
