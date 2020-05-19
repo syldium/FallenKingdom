@@ -18,7 +18,6 @@ import fr.devsylone.fallenkingdom.utils.XBlock;
 
 import java.lang.reflect.Method;
 import java.util.List;
-import java.util.Objects;
 
 
 public class PortalCreateListener implements Listener

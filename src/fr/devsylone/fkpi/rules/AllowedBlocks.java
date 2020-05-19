@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import fr.devsylone.fkpi.api.event.RuleChangeEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -54,6 +56,16 @@ public class AllowedBlocks implements RuleValue
 		allowed.addAll(allSigns());
 		allowed.add(new BlockDescription("TNT"));
 
+	}
+
+	@Override
+	public JsonElement toJSON()
+	{
+		JsonArray jsonArray = new JsonArray();
+		for (BlockDescription block : getValue()) {
+			jsonArray.add(block.toString());
+		}
+		return jsonArray;
 	}
 
 	public static List<BlockDescription> allSigns()
