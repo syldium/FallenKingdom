@@ -1,18 +1,28 @@
 package fr.devsylone.fallenkingdom.manager;
 
-import fr.devsylone.fallenkingdom.Fk;
-import fr.devsylone.fallenkingdom.utils.ChatUtils;
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.*;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
-
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Properties;
+
+import org.apache.commons.lang.ArrayUtils;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
+
+import fr.devsylone.fallenkingdom.Fk;
+import fr.devsylone.fallenkingdom.utils.ChatUtils;
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 
 public class LanguageManager
 {
@@ -52,24 +62,24 @@ public class LanguageManager
                 .map(file -> file.getName().substring(0, file.getName().lastIndexOf('.')))
                 .toArray(String[]::new);
             String message = ChatColor.RED + "Veuillez sélectionner votre langue / Please select your language";
-            ComponentBuilder localeComponentBuilder = new ComponentBuilder(ChatUtils.PREFIX);
+            BaseComponent[] localeComponents = null;
             for (String locale : locales) {
-                BaseComponent[] localeComponents = TextComponent.fromLegacyText(ChatColor.GRAY + "[" + ChatColor.UNDERLINE + ChatColor.DARK_AQUA + locale + ChatColor.GRAY + "] ");
+                localeComponents = TextComponent.fromLegacyText(ChatColor.GRAY + "[" + ChatColor.UNDERLINE + ChatColor.DARK_AQUA + locale + ChatColor.GRAY + "] ");
                 for (BaseComponent component : localeComponents) {
                     component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(ChatColor.BLUE + "Use this locale").create()));
                     component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/fk lang set " + locale));
                 }
                 localeComponents[1].setItalic(true);
                 localeComponents[2].setItalic(false);
-                localeComponentBuilder.append(localeComponents);
             }
+            TextComponent finalMessage = new TextComponent((BaseComponent[]) ArrayUtils.addAll(TextComponent.fromLegacyText(ChatUtils.PREFIX), localeComponents));
             Bukkit.getConsoleSender().sendMessage(message);
             taskId = new BukkitRunnable() {
                 @Override
                 public void run() {
                     for (Player player : Bukkit.getOnlinePlayers()) {
                         ChatUtils.sendMessage(player, message);
-                        player.spigot().sendMessage(localeComponentBuilder.create());
+                        player.spigot().sendMessage(finalMessage);
                     }
                 }
             }.runTaskTimerAsynchronously(plugin, 5 * 20, 15 * 20).getTaskId();
