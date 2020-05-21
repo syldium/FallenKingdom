@@ -39,7 +39,6 @@ public class PluginUpdater extends BukkitRunnable
     private boolean enabled = true;
     private static final Gson GSON;
     private static final String URL_RELEASE_LIST = "https://servermods.forgesvc.net/servermods/files?projectIds=276763";
-    private static final String URL_UPDATER = "http://fkdevsylone.000webhostapp.com/FK/auto-update/version/updater";
     static
     {
         GSON = new GsonBuilder().registerTypeAdapter(Instant.class, new JsonDeserializer<Instant>()
@@ -104,7 +103,7 @@ public class PluginUpdater extends BukkitRunnable
         try
         {
             ReleaseInfo[] releases = GSON.fromJson(new InputStreamReader(new URL(URL_RELEASE_LIST).openConnection().getInputStream()), ReleaseInfo[].class);
-            ReleaseInfo latestRelease = Streams.findLast(Arrays.stream(releases).filter(info -> info.getReleaseType().isRelease())).orElse(null);
+            ReleaseInfo latestRelease = Streams.findLast(Arrays.stream(releases).filter(info -> info.getReleaseType().isRelease() && info.getName().startsWith("FallenKingdom"))).orElse(null);
 
             if(latestRelease == null)
                 throw new ServiceUnavailableException();
@@ -124,7 +123,13 @@ public class PluginUpdater extends BukkitRunnable
                     this.plugin.getLogger().info("[Updater] Version téléchargée");
                     this.plugin.getLogger().info("[Updater] Téléchargement de l'updater...");
 
-                    rbc = Channels.newChannel(new URL(URL_UPDATER).openStream());
+                    ReleaseInfo latestUpdaterRelease = Streams.findLast(Arrays.stream(releases).filter(info -> info.getReleaseType().isRelease() && info.getName().startsWith("FkUpdater"))).orElse(null);
+                    if(latestUpdaterRelease == null)
+                    {
+                        this.plugin.getLogger().warning("[Updater] Une erreur est survenue : Impossible de trouver le plugin de mise à jour");
+                        return;
+                    }
+                    rbc = Channels.newChannel(latestUpdaterRelease.getDownloadUrl().openStream());
                     final File updater = new File(Fk.getInstance().getDataFolder().getParent() + "/FkUpdater.jar");
                     fos = new FileOutputStream(updater);
                     fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
