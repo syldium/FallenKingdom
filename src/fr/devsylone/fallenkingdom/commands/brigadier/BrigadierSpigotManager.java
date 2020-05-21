@@ -2,7 +2,9 @@ package fr.devsylone.fallenkingdom.commands.brigadier;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
+import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
+import com.mojang.brigadier.tree.RootCommandNode;
 import fr.devsylone.fallenkingdom.manager.CommandManager;
 import fr.devsylone.fallenkingdom.utils.NMSUtils;
 import org.bukkit.Bukkit;
@@ -19,6 +21,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Implémentation Spigot pour Brigadier.
@@ -32,6 +35,7 @@ public class BrigadierSpigotManager<S> extends BrigadierManager<S> implements Li
     private static final Method GET_COMMAND_DISPATCHER_METHOD;
     private static final Method GET_BRIGADIER_DISPATCHER_METHOD;
     private static final Constructor<?> COMMAND_WRAPPER_CONSTRUCTOR;
+    private static final Field[] CHILDREN_FIELDS;
 
     static {
         try {
@@ -52,6 +56,14 @@ public class BrigadierSpigotManager<S> extends BrigadierManager<S> implements Li
 
             Class<?> bukkitCommandWrapper = NMSUtils.obcClass("command.BukkitCommandWrapper");
             COMMAND_WRAPPER_CONSTRUCTOR = bukkitCommandWrapper.getConstructor(craftServer, Command.class);
+
+            Field childrenField = CommandNode.class.getDeclaredField("children");
+            Field literalsField = CommandNode.class.getDeclaredField("literals");
+            Field argumentsField = CommandNode.class.getDeclaredField("arguments");
+            CHILDREN_FIELDS = new Field[] {childrenField, literalsField, argumentsField};
+            for (Field field : CHILDREN_FIELDS) {
+                field.setAccessible(true);
+            }
         } catch (ReflectiveOperationException e) {
             throw new ExceptionInInitializerError(e);
         }
@@ -86,10 +98,23 @@ public class BrigadierSpigotManager<S> extends BrigadierManager<S> implements Li
         }
     }
 
+    private void removeChild(RootCommandNode<S> root, String name) {
+        try {
+            for (Field field : CHILDREN_FIELDS) {
+                // noinspection unchecked
+                Map<String, CommandNode<S>> children = (Map<String, CommandNode<S>>) field.get(root);
+                children.remove(name);
+            }
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @EventHandler
     public void onLoad(ServerLoadEvent event) {
         CommandDispatcher<S> dispatcher = getDispatcher();
         for (LiteralCommandNode<S> node : registeredNodes) {
+            removeChild(dispatcher.getRoot(), node.getName());
             dispatcher.getRoot().addChild(node);
         }
     }

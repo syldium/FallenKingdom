@@ -7,7 +7,6 @@ import fr.devsylone.fkpi.api.event.DayEvent;
 import fr.devsylone.fkpi.api.event.GameEvent;
 import fr.devsylone.fkpi.rules.Rule;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
@@ -80,7 +79,7 @@ public class Game implements Saveable
 	public void startTimer()
 	{
 		if(task != 0)
-			throw new FkLightException("La partie est déjà commencée.");
+			throw new FkLightException(Messages.CMD_ERROR_GAME_ALREADY_STARTED);
 
 		Fk.getInstance().getScoreboardManager().refreshAllScoreboards();
 
@@ -114,15 +113,15 @@ public class Game implements Saveable
 					w.setTime(worldTime);
 				}
 				if(worldTime == 23000)
-					Fk.broadcast("" + ChatColor.GRAY + ChatColor.ITALIC + "Le soleil va bientôt se lever...");
+					Fk.broadcast(Messages.BROADCAST_SUN_WILL_RISE.getMessage());
 
 				else if(time >= dayDuration)
 				{
 					day++;
 					time = 0;
-					Fk.broadcast("§bJour " + day);
-
-					Bukkit.getPluginManager().callEvent(new DayEvent(DayEvent.Type.NEW_DAY, day)); //EVENT
+					DayEvent dayEvent = new DayEvent(DayEvent.Type.NEW_DAY, day, Messages.BROADCAST_DAY.getMessage().replace("%day%", String.valueOf(day))); //EVENT
+					Bukkit.getPluginManager().callEvent(dayEvent);
+					Fk.broadcast(dayEvent.getMessage());
 					if(Fk.getInstance().getConfig().getBoolean("enable-mcfunction-support", false))
 						Bukkit.dispatchCommand(Bukkit.getConsoleSender(),"function fallenkingdom:newday");
 
@@ -131,30 +130,35 @@ public class Game implements Saveable
 					if(FkPI.getInstance().getRulesManager().getRule(Rule.PVP_CAP) == day)
 					{
 						pvp = true;
-						Fk.broadcast(Messages.BROADCAST_DAY_PVP.getMessage(), FkSound.ENDERDRAGON_GROWL);
-						Bukkit.getPluginManager().callEvent(new DayEvent(DayEvent.Type.PVP_ENABLED, day)); //EVENT
+						DayEvent event = new DayEvent(DayEvent.Type.PVP_ENABLED, day, Messages.BROADCAST_DAY_PVP.getMessage());
+						Bukkit.getPluginManager().callEvent(event); //EVENT
+						Fk.broadcast(event.getMessage(), FkSound.ENDERDRAGON_GROWL);
 					}
 
 					if(FkPI.getInstance().getRulesManager().getRule(Rule.TNT_CAP) == day)
 					{
 						assault = true;
-						Fk.broadcast(Messages.BROADCAST_DAY_ASSAULT.getMessage(), FkSound.ENDERDRAGON_GROWL);
-						Bukkit.getPluginManager().callEvent(new DayEvent(DayEvent.Type.TNT_ENABLED, day)); //EVENT
+						DayEvent event = new DayEvent(DayEvent.Type.TNT_ENABLED, day, Messages.BROADCAST_DAY_ASSAULT.getMessage());
+						Bukkit.getPluginManager().callEvent(event); //EVENT
+						Fk.broadcast(event.getMessage(), FkSound.ENDERDRAGON_GROWL);
 					}
 
 					if(FkPI.getInstance().getRulesManager().getRule(Rule.NETHER_CAP) == day)
 					{
 						nether = true;
-						Fk.broadcast(Messages.BROADCAST_DAY_NETHER.getMessage(), FkSound.ENDERDRAGON_GROWL);
+						DayEvent event = new DayEvent(DayEvent.Type.NETHER_ENABLED, day, Messages.BROADCAST_DAY_NETHER.getMessage());
+						Bukkit.getPluginManager().callEvent(event); //EVENT
 						Fk.getInstance().getPortalsManager().enablePortals();
-						Bukkit.getPluginManager().callEvent(new DayEvent(DayEvent.Type.NETHER_ENABLED, day)); //EVENT
+						Fk.broadcast(event.getMessage(), FkSound.ENDERDRAGON_GROWL);
 					}
 
 					if(FkPI.getInstance().getRulesManager().getRule(Rule.END_CAP) == day)
 					{
 						end = true;
-						Fk.broadcast(Messages.BROADCAST_DAY_END.getMessage(), FkSound.ENDERDRAGON_GROWL);
-						Bukkit.getPluginManager().callEvent(new DayEvent(DayEvent.Type.END_ENABLED, day)); //EVENT
+						DayEvent event = new DayEvent(DayEvent.Type.END_ENABLED, day, Messages.BROADCAST_DAY_END.getMessage());
+						Bukkit.getPluginManager().callEvent(event); //EVENT
+						Fk.getInstance().getPortalsManager().enablePortals();
+						Fk.broadcast(event.getMessage(), FkSound.ENDERDRAGON_GROWL);
 					}
 
 					for(LockedChest chest : Fk.getInstance().getFkPI().getLockedChestsManager().getChestList())

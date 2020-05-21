@@ -2,8 +2,13 @@ package fr.devsylone.fkpi.rules;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import fr.devsylone.fkpi.api.event.RuleChangeEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -51,6 +56,16 @@ public class AllowedBlocks implements RuleValue
 		allowed.addAll(allSigns());
 		allowed.add(new BlockDescription("TNT"));
 
+	}
+
+	@Override
+	public JsonElement toJSON()
+	{
+		JsonArray jsonArray = new JsonArray();
+		for (BlockDescription block : getValue()) {
+			jsonArray.add(block.toString());
+		}
+		return jsonArray;
 	}
 
 	public static List<BlockDescription> allSigns()
@@ -103,5 +118,17 @@ public class AllowedBlocks implements RuleValue
 		return "Blocks[" + getValue().stream()
 				.map(BlockDescription::toString)
 				.collect(Collectors.joining(", ")) + "]";
+	}
+
+    public void add(BlockDescription blockDescription)
+	{
+		Bukkit.getPluginManager().callEvent(new RuleChangeEvent<>(Rule.ALLOWED_BLOCKS, this));
+		allowed.add(blockDescription);
+    }
+
+	public void removeIf(Predicate<? super BlockDescription> filter)
+	{
+		Bukkit.getPluginManager().callEvent(new RuleChangeEvent<>(Rule.ALLOWED_BLOCKS, this));
+		allowed.removeIf(filter);
 	}
 }

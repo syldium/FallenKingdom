@@ -44,10 +44,12 @@ public class PortalCreateListener implements Listener
 				if(p.getLocation().distance(air.getLocation()) <= 15)
 				{
 					if(Fk.getInstance().getGame().getState().equals(GameState.BEFORE_STARTING) && p.getGameMode().equals(GameMode.CREATIVE))
+					{
+						e.setCancelled(false);
 						p.sendMessage(Messages.PLAYER_NETHER_PORTAL_SETUP.getMessage());
+					}
 					else
 						p.sendMessage(Messages.PLAYER_NETHER_PORTAL_TOO_EARLY.getMessage().replace("%day%", String.valueOf(FkPI.getInstance().getRulesManager().getRule(Rule.NETHER_CAP))));
-
 				}
 		}
 	}

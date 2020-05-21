@@ -61,7 +61,7 @@ public class PacketManager1_14 extends PacketManager1_13 {
         playerById.put(id, p.getUniqueId());
         try
         {
-            Object spawn = NMSUtils.getClass("PacketPlayOutSpawnEntity").newInstance();
+            Object spawn = NMSUtils.getClass("PacketPlayOutSpawnEntity").getDeclaredConstructor().newInstance();
             PacketUtils.setField("a", id, spawn);
             PacketUtils.setField("b", UUID.randomUUID(), spawn);
             PacketUtils.setField("c", loc.getX(), spawn);

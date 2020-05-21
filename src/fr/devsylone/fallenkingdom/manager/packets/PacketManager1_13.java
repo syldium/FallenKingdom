@@ -63,7 +63,7 @@ public class PacketManager1_13 extends PacketManager1_9 {
     {
         try {
 
-            Object metadata = NMSUtils.getClass("PacketPlayOutEntityMetadata").newInstance();
+            Object metadata = NMSUtils.getClass("PacketPlayOutEntityMetadata").getDeclaredConstructor().newInstance();
 
             PacketUtils.setField("a", id, metadata);
             List<Object> datas = new ArrayList<>();

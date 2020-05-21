@@ -5,7 +5,10 @@ import java.util.List;
 
 import fr.devsylone.fallenkingdom.utils.Version;
 import fr.devsylone.fkpi.api.ITeam;
+import fr.devsylone.fkpi.api.event.TeamUpdateEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.DyeColor;
 import org.bukkit.configuration.ConfigurationSection;
 
 import fr.devsylone.fkpi.FkPI;
@@ -14,13 +17,10 @@ import fr.devsylone.fkpi.util.Saveable;
 
 public class Team implements ITeam, Saveable
 {
-	private final String name;
-
+	private String name;
 	private Base base;
-
 	private final org.bukkit.scoreboard.Team scoreboardTeam;
 	private List<String> players;
-
 	private Color color;
 
 	public Team(String name)
@@ -34,24 +34,29 @@ public class Team implements ITeam, Saveable
 
 	public void addPlayer(String p)
 	{
-		scoreboardTeam.addEntry(p);
 		players.add(p);
 	}
 
 	public void removePlayer(String p)
 	{
 		players.remove(p);
-		scoreboardTeam.removeEntry(p);
 	}
 
 	public void setBase(Base base)
 	{
+		Bukkit.getPluginManager().callEvent(new TeamUpdateEvent(this, TeamUpdateEvent.TeamUpdate.SET_BASE)); // EVENT
 		this.base = base;
 	}
 
 	public List<String> getPlayers()
 	{
 		return players;
+	}
+
+	public void setName(String name)
+	{
+		Bukkit.getPluginManager().callEvent(new TeamUpdateEvent(this, TeamUpdateEvent.TeamUpdate.UPDATE)); // EVENT
+		this.name = name;
 	}
 
 	public String getName()
@@ -72,6 +77,11 @@ public class Team implements ITeam, Saveable
 	public ChatColor getChatColor()
 	{
 		return color.getChatColor();
+	}
+
+	public DyeColor getDyeColor()
+	{
+		return color.getDyeColor();
 	}
 
 	public void setColor(Color color)

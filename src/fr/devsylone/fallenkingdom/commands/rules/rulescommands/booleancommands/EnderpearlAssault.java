@@ -8,7 +8,7 @@ public class EnderpearlAssault extends FkBooleanRuleCommand
 {
     public EnderpearlAssault()
     {
-        super("enderpearlAssault", Messages.CMD_MAP_RULES_ENDERPEARL, Rule.ENDERPEARL_ASSAULT);
+        super("enderpearlAssault", Messages.CMD_MAP_RULES_ENDERPEARL_ASSAULT, Rule.ENDERPEARL_ASSAULT);
     }
 
     @Override

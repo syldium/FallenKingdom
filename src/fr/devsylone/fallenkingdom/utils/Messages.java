@@ -7,6 +7,7 @@ import java.util.Arrays;
 
 public enum Messages
 {
+    BROADCAST_DAY("broadcast.day"),
     BROADCAST_DAY_ASSAULT("broadcast.day.assault"),
     BROADCAST_DAY_CHEST("broadcast.day.chest"),
     BROADCAST_DAY_END("broadcast.day.end"),
@@ -113,7 +114,7 @@ public enum Messages
 
     CMD_MAP_RULES("cmd.map.rules"),
     CMD_MAP_RULES_ALLOW_BLOCK("cmd.map.rules.allowBlock"),
-    CMD_MAP_RULES_CHARGED_CREEPER("cmd.map.rules.chargedCreeper"),
+    CMD_MAP_RULES_CHARGED_CREEPERS("cmd.map.rules.chargedCreepers"),
     CMD_MAP_RULES_CHEST_LIMIT("cmd.map.rules.chestLimit"),
     CMD_MAP_RULES_DAY_DURATION("cmd.map.rules.dayDuration"),
     CMD_MAP_RULES_DEATH_LIMIT("cmd.map.rules.deathLimit"),
@@ -121,7 +122,7 @@ public enum Messages
     CMD_MAP_RULES_DENY_BLOCK("cmd.map.rules.denyBlock"),
     CMD_MAP_RULES_DISABLED_POTIONS("cmd.map.rules.disabledPotions"),
     CMD_MAP_RULES_DO_PAUSE_AFTER_DAY("cmd.map.rules.doPauseAfterDay"),
-    CMD_MAP_RULES_ENDERPEARL("cmd.map.rules.enderpearlAssault"),
+    CMD_MAP_RULES_ENDERPEARL_ASSAULT("cmd.map.rules.enderpearlAssault"),
     CMD_MAP_RULES_END_CAP("cmd.map.rules.endCap"),
     CMD_MAP_RULES_ETERNAL_DAY("cmd.map.rules.eternalDay"),
     CMD_MAP_RULES_FRIENDLY_FIRE("cmd.map.rules.friendlyFire"),

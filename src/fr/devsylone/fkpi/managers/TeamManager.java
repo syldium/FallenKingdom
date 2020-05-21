@@ -1,23 +1,27 @@
 package fr.devsylone.fkpi.managers;
 
+import fr.devsylone.fallenkingdom.exception.FkLightException;
+import fr.devsylone.fallenkingdom.utils.Messages;
+import fr.devsylone.fkpi.api.ITeam;
+import fr.devsylone.fkpi.api.event.PlayerTeamChangeEvent;
+import fr.devsylone.fkpi.api.event.TeamUpdateEvent;
+import fr.devsylone.fkpi.teams.Team;
+import fr.devsylone.fkpi.util.Color;
+import fr.devsylone.fkpi.util.Saveable;
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.Scoreboard;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-import fr.devsylone.fallenkingdom.utils.Messages;
-import org.bukkit.Bukkit;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.scoreboard.Scoreboard;
-
-import fr.devsylone.fallenkingdom.exception.FkLightException;
-import fr.devsylone.fkpi.teams.Team;
-import fr.devsylone.fkpi.util.Color;
-import fr.devsylone.fkpi.util.Saveable;
-
 public class TeamManager implements Saveable
 {
-	private final List<Team> teams = new ArrayList<>();
+	private final List<Team> teams = Collections.synchronizedList(new ArrayList<>());
 	private final Scoreboard board = Bukkit.getScoreboardManager().getNewScoreboard();
 
 	public boolean createTeam(String name)
@@ -32,7 +36,7 @@ public class TeamManager implements Saveable
 			throw new FkLightException(Messages.CMD_ERROR_TEAM_NAME_TOO_LONG);
 
 		Team team = new Team(name);
-		team.setColor(Color.forName(name));
+		Bukkit.getPluginManager().callEvent(new TeamUpdateEvent(team, TeamUpdateEvent.TeamUpdate.CREATION)); // EVENT
 		teams.add(team);
 
 		return Color.forName(name) != null;
@@ -45,12 +49,13 @@ public class TeamManager implements Saveable
 
 	public void removeTeam(String name)
 	{
-		if(getTeam(name) == null)
+		Team team = getTeam(name);
+		if(team == null)
 			throw new FkLightException(Messages.CMD_ERROR_UNKNOWN_TEAM.getMessage().replace("%team%", name));
 
-		getTeam(name).getScoreboardTeam().unregister();
-
-		teams.remove(getTeam(name));
+		Bukkit.getPluginManager().callEvent(new TeamUpdateEvent(team, TeamUpdateEvent.TeamUpdate.DELETION)); // EVENT
+		team.getScoreboardTeam().unregister();
+		teams.remove(team);
 	}
 
 	public Team getTeam(String name)
@@ -85,7 +90,12 @@ public class TeamManager implements Saveable
 		return null;
 	}
 
-	public void addPlayer(String player, String teamName)
+	public Team getPlayerTeam(Player player)
+	{
+		return player == null ? null : getPlayerTeam(player.getName());
+	}
+
+	public ITeam addPlayer(String player, String teamName)
 	{
 		if(getPlayerTeam(player) != null)
 			throw new FkLightException(Messages.CMD_ERROR_PLAYER_ALREADY_HAS_TEAM);
@@ -96,21 +106,20 @@ public class TeamManager implements Saveable
 		if(player.isEmpty() || player.contains(" "))
 			throw new FkLightException(Messages.CMD_ERROR_INVALID_PLAYER.getMessage());
 
-		getTeam(teamName).addPlayer(player);
+		PlayerTeamChangeEvent event = new PlayerTeamChangeEvent(player, getPlayerTeam(player), getTeam(teamName)); // EVENT
+		Bukkit.getPluginManager().callEvent(event);
+		event.getTeam().addPlayer(player);
+		return event.getTeam();
 	}
 
 	public void removePlayerOfHisTeam(String player)
 	{
-		if(getPlayerTeam(player) == null)
+		Team team = getPlayerTeam(player);
+		if(team == null)
 			throw new FkLightException(Messages.CMD_ERROR_PLAYER_NOT_IN_TEAM);
 
-		for(Team t : teams)
-			for(String s : t.getPlayers())
-				if(s.equalsIgnoreCase(player))
-				{
-					t.removePlayer(player);
-					break;
-				}
+		Bukkit.getPluginManager().callEvent(new PlayerTeamChangeEvent(player, team, null)); // EVENT
+		team.removePlayer(player);
 	}
 
 	public void random(List<String> players)

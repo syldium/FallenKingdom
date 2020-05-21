@@ -4,13 +4,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import fr.devsylone.fkpi.api.event.RuleChangeEvent;
 import fr.devsylone.fkpi.util.XPotionData;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.potion.PotionType;
 
 public class DisabledPotions implements RuleValue
 {
 	private final List<XPotionData> effects = new ArrayList<>();
+
+	public List<XPotionData> getValue()
+	{
+		return effects;
+	}
 
 	public boolean isDisabled(XPotionData potionData)
 	{
@@ -20,7 +30,10 @@ public class DisabledPotions implements RuleValue
 	public boolean disablePotion(XPotionData potionData)
 	{
 		if(!isDisabled(potionData))
+		{
+			Bukkit.getPluginManager().callEvent(new RuleChangeEvent<>(Rule.DISABLED_POTIONS, this));
 			effects.add(potionData);
+		}
 		else
 			return false;
 		return true;
@@ -29,7 +42,10 @@ public class DisabledPotions implements RuleValue
 	public boolean enablePotion(XPotionData potionData)
 	{
 		if(isDisabled(potionData))
+		{
+			Bukkit.getPluginManager().callEvent(new RuleChangeEvent<>(Rule.DISABLED_POTIONS, this));
 			effects.remove(potionData);
+		}
 		else
 			return false;
 		return true;
@@ -42,6 +58,17 @@ public class DisabledPotions implements RuleValue
 		for(XPotionData data : effects)
 			formatted.append("\n" + "§c✘ ").append(data.getType().name()).append(data.isExtended() ? " + redstone" : data.isUpgraded() ? " + glowstone" : "");
 		return formatted.toString();
+	}
+
+	@Override
+	public JsonElement toJSON()
+	{
+		Gson gson = new Gson();
+		JsonArray jsonArray = new JsonArray();
+		for (XPotionData potion : getValue()) {
+			jsonArray.add(gson.toJsonTree(potion));
+		}
+		return jsonArray;
 	}
 
 	@Override

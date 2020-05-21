@@ -17,7 +17,7 @@ public class RulesFormatter
 		if (ruleValue instanceof RuleValue)
 			return format + ((RuleValue) ruleValue).format();
 		else if(ruleValue instanceof Boolean)
-			return format + ((boolean) ruleValue ? "§2✔" : "§4✘");
+			return format + (((Boolean) ruleValue) ? "§2✔" : "§4✘");
 
 		return format + "§e" + ruleValue;
 	}

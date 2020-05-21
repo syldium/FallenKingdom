@@ -1,5 +1,9 @@
 package fr.devsylone.fkpi.rules;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import fr.devsylone.fkpi.api.event.RuleChangeEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 
 public class ChargedCreepers implements RuleValue
@@ -38,10 +42,24 @@ public class ChargedCreepers implements RuleValue
 		this.tntAmount = amount;
 	}
 
+	public void setValue(int spawn, int drop, int amount)
+	{
+		Bukkit.getPluginManager().callEvent(new RuleChangeEvent<>(Rule.CHARGED_CREEPERS, this));
+		setSpawn(spawn);
+		setDrop(drop);
+		setTntAmount(amount);
+	}
+
 	@Override
 	public String format()
 	{
 		return "§e" + spawn + "% spawn - " + drop + "% drop - " + tntAmount + " tnt(s)";
+	}
+
+	@Override
+	public JsonElement toJSON()
+	{
+		return new Gson().toJsonTree(this);
 	}
 
 	@Override

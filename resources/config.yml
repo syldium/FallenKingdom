@@ -6,8 +6,6 @@ enable-mcfunction-support: false
 
 #Fichier de langue chargé
 lang: "unknown"
-#Essayer de traduire les arguments de commandes
-translate-commands-args: false
 
 # Choisir si le plugin s'active seulement dans certains mondes
 world-check: false

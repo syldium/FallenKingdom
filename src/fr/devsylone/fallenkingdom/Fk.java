@@ -504,6 +504,7 @@ public class Fk extends JavaPlugin
 	{
 		Metrics metrics = new Metrics(this, 6738);
 		metrics.addCustomChart(new Metrics.SingleLineChart("server_running_1-8_version", () -> Bukkit.getVersion().contains("1.8") ? 1 : 0));
+		metrics.addCustomChart(new Metrics.SimplePie("lang_used", LanguageManager::getLocalePrefix));
 	}
 
 	public void addOnConnectWarning(String warning)

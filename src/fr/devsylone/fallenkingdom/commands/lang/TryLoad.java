@@ -4,7 +4,6 @@ import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
-import fr.devsylone.fallenkingdom.exception.FkLightException;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fallenkingdom.manager.LanguageManager;
 import fr.devsylone.fallenkingdom.utils.Messages;
