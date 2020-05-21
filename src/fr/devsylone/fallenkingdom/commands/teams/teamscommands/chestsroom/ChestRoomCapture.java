@@ -27,7 +27,7 @@ public class ChestRoomCapture extends FkCommand {
 
         plugin.getFkPI().getChestsRoomsManager().setCaptureTime(time);
         broadcast(Messages.CMD_TEAM_CHEST_ROOM_CAPTURE_TIME.getMessage()
-                .replace("%time%", args.get(1))
+                .replace("%time%", args.get(0))
                 .replace("%unit%", Messages.Unit.SECONDS.tl(time))
         );
         return CommandResult.SUCCESS;
