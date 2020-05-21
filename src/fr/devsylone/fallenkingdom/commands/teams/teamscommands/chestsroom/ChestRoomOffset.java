@@ -27,7 +27,7 @@ public class ChestRoomOffset extends FkCommand {
 
         Fk.getInstance().getFkPI().getChestsRoomsManager().setOffset(offset);
         broadcast(Messages.CMD_TEAM_CHEST_ROOM_OFFSET.getMessage()
-                .replace("%offset%", args.get(1))
+                .replace("%offset%", args.get(0))
                 .replace("%unit%", Messages.Unit.BLOCKS.tl(offset))
         );
         return CommandResult.SUCCESS;
