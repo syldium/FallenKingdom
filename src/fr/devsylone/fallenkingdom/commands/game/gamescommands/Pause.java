@@ -1,23 +1,23 @@
 package fr.devsylone.fallenkingdom.commands.game.gamescommands;
 
+import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
-import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
+import fr.devsylone.fallenkingdom.commands.abstraction.FkPlayerCommand;
+import fr.devsylone.fallenkingdom.exception.FkLightException;
+import fr.devsylone.fallenkingdom.game.Game;
+import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fallenkingdom.utils.FkSound;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.command.CommandSender;
-
-import fr.devsylone.fallenkingdom.Fk;
-import fr.devsylone.fallenkingdom.exception.FkLightException;
-import fr.devsylone.fallenkingdom.game.Game;
+import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class Pause extends FkCommand
+public class Pause extends FkPlayerCommand // La commande pourrait être exécutée par la console, mais CommandSender#spigot() n'est pas disponible en 1.8
 {
 	public Pause()
 	{
@@ -26,7 +26,7 @@ public class Pause extends FkCommand
 
 	@Override
 	@SuppressWarnings("deprecation")
-	public CommandResult execute(Fk plugin, CommandSender sender, List<String> args, String label)
+	public CommandResult execute(Fk plugin, Player sender, FkPlayer fkp, List<String> args, String label)
 	{
 		if(Fk.getInstance().getGame().getState().equals(Game.GameState.BEFORE_STARTING))
 			throw new FkLightException(Messages.CMD_ERROR_GAME_NOT_STARTED);
