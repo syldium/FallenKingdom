@@ -1,11 +1,7 @@
 package fr.devsylone.fallenkingdom.game;
 
-import fr.devsylone.fallenkingdom.commands.game.gamescommands.Pause;
-import fr.devsylone.fallenkingdom.utils.Messages;
-import fr.devsylone.fkpi.FkPI;
-import fr.devsylone.fkpi.api.event.DayEvent;
-import fr.devsylone.fkpi.api.event.GameEvent;
-import fr.devsylone.fkpi.rules.Rule;
+import java.util.Collections;
+
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.World;
@@ -15,13 +11,17 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import fr.devsylone.fallenkingdom.Fk;
+import fr.devsylone.fallenkingdom.commands.game.gamescommands.Pause;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
 import fr.devsylone.fallenkingdom.scoreboard.PlaceHolder;
 import fr.devsylone.fallenkingdom.utils.FkSound;
+import fr.devsylone.fallenkingdom.utils.Messages;
+import fr.devsylone.fkpi.FkPI;
+import fr.devsylone.fkpi.api.event.DayEvent;
+import fr.devsylone.fkpi.api.event.GameEvent;
 import fr.devsylone.fkpi.lockedchests.LockedChest;
+import fr.devsylone.fkpi.rules.Rule;
 import fr.devsylone.fkpi.util.Saveable;
-
-import java.util.Collections;
 
 public class Game implements Saveable
 {
@@ -79,7 +79,7 @@ public class Game implements Saveable
 	public void startTimer()
 	{
 		if(task != 0)
-			throw new FkLightException(Messages.CMD_ERROR_GAME_ALREADY_STARTED);
+            throw new IllegalStateException("Main timer already running");
 
 		Fk.getInstance().getScoreboardManager().refreshAllScoreboards();
 
@@ -363,7 +363,6 @@ public class Game implements Saveable
 
 			Fk.broadcast(Messages.BROADCAST_START.getMessage());
 			setState(GameState.STARTED);
-			startTimer();
 		}, time * 20L);
 	}
 
