@@ -21,10 +21,10 @@ public enum Color
 	GRIS("gris", "grise", ChatColor.GRAY, DyeColor.GRAY),
 	NO_COLOR("no color", "no color", ChatColor.WHITE, DyeColor.WHITE);
 
-	private String maleColor;
-	private String femColor;
-	private ChatColor chatColor;
-	private DyeColor dyeColor;
+	private final String maleColor;
+	private final String femColor;
+	private final ChatColor chatColor;
+	private final DyeColor dyeColor;
 	
 	public static final int GENRE_F = 0;
 	public static final int GENRE_M = 1;
@@ -53,7 +53,8 @@ public enum Color
 
 	public static String getGenredName(String color, int genre)
 	{
-		return forName(color).getGenredName(genre);
+		Color found = forName(color);
+		return found == null ? null : found.getGenredName(genre);
 	}
 
 	public static ChatColor getChatColor(String color)

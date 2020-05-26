@@ -67,8 +67,8 @@ public enum PlaceHolder
 
 	public String getShortestKey()
 	{
-		Comparator<String> byLength = (e1, e2) -> e1.length() > e2.length() ? -1 : 1;
-		return keys.stream().max(byLength).get();
+		Comparator<String> byLength = Comparator.comparingInt(String::length);
+		return keys.stream().min(byLength).orElseThrow(RuntimeException::new);
 	}
 	
 	public String getDescription()

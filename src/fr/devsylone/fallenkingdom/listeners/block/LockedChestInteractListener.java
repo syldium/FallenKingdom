@@ -19,6 +19,8 @@ public class LockedChestInteractListener implements Listener
 	@EventHandler
 	public void interact(PlayerInteractEvent e)
 	{
+		if (!Fk.getInstance().getWorldManager().isAffected(e.getPlayer().getWorld()))
+			return;
 		if(e.getAction().equals(Action.RIGHT_CLICK_BLOCK) && e.getClickedBlock().getType().equals(Material.CHEST) && Fk.getInstance().getFkPI().getLockedChestsManager().getChestAt(e.getClickedBlock().getLocation()) != null)
 		{
 			final LockedChest chest = Fk.getInstance().getFkPI().getLockedChestsManager().getChestAt(e.getClickedBlock().getLocation());

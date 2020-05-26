@@ -64,8 +64,6 @@ public class Fk extends JavaPlugin
 	private SaveablesManager saveableManager;
 	private PortalsManager portalManager;
 
-	//private ServerSocket server;
-
 	private static Fk instance;
 
 	private FkPI fkpi;
@@ -203,15 +201,6 @@ public class Fk extends JavaPlugin
 			conf.delete();
 		saveDefaultConfig();
 
-		/*if(getConfig().getBoolean("Application.Enabled"))
-		{
-			if(Bukkit.getVersion().contains("Spigot"))
-				server = new SpServerSocket();
-			else
-				server = new CBServerSocket();
-			server.start();
-		}*/
-
 		if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null)
 			new PlaceHolderExpansion().register();
 
@@ -227,6 +216,8 @@ public class Fk extends JavaPlugin
 		if(fkpi.getRulesManager().getRulesList().containsKey(Rule.ETERNAL_DAY) && fkpi.getRulesManager().getRule(Rule.ETERNAL_DAY))
 			for(World w : Bukkit.getWorlds())
 			{
+				if(!Fk.getInstance().getWorldManager().isAffected(w))
+					continue;
 				w.setGameRuleValue("doDaylightCycle", "false");
 				w.setTime(6000L);
 			}
@@ -266,9 +257,6 @@ public class Fk extends JavaPlugin
 			getDeepPauseManager().unprotectItems();
 			getDeepPauseManager().resetAIs();
 		}
-
-		/*if(server != null)
-			server.interrupt();*/
 
 		sbManager.removeAllScoreboards();
 
@@ -330,11 +318,6 @@ public class Fk extends JavaPlugin
 	{
 		return saveableManager;
 	}
-
-	/*public ServerSocket getServerSocket()
-	{
-		return server;
-	}*/
 
 	public PortalsManager getPortalsManager()
 	{

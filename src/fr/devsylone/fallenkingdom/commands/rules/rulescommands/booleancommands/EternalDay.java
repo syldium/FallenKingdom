@@ -20,8 +20,11 @@ public class EternalDay extends FkBooleanRuleCommand
 	protected void sendMessage(boolean newValue) {
 		for(World w : Bukkit.getWorlds())
 		{
-			w.setGameRuleValue("doDaylightCycle", newValue ? "false" : "true");
-			w.setTime(Fk.getInstance().getGame().getExceptedWorldTime());
+			if(Fk.getInstance().getWorldManager().isAffected(w))
+			{
+				w.setGameRuleValue("doDaylightCycle", newValue ? "false" : "true");
+				w.setTime(Fk.getInstance().getGame().getExceptedWorldTime());
+			}
 		}
 		broadcastOnOff(!newValue, Messages.CMD_RULES_ETERNAL_DAY);
 	}

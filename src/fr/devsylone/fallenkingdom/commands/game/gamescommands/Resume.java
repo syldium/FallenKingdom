@@ -4,8 +4,8 @@ import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
 import fr.devsylone.fallenkingdom.utils.Messages;
-import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.rules.Rule;
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 
@@ -27,23 +27,24 @@ public class Resume extends FkCommand
 	@SuppressWarnings("deprecation")
 	public CommandResult execute(Fk plugin, CommandSender sender, List<String> args, String label)
 	{
-		if(Fk.getInstance().getGame().getState().equals(Game.GameState.BEFORE_STARTING))
+		if(plugin.getGame().getState().equals(Game.GameState.BEFORE_STARTING))
 			throw new FkLightException(Messages.CMD_ERROR_GAME_NOT_STARTED);
-		if(Fk.getInstance().getGame().getState().equals(Game.GameState.STARTED))
+		if(plugin.getGame().getState().equals(Game.GameState.STARTED))
 			throw new FkLightException(Messages.CMD_ERROR_NOT_IN_PAUSE);
 
-		Fk.getInstance().getGame().setState(Game.GameState.STARTED);
+		plugin.getGame().setState(Game.GameState.STARTED);
 
-		if(!FkPI.getInstance().getRulesManager().getRule(Rule.ETERNAL_DAY))
+		if(!plugin.getFkPI().getRulesManager().getRule(Rule.ETERNAL_DAY))
 		{
-			for(World w : org.bukkit.Bukkit.getWorlds())
-				w.setGameRuleValue("doDaylightCycle", "true");
+			for(World w : Bukkit.getWorlds())
+				if (plugin.getWorldManager().isAffected(w))
+					w.setGameRuleValue("doDaylightCycle", "true");
 		}
-		Fk.getInstance().getDeepPauseManager().unfreezePlayers();
-		Fk.getInstance().getDeepPauseManager().resetAIs();
-		Fk.getInstance().getDeepPauseManager().unprotectItems();
+		plugin.getDeepPauseManager().unfreezePlayers();
+		plugin.getDeepPauseManager().resetAIs();
+		plugin.getDeepPauseManager().unprotectItems();
 
-		Fk.broadcast(Messages.CMD_GAME_RESUME.getMessage(), FkSound.NOTE_PIANO);
+		broadcast(Messages.CMD_GAME_RESUME.getMessage(), FkSound.NOTE_PIANO);
 		return CommandResult.SUCCESS;
 	}
 }

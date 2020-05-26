@@ -100,6 +100,9 @@ public class Game implements Saveable
 				long worldTime = getExceptedWorldTime();
 				for(World w : Bukkit.getWorlds())
 				{
+					if(!Fk.getInstance().getWorldManager().isAffected(w))
+						continue;
+
 					/*
 					 * Time skip
 					 * Dans le monde normal, si la diff n'est pas due au changement de jour. 32 correspond à une durée de jour de 750 ticks soit environ 45 sec.
@@ -126,7 +129,7 @@ public class Game implements Saveable
 						Bukkit.dispatchCommand(Bukkit.getConsoleSender(),"function fallenkingdom:newday");
 
 					if(FkPI.getInstance().getRulesManager().getRule(Rule.DO_PAUSE_AFTER_DAY) && day > 1)
-						Fk.getInstance().getCommandManager().search(Pause.class).get().execute(Fk.getInstance(), Bukkit.getConsoleSender(), Collections.emptyList(), "fk");
+						Fk.getInstance().getCommandManager().search(Pause.class).orElseThrow(RuntimeException::new).execute(Fk.getInstance(), Bukkit.getConsoleSender(), Collections.emptyList(), "fk");
 					if(FkPI.getInstance().getRulesManager().getRule(Rule.PVP_CAP) == day)
 					{
 						pvp = true;

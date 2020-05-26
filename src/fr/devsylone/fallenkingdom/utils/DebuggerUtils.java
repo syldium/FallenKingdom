@@ -1,25 +1,17 @@
 package fr.devsylone.fallenkingdom.utils;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
+import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.commands.FkCommandExecutor;
+import fr.devsylone.fkpi.lockedchests.LockedChest;
 import fr.devsylone.fkpi.rules.Rule;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
-import fr.devsylone.fallenkingdom.Fk;
-import fr.devsylone.fkpi.lockedchests.LockedChest;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class DebuggerUtils
 {
@@ -153,7 +145,7 @@ public class DebuggerUtils
         {
             try
             {
-                List<File> toDebug = new ArrayList<>(Arrays.asList(Fk.getInstance().getDataFolder().listFiles())).stream().filter(file -> file.getName().endsWith("yml")).collect(Collectors.toList());
+                List<File> toDebug = new ArrayList<>(Arrays.asList(Objects.requireNonNull(Fk.getInstance().getDataFolder().listFiles(), "Unable to access plugin files"))).stream().filter(file -> file.getName().endsWith("yml")).collect(Collectors.toList());
                 toDebug.add(new File("logs/latest.log"));
                 for(File file : toDebug)
                 {
