@@ -72,7 +72,7 @@ public class LockedChest implements Saveable
 
 	public void changeUnlocker(Player newPlayer)
 	{
-		unlocker = newPlayer.getName();
+		unlocker = newPlayer == null ? null : newPlayer.getName();
 		startUnlocking = System.currentTimeMillis();
 
 		if(newPlayer == null)
