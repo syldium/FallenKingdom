@@ -32,6 +32,8 @@ public class DamageListener implements Listener
 	@EventHandler
 	public void damage(EntityDamageEvent e)
 	{
+		if(!Fk.getInstance().getWorldManager().isAffected(e.getEntity().getWorld()))
+			return;
 		if(Fk.getInstance().getGame().getState().equals(GameState.PAUSE) && !e.getCause().equals(EntityDamageEvent.DamageCause.VOID))
 			e.setCancelled(true);
 	}
@@ -39,6 +41,8 @@ public class DamageListener implements Listener
 	@EventHandler
 	public void creeperDeath(EntityDeathEvent e)
 	{
+		if(!Fk.getInstance().getWorldManager().isAffected(e.getEntity().getWorld()))
+			return;
 		ChargedCreepers rule = FkPI.getInstance().getRulesManager().getRule(Rule.CHARGED_CREEPERS);
 		if(e.getEntity() instanceof Creeper && ((Creeper) e.getEntity()).isPowered() && (new Random().nextInt(100) <= rule.getDrop()))
 			e.getDrops().add(new ItemStack(Material.TNT, rule.getTntAmount()));
@@ -47,7 +51,7 @@ public class DamageListener implements Listener
 	@EventHandler
 	public void dead(PlayerDeathEvent e)
 	{
-		if(e.getEntity().hasMetadata("NPC"))
+		if(e.getEntity().hasMetadata("NPC") || !Fk.getInstance().getWorldManager().isAffected(e.getEntity().getWorld()))
 			return;
 
 		e.setDeathMessage(ChatUtils.PREFIX + e.getDeathMessage());

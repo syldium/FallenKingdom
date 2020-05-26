@@ -37,6 +37,8 @@ public class PauseInteractionListener implements Listener
 
     public boolean isCancelledDueToPause(final Player player)
     {
+        if (!Fk.getInstance().getWorldManager().isAffected(player.getWorld()))
+            return false;
         if (Fk.getInstance().getGame().getState().equals(GameState.PAUSE) && FkPI.getInstance().getRulesManager().getRule(Rule.DEEP_PAUSE))
             return player.getGameMode().equals(GameMode.SURVIVAL) || player.getGameMode().equals(GameMode.ADVENTURE);
         return false;

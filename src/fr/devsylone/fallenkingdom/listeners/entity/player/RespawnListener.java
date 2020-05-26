@@ -20,6 +20,8 @@ public class RespawnListener implements Listener
 	@EventHandler
 	public void respawn(final PlayerRespawnEvent e)
 	{
+		if(!Fk.getInstance().getWorldManager().isAffected(e.getPlayer().getWorld()))
+			return;
 		final Team team = Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(e.getPlayer().getName());
 
 		if(FkPI.getInstance().getRulesManager().getRule(Rule.DEATH_LIMIT) > 0)

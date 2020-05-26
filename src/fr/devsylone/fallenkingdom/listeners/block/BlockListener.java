@@ -36,6 +36,9 @@ public class BlockListener implements Listener
 	@EventHandler
 	public void event(BlockPlaceEvent e)
 	{
+		if (!Fk.getInstance().getWorldManager().isAffected(e.getPlayer().getWorld()))
+			return;
+
 		Player p = e.getPlayer();
 		FkPlayer fkp = Fk.getInstance().getPlayerManager().getPlayer(p);
 		Team team = Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(p.getName());
@@ -139,6 +142,9 @@ public class BlockListener implements Listener
 	@EventHandler
 	public void event(BlockBreakEvent e)
 	{
+		if (!Fk.getInstance().getWorldManager().isAffected(e.getPlayer().getWorld()))
+			return;
+
 		Player p = e.getPlayer();
 		Team team = Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(p.getName());
 
