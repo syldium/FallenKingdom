@@ -82,10 +82,10 @@ public final class XPotionData
 		if(VERSION1_8)
 		{
 			Potion potion = Potion.fromItemStack(potionItem);
-			return potion.getType() == null ? null : new XPotionData(potion.getType(), potion.hasExtendedDuration(), potion.getLevel() > 1);
+			return potion.getType() == null ? null : new XPotionData(potion.getType(), potion.hasExtendedDuration(), potion.getType().getMaxLevel() > 1 && potion.getLevel() > 1);
 		}
 		else
-		{//TODO type == null ??
+		{
 			PotionData data = ((PotionMeta) potionItem.getItemMeta()).getBasePotionData();
 			return new XPotionData(data.getType(), data.isExtended(), data.isUpgraded());
 		}
