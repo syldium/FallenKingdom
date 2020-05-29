@@ -65,10 +65,18 @@ public class ArgumentParser {
             return parseBlock(args.get(index));
         }
         Material m = player.getItemInHand().getType();
-        if (!m.isBlock() || (denyAir && m.isAir())) {
+        if (!m.isBlock() || (denyAir && isAir(m))) {
             throw new ArgumentParseException(Messages.CMD_ERROR_UNKNOWN_BLOCK.getMessage().replace("%block%", m.name()));
         }
         return new BlockDescription(player.getItemInHand());
+    }
+
+    public static boolean isAir(Material material) {
+        if (Version.VersionType.V1_13.isHigherOrEqual()) {
+            return material.isAir();
+        } else {
+            return material.equals(Material.AIR);
+        }
     }
 
     public static int parseInt(String nb, Messages errorMessage) throws ArgumentParseException {
