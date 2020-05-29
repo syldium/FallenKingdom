@@ -327,7 +327,7 @@ RETRAIT      = [-]
 [*] Fix d'une erreur au lancement avec Mohist
 --------
 
-      >> 2.19.0-beta
+      >> 2.19.0
 [+] Édition et traduction de la quasi totalité des messages
 [+] Introduction des commandes et fichiers de langue
 [+] Nouvelle commande de debug
@@ -345,3 +345,23 @@ RETRAIT      = [-]
 [*] Fix des permissions des commandes /fk chest
 [*] Avec la règle respawnAtHome et une deathLimit dépassée, un joueur ne respawnera pas
 [-] Retrait des commandes acceptApp et denyApp
+
+      >> 2.19.1
+[*] La première initialisation des règles se fait sans erreurs
+[*] Avec Spigot 1.13+, les premiers arguments de commande incorrects affichent une erreur dans la coloration
+[*] Quelques api développeurs
+[*] Suppression des doublons des localisation des portails du nether  en config
+[*] Fix de l'updater
+
+      >> 2.19.2
+[*] Fix des commandes /fk team chestsRoom offset|captureTime
+
+      >> 2.19.3
+[*] L'heure des mondes n'est plus impactée lorsque le plugin est désactivé dans celui-ci
+[*] La vérification de l'ouverture de portails ne prend en compte plus en compte les mondes désactivés
+[*] L'abandon de crochetage ne bloque plus le coffre
+[*] Fix des vérifications de l'argument <blocks> comme dans allowBlock (1.12-)
+[*] Utiliser des potions sans niveau II ne provoque plus d'erreur (1.8)
+[*] /fk game pause ne génère plus d'erreur lorsque exécuté en console (1.12-)
+[*] Les commandes help sont désormais référencées dans Brigadier (1.13+)
+[*] Correction de quelques fautes de frappe dans le fichier de langue
