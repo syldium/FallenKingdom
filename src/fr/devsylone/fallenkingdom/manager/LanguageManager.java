@@ -61,7 +61,7 @@ public class LanguageManager
                 .filter(File::isFile)
                 .map(file -> file.getName().substring(0, file.getName().lastIndexOf('.')))
                 .toArray(String[]::new);
-            String message = ChatColor.RED + "Veuillez sélectionner votre langue / Please select your language";
+            String message = ChatColor.RED + "Veuillez sélectionner votre langue en cliquant dessus. / Please select your language by clicking on it.";
             BaseComponent[] localeComponents = null;
             for (String locale : locales) {
                 localeComponents = TextComponent.fromLegacyText(ChatColor.GRAY + "[" + ChatColor.UNDERLINE + ChatColor.DARK_AQUA + locale + ChatColor.GRAY + "] ");

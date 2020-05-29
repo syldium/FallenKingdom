@@ -110,6 +110,7 @@ public enum Messages
     CMD_MAP_GAME_STARTER_INV("cmd.map.game.starterInv"),
     CMD_MAP_GAME_STOP("cmd.map.game.stop"),
 
+    CMD_MAP_LANG_SET("cmd.map.lang.set"),
     CMD_MAP_LANG_TRY_LOAD("cmd.map.lang.tryLoad"),
 
     CMD_MAP_RULES("cmd.map.rules"),

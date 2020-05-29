@@ -1,5 +1,6 @@
 package fr.devsylone.fkpi.util;
 
+import fr.devsylone.fallenkingdom.manager.LanguageManager;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 
@@ -40,7 +41,7 @@ public enum Color
 	public static Color forName(String name)
 	{
 		for(Color c : Color.values())
-			if(name.equalsIgnoreCase(c.maleColor) || name.equalsIgnoreCase(c.femColor))
+			if(name.equalsIgnoreCase(c.maleColor) || name.equalsIgnoreCase(c.femColor) || c.dyeColor.name().equalsIgnoreCase(name))
 				return c;
 
 		return null;
@@ -48,7 +49,9 @@ public enum Color
 	
 	public String getGenredName(int genre)
 	{
-		return genre == GENRE_M ? maleColor : femColor;
+		if(LanguageManager.getLocalePrefix().equalsIgnoreCase("fr"))
+			return genre == GENRE_M ? maleColor : femColor;
+		return dyeColor.name().toLowerCase().replace('_', ' ');
 	}
 
 	public static String getGenredName(String color, int genre)

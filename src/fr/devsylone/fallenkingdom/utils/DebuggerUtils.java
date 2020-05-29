@@ -135,6 +135,10 @@ public class DebuggerUtils
         log("  > State: " + Fk.getInstance().getGame().getState());
         log("  > Day: " + Fk.getInstance().getGame().getDays());
         log("  > Time: " + Fk.getInstance().getGame().getFormattedTime());
+        log("  > Nether: " + Fk.getInstance().getGame().isNetherEnabled());
+        log("  > PvP: " + Fk.getInstance().getGame().isPvpEnabled());
+        log("  > End: " + Fk.getInstance().getGame().isEndEnabled());
+        log("  > Assaults: " + Fk.getInstance().getGame().isAssaultsEnabled());
         log("---- Chests ---");
         for(LockedChest chest : Fk.getInstance().getFkPI().getLockedChestsManager().getChestList())
             log("  > " + chest.toString());

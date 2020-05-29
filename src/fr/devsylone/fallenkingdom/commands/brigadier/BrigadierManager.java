@@ -57,6 +57,7 @@ public class BrigadierManager<S>
      */
     public LiteralCommandNode<S> register(CommandManager commandManager, String literal, SuggestionProvider<S> suggestionProvider) {
         LiteralArgumentBuilder<S> builder = LiteralArgumentBuilder.literal(literal);
+        builder.then(LiteralArgumentBuilder.literal("help"));
 
         for (AbstractCommand command : commandManager.getMainCommands()) {
             if (command.shouldDisplay()) {
@@ -76,6 +77,7 @@ public class BrigadierManager<S>
         LiteralArgumentBuilder<S> builder = LiteralArgumentBuilder.<S>literal(command.getName())
                 .requires(sender -> command.hasPermission(getBukkitSender(sender)));
         if (command instanceof FkParentCommand) {
+            builder.then(LiteralArgumentBuilder.literal("help"));
             for (AbstractCommand subCommand : ((FkParentCommand) command).getChildren()) {
                 if (subCommand.shouldDisplay()) {
                     builder.then(buildCommandNode(subCommand, suggestionProvider));

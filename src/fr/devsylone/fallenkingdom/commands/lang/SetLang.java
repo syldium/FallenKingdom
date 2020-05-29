@@ -17,33 +17,31 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class SetLang extends FkCommand
 {
     public SetLang() {
-        super("set", "<lang>", null, CommandPermission.ADMIN);
+        super("set", "<lang>", Messages.CMD_MAP_LANG_SET, CommandPermission.ADMIN);
     }
 
     @Override
     public CommandResult execute(Fk plugin, CommandSender sender, List<String> args, String label) {
         File[] files = Objects.requireNonNull(new File(plugin.getDataFolder(), File.separator + "locales").listFiles(), "Could not list files in locales/ directory.");
-        Optional<String> lang = Arrays.stream(files)
+
+        String lang = Arrays.stream(files)
                 .filter(File::isFile)
                 .map(file -> file.getName().substring(0, file.getName().lastIndexOf('.')))
                 .filter(locale -> locale.equals(args.get(0)))
-                .findFirst();
+                .findFirst()
+                .orElseThrow(() -> new FkLightException("Unable to find language file for " + args.get(0) + "."));
 
-        if (!lang.isPresent())
-            throw new FkLightException("Unable to find language file for " + args.get(0) + ".");
-
-        plugin.getConfig().set("lang", lang.get());
+        plugin.getConfig().set("lang", lang);
         Path path = new File(plugin.getDataFolder(), "config.yml").toPath();
         try (Stream<String> lines = Files.lines(path)) {
             List<String> replaced = lines
-                    .map(line -> line.replaceAll("^lang:(.+)$", "lang: \"" + lang.get() + "\""))
+                    .map(line -> line.replaceAll("^lang:(.+)$", "lang: \"" + lang + "\""))
                     .collect(Collectors.toList());
             Files.write(path, replaced);
         } catch (IOException e) {
