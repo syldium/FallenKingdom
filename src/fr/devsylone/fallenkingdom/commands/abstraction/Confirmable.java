@@ -7,25 +7,32 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public interface Confirmable {
-    List<UUID> confirmed = new ArrayList<>();
+
+    int confirmationDelay = 10; // en secondes
+    Map<UUID, Long> confirmed = new HashMap<>();
+    // Sauvegarder l'instant où la commande a été exécutée permet d'éviter le cas où le BukkitRunnable soit annulé
 
     default boolean isConfirmed(CommandSender sender) {
         if (!(sender instanceof Player))
             return true;
-        return confirmed.contains(((Player) sender).getUniqueId());
+        Long confirmation = confirmed.get(((Player) sender).getUniqueId());
+        if (confirmation == null) {
+            return false;
+        }
+        return confirmation > System.currentTimeMillis()-confirmationDelay*1000;
     }
 
     default void addConfirmed(CommandSender sender) {
         if (!(sender instanceof Player))
             return;
         UUID uuid = ((Player) sender).getUniqueId();
-        confirmed.add(uuid);
-        Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), () -> confirmed.remove(uuid), 10 * 20);
+        confirmed.put(uuid, System.currentTimeMillis());
+        Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), () -> confirmed.remove(uuid),confirmationDelay * 20L);
     }
 
     default String createWarning(Messages warning, boolean format) {
