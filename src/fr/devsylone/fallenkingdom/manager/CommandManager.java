@@ -158,4 +158,8 @@ public class CommandManager
 	public boolean hasPermission(CommandSender sender, String permission) {
 		return !permissions || sender.hasPermission(permission);
 	}
+
+	public boolean withPermissions() {
+		return permissions;
+	}
 }
