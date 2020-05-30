@@ -61,7 +61,7 @@ public class BrigadierManager<S>
 
         for (AbstractCommand command : commandManager.getMainCommands()) {
             if (command.shouldDisplay()) {
-                builder.then(buildCommandNode(command, suggestionProvider));
+                builder.then(buildCommandNode(command, suggestionProvider, commandManager.withPermissions()));
             }
         }
         return builder.build();
@@ -73,14 +73,14 @@ public class BrigadierManager<S>
      * @param suggestionProvider Prestataire de suggestions
      * @return Commande Brigadier
      */
-    CommandNode<S> buildCommandNode(AbstractCommand command, SuggestionProvider<S> suggestionProvider) {
+    CommandNode<S> buildCommandNode(AbstractCommand command, SuggestionProvider<S> suggestionProvider, boolean withPermissions) {
         LiteralArgumentBuilder<S> builder = LiteralArgumentBuilder.<S>literal(command.getName())
-                .requires(sender -> command.hasPermission(getBukkitSender(sender)));
+                .requires(sender -> !withPermissions || command.hasPermission(getBukkitSender(sender)));
         if (command instanceof FkParentCommand) {
             builder.then(LiteralArgumentBuilder.literal("help"));
             for (AbstractCommand subCommand : ((FkParentCommand) command).getChildren()) {
                 if (subCommand.shouldDisplay()) {
-                    builder.then(buildCommandNode(subCommand, suggestionProvider));
+                    builder.then(buildCommandNode(subCommand, suggestionProvider, withPermissions));
                 }
             }
             return builder.build();
