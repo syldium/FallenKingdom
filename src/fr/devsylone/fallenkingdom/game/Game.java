@@ -195,7 +195,6 @@ public class Game implements Saveable
 		pvp = false;
 		nether = false;
 		end = false;
-		Fk.getInstance().getScoreboardManager().refreshAllScoreboards();
 	}
 
 	public int getDays()
@@ -287,19 +286,21 @@ public class Game implements Saveable
 		assault = FkPI.getInstance().getRulesManager().getRule(Rule.TNT_CAP) <= day;
 		nether = FkPI.getInstance().getRulesManager().getRule(Rule.NETHER_CAP) <= day;
 		end = FkPI.getInstance().getRulesManager().getRule(Rule.END_CAP) <= day;
-		startTimer();
 		updateDayDuration();
 
-		if(state.equals(GameState.STARTING))
-		{
-			state = GameState.BEFORE_STARTING;
-			start();
-		}
-
-		else if(state.equals(GameState.PAUSE) && FkPI.getInstance().getRulesManager().getRule(Rule.DEEP_PAUSE))
-		{
-			Fk.getInstance().getDeepPauseManager().removeAIs();
-			Fk.getInstance().getDeepPauseManager().protectDespawnItems();
+		switch (state) {
+			case STARTING:
+				state = GameState.BEFORE_STARTING;
+				start();
+				break;
+			case PAUSE:
+				if (FkPI.getInstance().getRulesManager().getRule(Rule.DEEP_PAUSE)) {
+					Fk.getInstance().getDeepPauseManager().removeAIs();
+					Fk.getInstance().getDeepPauseManager().protectDespawnItems();
+				}
+				break;
+			case STARTED:
+				startTimer();
 		}
 	}
 
@@ -316,7 +317,7 @@ public class Game implements Saveable
 			throw new FkLightException(Messages.CMD_ERROR_GAME_ALREADY_STARTED);
 
 		setState(GameState.STARTING);
-		long time = 0;
+		time = 0;
 
 		broadcastStartIn(30);
 
@@ -366,6 +367,7 @@ public class Game implements Saveable
 
 			Fk.broadcast(Messages.BROADCAST_START.getMessage());
 			setState(GameState.STARTED);
+			startTimer();
 		}, time * 20L);
 	}
 
