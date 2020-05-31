@@ -1,5 +1,9 @@
 package fr.devsylone.fallenkingdom.commands.rules.rulescommands;
 
+import java.util.List;
+
+import org.bukkit.command.CommandSender;
+
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.commands.ArgumentParser;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
@@ -8,9 +12,6 @@ import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.rules.Rule;
-import org.bukkit.command.CommandSender;
-
-import java.util.List;
 
 public class DayDuration extends FkCommand
 {
@@ -31,7 +32,7 @@ public class DayDuration extends FkCommand
                 .replace("%duration%", String.valueOf(mins))
                 .replace("%unit%", Messages.Unit.MINUTES.tl(mins))
         );
-        plugin.getGame().updateDayDuration();
+        plugin.getGame().getGameRunnable().updateDayDuration();
         return CommandResult.SUCCESS;
     }
 }

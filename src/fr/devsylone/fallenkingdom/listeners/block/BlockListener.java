@@ -1,10 +1,5 @@
 package fr.devsylone.fallenkingdom.listeners.block;
 
-import fr.devsylone.fallenkingdom.utils.Messages;
-import fr.devsylone.fallenkingdom.utils.XBlock;
-import fr.devsylone.fkpi.FkPI;
-import fr.devsylone.fkpi.rules.Rule;
-import fr.devsylone.fkpi.util.BlockDescription;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -21,7 +16,12 @@ import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.game.Game.GameState;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
+import fr.devsylone.fallenkingdom.utils.Messages;
+import fr.devsylone.fallenkingdom.utils.XBlock;
+import fr.devsylone.fkpi.FkPI;
+import fr.devsylone.fkpi.rules.Rule;
 import fr.devsylone.fkpi.teams.Team;
+import fr.devsylone.fkpi.util.BlockDescription;
 
 public class BlockListener implements Listener
 {

@@ -1,17 +1,26 @@
 package fr.devsylone.fallenkingdom.utils;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
+
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.commands.FkCommandExecutor;
 import fr.devsylone.fkpi.lockedchests.LockedChest;
 import fr.devsylone.fkpi.rules.Rule;
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.Plugin;
-
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.*;
-import java.util.stream.Collectors;
 
 public class DebuggerUtils
 {
@@ -133,8 +142,8 @@ public class DebuggerUtils
             log("  > " + rule.getKey().getName() + ": " + rule.getValue().toString());
         log("---- Game ---");
         log("  > State: " + Fk.getInstance().getGame().getState());
-        log("  > Day: " + Fk.getInstance().getGame().getDays());
-        log("  > Time: " + Fk.getInstance().getGame().getFormattedTime());
+        log("  > Day: " + Fk.getInstance().getGame().getGameRunnable().getCurrentDay());
+        log("  > Time: " + Fk.getInstance().getGame().getGameRunnable().getFormattedTime());
         log("  > Nether: " + Fk.getInstance().getGame().isNetherEnabled());
         log("  > PvP: " + Fk.getInstance().getGame().isPvpEnabled());
         log("  > End: " + Fk.getInstance().getGame().isEndEnabled());

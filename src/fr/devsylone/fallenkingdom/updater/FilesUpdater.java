@@ -187,7 +187,7 @@ public class FilesUpdater
         //			file.set("ScoreboardManager.Sidebar", lines);
         //		}
 
-        if(isGrowing(lastv, "2.18.2")) //TODO Remplacer par 2.19.0 ( 2.18.2 = moins propre mais obligé pour les betas)
+        if(isGrowing(lastv, "2.19.0"))
         {
             if(!Fk.getInstance().getConfig().contains("lang"))
             {
@@ -201,6 +201,15 @@ public class FilesUpdater
                 }
                 LanguageManager.init(Fk.getInstance());
             }
+        }
+
+        if(isGrowing(lastv, "2.19.4"))
+        {
+            file = Fk.getInstance().getSaveableManager().getFileConfiguration("save.yml");
+            file.set("Game.GameRunnable.Day", file.get("Game.Day"));
+            file.set("Game.GameRunnable.Time", file.get("Game.Time"));
+            file.set("Game.Day", null);
+            file.set("Game.Time", null);
         }
     }
 

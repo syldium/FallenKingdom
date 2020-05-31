@@ -1,7 +1,5 @@
 package fr.devsylone.fallenkingdom.game;
 
-import java.util.Collections;
-
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.World;
@@ -9,34 +7,30 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitTask;
 
 import fr.devsylone.fallenkingdom.Fk;
-import fr.devsylone.fallenkingdom.commands.game.gamescommands.Pause;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
-import fr.devsylone.fallenkingdom.scoreboard.PlaceHolder;
 import fr.devsylone.fallenkingdom.utils.FkSound;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fkpi.FkPI;
-import fr.devsylone.fkpi.api.event.DayEvent;
 import fr.devsylone.fkpi.api.event.GameEvent;
-import fr.devsylone.fkpi.lockedchests.LockedChest;
 import fr.devsylone.fkpi.rules.Rule;
 import fr.devsylone.fkpi.util.Saveable;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
 public class Game implements Saveable
 {
 	private GameState state = GameState.BEFORE_STARTING;
-	private int day = 0;
-	private int time = 23990;
-	private int dayDuration = 24000;
-	private int scoreboardUpdate = 20;
-	private float dayTickFactor = 1;
 
-	private boolean assault;
-	private boolean pvp;
-	private boolean nether;
-	private boolean end;
-	private int task;
+	@Setter private boolean assaultsEnabled;
+	@Setter private boolean pvpEnabled;
+	@Setter private boolean netherEnabled;
+	@Setter private boolean endEnabled;
+    private GameRunnable gameRunnable = new GameRunnable(this);
+    private BukkitTask gameTask = null;
 
 	public enum GameState
 	{
@@ -44,11 +38,6 @@ public class Game implements Saveable
 		STARTING,
 		STARTED,
 		PAUSE
-	}
-
-	public GameState getState()
-	{
-		return state;
 	}
 
 	@SuppressWarnings("incomplete-switch")
@@ -76,217 +65,31 @@ public class Game implements Saveable
 		return true;
 	}
 
-	public void startTimer()
-	{
-		if(task != 0)
-            throw new IllegalStateException("Main timer already running");
-
-		Fk.getInstance().getScoreboardManager().refreshAllScoreboards();
-
-		if(!getState().equals(GameState.BEFORE_STARTING))
-			Fk.getInstance().getTipsManager().cancelBroadcasts();
-
-		task = Bukkit.getScheduler().scheduleSyncRepeatingTask(Fk.getInstance(), new Runnable()
-		{
-			public void run()
-			{
-				if(!getState().equals(GameState.STARTED))
-					return;
-
-				time++;
-				/*
-				 * Set sun time
-				 */
-				long worldTime = getExceptedWorldTime();
-				for(World w : Bukkit.getWorlds())
-				{
-					if(!Fk.getInstance().getWorldManager().isAffected(w))
-						continue;
-
-					/*
-					 * Time skip
-					 * Dans le monde normal, si la diff n'est pas due au changement de jour. 32 correspond à une durée de jour de 750 ticks soit environ 45 sec.
-					 */
-					if(w.getEnvironment().equals(World.Environment.NORMAL) && Math.abs(w.getTime() - worldTime) > 32 && time < dayDuration && !(day == 0 && time < 20))
-					{
-						Fk.getInstance().getLogger().info("Ajustement de l'heure de la partie en fonction de l'heure du monde.");
-						time = (int) (w.getTime() * dayTickFactor);
-						worldTime = getExceptedWorldTime();
-					}
-					w.setTime(worldTime);
-				}
-				if(worldTime == 23000)
-					Fk.broadcast(Messages.BROADCAST_SUN_WILL_RISE.getMessage());
-
-				else if(time >= dayDuration)
-				{
-					day++;
-					time = 0;
-					DayEvent dayEvent = new DayEvent(DayEvent.Type.NEW_DAY, day, Messages.BROADCAST_DAY.getMessage().replace("%day%", String.valueOf(day))); //EVENT
-					Bukkit.getPluginManager().callEvent(dayEvent);
-					Fk.broadcast(dayEvent.getMessage());
-					if(Fk.getInstance().getConfig().getBoolean("enable-mcfunction-support", false))
-						Bukkit.dispatchCommand(Bukkit.getConsoleSender(),"function fallenkingdom:newday");
-
-					if(FkPI.getInstance().getRulesManager().getRule(Rule.DO_PAUSE_AFTER_DAY) && day > 1)
-						Fk.getInstance().getCommandManager().search(Pause.class).orElseThrow(RuntimeException::new).execute(Fk.getInstance(), Bukkit.getConsoleSender(), Collections.emptyList(), "fk");
-					if(FkPI.getInstance().getRulesManager().getRule(Rule.PVP_CAP) == day)
-					{
-						pvp = true;
-						DayEvent event = new DayEvent(DayEvent.Type.PVP_ENABLED, day, Messages.BROADCAST_DAY_PVP.getMessage());
-						Bukkit.getPluginManager().callEvent(event); //EVENT
-						Fk.broadcast(event.getMessage(), FkSound.ENDERDRAGON_GROWL);
-					}
-
-					if(FkPI.getInstance().getRulesManager().getRule(Rule.TNT_CAP) == day)
-					{
-						assault = true;
-						DayEvent event = new DayEvent(DayEvent.Type.TNT_ENABLED, day, Messages.BROADCAST_DAY_ASSAULT.getMessage());
-						Bukkit.getPluginManager().callEvent(event); //EVENT
-						Fk.broadcast(event.getMessage(), FkSound.ENDERDRAGON_GROWL);
-					}
-
-					if(FkPI.getInstance().getRulesManager().getRule(Rule.NETHER_CAP) == day)
-					{
-						nether = true;
-						DayEvent event = new DayEvent(DayEvent.Type.NETHER_ENABLED, day, Messages.BROADCAST_DAY_NETHER.getMessage());
-						Bukkit.getPluginManager().callEvent(event); //EVENT
-						Fk.getInstance().getPortalsManager().enablePortals();
-						Fk.broadcast(event.getMessage(), FkSound.ENDERDRAGON_GROWL);
-					}
-
-					if(FkPI.getInstance().getRulesManager().getRule(Rule.END_CAP) == day)
-					{
-						end = true;
-						DayEvent event = new DayEvent(DayEvent.Type.END_ENABLED, day, Messages.BROADCAST_DAY_END.getMessage());
-						Bukkit.getPluginManager().callEvent(event); //EVENT
-						Fk.getInstance().getPortalsManager().enablePortals();
-						Fk.broadcast(event.getMessage(), FkSound.ENDERDRAGON_GROWL);
-					}
-
-					for(LockedChest chest : Fk.getInstance().getFkPI().getLockedChestsManager().getChestList())
-						if(chest.getUnlockDay() == day)
-							Fk.broadcast(Messages.BROADCAST_DAY_CHEST.getMessage()
-									.replace("%name%", chest.getName())
-									.replace("%x%", String.valueOf(chest.getLocation().getBlockX()))
-									.replace("%y%", String.valueOf(chest.getLocation().getBlockY()))
-									.replace("%z%", String.valueOf(chest.getLocation().getBlockZ()))
-								, FkSound.ENDERMAN_TELEPORT);
-
-					Fk.getInstance().getScoreboardManager().recreateAllScoreboards();
-				}
-
-				if(time % scoreboardUpdate == 0)
-					Fk.getInstance().getScoreboardManager().refreshAllScoreboards(PlaceHolder.DAY, PlaceHolder.HOUR, PlaceHolder.MINUTE);
-
-			}
-		}, 1L, 1L);
-	}
-
 	public void stop()
 	{
-		Bukkit.getScheduler().cancelTask(task);
-		task = 0;
+	    if(gameTask != null)
+	        gameTask.cancel();
+	    gameTask = null;
+	    gameRunnable = new GameRunnable(this);
+	    
 		setState(GameState.BEFORE_STARTING);
 
-		day = 0;
-		time = 23990;
-		assault = false;
-		pvp = false;
-		nether = false;
-		end = false;
-	}
-
-	public int getDays()
-	{
-		return day;
-	}
-
-	public int getTime()
-	{
-		return time;
-	}
-
-	public long getExceptedWorldTime()
-	{
-		if (FkPI.getInstance().getRulesManager().getRule(Rule.ETERNAL_DAY))
-			return 6000;
-		else
-			return dayDuration == 24000 ? time : (long) (time / dayTickFactor);
-	}
-
-	public void updateDayDuration()
-	{
-		float previousDayTickFactor = dayTickFactor;
-		dayDuration = FkPI.getInstance().getRulesManager().getRule(Rule.DAY_DURATION);
-		if (dayDuration < 1200) {
-			FkPI.getInstance().getRulesManager().setRule(Rule.DAY_DURATION, 24000);
-			dayDuration = 24000;
-		}
-		dayTickFactor = dayDuration/24000f;
-		scoreboardUpdate = dayDuration/1200;
-		time = (int) (time/previousDayTickFactor * dayTickFactor);
-	}
-
-	public String getFormattedTime()
-	{
-		int gameTime = (int) (time / dayTickFactor);
-		int hours = gameTime / 1000 + 6;
-		hours %= 24;
-		int minutes = (gameTime % 1000) * 60 / 1000;
-		String mm = "0" + minutes;
-		mm = mm.substring(mm.length() - 2);
-		return hours + "h" + mm;
-	}
-
-	public String getHour()
-	{
-		int gameTime = (int) (time / dayTickFactor);
-		int hours = gameTime / 1000 + 6;
-		hours %= 24;
-		return String.valueOf(hours);
-	}
-
-	public String getMinute()
-	{
-		int gameTime = (int) (time / dayTickFactor);
-		int minutes = (gameTime % 1000) * 60 / 1000;
-		String mm = "0" + minutes;
-		mm = mm.substring(mm.length() - 2);
-		return mm;
-	}
-
-	public boolean isAssaultsEnabled()
-	{
-		return assault;
-	}
-
-	public boolean isPvpEnabled()
-	{
-		return pvp;
-	}
-
-	public boolean isNetherEnabled()
-	{
-		return nether;
-	}
-
-	public boolean isEndEnabled()
-	{
-		return end;
+		assaultsEnabled = false;
+		pvpEnabled = false;
+		netherEnabled = false;
+		endEnabled = false;
 	}
 
 	public void load(ConfigurationSection config)
 	{
 		state = GameState.valueOf(config.getString("State"));
-		day = config.getInt("Day");
-		time = config.getInt("Time");
-
-		pvp = FkPI.getInstance().getRulesManager().getRule(Rule.PVP_CAP) <= day;
-		assault = FkPI.getInstance().getRulesManager().getRule(Rule.TNT_CAP) <= day;
-		nether = FkPI.getInstance().getRulesManager().getRule(Rule.NETHER_CAP) <= day;
-		end = FkPI.getInstance().getRulesManager().getRule(Rule.END_CAP) <= day;
-		updateDayDuration();
+		gameRunnable.load(config.getConfigurationSection("GameRunnable"));
+        int currentDay = gameRunnable.getCurrentDay();
+		pvpEnabled = FkPI.getInstance().getRulesManager().getRule(Rule.PVP_CAP) <= currentDay;
+		assaultsEnabled = FkPI.getInstance().getRulesManager().getRule(Rule.TNT_CAP) <= currentDay;
+		netherEnabled = FkPI.getInstance().getRulesManager().getRule(Rule.NETHER_CAP) <= currentDay;
+		endEnabled = FkPI.getInstance().getRulesManager().getRule(Rule.END_CAP) <= currentDay;
+		gameRunnable.updateDayDuration();
 
 		switch (state) {
 			case STARTING:
@@ -298,17 +101,22 @@ public class Game implements Saveable
 					Fk.getInstance().getDeepPauseManager().removeAIs();
 					Fk.getInstance().getDeepPauseManager().protectDespawnItems();
 				}
-				break;
-			case STARTED:
-				startTimer();
+            case STARTED:
+                if(gameTask != null)
+                    gameTask.cancel();
+                gameRunnable = new GameRunnable(this);
+                gameTask = Bukkit.getScheduler().runTaskTimer(Fk.getInstance(), gameRunnable, 1l, 1l);
+            case BEFORE_STARTING:
+                break;
+            default:
+                break;
 		}
 	}
 
 	public void save(ConfigurationSection config)
 	{
 		config.set("State", state.name());
-		config.set("Day", day);
-		config.set("Time", time);
+        gameRunnable.save(config.createSection("GameRunnable"));
 	}
 
 	public void start()
@@ -317,7 +125,7 @@ public class Game implements Saveable
 			throw new FkLightException(Messages.CMD_ERROR_GAME_ALREADY_STARTED);
 
 		setState(GameState.STARTING);
-		time = 0;
+		int time = 0;
 
 		broadcastStartIn(30);
 
@@ -361,14 +169,17 @@ public class Game implements Saveable
 				p.playSound(p.getLocation(), FkSound.EXPLODE.bukkitSound(), 1, 1);
 			}
 
-			updateDayDuration();
+            gameRunnable.updateDayDuration();
 			for(World w : Bukkit.getWorlds())
 				w.setTime(FkPI.getInstance().getRulesManager().getRule(Rule.ETERNAL_DAY) ? 6000L : 23990L);
 
-			Fk.broadcast(Messages.BROADCAST_START.getMessage());
-			setState(GameState.STARTED);
-			startTimer();
-		}, time * 20L);
+            Fk.broadcast(Messages.BROADCAST_START.getMessage());
+            setState(GameState.STARTED);
+            if(gameTask != null)
+                gameTask.cancel();
+            gameRunnable = new GameRunnable(this);
+            gameTask = Bukkit.getScheduler().runTaskTimer(Fk.getInstance(), gameRunnable, 1l, 1l);
+        }, time * 20L);
 	}
 
 	private void delayedRunnable(Runnable runnable, long delay)

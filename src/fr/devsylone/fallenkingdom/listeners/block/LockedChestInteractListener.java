@@ -1,6 +1,5 @@
 package fr.devsylone.fallenkingdom.listeners.block;
 
-import fr.devsylone.fallenkingdom.utils.Messages;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -10,6 +9,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
+import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fkpi.lockedchests.LockedChest;
 import fr.devsylone.fkpi.lockedchests.LockedChest.ChestState;
 
@@ -35,7 +35,7 @@ public class LockedChestInteractListener implements Listener
 			}
 			
 			e.setCancelled(true);
-			if(chest.getUnlockDay() > Fk.getInstance().getGame().getDays())
+			if(chest.getUnlockDay() > Fk.getInstance().getGame().getGameRunnable().getCurrentDay())
 			{
 				e.getPlayer().sendMessage(Messages.PLAYER_LOCKED_CHEST_TOO_EARLY.getMessage().replace("%day%", String.valueOf(chest.getUnlockDay())));
 				return;
