@@ -120,7 +120,7 @@ public class Fk extends JavaPlugin
 		 * FkPI
 		 */
 
-		fkpi = new FkPI(this);
+		fkpi = new FkPI();
 
 		/*
 		 * command /fk

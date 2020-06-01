@@ -47,15 +47,22 @@ public class RulesManager implements Saveable
 
 			if (entry.getKey().getDefaultValue() instanceof RuleValue) {
 				RuleValue loaded = ((RuleValue) entry.getKey().getDefaultValue());
-				if (config.contains(configPath))
+				if (config != null && config.contains(configPath))
 					loaded.load(config.getConfigurationSection(configPath));
 				else
 					loaded.fillWithDefaultValue();
 				rules.put(entry.getKey(), loaded);
 			} else {
-				rules.put(entry.getKey(), config.get(configPath + ".value", entry.getKey().getDefaultValue()));
+				Object defaultValue = entry.getKey().getDefaultValue();
+				rules.put(entry.getKey(), config != null ? config.get(configPath + ".value", defaultValue) : defaultValue);
 			}
 		}
+	}
+
+	@Override
+	public void loadNullable(ConfigurationSection config)
+	{
+		load(config); // Null-safe :sunglasses:
 	}
 
 	@Override

@@ -1,16 +1,19 @@
 package fr.devsylone.fallenkingdom.manager;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
-
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.updater.FilesUpdater;
 import fr.devsylone.fkpi.util.Saveable;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class SaveablesManager
 {
@@ -82,10 +85,10 @@ public class SaveablesManager
 				{
 					e.printStackTrace();
 				}
-
-			for(Saveable s : sort(saveables.keySet()))
-				s.load(saveables.get(s).contains(s.getClass().getSimpleName()) ? saveables.get(s).getConfigurationSection(s.getClass().getSimpleName()) : saveables.get(s).createSection(s.getClass().getSimpleName()));
 		}
+		for(Saveable s : sort(saveables.keySet()))
+			s.loadNullable(saveables.get(s).contains(s.getClass().getSimpleName()) ? saveables.get(s).getConfigurationSection(s.getClass().getSimpleName()) : saveables.get(s).createSection(s.getClass().getSimpleName()));
+
 		state = State.SLEEP;
 		Fk.getInstance().getScoreboardManager().recreateAllScoreboards();
 	}
