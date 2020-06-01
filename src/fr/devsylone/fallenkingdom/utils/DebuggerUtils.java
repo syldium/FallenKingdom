@@ -142,8 +142,8 @@ public class DebuggerUtils
             log("  > " + rule.getKey().getName() + ": " + rule.getValue().toString());
         log("---- Game ---");
         log("  > State: " + Fk.getInstance().getGame().getState());
-        log("  > Day: " + Fk.getInstance().getGame().getGameRunnable().getCurrentDay());
-        log("  > Time: " + Fk.getInstance().getGame().getGameRunnable().getFormattedTime());
+        log("  > Day: " + Fk.getInstance().getGame().getDay());
+        log("  > Time: " + Fk.getInstance().getGame().getFormattedTime());
         log("  > Nether: " + Fk.getInstance().getGame().isNetherEnabled());
         log("  > PvP: " + Fk.getInstance().getGame().isPvpEnabled());
         log("  > End: " + Fk.getInstance().getGame().isEndEnabled());

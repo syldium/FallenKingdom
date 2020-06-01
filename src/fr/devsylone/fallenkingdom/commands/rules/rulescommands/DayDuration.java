@@ -32,7 +32,7 @@ public class DayDuration extends FkCommand
                 .replace("%duration%", String.valueOf(mins))
                 .replace("%unit%", Messages.Unit.MINUTES.tl(mins))
         );
-        plugin.getGame().getGameRunnable().updateDayDuration();
+        plugin.getGame().updateDayDuration();
         return CommandResult.SUCCESS;
     }
 }

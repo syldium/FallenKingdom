@@ -12,14 +12,13 @@ import org.bukkit.entity.Player;
 
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.game.Game;
-import fr.devsylone.fallenkingdom.game.GameRunnable;
 import fr.devsylone.fallenkingdom.utils.PlaceHolderUtils;
 
 public enum PlaceHolder
 {
-    DAY(PlaceHolderUtils.GAMERUNNABLE_SUPPLIER, GameRunnable::getCurrentDay, "Jour", "DAY", "DAYS", "JOUR", "JOURS", "D", "J"),
-    HOUR(PlaceHolderUtils.GAMERUNNABLE_SUPPLIER, GameRunnable::getHour, "Heure", "Heure", "HOUR", "HOURS", "HEURE", "HEURES", "H"),
-    MINUTE(PlaceHolderUtils.GAMERUNNABLE_SUPPLIER, GameRunnable::getMinute, "Minutes", "Minute", "MINUTE", "MINUTES", "M"),
+    DAY(PlaceHolderUtils.GAME_SUPPLIER, Game::getDay, "Jour", "DAY", "DAYS", "JOUR", "JOURS", "D", "J"),
+    HOUR(PlaceHolderUtils.GAME_SUPPLIER, Game::getHour, "Heure", "Heure", "HOUR", "HOURS", "HEURE", "HEURES", "H"),
+    MINUTE(PlaceHolderUtils.GAME_SUPPLIER, Game::getMinute, "Minutes", "Minute", "MINUTE", "MINUTES", "M"),
     TEAM(PlaceHolderUtils::getTeamOf, "Équipe du joueur", "PLAYER_TEAM", "TEAM", "EQUIPE"),
     DEATHS(PlaceHolderUtils::getDeaths, "Nombre de morts", "PLAYER_DEATHS", "DEATHS", "MORTS"),
     KILLS(PlaceHolderUtils::getKills,"Nombre de kills", "PLAYER_KILLS", "KILLS"),

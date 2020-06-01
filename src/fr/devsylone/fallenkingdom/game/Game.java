@@ -1,13 +1,10 @@
 package fr.devsylone.fallenkingdom.game;
 
+import fr.devsylone.fkpi.teams.Team;
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitTask;
 
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
@@ -18,19 +15,22 @@ import fr.devsylone.fkpi.api.event.GameEvent;
 import fr.devsylone.fkpi.rules.Rule;
 import fr.devsylone.fkpi.util.Saveable;
 import lombok.Getter;
-import lombok.Setter;
 
-@Getter
 public class Game implements Saveable
 {
-	private GameState state = GameState.BEFORE_STARTING;
+	@Getter protected GameState state = GameState.BEFORE_STARTING;
+	@Getter protected int day = 0;
+	@Getter protected int time = FkPI.getInstance().getRulesManager().getRule(Rule.DAY_DURATION) - 10;
 
-	@Setter private boolean assaultsEnabled;
-	@Setter private boolean pvpEnabled;
-	@Setter private boolean netherEnabled;
-	@Setter private boolean endEnabled;
-    private GameRunnable gameRunnable = new GameRunnable(this);
-    private BukkitTask gameTask = null;
+	protected GameRunnable task = null;
+	protected int dayDurationCache = 24000;
+	protected int scoreboardUpdate = 20;
+	protected float dayTickFactor = 1;
+
+	@Getter protected boolean assaultsEnabled = false;
+	@Getter protected boolean pvpEnabled = false;
+	@Getter protected boolean netherEnabled = false;
+	@Getter protected boolean endEnabled = false;
 
 	public enum GameState
 	{
@@ -40,7 +40,6 @@ public class Game implements Saveable
 		PAUSE
 	}
 
-	@SuppressWarnings("incomplete-switch")
 	public boolean setState(GameState state)
 	{
 		if(this.state == state)
@@ -57,7 +56,6 @@ public class Game implements Saveable
 					Bukkit.getPluginManager().callEvent(new GameEvent(GameEvent.Type.START_EVENT));
 				else
 					Bukkit.getPluginManager().callEvent(new GameEvent(GameEvent.Type.RESUME_EVENT));
-				break;
 		}
 
 		this.state = state;
@@ -65,15 +63,31 @@ public class Game implements Saveable
 		return true;
 	}
 
+	public void startTimer()
+	{
+		if(task != null && !task.isCancelled())
+			throw new IllegalStateException("Main timer already running");
+
+		if(!state.equals(GameState.BEFORE_STARTING))
+			Fk.getInstance().getTipsManager().cancelBroadcasts();
+
+		task = new GameRunnable(this);
+		task.runTaskTimer(Fk.getInstance(), 1L, 1L);
+	}
+
+	public void stopTimer()
+	{
+		task.cancel();
+		task = null;
+	}
+
 	public void stop()
 	{
-	    if(gameTask != null)
-	        gameTask.cancel();
-	    gameTask = null;
-	    gameRunnable = new GameRunnable(this);
-	    
+	    stopTimer();
 		setState(GameState.BEFORE_STARTING);
 
+		day = 0;
+		time = FkPI.getInstance().getRulesManager().getRule(Rule.DAY_DURATION) - 10;
 		assaultsEnabled = false;
 		pvpEnabled = false;
 		netherEnabled = false;
@@ -83,13 +97,14 @@ public class Game implements Saveable
 	public void load(ConfigurationSection config)
 	{
 		state = GameState.valueOf(config.getString("State"));
-		gameRunnable.load(config.getConfigurationSection("GameRunnable"));
-        int currentDay = gameRunnable.getCurrentDay();
-		pvpEnabled = FkPI.getInstance().getRulesManager().getRule(Rule.PVP_CAP) <= currentDay;
-		assaultsEnabled = FkPI.getInstance().getRulesManager().getRule(Rule.TNT_CAP) <= currentDay;
-		netherEnabled = FkPI.getInstance().getRulesManager().getRule(Rule.NETHER_CAP) <= currentDay;
-		endEnabled = FkPI.getInstance().getRulesManager().getRule(Rule.END_CAP) <= currentDay;
-		gameRunnable.updateDayDuration();
+		day = config.getInt("Day");
+		time = config.getInt("Time");
+
+		pvpEnabled = FkPI.getInstance().getRulesManager().getRule(Rule.PVP_CAP) <= day;
+		assaultsEnabled = FkPI.getInstance().getRulesManager().getRule(Rule.TNT_CAP) <= day;
+		netherEnabled = FkPI.getInstance().getRulesManager().getRule(Rule.NETHER_CAP) <= day;
+		endEnabled = FkPI.getInstance().getRulesManager().getRule(Rule.END_CAP) <= day;
+		updateDayDuration();
 
 		switch (state) {
 			case STARTING:
@@ -101,22 +116,17 @@ public class Game implements Saveable
 					Fk.getInstance().getDeepPauseManager().removeAIs();
 					Fk.getInstance().getDeepPauseManager().protectDespawnItems();
 				}
-            case STARTED:
-                if(gameTask != null)
-                    gameTask.cancel();
-                gameRunnable = new GameRunnable(this);
-                gameTask = Bukkit.getScheduler().runTaskTimer(Fk.getInstance(), gameRunnable, 1l, 1l);
-            case BEFORE_STARTING:
-                break;
-            default:
-                break;
+				break;
+			case STARTED:
+				startTimer();
 		}
 	}
 
 	public void save(ConfigurationSection config)
 	{
 		config.set("State", state.name());
-        gameRunnable.save(config.createSection("GameRunnable"));
+		config.set("Day", day);
+		config.set("Time", time);
 	}
 
 	public void start()
@@ -149,36 +159,24 @@ public class Game implements Saveable
 
 		time += 6;
 
-		Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), () -> {
-			for(Player p : Bukkit.getOnlinePlayers())
-			{
-				if(Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(p.getName()) != null && Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(p.getName()).getBase() != null)
-				{
-					p.teleport(Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(p.getName()).getBase().getTpPoint());
-
-					p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20 * 5, 4));
-					p.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, 20 * 30, 4));
-					p.setGameMode(GameMode.SURVIVAL);
-					p.setHealth(20);
-					p.setFoodLevel(20);
-					p.setSaturation(20);
-					p.setFlying(false);
-					Fk.getInstance().getStarterInventoryManager().applyStarterInv(p);
-				}
-
-				p.playSound(p.getLocation(), FkSound.EXPLODE.bukkitSound(), 1, 1);
+		Bukkit.getScheduler().runTaskLater(Fk.getInstance(), () -> {
+			long delayTeleportByTeam = 0;
+			for (Team team : FkPI.getInstance().getTeamManager().getTeams()) {
+				Bukkit.getScheduler().runTaskLater(Fk.getInstance(), new TeleportTask(team), delayTeleportByTeam);
+				delayTeleportByTeam += team.getPlayers().size() * 4;
 			}
 
-            gameRunnable.updateDayDuration();
-			for(World w : Bukkit.getWorlds())
-				w.setTime(FkPI.getInstance().getRulesManager().getRule(Rule.ETERNAL_DAY) ? 6000L : 23990L);
+			Bukkit.getScheduler().runTaskLater(Fk.getInstance(), () -> {
+				updateDayDuration();
+				for(World w : Bukkit.getWorlds()) {
+					if (Fk.getInstance().getWorldManager().isAffected(w))
+						w.setTime(getExceptedWorldTime());
+				}
 
-            Fk.broadcast(Messages.BROADCAST_START.getMessage());
-            setState(GameState.STARTED);
-            if(gameTask != null)
-                gameTask.cancel();
-            gameRunnable = new GameRunnable(this);
-            gameTask = Bukkit.getScheduler().runTaskTimer(Fk.getInstance(), gameRunnable, 1l, 1l);
+				Fk.broadcast(Messages.BROADCAST_START.getMessage());
+				setState(GameState.STARTED);
+				startTimer();
+			}, delayTeleportByTeam + 10);
         }, time * 20L);
 	}
 
@@ -196,8 +194,57 @@ public class Game implements Saveable
 
 	private void broadcastTpIn(int time)
 	{
-		Fk.broadcast(Messages.BROADCAST_PREGAME_TP.getMessage().replace("%time%", String.valueOf(time)));
+		Fk.broadcast(Messages.BROADCAST_PREGAME_TP.getMessage()
+				.replace("%time%", String.valueOf(time))
+				.replace("%unit%", Messages.Unit.SECONDS.tl(time))
+		);
 		for(Player p : Bukkit.getOnlinePlayers())
 			p.playSound(p.getLocation(), FkSound.NOTE_BASS.bukkitSound(), 1, 1);
+	}
+
+	public long getExceptedWorldTime()
+	{
+		if (FkPI.getInstance().getRulesManager().getRule(Rule.ETERNAL_DAY))
+			return 6000;
+		else
+			return dayDurationCache == 24000 ? time : (long) (time / dayTickFactor);
+	}
+
+	public void updateDayDuration()
+	{
+		float previousDayTickFactor = dayTickFactor;
+		dayDurationCache = FkPI.getInstance().getRulesManager().getRule(Rule.DAY_DURATION);
+		if(dayDurationCache < 1200)
+		{
+			FkPI.getInstance().getRulesManager().setRule(Rule.DAY_DURATION, 24000);
+			dayDurationCache = 24000;
+		}
+		dayTickFactor = dayDurationCache / 24000f;
+		scoreboardUpdate = dayDurationCache / 1200;
+		time = (int) (time / previousDayTickFactor * dayTickFactor);
+	}
+
+	public String getFormattedTime()
+	{
+		return getHour()  + "h" + getMinute();
+	}
+
+	public String getHour()
+	{
+		if(day == 0)
+			return "--";
+		int gameTime = (int) (time / dayTickFactor);
+		int hours = gameTime / 1000 + 6;
+		hours %= 24;
+		return String.format("%02d", hours);
+	}
+
+	public String getMinute()
+	{
+		if(day == 0)
+			return "--";
+		int gameTime = (int) (time / dayTickFactor);
+		int minutes = (gameTime % 1000) * 60 / 1000;
+		return String.format("%02d", minutes);
 	}
 }

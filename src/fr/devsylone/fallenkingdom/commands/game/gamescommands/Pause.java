@@ -32,6 +32,8 @@ public class Pause extends FkCommand
 			throw new FkLightException(Messages.CMD_ERROR_GAME_NOT_STARTED);
 		if(plugin.getGame().getState().equals(Game.GameState.PAUSE))
 			throw new FkLightException(Messages.CMD_ERROR_ALREADY_IN_PAUSE);
+
+		plugin.getGame().stopTimer();
 		plugin.getGame().setState(Game.GameState.PAUSE);
 
 		for(World w : Bukkit.getWorlds())

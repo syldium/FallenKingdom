@@ -32,6 +32,7 @@ public class Resume extends FkCommand
 		if(plugin.getGame().getState().equals(Game.GameState.STARTED))
 			throw new FkLightException(Messages.CMD_ERROR_NOT_IN_PAUSE);
 
+		plugin.getGame().startTimer();
 		plugin.getGame().setState(Game.GameState.STARTED);
 
 		if(!plugin.getFkPI().getRulesManager().getRule(Rule.ETERNAL_DAY))

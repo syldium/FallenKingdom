@@ -35,7 +35,7 @@ public class LockedChestInteractListener implements Listener
 			}
 			
 			e.setCancelled(true);
-			if(chest.getUnlockDay() > Fk.getInstance().getGame().getGameRunnable().getCurrentDay())
+			if(chest.getUnlockDay() > Fk.getInstance().getGame().getDay())
 			{
 				e.getPlayer().sendMessage(Messages.PLAYER_LOCKED_CHEST_TOO_EARLY.getMessage().replace("%day%", String.valueOf(chest.getUnlockDay())));
 				return;

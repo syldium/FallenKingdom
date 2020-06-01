@@ -10,14 +10,12 @@ import org.bukkit.util.Vector;
 
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.game.Game;
-import fr.devsylone.fallenkingdom.game.GameRunnable;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.teams.Team;
 
 public class PlaceHolderUtils
 {
-    public static final Supplier<GameRunnable> GAMERUNNABLE_SUPPLIER = (Supplier<GameRunnable>) () -> Fk.getInstance().getGame().getGameRunnable();
-    public static final Supplier<Game> GAME_SUPPLIER = (Supplier<Game>) () -> Fk.getInstance().getGame();
+    public static final Supplier<Game> GAME_SUPPLIER = Fk.getInstance()::getGame;
     
 	private static Location getPointingLocation(Player player)
 	{

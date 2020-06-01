@@ -202,15 +202,6 @@ public class FilesUpdater
                 LanguageManager.init(Fk.getInstance());
             }
         }
-
-        if(isGrowing(lastv, "2.19.4"))
-        {
-            file = Fk.getInstance().getSaveableManager().getFileConfiguration("save.yml");
-            file.set("Game.GameRunnable.Day", file.get("Game.Day"));
-            file.set("Game.GameRunnable.Time", file.get("Game.Time"));
-            file.set("Game.Day", null);
-            file.set("Game.Time", null);
-        }
     }
 
     public boolean isSection(String path)
