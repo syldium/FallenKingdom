@@ -1,19 +1,24 @@
 package fr.devsylone.fallenkingdom.utils;
 
-import fr.devsylone.fkpi.FkPI;
+import java.util.Comparator;
+import java.util.Optional;
+import java.util.function.Supplier;
+
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import fr.devsylone.fallenkingdom.Fk;
+import fr.devsylone.fallenkingdom.game.Game;
+import fr.devsylone.fallenkingdom.game.GameRunnable;
+import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.teams.Team;
-
-import java.util.Comparator;
-import java.util.Optional;
 
 public class PlaceHolderUtils
 {
-
+    public static final Supplier<GameRunnable> GAMERUNNABLE_SUPPLIER = (Supplier<GameRunnable>) () -> Fk.getInstance().getGame().getGameRunnable();
+    public static final Supplier<Game> GAME_SUPPLIER = (Supplier<Game>) () -> Fk.getInstance().getGame();
+    
 	private static Location getPointingLocation(Player player)
 	{
 		// Vers la base

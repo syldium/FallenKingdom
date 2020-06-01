@@ -5,19 +5,21 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.bukkit.entity.Player;
 
 import fr.devsylone.fallenkingdom.Fk;
+import fr.devsylone.fallenkingdom.game.Game;
+import fr.devsylone.fallenkingdom.game.GameRunnable;
 import fr.devsylone.fallenkingdom.utils.PlaceHolderUtils;
 
 public enum PlaceHolder
 {
-
-    DAY((p, i) -> Fk.getInstance().getGame().getGameRunnable().getCurrentDay(), "Jour", "DAY", "DAYS", "JOUR", "JOURS", "D", "J"),
-    HOUR((p, i) -> Fk.getInstance().getGame().getGameRunnable().getHour(), "Heure", "Heure", "HOUR", "HOURS", "HEURE", "HEURES", "H"),
-    MINUTE((p, i) -> Fk.getInstance().getGame().getGameRunnable().getMinute(), "Minutes", "Minute", "MINUTE", "MINUTES", "M"),
+    DAY(PlaceHolderUtils.GAMERUNNABLE_SUPPLIER, GameRunnable::getCurrentDay, "Jour", "DAY", "DAYS", "JOUR", "JOURS", "D", "J"),
+    HOUR(PlaceHolderUtils.GAMERUNNABLE_SUPPLIER, GameRunnable::getHour, "Heure", "Heure", "HOUR", "HOURS", "HEURE", "HEURES", "H"),
+    MINUTE(PlaceHolderUtils.GAMERUNNABLE_SUPPLIER, GameRunnable::getMinute, "Minutes", "Minute", "MINUTE", "MINUTES", "M"),
     TEAM(PlaceHolderUtils::getTeamOf, "Équipe du joueur", "PLAYER_TEAM", "TEAM", "EQUIPE"),
     DEATHS(PlaceHolderUtils::getDeaths, "Nombre de morts", "PLAYER_DEATHS", "DEATHS", "MORTS"),
     KILLS(PlaceHolderUtils::getKills,"Nombre de kills", "PLAYER_KILLS", "KILLS"),
@@ -28,15 +30,20 @@ public enum PlaceHolder
     NEAREST_TEAM_BASE(PlaceHolderUtils::getNearestTeamBase, "Base ennemie la plus proche", "NEAREST_TEAM_BASE", "ENEMY_TEAM_BASE", "ENEMY_BASE"),
     NEAREST_BASE_DIRECTION(PlaceHolderUtils::getNearestBaseDirection, "Direction de la base ennemie la plus proche", "NEAREST_BASE_DIRECTION", "ENEMY_BASE_DIRECTION", "ENEMY_BASE_DIR", "ENEMY_DIR"),
 
-    PVPCAP((p, i) -> Fk.getInstance().getGame().isPvpEnabled(), "Pvp actif ?", "PVP?"),
-    TNTCAP((p, i) -> Fk.getInstance().getGame().isAssaultsEnabled(), "Assauts actifs ?", "TNT?"),
-    NETHERCAP((p, i) -> Fk.getInstance().getGame().isNetherEnabled(), "Nether ouvert ?", "NETHER?"),
-    ENDCAP((p, i) -> Fk.getInstance().getGame().isEndEnabled(), "End ouvert ?", "END?");
+    PVPCAP(PlaceHolderUtils.GAME_SUPPLIER, Game::isPvpEnabled, "Pvp actif ?", "PVP?"),
+    TNTCAP(PlaceHolderUtils.GAME_SUPPLIER, Game::isPvpEnabled, "Assauts actifs ?", "TNT?"),
+    NETHERCAP(PlaceHolderUtils.GAME_SUPPLIER, Game::isPvpEnabled, "Nether ouvert ?", "NETHER?"),
+    ENDCAP(PlaceHolderUtils.GAME_SUPPLIER, Game::isPvpEnabled, "End ouvert ?", "END?");
 
 	private final BiFunction<Player, Integer, ?> callable;
 	private final String description;
 	private final List<String> keys;
 	
+    <T> PlaceHolder(Supplier<T> supplier, Function<T, ?> callable, String description, String... rawKeys)
+    {
+        this((BiFunction<Player, Integer, ?>) (Player p, Integer i) -> callable.apply(supplier.get()), description, rawKeys);
+    }
+    
     PlaceHolder(Function<Player, ?> callable, String description, String... rawKeys)
     {
         this((BiFunction<Player, Integer, ?>) (Player p, Integer i) -> callable.apply(p), description, rawKeys);
