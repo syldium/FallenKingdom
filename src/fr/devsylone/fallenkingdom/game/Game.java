@@ -176,7 +176,7 @@ public class Game implements Saveable
 				Fk.broadcast(Messages.BROADCAST_START.getMessage());
 				setState(GameState.STARTED);
 				startTimer();
-			}, delayTeleportByTeam + 10);
+			}, delayTeleportByTeam + 5);
         }, time * 20L);
 	}
 
