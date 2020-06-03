@@ -55,11 +55,11 @@ public class ScoreboardManager implements Saveable
 
 	public boolean setLine(int line, String newl)
 	{
+		line = 15 - line;
 		if (line < 0 || line >= sidebar.size())
 			return false;
 		if(newl.length() < 3)
 			newl = randomFakeEmpty() + newl;
-		line = 15 - line;
 		createSnapshot();
 		for(int i = sidebar.size(); i <= line; i++)
 			sidebar.add(randomFakeEmpty());

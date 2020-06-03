@@ -26,7 +26,8 @@ public class SetLine extends FkCommand
 	{
 		int line = ArgumentParser.parseScoreboardLine(args.get(0), Messages.CMD_ERROR_SCOREBOARD_INVALID_LINE);
 		String content = args.stream().skip(1).collect(Collectors.joining(" "));
-		if (Version.VersionType.V1_13.isHigherOrEqual() && content.length() > 64 || content.length() > 32) {
+		int maxLength = Version.VersionType.V1_13.isHigherOrEqual() ? 64 : 32;
+		if (content.length() > maxLength) {
 			throw new FkLightException("La ligne contient trop de caractères.");
 		}
 		plugin.getScoreboardManager().setLine(line, content.replace("&", "§"));
