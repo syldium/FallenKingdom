@@ -372,3 +372,6 @@ RETRAIT      = [-]
 [*] Fix de la suppression d'une équipe contenant des joueurs
 [*] Fix des conditions de chargement des règles par défaut
 [*] La première lettre d'un message est conservée lorsque le joueur n'a pas d'équipe
+
+      >> 2.19.5
+[*] Le tntCap active bien les assauts
