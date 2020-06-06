@@ -1,16 +1,23 @@
 package fr.devsylone.fkpi.lockedchests;
 
 import fr.devsylone.fallenkingdom.utils.Messages;
+import fr.devsylone.fallenkingdom.utils.Version;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.api.event.PlayerLockedChestInteractEvent;
+import org.apache.commons.lang.NotImplementedException;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
+import org.bukkit.advancement.Advancement;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
 
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fkpi.util.Saveable;
 import org.bukkit.entity.Player;
+import org.bukkit.loot.LootTable;
+
+import java.lang.reflect.Method;
 
 public class LockedChest implements Saveable
 {
@@ -29,6 +36,8 @@ public class LockedChest implements Saveable
 	private long lastInteract;
 	private long startUnlocking;
 	private float yFix = -0.5F;
+	private String requiredAdvancement;
+	private String lootTable;
 
 	private int task = -1;
 
@@ -170,6 +179,48 @@ public class LockedChest implements Saveable
 		time = config.getInt("Time");
 		day = config.getInt("Day");
 		name = config.getString("Name");
+		lootTable = config.getString("LootTable");
+		requiredAdvancement = config.getString("Advancement");
+	}
+
+	@SuppressWarnings("deprecation")
+	public Advancement getRequiredAdvancement()
+	{
+		if (requiredAdvancement == null || !requiredAdvancement.contains(":")) {
+			return null;
+		}
+		return Bukkit.getAdvancement(new NamespacedKey(requiredAdvancement.split(":")[0], requiredAdvancement.split(":")[1]));
+	}
+
+	@SuppressWarnings({"rawtypes", "unchecked"})
+	public boolean hasAccess(Player player)
+	{
+		if (requiredAdvancement == null || requiredAdvancement.isEmpty()) {
+			return true;
+		}
+		if (Version.VersionType.V1_13.isHigherOrEqual() || Bukkit.getVersion().contains("1.12")) {
+			return player.getAdvancementProgress(getRequiredAdvancement()).isDone();
+		} else {
+			try {
+				Object achievement = Enum.valueOf((Class<Enum>) Class.forName("org.bukkit.Achievement"), requiredAdvancement.toUpperCase());
+				Method hasAchievement = Player.class.getDeclaredMethod("hasAchievement", achievement.getClass());
+				return (boolean) hasAchievement.invoke(player, achievement);
+			} catch (ReflectiveOperationException e) {
+				e.printStackTrace();
+			}
+			return true;
+		}
+	}
+
+	@SuppressWarnings("deprecation")
+	public LootTable getLootTable()
+	{
+		if (lootTable == null || !lootTable.contains(":")) {
+			return null;
+		}
+		if (Version.VersionType.V1_13.isHigherOrEqual())
+			return Bukkit.getLootTable(new NamespacedKey(lootTable.split(":")[0], lootTable.split(":")[1]));
+		throw new NotImplementedException("Loot tables api don't exist in versions prior to 1.13.");
 	}
 
 	@Override
@@ -184,7 +235,8 @@ public class LockedChest implements Saveable
 		config.set("Time", time);
 		config.set("Day", day);
 		config.set("Name", name);
-
+		config.set("LootTable", lootTable);
+		config.set("Advancement", requiredAdvancement);
 	}
 
 	@Override
