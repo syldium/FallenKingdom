@@ -90,7 +90,7 @@ class GameRunnable extends BukkitRunnable
         }
 
         if (FkPI.getInstance().getRulesManager().getRule(Rule.TNT_CAP) == game.day) {
-            game.pvpEnabled = true;
+            game.assaultsEnabled = true;
             DayEvent event = new DayEvent(DayEvent.Type.TNT_ENABLED, game.day, Messages.BROADCAST_DAY_ASSAULT.getMessage());
             Bukkit.getPluginManager().callEvent(event); //EVENT
             Fk.broadcast(event.getMessage(), FkSound.ENDERDRAGON_GROWL);
@@ -121,5 +121,6 @@ class GameRunnable extends BukkitRunnable
                         FkSound.ENDERMAN_TELEPORT);
             }
         }
+        Fk.getInstance().getScoreboardManager().recreateAllScoreboards();
     }
 }

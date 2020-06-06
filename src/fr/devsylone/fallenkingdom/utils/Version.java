@@ -4,11 +4,9 @@ import org.bukkit.Bukkit;
 
 public class Version {
 
-    public static final String PACKAGE_VERSION;
     public static final VersionType VERSION_TYPE;
 
     static {
-        PACKAGE_VERSION = Bukkit.getServer().getClass().getPackage().getName().replace(".",  ",").split(",")[3];
         if (classExists("org.bukkit.block.data.BlockData")) {
             if (classExists("org.bukkit.event.inventory.TradeSelectEvent")) {
                 VERSION_TYPE = VersionType.V1_14_PLUS;

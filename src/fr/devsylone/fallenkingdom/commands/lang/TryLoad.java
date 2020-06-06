@@ -22,7 +22,7 @@ public class TryLoad extends FkCommand
 
     @Override
     public CommandResult execute(Fk plugin, CommandSender sender, List<String> args, String label) {
-        Fk.getInstance().getLogger().info("Start of lang report");
+        plugin.getLogger().info("Start of lang report");
         // Recherche des traductions en mode strict
         long missingTranslations = Arrays.stream(Messages.values()).filter(message -> {
             String msg = LanguageManager.getLanguageMessage(message.getAccessor(), true);
@@ -30,7 +30,7 @@ public class TryLoad extends FkCommand
                 Fk.getInstance().getLogger().severe("Value of " + message.getAccessor() + " not set in any file!");
             return msg == null;
         }).count();
-        Fk.getInstance().getLogger().info("End of lang report");
+        plugin.getLogger().info("End of lang report");
         sender.sendMessage(ChatUtils.PREFIX + Messages.CMD_LANG_TRY_LOAD);
         if (missingTranslations > 0)
             ChatUtils.sendMessage(sender, ChatColor.RED + Messages.CMD_LANG_TRY_LOAD_MISSING.getMessage().replace("%nb%", String.valueOf(missingTranslations)));
