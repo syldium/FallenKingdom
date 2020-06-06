@@ -25,9 +25,12 @@ public class SetColor extends FkCommand
 	{
 		Team team;
 		if((team = plugin.getFkPI().getTeamManager().getTeam(args.get(0))) == null)
-			throw new FkLightException("Cette équipe n'existe pas");
+			throw new FkLightException(Messages.CMD_ERROR_UNKNOWN_TEAM);
 		team.setColor(Color.forName(args.get(1)));
-		broadcast("L'équipe " + team.toString() + " §6est maintenant de couleur " + team.getColor().getChatColor() + team.getColor().getGenredName(Color.GENRE_F));
+		broadcast(Messages.CMD_TEAM_SET_COLOR.getMessage()
+				.replace("%team%", team.toString())
+				.replace("%color%", team.getChatColor() + team.getColor().getGenredName(Color.GENRE_F))
+		);
 		plugin.getScoreboardManager().recreateAllScoreboards();
 		return CommandResult.SUCCESS;
 	}

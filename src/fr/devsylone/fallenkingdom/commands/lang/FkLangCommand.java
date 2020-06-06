@@ -14,6 +14,6 @@ public class FkLangCommand extends FkParentCommand
                         .add(new SetLang())
                         .add(new TryLoad())
                         .build()
-        , Messages.CMD_MAP_LANG_TRY_LOAD, CommandPermission.ADMIN);
+        , Messages.CMD_MAP_LANG, CommandPermission.ADMIN);
     }
 }

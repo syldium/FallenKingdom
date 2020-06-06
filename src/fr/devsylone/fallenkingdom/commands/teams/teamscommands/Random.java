@@ -28,7 +28,7 @@ public class Random extends FkCommand
 				.collect(Collectors.toList());
 		plugin.getFkPI().getTeamManager().random(players);
 
-		broadcast("Les équipes ont été formées aléatoirement ! §e/fk team list §6 pour la liste des équipes et de leurs joueurs !");
+		broadcast(Messages.CMD_TEAM_RANDOM.getMessage());
 		plugin.getScoreboardManager().refreshAllScoreboards();
 		return CommandResult.SUCCESS;
 	}

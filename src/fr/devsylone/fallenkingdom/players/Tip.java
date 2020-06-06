@@ -3,15 +3,16 @@ package fr.devsylone.fallenkingdom.players;
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.commands.abstraction.AbstractCommand;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
+import fr.devsylone.fallenkingdom.utils.Messages;
 
 import java.util.Optional;
 
 public class Tip
 {
 	private AbstractCommand command = null;
-	private final String tip;
+	private final Messages tip;
 
-	public Tip(Class<? extends AbstractCommand> cmd, String tip)
+	public Tip(Class<? extends AbstractCommand> cmd, Messages tip)
 	{
 		if (cmd != null) {
 			Optional<? extends AbstractCommand> e = Fk.getInstance().getCommandManager().search(cmd);
@@ -30,7 +31,7 @@ public class Tip
 
 	public String getTip()
 	{
-		return tip;
+		return tip.getMessage();
 	}
 
 	public String getChatFormatted()
@@ -38,13 +39,13 @@ public class Tip
 		if(command != null)
 		{
 			String formatted = "  §c➤ §l§d/fk " + command.getFullUsage() + "\n";
-			formatted = formatted + "     §b↪ " + tip.replace("&r", "§b");
+			formatted = formatted + "     §b↪ " + tip.getMessage();
 			return formatted;
 		}
 
 		else
 		{
-			return "§b" + tip.replace("&r", "§b");
+			return "§b" + tip.getMessage();
 		}
 	}
 }

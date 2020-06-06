@@ -16,6 +16,7 @@ import fr.devsylone.fallenkingdom.commands.rules.rulescommands.PlaceBlockInCave;
 import fr.devsylone.fallenkingdom.commands.rules.rulescommands.booleancommands.DoPauseAfterDay;
 import fr.devsylone.fallenkingdom.commands.rules.rulescommands.booleancommands.TntJump;
 import fr.devsylone.fallenkingdom.commands.scoreboard.scoreboardcommands.Edit;
+import fr.devsylone.fallenkingdom.utils.Messages;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -36,26 +37,26 @@ public class TipsManager
 
 	public TipsManager()
 	{
-		newTip(DoPauseAfterDay.class, "Mettre en pause à la fin de la journée !");
-		newTip(TntJump.class, "Empêcher les tours en §cTNT&r !");
-		newTip(ChargedCreepers.class, "Gérer les creepers chargés qui donnent de la §cTNT&r !");
-		newTip(Edit.class, "Modifier le scoreboard à votre guise ! ");
-		newTip(Bug.class, "Un problème ? Alertez l'équipe de développement !");
-		newTip(Restore.class, "À utiliser après une pause !");
-		newTip(StarterInv.class, "Personnalisez le stuff de départ !");
-		newTip(PlaceBlockInCave.class, "Pour poser des blocs en caverne !");
-		newTip(Add.class, "Créez des coffres à crocheter !");
-		newTip(DayDuration.class, "Changer la durée d'un jour !");
-		newTip(DisabledPotions.class, "Désactivez certaines potions de la partie !");
+		newTip(DoPauseAfterDay.class, Messages.TIP_DO_PAUSE_AFTER_DAY);
+		newTip(TntJump.class, Messages.TIP_TNT_JUMP);
+		newTip(ChargedCreepers.class, Messages.TIP_CHARGED_CREEPERS);
+		newTip(Edit.class, Messages.TIP_SCOREBOARD_EDIT);
+		newTip(Bug.class, Messages.TIP_BUG);
+		newTip(Restore.class, Messages.TIP_RESTORE);
+		newTip(StarterInv.class, Messages.TIP_STARTER_INV);
+		newTip(PlaceBlockInCave.class, Messages.TIP_PLACE_BLOCK_IN_CAVE);
+		newTip(Add.class, Messages.TIP_LOCKED_CHEST);
+		newTip(DayDuration.class, Messages.TIP_DAY_DURATION);
+		newTip(DisabledPotions.class, Messages.TIP_DISABLED_POTIONS);
 
-		newTip(null, "Faites §l[tab] &ren écrivant votre commande, elle s'écrira toute seule !");
-		newTip(null, "Notre discord : §e§lhttps://discord.gg/NwqFNa6 &r !");
-		newTip(null, "Les seaux ne peuvent être posés contre une muraille adverse !");
+		newTip(null, Messages.TIP_TAB_COMPLETION);
+		newTip(null, Messages.TIP_DISCORD);
+		newTip(null, Messages.TIP_WATER_NEXT_TO_BASE);
 
 		tipsSize = tips.size();
 	}
 
-	private void newTip(Class<? extends AbstractCommand> cmd, String tip)
+	private void newTip(Class<? extends AbstractCommand> cmd, Messages tip)
 	{
 		tips.add(new Tip(cmd, tip));
 	}
