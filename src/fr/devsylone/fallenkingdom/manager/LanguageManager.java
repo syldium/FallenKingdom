@@ -62,15 +62,16 @@ public class LanguageManager
                 .map(file -> file.getName().substring(0, file.getName().lastIndexOf('.')))
                 .toArray(String[]::new);
             String message = ChatColor.RED + "Veuillez sélectionner votre langue en cliquant dessus. / Please select your language by clicking on it.";
-            BaseComponent[] localeComponents = null;
+            BaseComponent[] localeComponents = new BaseComponent[] {};
             for (String locale : locales) {
-                localeComponents = TextComponent.fromLegacyText(ChatColor.GRAY + "[" + ChatColor.UNDERLINE + ChatColor.DARK_AQUA + locale + ChatColor.GRAY + "] ");
-                for (BaseComponent component : localeComponents) {
+                BaseComponent[] localeComponent = TextComponent.fromLegacyText(ChatColor.GRAY + "[" + ChatColor.UNDERLINE + ChatColor.DARK_AQUA + locale + ChatColor.GRAY + "] ");
+                for (BaseComponent component : localeComponent) {
                     component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(ChatColor.BLUE + "Use this locale").create()));
                     component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/fk lang set " + locale));
                 }
-                localeComponents[1].setItalic(true);
-                localeComponents[2].setItalic(false);
+                localeComponent[1].setItalic(true);
+                localeComponent[2].setItalic(false);
+                localeComponents = (BaseComponent[]) ArrayUtils.addAll(localeComponents, localeComponent);
             }
             TextComponent finalMessage = new TextComponent((BaseComponent[]) ArrayUtils.addAll(TextComponent.fromLegacyText(ChatUtils.PREFIX), localeComponents));
             Bukkit.getConsoleSender().sendMessage(message);
