@@ -46,7 +46,7 @@ public class LanguageManager
         langPrefix = plugin.getConfig().getString("lang", "unknown");
 
         // Copie des fichiers de langue par défaut pour permettre d'éditer
-        String[] locales = new String[] {"fr"};
+        String[] locales = new String[] {"fr", "en"};
         for (String locale : locales) {
             String path = "locales" + File.separator + locale + ".properties";
             if (!new File(plugin.getDataFolder(), File.separator + path).exists())

@@ -2,6 +2,7 @@ package fr.devsylone.fallenkingdom.commands.teams.teamscommands;
 
 import fr.devsylone.fallenkingdom.commands.ArgumentParser;
 import fr.devsylone.fallenkingdom.commands.abstraction.*;
+import fr.devsylone.fallenkingdom.exception.ArgumentParseException;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fkpi.util.BlockDescription;
 import org.bukkit.Material;
@@ -31,6 +32,9 @@ public class SetBase extends FkPlayerCommand
 
 		if(!Fk.getInstance().getWorldManager().isAffected(sender.getWorld()))
 			throw new FkLightException(Messages.CMD_ERROR_NOT_AFFECTED_WORLD.getMessage());
+
+		if(radius < 4)
+			throw new ArgumentParseException(Messages.CMD_ERROR_RADIUS_FORMAT.getMessage());
 
 		Base base = new Base(plugin.getFkPI().getTeamManager().getTeam(args.get(0)), sender.getLocation(), radius, Material.getMaterial(block.getBlockName()), block.getData());
 		plugin.getFkPI().getTeamManager().getTeam(args.get(0)).setBase(base);
