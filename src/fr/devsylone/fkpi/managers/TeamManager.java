@@ -1,5 +1,6 @@
 package fr.devsylone.fkpi.managers;
 
+import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fkpi.api.ITeam;
@@ -56,6 +57,7 @@ public class TeamManager implements Saveable
 		Bukkit.getPluginManager().callEvent(new TeamUpdateEvent(team, TeamUpdateEvent.TeamUpdate.DELETION)); // EVENT
 		team.getScoreboardTeam().unregister();
 		teams.remove(team);
+		Fk.getInstance().getWorldManager().invalidateBaseWorldsCache(this);
 	}
 
 	public Team getTeam(String name)
@@ -163,6 +165,7 @@ public class TeamManager implements Saveable
 		for(Team t : teams)
 			t.load(config.getConfigurationSection(t.getName()));
 
+		Fk.getInstance().getWorldManager().invalidateBaseWorldsCache(this);
 	}
 
 	@Override

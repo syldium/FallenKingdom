@@ -3,7 +3,6 @@ package fr.devsylone.fallenkingdom.listeners.block;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.World.Environment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -29,10 +28,10 @@ public class BucketListener implements Listener
 		Player p = e.getPlayer();
 		Location bloc = e.getBlockClicked().getRelative(e.getBlockFace()).getLocation();
 
-		if(p.getGameMode() == GameMode.CREATIVE || !Fk.getInstance().getWorldManager().isAffected(e.getPlayer().getWorld()))
+		if(p.getGameMode() == GameMode.CREATIVE || !plugin.getWorldManager().isWorldWithBase(e.getPlayer().getWorld()))
 			return;
 
-		if(p.getWorld().getEnvironment() != Environment.NORMAL || Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(p.getName()) == null || plugin.getGame().getState().equals(GameState.BEFORE_STARTING))
+		if(plugin.getFkPI().getTeamManager().getPlayerTeam(p.getName()) == null || plugin.getGame().getState().equals(GameState.BEFORE_STARTING))
 			return;
 
 		if(plugin.getGame().getState().equals(GameState.PAUSE))

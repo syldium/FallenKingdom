@@ -26,10 +26,10 @@ public class PortalCreateListener implements Listener
 	@EventHandler
 	public void create(PortalCreateEvent e)
 	{
-		if (!Fk.getInstance().getWorldManager().isAffected(e.getBlocks().get(0).getWorld()))
+		if (!Fk.getInstance().getWorldManager().isWorldWithBase(e.getWorld()))
 			return;
 
-		if(!Fk.getInstance().getGame().isNetherEnabled() && !e.getWorld().getName().endsWith("_nether") && e.getReason() == CreateReason.FIRE)
+		if(!Fk.getInstance().getGame().isNetherEnabled() && e.getReason().equals(CreateReason.FIRE))
 		{
 			Block air = null;
 			try {

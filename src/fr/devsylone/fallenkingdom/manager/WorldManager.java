@@ -2,17 +2,22 @@ package fr.devsylone.fallenkingdom.manager;
 
 import com.google.common.collect.ImmutableList;
 import fr.devsylone.fallenkingdom.Fk;
+import fr.devsylone.fkpi.managers.TeamManager;
+import fr.devsylone.fkpi.teams.Team;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 public class WorldManager {
 
     private final boolean perWorld;
     private final List<UUID> affectedWorlds;
+    private final Set<UUID> baseWorldsCache = new HashSet<>();
 
     public WorldManager(Fk plugin) {
         perWorld = plugin.getConfig().getBoolean("world-check", false);
@@ -42,5 +47,18 @@ public class WorldManager {
             return true;
         }
         return affectedWorlds.contains(world.getUID());
+    }
+
+    public boolean isWorldWithBase(World world) {
+        return isAffected(world) && baseWorldsCache.contains(world.getUID());
+    }
+
+    public void invalidateBaseWorldsCache(TeamManager teamManager) {
+        baseWorldsCache.clear();
+        for (Team team : teamManager.getTeams()) {
+            if (team.getBase() != null && team.getBase().getCenter().getWorld() != null) {
+                baseWorldsCache.add(team.getBase().getCenter().getWorld().getUID());
+            }
+        }
     }
 }
