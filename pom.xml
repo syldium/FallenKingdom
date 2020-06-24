@@ -107,6 +107,11 @@
             <systemPath>${project.basedir}/../spigot-1.15.2.jar</systemPath>
         </dependency>-->
         <dependency>
+            <groupId>io.github.waterfallmc</groupId>
+            <artifactId>waterfall-api</artifactId>
+            <version>1.16-R0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>com.destroystokyo.paper</groupId>
             <artifactId>paper-api</artifactId>
             <version>1.15.2-R0.1-SNAPSHOT</version>

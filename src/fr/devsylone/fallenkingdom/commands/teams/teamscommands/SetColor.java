@@ -27,7 +27,7 @@ public class SetColor extends FkCommand
 		Team team;
 		if((team = plugin.getFkPI().getTeamManager().getTeam(args.get(0))) == null)
 			throw new FkLightException(Messages.CMD_ERROR_UNKNOWN_TEAM.getMessage().replace("%team%", args.get(0)));
-		team.setColor(Color.forName(args.get(1)));
+		team.setColor(Color.of(args.get(1)));
 		broadcast(Messages.CMD_TEAM_SET_COLOR.getMessage()
 				.replace("%team%", team.toString())
 				.replace("%color%", team.getChatColor() + team.getColor().getGenredName(Color.GENRE_F))

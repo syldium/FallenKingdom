@@ -150,7 +150,7 @@ public class FilesUpdater
             getSection = file.getConfigurationSection("FkPI.TeamManager");
             setSection = getSection;
             for(String team : getSection.getKeys(false))
-                set(team + ".Color", Color.forName(team));
+                set(team + ".Color", Color.of(team));
 
             file = Fk.getInstance().getSaveableManager().getFileConfiguration("scoreboard.yml");
 
