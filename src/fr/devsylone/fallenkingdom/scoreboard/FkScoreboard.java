@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import fr.devsylone.fallenkingdom.utils.Messages;
+import fr.devsylone.fallenkingdom.utils.Version;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.rules.Rule;
 import fr.mrmicky.fastboard.FastBoard;
@@ -75,7 +77,7 @@ public class FkScoreboard
 					.limit(14 - lines.size())
 					.forEach(rule -> lines.add(" " + rule));
 			lines.add(" §6... (§e/fk rules list§6)");
-			sidebarBoard.updateLines(lines);
+			sidebarBoard.updateLines(Version.VersionType.V1_13.isHigherOrEqual() ? lines : lines.stream().map(line -> line.substring(0, Math.min(30, line.length()))).collect(Collectors.toList()));
 		}
 		else
 		{
@@ -148,6 +150,7 @@ public class FkScoreboard
 
 	public void remove()
 	{
-		sidebarBoard.delete();
+		if(!sidebarBoard.isDeleted())
+			sidebarBoard.delete();
 	}
 }
