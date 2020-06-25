@@ -1,7 +1,7 @@
 package fr.devsylone.fkpi.util;
 
 import fr.devsylone.fallenkingdom.manager.LanguageManager;
-import net.md_5.bungee.api.ChatColor; // @todo -> org.bukkit.ChatColor
+import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 
 import java.util.HashSet;
@@ -18,8 +18,9 @@ public class Color
 	public static final Color LIME = new Color("lime", "lime", ChatColor.GREEN, DyeColor.LIME, 0x55ff55);
 	public static final Color VERT = new Color("vert", "verte", ChatColor.DARK_GREEN, DyeColor.GREEN, 0x00aa00);
 	public static final Color VIOLET = new Color("violet", "violette", ChatColor.DARK_PURPLE, DyeColor.PURPLE, 0xaa00aa);
-	public static final Color MAGENTA = new Color("magenta", "magenta", ChatColor.LIGHT_PURPLE, DyeColor.MAGENTA, 0xff55ff);
-	public static final Color ROSE = new Color("rose", "rose", ChatColor.LIGHT_PURPLE, DyeColor.PINK, 0xffb5c1);
+	public static final Color MAGENTA = new Color("magenta", "magenta", ChatColor.LIGHT_PURPLE, DyeColor.MAGENTA, 0xa7375f);
+	public static final Color ROSE = new Color("rose", "rose", ChatColor.LIGHT_PURPLE, DyeColor.PINK, 0xff55ff);
+	public static final Color ORANGE = new Color("orange", "orange", ChatColor.GOLD, DyeColor.ORANGE, 0xffaa00);
 	public static final Color JAUNE = new Color("jaune", "jaune", ChatColor.YELLOW, DyeColor.YELLOW, 0xffff55);
 	public static final Color BLANC = new Color("blanc", "blanche", ChatColor.WHITE, DyeColor.WHITE, 0xffffff);
 	public static final Color NOIR = new Color("noir", "noire", ChatColor.BLACK, DyeColor.BLACK, 0x000000);
@@ -28,9 +29,11 @@ public class Color
 
 	private final String maleColor;
 	private final String femColor;
-	private final ChatColor chatColor;
-	private final DyeColor dyeColor;
 	private final java.awt.Color value;
+
+	private final ChatColor bukkitChatColor;
+	private final net.md_5.bungee.api.ChatColor bungeeChatColor;
+	private final DyeColor dyeColor;
 	
 	public static final int GENRE_F = 0;
 	public static final int GENRE_M = 1;
@@ -39,9 +42,10 @@ public class Color
 	{
 		this.maleColor = maleColor;
 		this.femColor = femColor;
-		this.chatColor = chatColor;
-		this.dyeColor = dyeColor;
 		this.value = new java.awt.Color(value);
+		this.bukkitChatColor = chatColor;
+		this.bungeeChatColor = net.md_5.bungee.api.ChatColor.class.isEnum() ? chatColor.asBungee() : net.md_5.bungee.api.ChatColor.of(this.value);
+		this.dyeColor = dyeColor;
 		LEGACY_VALUES.add(this);
 	}
 
@@ -49,9 +53,10 @@ public class Color
 	{
 		this.maleColor = base.maleColor;
 		this.femColor = base.femColor;
-		this.chatColor = ChatColor.class.isEnum() ? base.chatColor : ChatColor.of(awtColor);
-		this.dyeColor = base.dyeColor;
 		this.value = awtColor;
+		this.bukkitChatColor = base.bukkitChatColor;
+		this.bungeeChatColor = net.md_5.bungee.api.ChatColor.class.isEnum() ? base.bungeeChatColor : net.md_5.bungee.api.ChatColor.of(awtColor);
+		this.dyeColor = base.dyeColor;
 	}
 
 	public static Color of(String name)
@@ -78,9 +83,14 @@ public class Color
 		return dyeColor.name().toLowerCase().replace('_', ' ');
 	}
 
-	public ChatColor getChatColor()
+	public net.md_5.bungee.api.ChatColor getChatColor()
 	{
-		return chatColor;
+		return bungeeChatColor;
+	}
+
+	public ChatColor getBukkitChatColor()
+	{
+		return bukkitChatColor;
 	}
 
 	public DyeColor getDyeColor()

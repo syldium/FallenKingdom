@@ -6,8 +6,8 @@ import java.util.List;
 import fr.devsylone.fallenkingdom.utils.Version;
 import fr.devsylone.fkpi.api.ITeam;
 import fr.devsylone.fkpi.api.event.TeamUpdateEvent;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -76,7 +76,7 @@ public class Team implements ITeam, Saveable
 
 	public ChatColor getChatColor()
 	{
-		return ChatColor.valueOf(color.getChatColor().name());  // @todo -> org.bukkit.ChatColor
+		return color.getChatColor();
 	}
 
 	public DyeColor getDyeColor()
@@ -88,7 +88,7 @@ public class Team implements ITeam, Saveable
 	{
 		this.color = color == null ? Color.NO_COLOR : color;
 		if(Version.VersionType.V1_13.isHigherOrEqual())
-			scoreboardTeam.setColor(ChatColor.valueOf(this.color.getChatColor().name())); // @todo -> org.bukkit.ChatColor
+			scoreboardTeam.setColor(color.getBukkitChatColor());
 		else
 			scoreboardTeam.setPrefix(String.valueOf(this.color.getChatColor()));
 	}

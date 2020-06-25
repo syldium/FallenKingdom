@@ -1,7 +1,7 @@
 package fr.devsylone.fkpi.api;
 
 import fr.devsylone.fkpi.teams.Base;
-import org.bukkit.ChatColor;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.DyeColor;
 
 import java.util.List;
