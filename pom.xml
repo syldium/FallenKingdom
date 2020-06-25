@@ -100,11 +100,11 @@
     <dependencies>
         <!-- Used to check the structure of NMS packets -->
         <!--<dependency>
-            <groupId>1.15.2_R0.1</groupId>
-            <artifactId>spigot_1_15_2</artifactId>
-            <version>1.15.2-R0.1</version>
+            <groupId>1.16.1_R0.1</groupId>
+            <artifactId>spigot_1_16_1</artifactId>
+            <version>1.16.1-R0.1</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/../spigot-1.15.2.jar</systemPath>
+            <systemPath>${project.basedir}/../spigot-1.16.1.jar</systemPath>
         </dependency>-->
         <dependency>
             <groupId>com.destroystokyo.paper</groupId>

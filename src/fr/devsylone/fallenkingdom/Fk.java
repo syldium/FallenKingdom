@@ -29,6 +29,7 @@ import fr.devsylone.fallenkingdom.game.Game;
 import fr.devsylone.fallenkingdom.manager.packets.PacketManager;
 import fr.devsylone.fallenkingdom.manager.packets.PacketManager1_13;
 import fr.devsylone.fallenkingdom.manager.packets.PacketManager1_14;
+import fr.devsylone.fallenkingdom.manager.packets.PacketManager1_16;
 import fr.devsylone.fallenkingdom.manager.packets.PacketManager1_8;
 import fr.devsylone.fallenkingdom.manager.packets.PacketManager1_9;
 import fr.devsylone.fallenkingdom.manager.saveable.DeepPauseManager;
@@ -471,8 +472,10 @@ public class Fk extends JavaPlugin
 				return new PacketManager1_9();
 			case V1_13:
 				return new PacketManager1_13();
-			case V1_14_PLUS:
+			case V1_14_V1_15:
 				return new PacketManager1_14();
+			case V1_16:
+				return new PacketManager1_16();
 			default:
 				throw new RuntimeException("Could not get packet manager by version!");
 		}

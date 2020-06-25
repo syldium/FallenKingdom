@@ -9,7 +9,7 @@ public class Version {
     static {
         if (classExists("org.bukkit.block.data.BlockData")) {
             if (classExists("org.bukkit.event.inventory.TradeSelectEvent")) {
-                VERSION_TYPE = VersionType.V1_14_PLUS;
+                VERSION_TYPE = classExists("org.bukkit.entity.Hoglin") ? VersionType.V1_16 : VersionType.V1_14_V1_15;
             } else {
                 VERSION_TYPE = VersionType.V1_13;
             }
@@ -53,7 +53,8 @@ public class Version {
         V1_8,
         V1_9_V1_12,
         V1_13,
-        V1_14_PLUS;
+        V1_14_V1_15,
+        V1_16;
 
         public boolean isHigherOrEqual() {
             return VERSION_TYPE.ordinal() >= ordinal();
