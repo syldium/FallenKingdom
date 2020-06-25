@@ -66,8 +66,8 @@ public final class XBlock {
             XMaterial.PEONY, XMaterial.TALL_GRASS, XMaterial.LARGE_FERN, XMaterial.FERN, XMaterial.DEAD_BUSH,
             XMaterial.OAK_FENCE, XMaterial.AIR
     );
-    public static final EnumSet<XMaterial> BLOCKS_IN_CAVES = EnumSet.of(
-            XMaterial.STONE, XMaterial.GRANITE, XMaterial.DIORITE, XMaterial.ANDESITE
+    public static final EnumSet<Material> BLOCKS_IN_CAVES = EnumSet.of(
+            Material.STONE, Material.GRANITE, Material.DIORITE, Material.ANDESITE
     );
     public static final EnumSet<Material> CONTAINERS = EnumSet.of(
             Material.CHEST, XMaterial.BARREL.parseMaterial(true)
@@ -88,7 +88,7 @@ public final class XBlock {
 
     public static boolean isBlockInCave(Material material) {
         if (!ISFLAT) return material.equals(Material.STONE);
-        return BLOCKS_IN_CAVES.contains(XMaterial.matchXMaterial(material));
+        return BLOCKS_IN_CAVES.contains(material);
     }
 
     public static boolean canBePartOfChestRoom(Material material) {

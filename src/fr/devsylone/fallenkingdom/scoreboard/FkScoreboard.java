@@ -3,10 +3,12 @@ package fr.devsylone.fallenkingdom.scoreboard;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.rules.Rule;
+import fr.mrmicky.fastboard.FastBoard;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
@@ -20,11 +22,11 @@ import fr.devsylone.fallenkingdom.utils.RulesFormatter;
 public class FkScoreboard
 {
 	private final Scoreboard bukkitBoard;
-	private final ScoreboardSign sidebarBoard;
+	private final FastBoard sidebarBoard;
 
 	private final Player player;
 
-	private final HashMap<PlaceHolder, List<Integer>> placeHolders;
+	private final Map<PlaceHolder, List<Integer>> placeHolders;
 
 	private boolean formatted;
 
@@ -35,7 +37,8 @@ public class FkScoreboard
 		this.placeHolders = new HashMap<>();
 		this.bukkitBoard = FkPI.getInstance().getTeamManager().getScoreboard();
 
-		sidebarBoard = new ScoreboardSign(player, Fk.getInstance().getScoreboardManager().getName());
+		sidebarBoard = new FastBoard(player);
+		sidebarBoard.updateTitle(Fk.getInstance().getScoreboardManager().getName());
 
 		if(FkPI.getInstance().getRulesManager().getRule(Rule.HEALTH_BELOW_NAME) && bukkitBoard.getObjective("§c❤") == null)
 			bukkitBoard.registerNewObjective("§c❤", "health").setDisplaySlot(DisplaySlot.BELOW_NAME);
@@ -50,40 +53,29 @@ public class FkScoreboard
 					placeHolders.get(placeHolder).add(i);
 		}
 
-		sidebarBoard.create();
 		player.setScoreboard(bukkitBoard);
 		refreshAll();
 	}
 
 	public void refreshAll()
 	{
-		for(int i = 0; i < ScoreboardSign.LINE_NUMBER; i++)
-			sidebarBoard.removeLine(i);
-
-		int index = 0;
-
 		if(Fk.getInstance().getGame().getState().equals(GameState.BEFORE_STARTING) && !Fk.getInstance().getPlayerManager().getPlayer(player).getState().equals(PlayerState.EDITING_SCOREBOARD))
 		{
-			sidebarBoard.setLine(Messages.SCOREBOARD_TEAMS.getMessage(), ++index);
+			List<String> lines = new ArrayList<>();
+			lines.add(Messages.SCOREBOARD_TEAMS.getMessage());
 
-			if(Fk.getInstance().getFkPI().getTeamManager().getTeams().size() <= 10)
-				for(fr.devsylone.fkpi.teams.Team team : Fk.getInstance().getFkPI().getTeamManager().getTeams())
-					sidebarBoard.setLine(" " + team.toString() + " (§7" + team.getPlayers().size() + team.getChatColor() + ")", ++index);
-			else
-				for(int i = 0; i < 10; i++)
-				{
-					fr.devsylone.fkpi.teams.Team team = Fk.getInstance().getFkPI().getTeamManager().getTeams().get(i);
-					sidebarBoard.setLine(" " + team.toString() + " (§7" + team.getPlayers().size() + team.getChatColor() + ")", ++index);
-				}
+			FkPI.getInstance().getTeamManager().getTeams().stream()
+					.limit(10)
+					.forEach(team -> lines.add(" " + team.toString() + " (§7" + team.getPlayers().size() + team.getChatColor() + ")"));
 
-			sidebarBoard.setLine("§1", ++index);
-			sidebarBoard.setLine(Messages.SCOREBOARD_RULES.getMessage(), ++index);
+			lines.add("§1");
+			lines.add(Messages.SCOREBOARD_RULES.getMessage());
 
-			for(String s : RulesFormatter.formatRules(Rule.ALLOWED_BLOCKS, Rule.CHARGED_CREEPERS, Rule.DISABLED_POTIONS))
-				if(index < 14)
-					sidebarBoard.setLine(" " + s, ++index);
-				else
-					sidebarBoard.setLine(" §6... (§e/fk rules list§6)", index);
+			RulesFormatter.formatRules(Rule.ALLOWED_BLOCKS, Rule.CHARGED_CREEPERS, Rule.DISABLED_POTIONS).stream()
+					.limit(14 - lines.size())
+					.forEach(rule -> lines.add(" " + rule));
+			lines.add(" §6... (§e/fk rules list§6)");
+			sidebarBoard.updateLines(lines);
 		}
 		else
 		{
@@ -150,12 +142,12 @@ public class FkScoreboard
 			line = line.replaceAll("(&.)+$", ScoreboardManager.randomFakeEmpty());
 		}
 
-		if(!sidebarBoard.getLine(i).equals(line))
-			sidebarBoard.setLine(line, i);
+		if(i >= sidebarBoard.getLines().size() || !sidebarBoard.getLine(i).equals(line))
+			sidebarBoard.updateLine(i, line);
 	}
 
 	public void remove()
 	{
-		sidebarBoard.destroy();
+		sidebarBoard.delete();
 	}
 }
