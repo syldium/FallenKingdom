@@ -55,14 +55,14 @@
                                     <pattern>com.cryptomorin.xseries</pattern>
                                     <shadedPattern>fr.devsylone.fallenkingdom.utils</shadedPattern>
                                 </relocation>
-                                <!--<relocation>
+                                <relocation>
                                     <pattern>fr.mrmicky.fastboard</pattern>
                                     <shadedPattern>fr.devsylone.fallenkingdom.scoreboard</shadedPattern>
-                                </relocation>-->
-                                <!--<relocation>
+                                </relocation>
+                                <relocation>
                                     <pattern>org.bstats</pattern>
                                     <shadedPattern>fr.devsylone.fallenkingdom.bstats</shadedPattern>
-                                </relocation>-->
+                                </relocation>
                             </relocations>
                         </configuration>
                     </execution>
