@@ -17,6 +17,7 @@ import fr.devsylone.fallenkingdom.commands.rules.rulescommands.booleancommands.D
 import fr.devsylone.fallenkingdom.commands.rules.rulescommands.booleancommands.TntJump;
 import fr.devsylone.fallenkingdom.commands.scoreboard.scoreboardcommands.Edit;
 import fr.devsylone.fallenkingdom.utils.Messages;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -71,9 +72,12 @@ public class TipsManager
 
 		displayed.add(tip);
 
-		Fk.broadcast(" ");
-		Fk.broadcast(tip.getChatFormatted(), ChatUtils.TIP, FkSound.NOTE_PLING);
-		Fk.broadcast(" ");
+		if(StringUtils.isNotBlank(tip.getTip()))
+		{
+			Fk.broadcast(" ");
+			Fk.broadcast(tip.getChatFormatted(), ChatUtils.TIP, FkSound.NOTE_PLING);
+			Fk.broadcast(" ");
+		}
 		if(displayed.size()+used.size() >= tips.size())
 			displayed.clear();
 	}
