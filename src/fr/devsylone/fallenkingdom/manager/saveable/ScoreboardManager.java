@@ -160,7 +160,7 @@ public class ScoreboardManager implements Saveable
 		for(Team team : FkPI.getInstance().getTeamManager().getTeams())
 		{
 			if(Version.VersionType.V1_13.isHigherOrEqual())
-				team.getScoreboardTeam().setColor(team.getChatColor());
+				team.getScoreboardTeam().setColor(team.getColor().getBukkitChatColor());
 			else
 				team.getScoreboardTeam().setPrefix(String.valueOf(team.getChatColor()));
 

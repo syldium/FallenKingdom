@@ -6,8 +6,8 @@ import java.util.List;
 import fr.devsylone.fallenkingdom.utils.Version;
 import fr.devsylone.fkpi.api.ITeam;
 import fr.devsylone.fkpi.api.event.TeamUpdateEvent;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -29,7 +29,7 @@ public class Team implements ITeam, Saveable
 		players = new ArrayList<>();
 
 		scoreboardTeam = FkPI.getInstance().getTeamManager().getScoreboard().registerNewTeam(name);
-		setColor(Color.forName(name));
+		setColor(Color.of(name));
 	}
 
 	public void addPlayer(String p)
@@ -88,7 +88,7 @@ public class Team implements ITeam, Saveable
 	{
 		this.color = color == null ? Color.NO_COLOR : color;
 		if(Version.VersionType.V1_13.isHigherOrEqual())
-			scoreboardTeam.setColor(this.color.getChatColor());
+			scoreboardTeam.setColor(color.getBukkitChatColor());
 		else
 			scoreboardTeam.setPrefix(String.valueOf(this.color.getChatColor()));
 	}
@@ -142,7 +142,7 @@ public class Team implements ITeam, Saveable
 			scoreboardTeam.addEntry(entr);
 
 		players = config.getStringList("Members");
-		setColor(Color.valueOf(config.getString("Color")));
+		setColor(Color.of(config.getString("Color")));
 		scoreboardTeam.setPrefix(this.color.getChatColor() + "");
 
 		if(!config.isConfigurationSection("Base"))
@@ -158,7 +158,7 @@ public class Team implements ITeam, Saveable
 	public void save(ConfigurationSection config)
 	{
 		config.set("Members", players);
-		config.set("Color", color.name());
+		config.set("Color", color.getHexString());
 
 		if(base == null || base.getCenter().getWorld() == null)
 		{

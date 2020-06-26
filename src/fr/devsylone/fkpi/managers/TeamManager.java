@@ -40,7 +40,7 @@ public class TeamManager implements Saveable
 		Bukkit.getPluginManager().callEvent(new TeamUpdateEvent(team, TeamUpdateEvent.TeamUpdate.CREATION)); // EVENT
 		teams.add(team);
 
-		return Color.forName(name) != null;
+		return !team.getColor().equals(Color.NO_COLOR);
 	}
 
 	public Scoreboard getScoreboard()
