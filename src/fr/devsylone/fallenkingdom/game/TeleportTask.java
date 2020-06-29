@@ -2,6 +2,7 @@ package fr.devsylone.fallenkingdom.game;
 
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.utils.FkSound;
+import fr.devsylone.fallenkingdom.utils.Version;
 import fr.devsylone.fkpi.teams.Team;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -29,8 +30,7 @@ class TeleportTask implements Runnable {
                 return;
             }
 
-            player.teleport(team.getBase().getTpPoint());
-
+            Version.teleportAsync(player, team.getBase().getTpPoint());
             player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20 * 5, 4));
             player.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, 20 * 30, 4));
             player.setGameMode(GameMode.SURVIVAL);
