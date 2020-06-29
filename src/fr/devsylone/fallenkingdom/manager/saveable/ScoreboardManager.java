@@ -1,20 +1,24 @@
 package fr.devsylone.fallenkingdom.manager.saveable;
 
-import fr.devsylone.fallenkingdom.utils.Version;
-import fr.devsylone.fkpi.FkPI;
-import fr.devsylone.fkpi.teams.Team;
-import org.bukkit.Bukkit;
-import org.bukkit.configuration.ConfigurationSection;
-
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fallenkingdom.scoreboard.PlaceHolder;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
+import fr.devsylone.fallenkingdom.utils.Version;
+import fr.devsylone.fkpi.FkPI;
+import fr.devsylone.fkpi.teams.Team;
 import fr.devsylone.fkpi.util.Saveable;
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Random;
 
 public class ScoreboardManager implements Saveable
 {
@@ -152,6 +156,7 @@ public class ScoreboardManager implements Saveable
 				Fk.getInstance().getLogger().warning("Scoreboard null, recreated");
 				player.recreateScoreboard();
 			}
+		refreshNicks();
 	}
 
 	public void refreshNicks()
@@ -160,16 +165,34 @@ public class ScoreboardManager implements Saveable
 		for(Team team : FkPI.getInstance().getTeamManager().getTeams())
 		{
 			if(Version.VersionType.V1_13.isHigherOrEqual())
-				team.getScoreboardTeam().setColor(team.getColor().getBukkitChatColor());
+				team.getScoreboardTeam().setColor(team.getColor().getBukkitChatColor()); // À quand des couleurs de team RGB ?
 			else
-				team.getScoreboardTeam().setPrefix(String.valueOf(team.getChatColor()));
+				team.getScoreboardTeam().setPrefix(team.getChatColor().toString());
 
+			for(String entry : team.getScoreboardTeam().getEntries())
+			{
+				if(!team.getPlayers().contains(entry))
+				{
+					team.getScoreboardTeam().removeEntry(entry);
+					Player player = Bukkit.getPlayer(entry);
+					if(player != null)
+					{
+						player.setDisplayName(player.getName());
+						//player.setPlayerListName(player.getName());
+					}
+				}
+			}
 			for(String entry : team.getPlayers())
 			{
 				Player player = Bukkit.getPlayer(entry);
-				team.getScoreboardTeam().removeEntry(entry);
-				if (player != null && Fk.getInstance().getWorldManager().isAffected(player.getWorld()))
+				if(player != null && Fk.getInstance().getWorldManager().isAffected(player.getWorld()))
+				{
 					team.getScoreboardTeam().addEntry(entry);
+					player.setDisplayName(team.getChatColor() + player.getName());
+					//player.setPlayerListName(team.getChatColor() + player.getName()); // S'affiche dans le tab mais pas au dessus du joueur - très perturbant
+				}
+				else if(team.getScoreboardTeam().getEntries().contains(entry))
+					team.getScoreboardTeam().removeEntry(entry);
 			}
 		}
 		for(FkPlayer player : Fk.getInstance().getPlayerManager().getConnectedPlayers())
