@@ -2,6 +2,7 @@ package fr.devsylone.fallenkingdom.listeners.entity.player;
 
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fallenkingdom.utils.Messages;
+import fr.devsylone.fallenkingdom.utils.Version;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.rules.Rule;
 import org.bukkit.Bukkit;
@@ -30,7 +31,6 @@ public class RespawnListener implements Listener
 
 		if(!e.isBedSpawn() && FkPI.getInstance().getRulesManager().getRule(Rule.RESPAWN_AT_HOME) && team != null && team.getBase() != null)
 		{
-
 			for(int x = -2; x < 2; x++)
 				for(int z = -2; z < 2; z++)
 					for(int y = -1; y < 2; y++)
@@ -40,13 +40,13 @@ public class RespawnListener implements Listener
 							final Location loc = team.getBase().getCenter().add((double) x + 0.5d, (double) y + 0.2d, (double) z + 0.5d).clone();
 							e.getPlayer().setGameMode(GameMode.SPECTATOR);
 							Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), () -> {
-								e.getPlayer().teleport(loc);
+								Version.teleportAsync(e.getPlayer(), loc);
 								e.getPlayer().setGameMode(GameMode.SURVIVAL);
-							}, 60l);
+							}, 60L);
 							return;
 						}
 					}
-			Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), () -> ChatUtils.sendMessage(e.getPlayer(), Messages.PLAYER_BASE_OBSTRUCTED), 20l);
+			Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), () -> ChatUtils.sendMessage(e.getPlayer(), Messages.PLAYER_BASE_OBSTRUCTED), 20L);
 		}
 	}
 	

@@ -3,7 +3,6 @@ package fr.devsylone.fallenkingdom.listeners.block;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World.Environment;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -36,7 +35,7 @@ public class BlockListener implements Listener
 	@EventHandler
 	public void event(BlockPlaceEvent e)
 	{
-		if (!Fk.getInstance().getWorldManager().isAffected(e.getPlayer().getWorld()))
+		if (!Fk.getInstance().getWorldManager().isWorldWithBase(e.getPlayer().getWorld()))
 			return;
 
 		Player p = e.getPlayer();
@@ -46,7 +45,7 @@ public class BlockListener implements Listener
 		if(p.getGameMode() == GameMode.CREATIVE)
 			return;
 
-		if(p.getWorld().getEnvironment() != Environment.NORMAL || team == null || plugin.getGame().getState().equals(GameState.BEFORE_STARTING))
+		if(team == null || plugin.getGame().getState().equals(GameState.BEFORE_STARTING))
 			return;
 
 		if(e.getBlock().getType() == Material.TNT)
@@ -142,13 +141,13 @@ public class BlockListener implements Listener
 	@EventHandler
 	public void event(BlockBreakEvent e)
 	{
-		if (!Fk.getInstance().getWorldManager().isAffected(e.getPlayer().getWorld()))
+		if (!Fk.getInstance().getWorldManager().isWorldWithBase(e.getPlayer().getWorld()))
 			return;
 
 		Player p = e.getPlayer();
 		Team team = Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(p.getName());
 
-		if(p.getWorld().getEnvironment() != Environment.NORMAL || team == null || plugin.getGame().getState().equals(GameState.BEFORE_STARTING))
+		if(team == null || plugin.getGame().getState().equals(GameState.BEFORE_STARTING))
 			return;
 
 		//AVANT check creative
@@ -175,7 +174,6 @@ public class BlockListener implements Listener
 		if(XBlock.canBePartOfChestRoom(e.getBlock().getType()) && team.getBase() != null && !e.isCancelled() && team.getBase().contains(e.getBlock().getLocation()) && Fk.getInstance().getFkPI().getChestsRoomsManager().isEnabled())
 		{
 			team.getBase().getChestsRoom().removeChest(e.getBlock().getLocation());
-			return;
 		}
 	}
 

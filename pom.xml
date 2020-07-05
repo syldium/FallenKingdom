@@ -6,7 +6,7 @@
 
     <groupId>fr.devsylone</groupId>
     <artifactId>fallenkingdom</artifactId>
-    <version>2.19.5</version>
+    <version>2.20.0</version>
     <packaging>jar</packaging>
     <name>FallenKingdom</name>
 
@@ -56,6 +56,10 @@
                                     <shadedPattern>fr.devsylone.fallenkingdom.utils</shadedPattern>
                                 </relocation>
                                 <relocation>
+                                    <pattern>fr.mrmicky.fastboard</pattern>
+                                    <shadedPattern>fr.devsylone.fallenkingdom.scoreboard</shadedPattern>
+                                </relocation>
+                                <relocation>
                                     <pattern>org.bstats</pattern>
                                     <shadedPattern>fr.devsylone.fallenkingdom.bstats</shadedPattern>
                                 </relocation>
@@ -95,27 +99,31 @@
             <name>Minecraft Libraries</name>
             <url>https://libraries.minecraft.net</url>
         </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
     </repositories>
 
     <dependencies>
         <!-- Used to check the structure of NMS packets -->
         <!--<dependency>
-            <groupId>1.15.2_R0.1</groupId>
-            <artifactId>spigot_1_15_2</artifactId>
-            <version>1.15.2-R0.1</version>
+            <groupId>1.16.1_R0.1</groupId>
+            <artifactId>spigot_1_16_1</artifactId>
+            <version>1.16.1-R0.1</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/../spigot-1.15.2.jar</systemPath>
+            <systemPath>${project.basedir}/../spigot-1.16.1.jar</systemPath>
         </dependency>-->
         <dependency>
             <groupId>com.destroystokyo.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>1.15.2-R0.1-SNAPSHOT</version>
+            <version>1.16.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.destroystokyo.paper</groupId>
             <artifactId>paper-mojangapi</artifactId>
-            <version>1.15.2-R0.1-SNAPSHOT</version>
+            <version>1.16.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -140,7 +148,14 @@
         <dependency>
             <groupId>com.github.cryptomorin</groupId>
             <artifactId>XSeries</artifactId>
-            <version>5.3.1</version>
+            <version>6.0.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>fr.mrmicky</groupId>
+            <artifactId>FastBoard</artifactId>
+            <version>1.1.0</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.bstats</groupId>
@@ -151,7 +166,7 @@
         <dependency>
             <groupId>me.clip</groupId>
             <artifactId>placeholderapi</artifactId>
-            <version>2.10.5</version>
+            <version>2.10.6</version>
             <scope>provided</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->

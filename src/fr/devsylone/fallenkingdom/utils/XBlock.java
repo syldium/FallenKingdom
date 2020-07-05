@@ -45,12 +45,13 @@ import com.cryptomorin.xseries.XMaterial;
  */
 
 /**
- * <b>XBlock BETA</b> - MaterialData/BlockData Support<br>
- * Supports 1.8+ - Requires XMaterial
- * JavaDocs will be added soon.
+ * <b>XBlock</b> - MaterialData/BlockData Support<br>
+ * BlockState (Old): https://hub.spigotmc.org/javadocs/spigot/org/bukkit/block/BlockState.html
+ * BlockData (New): https://hub.spigotmc.org/javadocs/spigot/org/bukkit/block/data/BlockData.html
+ * MaterialData (Old): https://hub.spigotmc.org/javadocs/spigot/org/bukkit/material/MaterialData.html
  *
  * @author Crypto Morin
- * @version 0.2.0
+ * @version 1.1.0
  * @see Block
  * @see BlockData
  * @see BlockState
@@ -66,8 +67,8 @@ public final class XBlock {
             XMaterial.PEONY, XMaterial.TALL_GRASS, XMaterial.LARGE_FERN, XMaterial.FERN, XMaterial.DEAD_BUSH,
             XMaterial.OAK_FENCE, XMaterial.AIR
     );
-    public static final EnumSet<XMaterial> BLOCKS_IN_CAVES = EnumSet.of(
-            XMaterial.STONE, XMaterial.GRANITE, XMaterial.DIORITE, XMaterial.ANDESITE
+    public static final EnumSet<Material> BLOCKS_IN_CAVES = EnumSet.of(
+            Material.STONE, XMaterial.GRANITE.parseMaterial(), XMaterial.DIORITE.parseMaterial(), XMaterial.ANDESITE.parseMaterial()
     );
     public static final EnumSet<Material> CONTAINERS = EnumSet.of(
             Material.CHEST, XMaterial.BARREL.parseMaterial(true)
@@ -88,7 +89,7 @@ public final class XBlock {
 
     public static boolean isBlockInCave(Material material) {
         if (!ISFLAT) return material.equals(Material.STONE);
-        return BLOCKS_IN_CAVES.contains(XMaterial.matchXMaterial(material));
+        return BLOCKS_IN_CAVES.contains(material);
     }
 
     public static boolean canBePartOfChestRoom(Material material) {
@@ -131,7 +132,7 @@ public final class XBlock {
             Method setDataMethod = Block.class.getMethod("setData", byte.class);
             setDataMethod.invoke(block, data);
             return true;
-        } catch (ReflectiveOperationException e) {
+        } catch (ReflectiveOperationException ignored) {
 
         }
         return false;

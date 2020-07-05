@@ -1,17 +1,21 @@
 package fr.devsylone.fallenkingdom.utils;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.entity.Entity;
+
+import java.util.concurrent.CompletableFuture;
 
 public class Version {
 
-    public static final String PACKAGE_VERSION;
     public static final VersionType VERSION_TYPE;
 
+    private static final boolean HAS_ASYNC_TELEPORT;
+
     static {
-        PACKAGE_VERSION = Bukkit.getServer().getClass().getPackage().getName().replace(".",  ",").split(",")[3];
         if (classExists("org.bukkit.block.data.BlockData")) {
             if (classExists("org.bukkit.event.inventory.TradeSelectEvent")) {
-                VERSION_TYPE = VersionType.V1_14_PLUS;
+                VERSION_TYPE = classExists("org.bukkit.entity.Hoglin") ? VersionType.V1_16 : VersionType.V1_14_V1_15;
             } else {
                 VERSION_TYPE = VersionType.V1_13;
             }
@@ -20,10 +24,23 @@ public class Version {
         } else {
             VERSION_TYPE = VersionType.V1_9_V1_12;
         }
+
+        boolean hasAsyncTeleport;
+        try {
+            Entity.class.getMethod("teleportAsync", Location.class);
+            hasAsyncTeleport = true;
+        } catch (NoSuchMethodException e) {
+            hasAsyncTeleport = false;
+        }
+        HAS_ASYNC_TELEPORT = hasAsyncTeleport;
     }
 
     public static boolean hasSpigotApi() {
         return classExists("org.spigotmc.SpigotConfig");
+    }
+
+    public static boolean hasPaperApi() {
+        return classExists("com.destroystokyo.paper.PaperConfig");
     }
 
     public static boolean isTooOldApi() {
@@ -42,6 +59,13 @@ public class Version {
         return classExists("com.destroystokyo.paper.event.brigadier.CommandRegisteredEvent");
     }
 
+    public static CompletableFuture<Boolean> teleportAsync(Entity entity, Location location) {
+        if (HAS_ASYNC_TELEPORT) {
+            return entity.teleportAsync(location);
+        }
+        return CompletableFuture.completedFuture(entity.teleport(location)); // Sinon synchrone
+    }
+
     public static boolean classExists(String name) {
         try {
             Class.forName(name);
@@ -55,7 +79,8 @@ public class Version {
         V1_8,
         V1_9_V1_12,
         V1_13,
-        V1_14_PLUS;
+        V1_14_V1_15,
+        V1_16;
 
         public boolean isHigherOrEqual() {
             return VERSION_TYPE.ordinal() >= ordinal();

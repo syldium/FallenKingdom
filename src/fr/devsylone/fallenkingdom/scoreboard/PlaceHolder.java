@@ -30,9 +30,9 @@ public enum PlaceHolder
     NEAREST_BASE_DIRECTION(PlaceHolderUtils::getNearestBaseDirection, "Direction de la base ennemie la plus proche", "NEAREST_BASE_DIRECTION", "ENEMY_BASE_DIRECTION", "ENEMY_BASE_DIR", "ENEMY_DIR"),
 
     PVPCAP(PlaceHolderUtils.GAME_SUPPLIER, Game::isPvpEnabled, "Pvp actif ?", "PVP?"),
-    TNTCAP(PlaceHolderUtils.GAME_SUPPLIER, Game::isPvpEnabled, "Assauts actifs ?", "TNT?"),
-    NETHERCAP(PlaceHolderUtils.GAME_SUPPLIER, Game::isPvpEnabled, "Nether ouvert ?", "NETHER?"),
-    ENDCAP(PlaceHolderUtils.GAME_SUPPLIER, Game::isPvpEnabled, "End ouvert ?", "END?");
+    TNTCAP(PlaceHolderUtils.GAME_SUPPLIER, Game::isAssaultsEnabled, "Assauts actifs ?", "TNT?"),
+    NETHERCAP(PlaceHolderUtils.GAME_SUPPLIER, Game::isNetherEnabled, "Nether ouvert ?", "NETHER?"),
+    ENDCAP(PlaceHolderUtils.GAME_SUPPLIER, Game::isEndEnabled, "End ouvert ?", "END?");
 
 	private final BiFunction<Player, Integer, ?> callable;
 	private final String description;

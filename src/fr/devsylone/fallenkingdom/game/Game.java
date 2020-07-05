@@ -77,7 +77,8 @@ public class Game implements Saveable
 
 	public void stopTimer()
 	{
-		task.cancel();
+		if (task != null)
+			task.cancel();
 		task = null;
 	}
 

@@ -8,6 +8,7 @@ import fr.devsylone.fallenkingdom.listeners.block.LockedChestInteractListener;
 import fr.devsylone.fallenkingdom.listeners.block.PortalCreateListener;
 import fr.devsylone.fallenkingdom.listeners.entity.DamageListener;
 import fr.devsylone.fallenkingdom.listeners.entity.mob.MobSpawn;
+import fr.devsylone.fallenkingdom.listeners.entity.player.AdvancementListener;
 import fr.devsylone.fallenkingdom.listeners.entity.player.ChangeGamemodeListener;
 import fr.devsylone.fallenkingdom.listeners.entity.player.ChatListener;
 import fr.devsylone.fallenkingdom.listeners.entity.player.DisabledPotionsListener;
@@ -21,6 +22,7 @@ import fr.devsylone.fallenkingdom.listeners.entity.player.PvpListener;
 import fr.devsylone.fallenkingdom.listeners.entity.player.RespawnListener;
 import fr.devsylone.fallenkingdom.listeners.entity.player.ScrollListener;
 import fr.devsylone.fallenkingdom.listeners.entity.player.UsePortalListener;
+import fr.devsylone.fallenkingdom.utils.Version;
 
 public class ListenersManager
 {
@@ -46,5 +48,7 @@ public class ListenersManager
 		plugin.getServer().getPluginManager().registerEvents(new RespawnListener(), plugin);
 		plugin.getServer().getPluginManager().registerEvents(new PauseInteractionListener(), plugin);
 		plugin.getServer().getPluginManager().registerEvents(new DisabledPotionsListener(), plugin);
+		if (Version.classExists("org.bukkit.event.player.PlayerAdvancementDoneEvent"))
+			plugin.getServer().getPluginManager().registerEvents(new AdvancementListener(), plugin);
 	}
 }

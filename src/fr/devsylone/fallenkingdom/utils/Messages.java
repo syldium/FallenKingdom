@@ -110,6 +110,7 @@ public enum Messages
     CMD_MAP_GAME_STARTER_INV("cmd.map.game.starterInv"),
     CMD_MAP_GAME_STOP("cmd.map.game.stop"),
 
+    CMD_MAP_LANG("cmd.map.lang"),
     CMD_MAP_LANG_SET("cmd.map.lang.set"),
     CMD_MAP_LANG_TRY_LOAD("cmd.map.lang.tryLoad"),
 
@@ -248,6 +249,8 @@ public enum Messages
     PLAYER_DISABLED_POTION_CRAFT("player.disabled-potion.craft"),
     PLAYER_END_NOT_ACTIVE("player.not-active.end"),
     PLAYER_LIFES_REMAINING("player.lifes-remaining"),
+    PLAYER_LOCKED_CHEST_ACCESS_UNLOCKED("player.locked-chest.access-unlocked"),
+    PLAYER_LOCKED_CHEST_NO_ACCESS("player.locked-chest.no-access"),
     PLAYER_LOCKED_CHEST_TOO_EARLY("player.locked-chest.too-early"),
     PLAYER_NETHER_NOT_ACTIVE("player.not-active.nether"),
     PLAYER_NETHER_PORTAL_SETUP("player.nether-portal.setup"),
@@ -271,6 +274,21 @@ public enum Messages
 
     SCOREBOARD_RULES("scoreboard.rules"),
     SCOREBOARD_TEAMS("scoreboard.teams"),
+
+    TIP_BUG("tip.bug"),
+    TIP_CHARGED_CREEPERS("tip.chargedCreepers"),
+    TIP_DAY_DURATION("tip.dayDuration"),
+    TIP_DISABLED_POTIONS("tip.disabledPotions"),
+    TIP_DISCORD("tip.discord"),
+    TIP_DO_PAUSE_AFTER_DAY("tip.doPauseAfterDay"),
+    TIP_LOCKED_CHEST("tip.lockedChest"),
+    TIP_PLACE_BLOCK_IN_CAVE("tip.placeBlockInCave"),
+    TIP_RESTORE("tip.restore"),
+    TIP_SCOREBOARD_EDIT("tip.scoreboardEdit"),
+    TIP_STARTER_INV("tip.starterInv"),
+    TIP_TAB_COMPLETION("tip.tabCompletion"),
+    TIP_TNT_JUMP("tip.tntJump"),
+    TIP_WATER_NEXT_TO_BASE("tip.waterNextToBase"),
 
     UNIT_BLOCK("block"),
     UNIT_BLOCKS("blocks"),

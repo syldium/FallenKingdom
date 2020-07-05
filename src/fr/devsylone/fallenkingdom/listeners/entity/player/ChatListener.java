@@ -4,8 +4,8 @@ import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.teams.Team;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -33,7 +33,7 @@ public class ChatListener implements Listener
 			e.setCancelled(true);
 			for(String pl : team.getPlayers())
 				if(Bukkit.getPlayer(pl) != null)
-					Bukkit.getPlayer(pl).sendMessage(Messages.CHAT_TEAM.getMessage() + teamColor + e.getPlayer().getDisplayName() + " : " + ChatColor.WHITE + msg);
+					Bukkit.getPlayer(pl).sendMessage(Messages.CHAT_TEAM.getMessage() + teamColor + e.getPlayer().getName() + " : " + ChatColor.WHITE + msg);
 		}
 	}
 }

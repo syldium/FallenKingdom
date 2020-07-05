@@ -44,10 +44,7 @@ public class JoinListener implements Listener
 
 		final Team pTeam = Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(e.getPlayer().getName());
 		if(pTeam != null) //REFRESH LES TEAMS SCOREBOARD (MC=CACA)
-		{
-			e.getPlayer().setDisplayName(pTeam.getChatColor() + e.getPlayer().getName());
 			Fk.getInstance().getScoreboardManager().refreshNicks();
-		}
 
 		e.setJoinMessage(null);
 		Fk.broadcast(Messages.CHAT_JOIN.getMessage().replace("%player%", e.getPlayer().getDisplayName()));

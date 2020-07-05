@@ -3,6 +3,7 @@ package fr.devsylone.fallenkingdom.game;
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.commands.game.gamescommands.Pause;
 import fr.devsylone.fallenkingdom.scoreboard.PlaceHolder;
+import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fallenkingdom.utils.FkSound;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fkpi.FkPI;
@@ -11,6 +12,7 @@ import fr.devsylone.fkpi.lockedchests.LockedChest;
 import fr.devsylone.fkpi.rules.Rule;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Collections;
@@ -112,13 +114,20 @@ class GameRunnable extends BukkitRunnable
         }
 
         for (LockedChest chest : Fk.getInstance().getFkPI().getLockedChestsManager().getChestList()) {
-            if (chest.getUnlockDay() == game.day) {
-                Fk.broadcast(Messages.BROADCAST_DAY_CHEST.getMessage()
-                                .replace("%name%", chest.getName())
-                                .replace("%x%", String.valueOf(chest.getLocation().getBlockX()))
-                                .replace("%y%", String.valueOf(chest.getLocation().getBlockY()))
-                                .replace("%z%", String.valueOf(chest.getLocation().getBlockZ())),
-                        FkSound.ENDERMAN_TELEPORT);
+            if (chest.getUnlockDay() != game.day) {
+                continue;
+            }
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                if (!chest.hasAccess(player)) {
+                    continue;
+                }
+                ChatUtils.sendMessage(player, Messages.BROADCAST_DAY_CHEST.getMessage()
+                        .replace("%name%", chest.getName())
+                        .replace("%x%", String.valueOf(chest.getLocation().getBlockX()))
+                        .replace("%y%", String.valueOf(chest.getLocation().getBlockY()))
+                        .replace("%z%", String.valueOf(chest.getLocation().getBlockZ()))
+                );
+                player.playSound(player.getLocation(), FkSound.ENDERMAN_TELEPORT.bukkitSound(), 1.0F, 1.0F);
             }
         }
         Fk.getInstance().getScoreboardManager().recreateAllScoreboards();

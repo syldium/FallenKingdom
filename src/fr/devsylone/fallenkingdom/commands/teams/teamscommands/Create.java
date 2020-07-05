@@ -23,7 +23,7 @@ public class Create extends FkCommand
 		if(!plugin.getFkPI().getTeamManager().createTeam(args.get(0)))
 			sender.sendMessage(Messages.WARNING_UNKNOWN_COLOR.getMessage());
 
-		broadcast("L'équipe " + plugin.getFkPI().getTeamManager().getTeam(args.get(0)).toString() + " §6a été créée !", 1, args);
+		broadcast(Messages.CMD_TEAM_CREATE.getMessage().replace("%team%", plugin.getFkPI().getTeamManager().getTeam(args.get(0)).toString()), 1, args);
 		plugin.getScoreboardManager().refreshAllScoreboards();
 		return CommandResult.SUCCESS;
 	}
