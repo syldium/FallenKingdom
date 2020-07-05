@@ -375,3 +375,12 @@ RETRAIT      = [-]
 
       >> 2.19.5
 [*] Le tntCap active bien les assauts
+--------
+
+      >> 2.20.0
+[+] Traduction anglaise / English translation
+[+] Ajout des paramètres advancements et loottables pour les coffres à crocheter
+[+] Support des versions 1.16.x
+[+] Support des couleurs au format hexadécimal (1.16)
+[*] Les interdictions de placement de bloc vérifient si le monde contient des bases et non plus s'il s'agit de l'overworld
+[*] Fix d'une exception lors d'une explosion d'un coffre crochetable
