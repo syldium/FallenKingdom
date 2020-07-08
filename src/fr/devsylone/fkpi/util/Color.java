@@ -32,7 +32,7 @@ public class Color
 	private final java.awt.Color value;
 
 	private final ChatColor bukkitChatColor;
-	private final net.md_5.bungee.api.ChatColor bungeeChatColor;
+	private net.md_5.bungee.api.ChatColor bungeeChatColor;
 	private final DyeColor dyeColor;
 	
 	public static final int GENRE_F = 0;
@@ -44,7 +44,12 @@ public class Color
 		this.femColor = femColor;
 		this.value = new java.awt.Color(value);
 		this.bukkitChatColor = chatColor;
-		this.bungeeChatColor = net.md_5.bungee.api.ChatColor.class.isEnum() ? chatColor.asBungee() : net.md_5.bungee.api.ChatColor.of(this.value);
+		try {
+			this.bungeeChatColor = net.md_5.bungee.api.ChatColor.class.isEnum() ? chatColor.asBungee() : net.md_5.bungee.api.ChatColor.of(this.value);
+		} catch (NoSuchMethodError e) {
+			// noinspection deprecation
+			this.bungeeChatColor = net.md_5.bungee.api.ChatColor.valueOf(chatColor.name());
+		}
 		this.dyeColor = dyeColor;
 		LEGACY_VALUES.add(this);
 	}
