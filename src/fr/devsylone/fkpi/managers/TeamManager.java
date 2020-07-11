@@ -33,7 +33,7 @@ public class TeamManager implements Saveable
 		if(name.isEmpty() || name.contains(" "))
 			throw new FkLightException(Messages.CMD_ERROR_TEAM_INVALID_NAME);
 
-		if(name.length() > 25)
+		if(name.length() > 16)
 			throw new FkLightException(Messages.CMD_ERROR_TEAM_NAME_TOO_LONG);
 
 		Team team = new Team(name);
