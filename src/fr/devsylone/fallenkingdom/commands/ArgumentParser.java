@@ -105,7 +105,7 @@ public class ArgumentParser {
 
     public static int parseScoreboardLine(String line, Messages errorMessage) throws ArgumentParseException {
         int integer = parseInt(line, errorMessage);
-        if (integer > 15 || integer < 1) {
+        if (integer > 14 || integer < 0) {
             throw new ArgumentParseException(errorMessage.getMessage());
         }
         return integer;

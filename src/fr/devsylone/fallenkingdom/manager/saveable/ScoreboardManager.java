@@ -59,14 +59,16 @@ public class ScoreboardManager implements Saveable
 
 	public boolean setLine(int line, String newl)
 	{
-		line = 15 - line;
-		if (line < 0 || line >= sidebar.size())
+		if (line < 0 || line >= 15)
 			return false;
+		line = sidebar.size() - line - 1;
 		if(newl.length() < 3)
 			newl = randomFakeEmpty() + newl;
 		createSnapshot();
-		for(int i = sidebar.size(); i <= line; i++)
-			sidebar.add(randomFakeEmpty());
+		for(int i = line; i < 0; i++)
+			sidebar.add(0, randomFakeEmpty());
+		if(line < 0)
+			line = 0;
 		sidebar.set(line, newl);
 		recreateAllScoreboards();
 		return true;
@@ -74,10 +76,10 @@ public class ScoreboardManager implements Saveable
 
 	public boolean removeLine(int line)
 	{
-		line = 15 - line;
-		createSnapshot();
-		if (line < 0 || line >= sidebar.size())
+		if (line < 0 || line >= 15)
 			return false;
+		line = sidebar.size() - line - 1;
+		createSnapshot();
 		sidebar.remove(line);
 		recreateAllScoreboards();
 		return true;
