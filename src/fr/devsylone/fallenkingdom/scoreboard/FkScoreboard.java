@@ -145,7 +145,11 @@ public class FkScoreboard
 		}
 
 		if(i >= sidebarBoard.getLines().size() || !sidebarBoard.getLine(i).equals(line))
+		{
+			if(!Version.VersionType.V1_13.isHigherOrEqual())
+				line = line.substring(0, Math.min(30, line.length()));
 			sidebarBoard.updateLine(i, line);
+		}
 	}
 
 	public void remove()
