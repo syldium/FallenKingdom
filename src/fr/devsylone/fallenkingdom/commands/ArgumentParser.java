@@ -3,6 +3,8 @@ package fr.devsylone.fallenkingdom.commands;
 import fr.devsylone.fallenkingdom.exception.ArgumentParseException;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fallenkingdom.utils.Version;
+import fr.devsylone.fkpi.FkPI;
+import fr.devsylone.fkpi.lockedchests.LockedChest;
 import fr.devsylone.fkpi.util.BlockDescription;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.TranslatableComponent;
@@ -119,11 +121,20 @@ public class ArgumentParser {
         return integer;
     }
 
-    public static int parseOffset(String time, Messages errorMessage) throws IllegalArgumentException {
+    public static int parseOffset(String time, Messages errorMessage) throws ArgumentParseException {
         int integer = parseInt(time, errorMessage);
         if (integer > 10 || integer < 1) {
-            throw new IllegalArgumentException(errorMessage.getMessage());
+            throw new ArgumentParseException(errorMessage.getMessage());
         }
         return integer;
+    }
+
+    public static LockedChest getLockedChest(String name) throws ArgumentParseException {
+        for (LockedChest chest : FkPI.getInstance().getLockedChestsManager().getChestList()) {
+            if (chest.getName().equalsIgnoreCase(name)) {
+                return chest;
+            }
+        }
+        throw new ArgumentParseException(Messages.CMD_ERROR_NOT_LOCKED_CHEST.getMessage());
     }
 }

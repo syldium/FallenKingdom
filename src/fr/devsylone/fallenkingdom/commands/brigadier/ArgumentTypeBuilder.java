@@ -23,6 +23,12 @@ class ArgumentTypeBuilder
             case "text":
                 argumentType = StringArgumentType.greedyString();
                 break;
+            case "advancement":
+                argumentType = MinecraftArgumentTypes.getByKey(NamespacedKey.minecraft("resource_location"));
+                break;
+            case "color":
+                argumentType = MinecraftArgumentTypes.getByKey(NamespacedKey.minecraft("function")); // Type le plus proche autorisant le #
+                break;
             case "player":
                 argumentType = MinecraftArgumentTypes.constructMinecraftArgumentType(NamespacedKey.minecraft("entity"), new Class[]{boolean.class, boolean.class}, false, true);
                 break;

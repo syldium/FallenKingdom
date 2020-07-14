@@ -2,6 +2,7 @@ package fr.devsylone.fkpi.lockedchests;
 
 import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fallenkingdom.utils.Version;
+import fr.devsylone.fallenkingdom.utils.XAdvancement;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.api.event.PlayerLockedChestInteractEvent;
 import org.apache.commons.lang.NotImplementedException;
@@ -16,8 +17,6 @@ import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fkpi.util.Saveable;
 import org.bukkit.entity.Player;
 import org.bukkit.loot.LootTable;
-
-import java.lang.reflect.Method;
 
 public class LockedChest implements Saveable
 {
@@ -192,24 +191,17 @@ public class LockedChest implements Saveable
 		return Bukkit.getAdvancement(new NamespacedKey(requiredAdvancement.split(":")[0], requiredAdvancement.split(":")[1]));
 	}
 
-	@SuppressWarnings({"rawtypes", "unchecked"})
+	public void setRequiredAdvancement(String advancement)
+	{
+		this.requiredAdvancement = advancement;
+	}
+
 	public boolean hasAccess(Player player)
 	{
 		if (requiredAdvancement == null || requiredAdvancement.isEmpty()) {
 			return true;
 		}
-		if (Version.VersionType.V1_13.isHigherOrEqual() || Bukkit.getVersion().contains("1.12")) {
-			return player.getAdvancementProgress(getRequiredAdvancement()).isDone();
-		} else {
-			try {
-				Object achievement = Enum.valueOf((Class<Enum>) Class.forName("org.bukkit.Achievement"), requiredAdvancement.toUpperCase());
-				Method hasAchievement = Player.class.getDeclaredMethod("hasAchievement", achievement.getClass());
-				return (boolean) hasAchievement.invoke(player, achievement);
-			} catch (ReflectiveOperationException e) {
-				e.printStackTrace();
-			}
-			return true;
-		}
+		return XAdvancement.hasAdvancement(player, requiredAdvancement);
 	}
 
 	@SuppressWarnings("deprecation")

@@ -92,14 +92,18 @@ public enum Messages
     CMD_LOCKED_CHEST_CREATED("cmd.chests.created"),
     CMD_LOCKED_CHEST_LIST_INFO("cmd.chests.list.info"),
     CMD_LOCKED_CHEST_LIST_POSITION("cmd.chests.list.position"),
+    CMD_LOCKED_CHEST_LOCKED("cmd.chests.locked"),
     CMD_LOCKED_CHEST_REMOVED("cmd.chests.removed"),
+    CMD_LOCKED_CHEST_UNLOCKED("cmd.chests.unlocked"),
 
     CMD_MAP_BUG("cmd.map.bug"),
 
     CMD_MAP_CHEST("cmd.map.chests"),
     CMD_MAP_CHEST_ADD("cmd.map.chests.add"),
     CMD_MAP_CHEST_LIST("cmd.map.chests.list"),
+    CMD_MAP_CHEST_LOCK("cmd.map.chests.lock"),
     CMD_MAP_CHEST_REMOVE("cmd.map.chests.remove"),
+    CMD_MAP_CHEST_UNLOCK("cmd.map.chests.unlock"),
 
     CMD_MAP_GAME("cmd.map.game"),
     CMD_MAP_GAME_PAUSE("cmd.map.game.pause"),

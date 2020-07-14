@@ -3,6 +3,8 @@ package fr.devsylone.fallenkingdom.commands.abstraction;
 import com.google.common.collect.ImmutableList;
 
 import fr.devsylone.fallenkingdom.Fk;
+import fr.devsylone.fallenkingdom.utils.XAdvancement;
+import fr.devsylone.fkpi.lockedchests.LockedChest;
 import fr.devsylone.fkpi.teams.Team;
 import fr.devsylone.fkpi.util.Color;
 import org.bukkit.Material;
@@ -11,6 +13,7 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -139,6 +142,25 @@ public class Argument<T>
                         .filter(color -> startsWith(color.getGenredName(1), typed))
                         .filter(color -> !color.getGenredName(1).contains(" "))
                         .map(color -> color.getGenredName(1))
+                        .collect(Collectors.toList());
+            case "advancement":
+                List<String> suggestions = new ArrayList<>();
+                Iterator<String> iterator = XAdvancement.iterator();
+                String key = typed;
+                if (XAdvancement.isAdvancement()) {
+                    key = typed.contains(":") ? typed : "minecraft:" + typed;
+                }
+                while (iterator.hasNext()) {
+                    String advancement = iterator.next();
+                    if (startsWith(advancement, key)) {
+                        suggestions.add(advancement);
+                    }
+                }
+                return suggestions;
+            case "chest":
+                return plugin.getFkPI().getLockedChestsManager().getChestList().stream()
+                        .filter(chest -> startsWith(chest.getName(), typed))
+                        .map(LockedChest::getName)
                         .collect(Collectors.toList());
             default:
                 if (name.contains("|")) {
