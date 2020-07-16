@@ -138,7 +138,7 @@ public class ChestLock extends FkPlayerCommand implements Listener {
     @EventHandler
     public void onInvClick(InventoryClickEvent event)
     {
-        if(!event.getView().getTitle().contains(INVENTORY_NAME) || event.getClickedInventory() instanceof PlayerInventory || event.getCurrentItem() == null)
+        if(!event.getView().getTitle().contains(INVENTORY_NAME) || event.getClickedInventory() instanceof PlayerInventory || event.getCurrentItem() == null || event.getCurrentItem().getItemMeta() == null)
             return;
 
         event.setCancelled(true);

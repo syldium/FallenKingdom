@@ -88,6 +88,7 @@ public class XItemStack {
             if (field.getType().equals(List.class) && ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0].equals(CHAT_COMPONENT)) {
                 field.setAccessible(true);
                 field.set(meta, chatBaseComponents);
+                itemStack.setItemMeta(meta);
                 return itemStack;
             }
         }

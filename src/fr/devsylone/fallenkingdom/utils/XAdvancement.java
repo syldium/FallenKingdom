@@ -137,10 +137,14 @@ public class XAdvancement {
                 namespacedKey.setItalic(false);
                 namespacedKey.setColor(ChatColor.GRAY);
                 description.add(new BaseComponent[]{namespacedKey});
-                description.add(XItemStack.getTextComponent(display, 1));
-                for (BaseComponent component : description.get(1)) {
-                    component.setItalic(false);
-                    component.setColor(ChatColor.GREEN);
+
+                BaseComponent[] desc = XItemStack.getTextComponent(display, 1);
+                if (new TextComponent(desc).toPlainText().length() < 32) {
+                    description.add(desc);
+                    for (BaseComponent component : description.get(1)) {
+                        component.setItalic(false);
+                        component.setColor(ChatColor.GREEN);
+                    }
                 }
 
                 Class<?> craftItemStack = NMSUtils.obcClass("inventory.CraftItemStack");

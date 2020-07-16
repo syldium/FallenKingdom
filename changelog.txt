@@ -384,3 +384,12 @@ RETRAIT      = [-]
 [+] Support des couleurs au format hexadécimal (1.16)
 [*] Les interdictions de placement de bloc vérifient si le monde contient des bases et non plus s'il s'agit de l'overworld
 [*] Fix d'une exception lors d'une explosion d'un coffre crochetable
+[*] API : ITeam#getChatColor() retourne désormais net.md_5.bungee.api.ChatColor
+
+      >> 2.20.1
+[+] Ajout d'une interface et de commandes pour verrouiller un coffre tant que le joueur n'a pas un advancement
+[*] La règle respawnAtHome fonctionne dans le Nether et gère les ancres de réapparition
+[*] Fix de l'assocation des lignes du scoreboard (setLine/removeLine)
+[*] Fix d'une exception avec les couleurs pour les versions 1.8.7 et moins
+[*] Fix d'une NPE lorsque l'api Spigot cohabite avec celle de Forge
+[*] Sécurité supplémentaire lorsque la ligne du scoreboard fait plus de 30 caractères (1.12-)
