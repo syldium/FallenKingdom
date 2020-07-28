@@ -5,15 +5,16 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import fr.devsylone.fkpi.api.event.RuleChangeEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 
 import com.cryptomorin.xseries.XMaterial;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonPrimitive;
 
+import fr.devsylone.fkpi.api.event.RuleChangeEvent;
 import fr.devsylone.fkpi.util.BlockDescription;
 
 public class AllowedBlocks implements RuleValue
@@ -63,7 +64,7 @@ public class AllowedBlocks implements RuleValue
 	{
 		JsonArray jsonArray = new JsonArray();
 		for (BlockDescription block : getValue()) {
-			jsonArray.add(block.toString());
+			jsonArray.add(new JsonPrimitive(block.toString()));
 		}
 		return jsonArray;
 	}

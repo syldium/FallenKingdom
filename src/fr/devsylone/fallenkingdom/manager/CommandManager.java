@@ -1,9 +1,20 @@
 package fr.devsylone.fallenkingdom.manager;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
 import com.google.common.collect.ImmutableList;
+
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.commands.abstraction.AbstractCommand;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
+import fr.devsylone.fallenkingdom.commands.board.FkBoardCommand;
 import fr.devsylone.fallenkingdom.commands.chests.FkChestsCommand;
 import fr.devsylone.fallenkingdom.commands.debug.Bug;
 import fr.devsylone.fallenkingdom.commands.debug.Debug;
@@ -17,14 +28,6 @@ import fr.devsylone.fallenkingdom.exception.ArgumentParseException;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
 import fr.devsylone.fallenkingdom.game.Game;
 import fr.devsylone.fallenkingdom.utils.Messages;
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class CommandManager
 {
@@ -40,7 +43,8 @@ public class CommandManager
 				.add(new FkLangCommand())
 				.add(new FkRuleCommand())
 				.add(new FkScoreboardCommand())
-				.add(new FkTeamCommand())
+                .add(new FkTeamCommand())
+                .add(new FkBoardCommand())
 				.build();
 	}
 

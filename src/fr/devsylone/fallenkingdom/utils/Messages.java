@@ -1,9 +1,9 @@
 package fr.devsylone.fallenkingdom.utils;
 
-import org.bukkit.command.CommandSender;
-
 import java.text.ChoiceFormat;
 import java.util.Arrays;
+
+import org.bukkit.command.CommandSender;
 
 public enum Messages
 {
@@ -46,6 +46,7 @@ public enum Messages
     CMD_ERROR_DAY_PASSED("cmd.error.rules.day.passed"),
     CMD_ERROR_GAME_ALREADY_STARTED("cmd.game.already-started"),
     CMD_ERROR_GAME_NOT_STARTED("cmd.game.not-started"),
+    CMD_ERROR_BOARD_ALREADY_CONNECTED("cmd.error.board.already-connected"),
 
     CMD_ERROR_INVALID_PLAYER("cmd.error.invalid.player"),
     CMD_ERROR_MUST_BE_PLAYER("cmd.error.must-be-player"),
@@ -224,6 +225,9 @@ public enum Messages
     CMD_TEAM_REMOVE("cmd.team.remove"),
     CMD_TEAM_REMOVE_PLAYER("cmd.team.removePlayer"),
     CMD_TEAM_SET_BASE("cmd.team.setBase"),
+    
+    CMD_MAP_BOARD("cmd.map.board"),
+    CMD_MAP_BOARD_CONNECT("cmd.map.board.connect"),
 
     CMD_TEAM_SET_COLOR("cmd.team.setColor"),
     EASTER_EGG_CHEST_EXPLODE("easter-egg.chest-explode"),

@@ -202,6 +202,22 @@ public class FilesUpdater
                 LanguageManager.init(Fk.getInstance());
             }
         }
+        
+        if(isGrowing(lastv, "2.21.0"))
+        {
+            if(!Fk.getInstance().getConfig().contains("FkBoard.ProxyURI"))
+            {
+                Path path = new File(Fk.getInstance().getDataFolder(), "config.yml").toPath();
+                try
+                {
+                    Files.write(path, "\nFkBoard:\n  ProxyURI: \"ws://fkboard.etrenak.ovh:50000/proxy-socket\"".getBytes(), StandardOpenOption.APPEND);
+                }catch(IOException e)
+                {
+                    e.printStackTrace();
+                }
+                Fk.getInstance().reloadConfig();
+            }
+        }
     }
 
     public boolean isSection(String path)

@@ -1,8 +1,9 @@
 package fr.devsylone.fallenkingdom.utils;
 
-import fr.devsylone.fallenkingdom.manager.LanguageManager;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+
+import fr.devsylone.fallenkingdom.manager.LanguageManager;
 
 public class ChatUtils
 {
@@ -15,7 +16,8 @@ public class ChatUtils
 	public static final String SCOREBOARD = "§7[§bScoreboard§7] ";
 	public static final String ALERT = "§4§l[§c§lAlert§4§l] ";
 	public static final String DEBUG = "§7[§cDebug§7] ";
-	public static final String TIP = "§r[§2Tip§r] ";
+    public static final String TIP = "§r[§2Tip§r] ";
+    public static final String BOARD = "§7[§bBoard§7] ";
 
 	public static String colorMessage(Messages message)
 	{

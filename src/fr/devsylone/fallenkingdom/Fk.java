@@ -3,19 +3,16 @@ package fr.devsylone.fallenkingdom;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.zip.ZipOutputStream;
 
-import fr.devsylone.fallenkingdom.commands.FkAsyncCommandExecutor;
-import fr.devsylone.fallenkingdom.commands.FkAsyncRegisteredCommandExecutor;
-import fr.devsylone.fallenkingdom.commands.brigadier.BrigadierSpigotManager;
-import fr.devsylone.fallenkingdom.manager.*;
-import fr.devsylone.fallenkingdom.scoreboard.PlaceHolderExpansion;
-import fr.devsylone.fkpi.rules.Rule;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -24,8 +21,19 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import fr.devsylone.fallenkingdom.commands.FkAsyncCommandExecutor;
+import fr.devsylone.fallenkingdom.commands.FkAsyncRegisteredCommandExecutor;
 import fr.devsylone.fallenkingdom.commands.FkCommandExecutor;
+import fr.devsylone.fallenkingdom.commands.brigadier.BrigadierSpigotManager;
+import fr.devsylone.fallenkingdom.fkboard.status.PlayerStatus;
+import fr.devsylone.fallenkingdom.fkboard.websocket.FkBoardWebSocket;
 import fr.devsylone.fallenkingdom.game.Game;
+import fr.devsylone.fallenkingdom.manager.CommandManager;
+import fr.devsylone.fallenkingdom.manager.LanguageManager;
+import fr.devsylone.fallenkingdom.manager.ListenersManager;
+import fr.devsylone.fallenkingdom.manager.SaveablesManager;
+import fr.devsylone.fallenkingdom.manager.TipsManager;
+import fr.devsylone.fallenkingdom.manager.WorldManager;
 import fr.devsylone.fallenkingdom.manager.packets.PacketManager;
 import fr.devsylone.fallenkingdom.manager.packets.PacketManager1_13;
 import fr.devsylone.fallenkingdom.manager.packets.PacketManager1_14;
@@ -39,6 +47,7 @@ import fr.devsylone.fallenkingdom.manager.saveable.ScoreboardManager;
 import fr.devsylone.fallenkingdom.manager.saveable.StarterInventoryManager;
 import fr.devsylone.fallenkingdom.pause.PauseRestorer;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
+import fr.devsylone.fallenkingdom.scoreboard.PlaceHolderExpansion;
 import fr.devsylone.fallenkingdom.updater.PluginUpdater;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fallenkingdom.utils.DebuggerUtils;
@@ -46,8 +55,11 @@ import fr.devsylone.fallenkingdom.utils.FkSound;
 import fr.devsylone.fallenkingdom.utils.Version;
 import fr.devsylone.fallenkingdom.utils.ZipUtils;
 import fr.devsylone.fkpi.FkPI;
+import fr.devsylone.fkpi.rules.Rule;
 import fr.devsylone.fkpi.teams.Team;
+import lombok.Getter;
 
+@Getter
 public class Fk extends JavaPlugin
 {
 	private static boolean DEBUG_MODE;
@@ -64,6 +76,10 @@ public class Fk extends JavaPlugin
 	private TipsManager tipsManager;
 	private SaveablesManager saveableManager;
 	private PortalsManager portalManager;
+	
+    private FkBoardWebSocket fkBoardWebSocket;
+    private PlayerStatus playerStatus;
+    private URI fkBoardWebSocketProxyURI;
 
 	private static Fk instance;
 
@@ -156,6 +172,8 @@ public class Fk extends JavaPlugin
 		game = new Game();
 
 		saveableManager = new SaveablesManager(this);
+		
+		playerStatus = new PlayerStatus();
 
 		/*
 		 * Update & load
@@ -246,6 +264,12 @@ public class Fk extends JavaPlugin
 				saveableManager.saveAll();
 			}
 		}.runTaskTimerAsynchronously(this, 5L * 60L * 20L, 5L * 60L * 20L);
+		
+		try {
+            fkBoardWebSocketProxyURI = new URI(getConfig().getString("FkBoard.ProxyURI"));
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
 	}
 
 	@Override
@@ -263,6 +287,8 @@ public class Fk extends JavaPlugin
 
 		for(FkPlayer p : getPlayerManager().getConnectedPlayers())
 			p.getScoreboard().remove();
+		
+        getOptionalFkBoardWebSocket().ifPresent(fkws -> fkws.close());
 	}
 
 	public static boolean isDebug()
@@ -329,6 +355,25 @@ public class Fk extends JavaPlugin
 	{
 		return lastVersion;
 	}
+	
+    public void createNewFkBoardWebSocket(String id, Runnable invalidIdCallBack)
+    {
+        getOptionalFkBoardWebSocket().ifPresent(ws -> {
+            if(ws.isClosing() && ws.isClosed())
+                ws.close();
+        });
+        fkBoardWebSocket = new FkBoardWebSocket(fkBoardWebSocketProxyURI, id, invalidIdCallBack);
+    }
+    
+    public void onFkBoardWebSocketClose()
+    {
+        fkBoardWebSocket = null;
+    }
+    
+    public Optional<FkBoardWebSocket> getOptionalFkBoardWebSocket()
+    {
+        return fkBoardWebSocket != null ? Optional.of(fkBoardWebSocket) : Optional.empty();
+    }
 
 	public static void broadcast(String message, String prefix, FkSound sound)
 	{
