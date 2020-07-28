@@ -62,38 +62,36 @@ import lombok.Getter;
 @Getter
 public class Fk extends JavaPlugin
 {
-	private static boolean DEBUG_MODE;
+    @Getter
+    private static boolean debugMode;
 
-	private Game game;
-	private CommandManager cmdManager;
-	private PlayerManager pManager;
-	private WorldManager wManager;
-	private PauseRestorer pRestorer;
-	private StarterInventoryManager siManager;
-	private ScoreboardManager sbManager;
-	private PacketManager pcktManager;
-	private DeepPauseManager dpManager;
+    private Game game;
+	private CommandManager commandManager;
+	private PlayerManager playerManager;
+	private WorldManager worldManager;
+	private PauseRestorer pauseRestorer;
+	private StarterInventoryManager starterInventoryManager;
+	private ScoreboardManager scoreboardManager;
+	private PacketManager packetManager;
+	private DeepPauseManager deepPauseManager;
 	private TipsManager tipsManager;
 	private SaveablesManager saveableManager;
-	private PortalsManager portalManager;
-	
+	private PortalsManager portalsManager;
+
     private FkBoardWebSocket fkBoardWebSocket;
     private PlayerStatus playerStatus;
     private URI fkBoardWebSocketProxyURI;
 
+	
+	@Getter
 	private static Fk instance;
 
-	private FkPI fkpi;
+	private FkPI fkPI;
 
 	private final List<String> onConnectWarnings = new ArrayList<>();
 	private String pluginError = "";
 
-	private String lastVersion = getDescription().getVersion();
-
-	public static Fk getInstance()
-	{
-		return instance;
-	}
+	private String previousVersion = getDescription().getVersion();
 
 	public Fk()
 	{
@@ -108,8 +106,8 @@ public class Fk extends JavaPlugin
 			/*
 			 * Mode debug
 			 */
-			DEBUG_MODE = DebuggerUtils.getServerFolderName().endsWith("-debug") || new File(getDataFolder(), "debug").exists();
-			if(DEBUG_MODE)
+			debugMode = DebuggerUtils.getServerFolderName().endsWith("-debug") || new File(getDataFolder(), "debug").exists();
+			if(debugMode)
 			{
 				debug("##########################");
 				debug("STARTED IN DEBUG MODE");
@@ -117,7 +115,7 @@ public class Fk extends JavaPlugin
 			}
 		}catch(Exception e)
 		{
-			DEBUG_MODE = false;
+			debugMode = false;
 		}
 
 		/*
@@ -137,7 +135,7 @@ public class Fk extends JavaPlugin
 		 * FkPI
 		 */
 
-		fkpi = new FkPI();
+		fkPI = new FkPI();
 
 		/*
 		 * command /fk
@@ -146,28 +144,28 @@ public class Fk extends JavaPlugin
 		PluginCommand command = Objects.requireNonNull(getCommand("fk"), "Unable to register /fk command");
 		if (Version.isAsyncTabCompleteSupported())
 			if (Version.isAsyncPlayerSendCommandsEventSupported())
-				this.cmdManager = new FkAsyncRegisteredCommandExecutor(this, command);
+				this.commandManager = new FkAsyncRegisteredCommandExecutor(this, command);
 			else
-				this.cmdManager = new FkAsyncCommandExecutor(this, command);
+				this.commandManager = new FkAsyncCommandExecutor(this, command);
 		else
-			this.cmdManager = new FkCommandExecutor(this, command);
+			this.commandManager = new FkCommandExecutor(this, command);
 
 		if (Version.isBrigadierSupported() && !Version.isAsyncPlayerSendCommandsEventSupported())
-			new BrigadierSpigotManager<>(this).register(this.cmdManager, command);
+			new BrigadierSpigotManager<>(this).register(this.commandManager, command);
 
 		/*
 		 * MANAGER
 		 */
-		pManager = new PlayerManager();
-		pRestorer = new PauseRestorer();
-		siManager = new StarterInventoryManager();
-		sbManager = new ScoreboardManager();
-		wManager = new WorldManager(this);
-		pcktManager = initPacketManager();
-		dpManager = new DeepPauseManager();
+		playerManager = new PlayerManager();
+		pauseRestorer = new PauseRestorer();
+		starterInventoryManager = new StarterInventoryManager();
+		scoreboardManager = new ScoreboardManager();
+		worldManager = new WorldManager(this);
+		packetManager = initPacketManager();
+		deepPauseManager = new DeepPauseManager();
 		tipsManager = new TipsManager();
 		tipsManager.startBroadcasts();
-		portalManager = new PortalsManager();
+		portalsManager = new PortalsManager();
 
 		game = new Game();
 
@@ -182,7 +180,7 @@ public class Fk extends JavaPlugin
 		if(!saveableManager.getFileConfiguration("save.yml").contains("last_version"))
 			saveableManager.getFileConfiguration("save.yml").set("last_version", "2.5.0");
 
-		lastVersion = saveableManager.getFileConfiguration("save.yml").getString("last_version");
+		previousVersion = saveableManager.getFileConfiguration("save.yml").getString("last_version");
 
 		try
 		{
@@ -227,12 +225,12 @@ public class Fk extends JavaPlugin
 		 * Set le sb a tout le monde si jamais rl
 		 */
 		for(Player p : Bukkit.getOnlinePlayers())
-			pManager.registerNewPlayer(pManager.getPlayer(p));
+			playerManager.registerNewPlayer(playerManager.getPlayer(p));
 
 		/*
 		 * IF EternalDay
 		 */
-		if(fkpi.getRulesManager().getRulesList().containsKey(Rule.ETERNAL_DAY) && fkpi.getRulesManager().getRule(Rule.ETERNAL_DAY))
+		if(fkPI.getRulesManager().getRulesList().containsKey(Rule.ETERNAL_DAY) && fkPI.getRulesManager().getRule(Rule.ETERNAL_DAY))
 			for(World w : Bukkit.getWorlds())
 			{
 				if(!Fk.getInstance().getWorldManager().isAffected(w))
@@ -283,7 +281,7 @@ public class Fk extends JavaPlugin
 			getDeepPauseManager().resetAIs();
 		}
 
-		sbManager.removeAllScoreboards();
+		scoreboardManager.removeAllScoreboards();
 
 		for(FkPlayer p : getPlayerManager().getConnectedPlayers())
 			p.getScoreboard().remove();
@@ -291,71 +289,6 @@ public class Fk extends JavaPlugin
         getOptionalFkBoardWebSocket().ifPresent(fkws -> fkws.close());
 	}
 
-	public static boolean isDebug()
-	{
-		return DEBUG_MODE;
-	}
-
-	public CommandManager getCommandManager()
-	{
-		return cmdManager;
-	}
-
-	public PlayerManager getPlayerManager()
-	{
-		return pManager;
-	}
-
-	public WorldManager getWorldManager()
-	{
-		return wManager;
-	}
-
-	public ScoreboardManager getScoreboardManager()
-	{
-		return sbManager;
-	}
-
-	public PacketManager getPacketManager()
-	{
-		return pcktManager;
-	}
-
-	public PauseRestorer getPauseRestorer()
-	{
-		return pRestorer;
-	}
-
-	public DeepPauseManager getDeepPauseManager()
-	{
-		return dpManager;
-	}
-
-	public StarterInventoryManager getStarterInventoryManager()
-	{
-		return siManager;
-	}
-
-	public TipsManager getTipsManager()
-	{
-		return tipsManager;
-	}
-
-	public SaveablesManager getSaveableManager()
-	{
-		return saveableManager;
-	}
-
-	public PortalsManager getPortalsManager()
-	{
-		return portalManager;
-	}
-
-	public String getPreviousVersion()
-	{
-		return lastVersion;
-	}
-	
     public void createNewFkBoardWebSocket(String id, Runnable invalidIdCallBack)
     {
         getOptionalFkBoardWebSocket().ifPresent(ws -> {
@@ -402,7 +335,7 @@ public class Fk extends JavaPlugin
 
 	public static void debug(Object message)
 	{
-		if(DEBUG_MODE)
+		if(debugMode)
 		{
 			if(!Fk.getInstance().isEnabled())
 				Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), () -> Bukkit.broadcastMessage(ChatUtils.DEBUG + (message == null ? "null" : message.toString())));
@@ -412,48 +345,33 @@ public class Fk extends JavaPlugin
 
 	}
 
-	public Game getGame()
-	{
-		return game;
-	}
-
-	public List<String> getOnConnectWarnings()
-	{
-		return onConnectWarnings;
-	}
-
 	public void addError(String s)
 	{
 		pluginError = s;
 	}
 
-	public String getError()
-	{
-		return pluginError;
-	}
-
 	public void reset()
 	{
 		Bukkit.getScheduler().cancelTasks(instance);
-		fkpi.reset();
+		fkPI.reset();
 		game = new Game();
 
 		for(FkPlayer p : getPlayerManager().getConnectedPlayers())
 			p.getScoreboard().remove();
 
-		pManager = new PlayerManager();
-		portalManager = new PortalsManager();
-		dpManager.unprotectItems();
-		dpManager.resetAIs();
+		playerManager = new PlayerManager();
+		portalsManager = new PortalsManager();
+		deepPauseManager.unprotectItems();
+		deepPauseManager.resetAIs();
 
 		// Reset saveFile & Restorer
 
 		saveableManager.reset();
 
-		pRestorer = new PauseRestorer();
+		pauseRestorer = new PauseRestorer();
 
 		// Scoreboards
-		sbManager = new ScoreboardManager(); //Le recréer pour le réinitialiser
+		scoreboardManager = new ScoreboardManager(); //Le recréer pour le réinitialiser
 
 		getScoreboardManager().recreateAllScoreboards();
 
@@ -468,8 +386,8 @@ public class Fk extends JavaPlugin
 		tipsManager.startBroadcasts();
 
 		game.stop();
-		dpManager.resetAIs();
-		dpManager.unprotectItems();
+		deepPauseManager.resetAIs();
+		deepPauseManager.unprotectItems();
 
 		for(FkPlayer p : getPlayerManager().getConnectedPlayers())
 		{
@@ -477,7 +395,7 @@ public class Fk extends JavaPlugin
 			p.clearKills();
 		}
 
-		for(Team team : fkpi.getTeamManager().getTeams())
+		for(Team team : fkPI.getTeamManager().getTeams())
 		{
 			if(team.getBase() != null)
 				team.getBase().resetChestoom();
@@ -524,11 +442,6 @@ public class Fk extends JavaPlugin
 			default:
 				throw new RuntimeException("Could not get packet manager by version!");
 		}
-	}
-
-	public FkPI getFkPI()
-	{
-		return fkpi;
 	}
 
 	private void metrics() throws NoClassDefFoundError // gson en 1.8.0
