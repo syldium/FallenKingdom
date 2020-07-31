@@ -1,6 +1,5 @@
 package fr.devsylone.fallenkingdom.listeners.entity.player;
 
-import fr.devsylone.fallenkingdom.utils.Messages;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
@@ -11,6 +10,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fallenkingdom.players.FkPlayer.PlayerState;
+import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fkpi.teams.Team;
 
 public class JoinListener implements Listener
@@ -18,7 +18,7 @@ public class JoinListener implements Listener
 	@EventHandler
 	public void prelogin(final AsyncPlayerPreLoginEvent e)
 	{
-		if(!Fk.getInstance().getError().isEmpty())
+		if(!Fk.getInstance().getPluginError().isEmpty())
 		{
 			e.setLoginResult(Result.KICK_OTHER);
 			e.setKickMessage(kickMessage());
@@ -28,7 +28,7 @@ public class JoinListener implements Listener
 	@EventHandler
 	public void join(final PlayerJoinEvent e)
 	{
-		if(!Fk.getInstance().getError().isEmpty()) // Bukkit n'a pas l'air d'invoquer l'AsyncPlayerPreLoginEvent
+		if(!Fk.getInstance().getPluginError().isEmpty()) // Bukkit n'a pas l'air d'invoquer l'AsyncPlayerPreLoginEvent
 			e.getPlayer().kickPlayer(kickMessage());
 
 		if (!Fk.getInstance().getWorldManager().isAffected(e.getPlayer().getWorld()))
@@ -72,6 +72,6 @@ public class JoinListener implements Listener
 		return "§d§m----------§5 Fallenkingdom §d§m----------\n"
 				+ "\n"
 				+ "§6Le plugin a rencontré une erreur\n\n"
-				+ "§7Erreur : §c" + Fk.getInstance().getError();
+				+ "§7Erreur : §c" + Fk.getInstance().getPluginError();
 	}
 }
