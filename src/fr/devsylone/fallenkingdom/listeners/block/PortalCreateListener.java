@@ -1,8 +1,8 @@
 package fr.devsylone.fallenkingdom.listeners.block;
 
-import fr.devsylone.fallenkingdom.utils.Messages;
-import fr.devsylone.fkpi.FkPI;
-import fr.devsylone.fkpi.rules.Rule;
+import java.lang.reflect.Method;
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.block.Block;
@@ -14,10 +14,10 @@ import org.bukkit.event.world.PortalCreateEvent.CreateReason;
 
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.game.Game.GameState;
+import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fallenkingdom.utils.XBlock;
-
-import java.lang.reflect.Method;
-import java.util.List;
+import fr.devsylone.fkpi.FkPI;
+import fr.devsylone.fkpi.rules.Rule;
 
 
 public class PortalCreateListener implements Listener
@@ -38,7 +38,7 @@ public class PortalCreateListener implements Listener
 			} catch (Exception ex) {
 				ex.printStackTrace(); // Dommage...
 			}
-			if (Fk.isDebug())
+			if (Fk.isDebugMode())
 				Fk.getInstance().getLogger().info(air.getType().toString() + " en " + air.getLocation().toString());
 
 			Fk.getInstance().getPortalsManager().addPortal(air.getLocation());
