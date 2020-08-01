@@ -19,7 +19,7 @@ public class AddPlayer extends FkCommand
 {
 	public AddPlayer()
 	{
-		super("addPlayer", "<player> <team>", Messages.CMD_MAP_TEAM_SET_COLOR, CommandPermission.ADMIN);
+		super("addPlayer", "<player> <team>", Messages.CMD_MAP_TEAM_ADD_PLAYER, CommandPermission.ADMIN);
 	}
 
 	@Override
