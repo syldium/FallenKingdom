@@ -117,6 +117,11 @@ public class Base implements Saveable
 		return center.clone();
 	}
 
+	public int getRadius()
+	{
+		return radius;
+	}
+
 	public ChestsRoom getChestsRoom()
 	{
 		return chestRoom;

@@ -86,7 +86,7 @@ public class PacketManager1_13 extends PacketManager1_9 {
             PacketUtils.setField("b", datas, metadata);
 
             PacketUtils.sendPacket(getPlayer(id), metadata);
-        }catch(Exception ex)
+        }catch(ReflectiveOperationException ex)
         {
             ex.printStackTrace();
         }
@@ -95,22 +95,7 @@ public class PacketManager1_13 extends PacketManager1_9 {
     @Override
     public void sendBlockChange(Player p, Location loc, Material newBlock)
     {
-        Material oldMat = loc.getWorld().getBlockAt(loc.getBlockX(), 0, loc.getBlockZ()).getType();
-        loc.getWorld().getBlockAt(loc.getBlockX(), 0, loc.getBlockZ()).setType(newBlock);
-        try
-        {
-            Object blockPositionSet = NMSUtils.getClass("BlockPosition").getConstructor(int.class, int.class, int.class).newInstance(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
-            Object blockPositionGet = NMSUtils.getClass("BlockPosition").getConstructor(int.class, int.class, int.class).newInstance(loc.getBlockX(), 0, loc.getBlockZ());
-
-            Object change = NMSUtils.getClass("PacketPlayOutBlockChange").getConstructor(NMSUtils.getClass("IBlockAccess"), NMSUtils.getClass("BlockPosition")).newInstance(PacketUtils.getNMSWorld(p.getWorld()), blockPositionSet);
-            PacketUtils.setField("block", NMSUtils.getClass("World").getDeclaredMethod("getType", NMSUtils.getClass("BlockPosition")).invoke(PacketUtils.getNMSWorld(p.getWorld()), blockPositionGet), change);
-
-            PacketUtils.sendPacket(p, change);
-        }catch(Exception ex)
-        {
-            ex.printStackTrace();
-        }
-        loc.getWorld().getBlockAt(loc.getBlockX(), 0, loc.getBlockZ()).setType(oldMat);
+        p.sendBlockChange(loc, newBlock.createBlockData());
     }
 
     @Override
@@ -138,10 +123,22 @@ public class PacketManager1_13 extends PacketManager1_9 {
 
                 Object packet = NMSUtils.getClass("PacketPlayOutCustomPayload").getDeclaredConstructor(NMSUtils.getClass("MinecraftKey"), NMSUtils.getClass("PacketDataSerializer")).newInstance(minecraftKey, packetDataSerializer);
                 PacketUtils.sendPacket(p, packet);
-            }catch(Exception ex)
+            }catch(ReflectiveOperationException ex)
             {
                 ex.printStackTrace();
             }
         }, 5L);
+    }
+
+    @Override
+    public void sendTitle(Player p, String title, String subtitle)
+    {
+        p.sendTitle(title, subtitle, 20, 20, 20);
+    }
+
+    @Override
+    public void sendTitle(Player p, String title, String subtitle, int fadeIn, int stay, int fadeOut)
+    {
+        p.sendTitle(title, subtitle, fadeIn, stay, fadeOut);
     }
 }

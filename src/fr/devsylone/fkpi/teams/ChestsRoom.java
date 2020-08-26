@@ -161,10 +161,10 @@ public class ChestsRoom implements Saveable
 					if(inter > 0)
 					{
 						if(inter > 1)
-							id = Fk.getInstance().getPacketManager().displayItem(PacketManager.BIG_ITEM, p, loc.add(0.5, -1, 0.5), Material.CHEST);
+							id = Fk.getInstance().getPacketManager().displayItem(PacketManager.ItemSlot.HEAD, p, loc.add(0.5, -1, 0.5), Material.CHEST);
 
 						else if(min.distance(max) <= 20)
-							id = Fk.getInstance().getPacketManager().displayItem(PacketManager.SMALL_ITEM, p, loc.add(1, 0, 0), Material.CHEST);
+							id = Fk.getInstance().getPacketManager().displayItem(PacketManager.ItemSlot.MAINHAND, p, loc.add(1, 0, 0), Material.CHEST);
 
 					}
 

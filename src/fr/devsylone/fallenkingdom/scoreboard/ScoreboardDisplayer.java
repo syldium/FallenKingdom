@@ -33,17 +33,17 @@ public class ScoreboardDisplayer
 
 		Player p = Bukkit.getPlayer(player);
 
-		headIds.add(Fk.getInstance().getPacketManager().createFloattingText("§e Pour modifier une ligne : ", p, null));
-		headIds.add(Fk.getInstance().getPacketManager().createFloattingText("§e >>>>> /fk scoreboard SetLine <<<<< ", p, null));
-		headIds.add(Fk.getInstance().getPacketManager().createFloattingText("§aUtilise la §2molette §a de ta §2souris", p, null));
-		headIds.add(Fk.getInstance().getPacketManager().createFloattingText("§aPuis regarde ton scoreboard     ↘↘↘↘↘↘↘", p, null));
+		headIds.add(Fk.getInstance().getPacketManager().createFloatingText("§e Pour modifier une ligne : ", p, null));
+		headIds.add(Fk.getInstance().getPacketManager().createFloatingText("§e >>>>> /fk scoreboard SetLine <<<<< ", p, null));
+		headIds.add(Fk.getInstance().getPacketManager().createFloatingText("§aUtilise la §2molette §a de ta §2souris", p, null));
+		headIds.add(Fk.getInstance().getPacketManager().createFloatingText("§aPuis regarde ton scoreboard     ↘↘↘↘↘↘↘", p, null));
 
-		placeholdersIds.add(Fk.getInstance().getPacketManager().createFloattingText("§bVoici la liste des variables utilisables !", p, null));
+		placeholdersIds.add(Fk.getInstance().getPacketManager().createFloatingText("§bVoici la liste des variables utilisables !", p, null));
 
 		for(PlaceHolder ph : PlaceHolder.values())
-			placeholdersIds.add(Fk.getInstance().getPacketManager().createFloattingText("§8" + ph.getDescription() + "        §c->§r        " + ph.getShortestKey(), p, null));
+			placeholdersIds.add(Fk.getInstance().getPacketManager().createFloatingText("§8" + ph.getDescription() + "        §c->§r        " + ph.getShortestKey(), p, null));
 
-		footerIds.add(Fk.getInstance().getPacketManager().createFloattingText("Pour §cquitter §r: §e/fk scoreboard LeaveEdit", p, null));
+		footerIds.add(Fk.getInstance().getPacketManager().createFloatingText("Pour §cquitter §r: §e/fk scoreboard LeaveEdit", p, null));
 
 		startUpdateRunnable();
 		Fk.getInstance().getScoreboardManager().recreateAllScoreboards();
@@ -57,19 +57,19 @@ public class ScoreboardDisplayer
 		loc.setY(loc.getY() + 0.25 * ((headIds.size() + placeholdersIds.size() + footerIds.size()) / 2) - 1);
 
 		for (Integer headId : headIds) {
-			Fk.getInstance().getPacketManager().updateFloattingText(headId, loc);
+			Fk.getInstance().getPacketManager().updateFloatingText(headId, loc);
 			loc.add(0, -0.25, 0);
 		}
 
 		loc.add(0, -0.75, 0);
 		for (Integer placeholdersId : placeholdersIds) {
-			Fk.getInstance().getPacketManager().updateFloattingText(placeholdersId, loc);
+			Fk.getInstance().getPacketManager().updateFloatingText(placeholdersId, loc);
 			loc.add(0, -0.25, 0);
 		}
 		
 		loc.add(0, -0.75, 0);
 		for (Integer footerId : footerIds) {
-			Fk.getInstance().getPacketManager().updateFloattingText(footerId, loc);
+			Fk.getInstance().getPacketManager().updateFloatingText(footerId, loc);
 			loc.add(0, -0.25, 0);
 		}
 

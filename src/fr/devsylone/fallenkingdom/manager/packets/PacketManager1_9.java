@@ -3,6 +3,7 @@ package fr.devsylone.fallenkingdom.manager.packets;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -20,6 +21,16 @@ import io.netty.buffer.Unpooled;
 
 public class PacketManager1_9 extends PacketManager
 {
+
+	private static final Class<?> ITEM_SLOT;
+
+	static {
+		try {
+			ITEM_SLOT = NMSUtils.nmsClass("EnumItemSlot");
+		} catch (ReflectiveOperationException e) {
+			throw new ExceptionInInitializerError(e);
+		}
+	}
 
 	public PacketManager1_9()
 	{
@@ -61,10 +72,12 @@ public class PacketManager1_9 extends PacketManager
 
 	protected int sendSpawn(Player p, Location loc)
 	{
-		if(loc == null && p != null)
+		Objects.requireNonNull(p, "Unable to create an entity for an offline player.");
+
+		if(loc == null)
 			loc = p.getLocation();
 
-		int id = lastid++;
+		int id = lastId++;
 		playerById.put(id, p.getUniqueId());
 		try
 		{
@@ -83,7 +96,7 @@ public class PacketManager1_9 extends PacketManager
 			PacketUtils.setField("l", 0, spawn);
 
 			PacketUtils.sendPacket(p, spawn);
-		}catch(Exception ex)
+		}catch(ReflectiveOperationException ex)
 		{
 			ex.printStackTrace();
 		}
@@ -96,10 +109,10 @@ public class PacketManager1_9 extends PacketManager
 		try
 		{
 
-			Object metadata = NMSUtils.getClass("PacketPlayOutEntityMetadata").newInstance();
+			Object metadata = NMSUtils.getClass("PacketPlayOutEntityMetadata").getDeclaredConstructor().newInstance();
 
 			PacketUtils.setField("a", id, metadata);
-			List<Object> datas = new ArrayList<Object>();
+			List<Object> datas = new ArrayList<>();
 
 			Constructor<?> itemConstructor = NMSUtils.getClass("DataWatcher$Item").getDeclaredConstructor(NMSUtils.getClass("DataWatcherObject"), Object.class);
 			Constructor<?> dwoConstructor = NMSUtils.getClass("DataWatcherObject").getDeclaredConstructor(int.class, NMSUtils.getClass("DataWatcherSerializer"));
@@ -118,7 +131,7 @@ public class PacketManager1_9 extends PacketManager
 			PacketUtils.setField("b", datas, metadata);
 
 			PacketUtils.sendPacket(getPlayer(id), metadata);
-		}catch(Exception ex)
+		}catch(ReflectiveOperationException ex)
 		{
 			ex.printStackTrace();
 		}
@@ -129,7 +142,7 @@ public class PacketManager1_9 extends PacketManager
 	{
 		try
 		{
-			Object tp = NMSUtils.getClass("PacketPlayOutEntityTeleport").newInstance();
+			Object tp = NMSUtils.getClass("PacketPlayOutEntityTeleport").getDeclaredConstructor().newInstance();
 			PacketUtils.setField("a", id, tp);
 			PacketUtils.setField("b", newLoc.getX(), tp);
 			PacketUtils.setField("c", newLoc.getY(), tp);
@@ -139,7 +152,7 @@ public class PacketManager1_9 extends PacketManager
 			PacketUtils.setField("g", true, tp);
 
 			PacketUtils.sendPacket(getPlayer(id), tp);
-		}catch(Exception ex)
+		}catch(ReflectiveOperationException ex)
 		{
 			ex.printStackTrace();
 		}
@@ -150,28 +163,28 @@ public class PacketManager1_9 extends PacketManager
 	{
 		try
 		{
-			Object destroy = NMSUtils.getClass("PacketPlayOutEntityDestroy").newInstance();
+			Object destroy = NMSUtils.getClass("PacketPlayOutEntityDestroy").getDeclaredConstructor().newInstance();
 			PacketUtils.setField("a", new int[] {id}, destroy);
 
 			PacketUtils.sendPacket(getPlayer(id), destroy);
-		}catch(Exception ex)
+		}catch(ReflectiveOperationException ex)
 		{
 			ex.printStackTrace();
 		}
 	}
 
 	@Override
-	protected void sendEquipment(int id, int slot, Material material)
+	protected void sendEquipment(int id, ItemSlot slot, Material material)
 	{
 		try
 		{
 			ItemStack bukkitItem = new ItemStack(material);
 			Object nmsItem = NMSUtils.getClass("CraftItemStack").getDeclaredMethod("asNMSCopy", ItemStack.class).invoke(null, bukkitItem);
-			Object itemSlot = NMSUtils.getClass("EnumItemSlot").getDeclaredField(slot == BIG_ITEM ? "HEAD" : "MAINHAND").get(null);
+			Object itemSlot = getEnumItemSlot(slot);
 
-			Object armors = NMSUtils.getClass("PacketPlayOutEntityEquipment").getConstructor(int.class, NMSUtils.getClass("EnumItemSlot"), NMSUtils.getClass("ItemStack")).newInstance(id, itemSlot, nmsItem);
+			Object armors = NMSUtils.getClass("PacketPlayOutEntityEquipment").getConstructor(int.class, itemSlot.getClass(), NMSUtils.getClass("ItemStack")).newInstance(id, itemSlot, nmsItem);
 			PacketUtils.sendPacket(getPlayer(id), armors);
-		}catch(Exception ex)
+		}catch(ReflectiveOperationException ex)
 		{
 			ex.printStackTrace();
 		}
@@ -191,7 +204,7 @@ public class PacketManager1_9 extends PacketManager
 			PacketUtils.setField("block", NMSUtils.getClass("World").getDeclaredMethod("getType", NMSUtils.getClass("BlockPosition")).invoke(PacketUtils.getNMSWorld(p.getWorld()), blockPositionGet), change);
 
 			PacketUtils.sendPacket(p, change);
-		}catch(Exception ex)
+		}catch(ReflectiveOperationException ex)
 		{
 			ex.printStackTrace();
 		}
@@ -210,7 +223,7 @@ public class PacketManager1_9 extends PacketManager
 			Material origin = p.getWorld().getBlockAt(c.getX() * 16, 250, c.getZ() * 16).getType();
 			p.getWorld().getBlockAt(c.getX() * 16, 250, c.getZ() * 16).setType(Material.BEACON);
 			p.getWorld().getBlockAt(c.getX() * 16, 250, c.getZ() * 16).setType(origin);
-		}catch(Exception ex)
+		}catch(ReflectiveOperationException ex)
 		{
 			ex.printStackTrace();
 		}
@@ -221,14 +234,14 @@ public class PacketManager1_9 extends PacketManager
 	{
 		try
 		{
-			Object title = null;
+			Object title;
 			if(type == TitleType.TIMES)
 				title = NMSUtils.getClass("PacketPlayOutTitle").getConstructor(int.class, int.class, int.class).newInstance(fadeIn, stay, fadeOut);
 			else
 				title = NMSUtils.getClass("PacketPlayOutTitle").getConstructor(NMSUtils.getClass("EnumTitleAction"), NMSUtils.getClass("IChatBaseComponent")).newInstance(NMSUtils.getClass("EnumTitleAction").getDeclaredField(type.name()).get(null), NMSUtils.getClass("ChatSerializer").getDeclaredMethod("a", String.class).invoke(null, text));
 
 			PacketUtils.sendPacket(p, title);
-		}catch(Exception ex)
+		}catch(ReflectiveOperationException ex)
 		{
 			ex.printStackTrace();
 		}
@@ -256,10 +269,14 @@ public class PacketManager1_9 extends PacketManager
 				Object payload = NMSUtils.getClass("PacketPlayOutCustomPayload").getDeclaredConstructor(String.class, NMSUtils.getClass("PacketDataSerializer")).newInstance("MC|BOpen", NMSUtils.getClass("PacketDataSerializer").getDeclaredConstructor(ByteBuf.class).newInstance(buf));
 
 				PacketUtils.sendPacket(p, payload);
-			}catch(Exception ex)
+			}catch(ReflectiveOperationException ex)
 			{
 				ex.printStackTrace();
 			}
 		}, 5L);
+	}
+
+	protected Object getEnumItemSlot(ItemSlot slot) {
+		return NMSUtils.enumValueOf(ITEM_SLOT, slot.name());
 	}
 }

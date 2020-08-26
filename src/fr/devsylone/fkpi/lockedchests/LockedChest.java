@@ -137,10 +137,10 @@ public class LockedChest implements Saveable
 
 		lastInteract = System.currentTimeMillis();
 
-		final int armorstand = Fk.getInstance().getPacketManager().createFloattingText("§b0%", player, loc.clone().add(0.5, yFix, 0.5));
+		final int armorstand = Fk.getInstance().getPacketManager().createFloatingText("§b0%", player, loc.clone().add(0.5, yFix, 0.5));
 
 		task = Bukkit.getScheduler().scheduleSyncRepeatingTask(Fk.getInstance(), () -> {
-			Fk.getInstance().getPacketManager().updateFloattingText(armorstand, "§b" + (int) (((double) (System.currentTimeMillis() - startUnlocking) / 1000.0d / (double) time) * 100.0d) + "%");
+			Fk.getInstance().getPacketManager().updateFloatingText(armorstand, "§b" + (int) (((double) (System.currentTimeMillis() - startUnlocking) / 1000.0d / (double) time) * 100.0d) + "%");
 			if(lastInteract + 1000 < System.currentTimeMillis())
 			{
 				if(!getState().equals(ChestState.UNLOCKED))
