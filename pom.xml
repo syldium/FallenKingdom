@@ -108,22 +108,22 @@
     <dependencies>
         <!-- Used to check the structure of NMS packets -->
         <!--<dependency>
-            <groupId>1.16.2_R0.1</groupId>
-            <artifactId>paper_1_16_2</artifactId>
-            <version>1.16.2-R0.1</version>
+            <groupId>1.16.3_R2</groupId>
+            <artifactId>paper_1_16_3</artifactId>
+            <version>1.16.3-R2</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/../cache/patched_1.16.2.jar</systemPath>
+            <systemPath>${project.basedir}/../cache/patched_1.16.3.jar</systemPath>
         </dependency>-->
         <dependency>
             <groupId>com.destroystokyo.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>1.16.2-R0.1-SNAPSHOT</version>
+            <version>1.16.3-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.destroystokyo.paper</groupId>
             <artifactId>paper-mojangapi</artifactId>
-            <version>1.16.2-R0.1-SNAPSHOT</version>
+            <version>1.16.3-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -148,7 +148,7 @@
         <dependency>
             <groupId>com.github.cryptomorin</groupId>
             <artifactId>XSeries</artifactId>
-            <version>7.2.1</version>
+            <version>7.2.1.2</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
