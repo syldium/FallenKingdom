@@ -1,5 +1,6 @@
 package fr.devsylone.fallenkingdom.scoreboard;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +27,7 @@ public class FkScoreboard
 	private final Scoreboard bukkitBoard;
 	private final FastBoard sidebarBoard;
 
-	private final Player player;
+	private final WeakReference<Player> player;
 
 	private final Map<PlaceHolder, List<Integer>> placeHolders;
 
@@ -35,7 +36,7 @@ public class FkScoreboard
 	public FkScoreboard(Player player)
 	{
 		formatted = true;
-		this.player = player;
+		this.player = new WeakReference<>(player);
 		this.placeHolders = new HashMap<>();
 		this.bukkitBoard = FkPI.getInstance().getTeamManager().getScoreboard();
 
@@ -61,6 +62,10 @@ public class FkScoreboard
 
 	public void refreshAll()
 	{
+		Player player = this.player.get();
+		if(player == null)
+			return;
+
 		if(Fk.getInstance().getGame().getState().equals(GameState.BEFORE_STARTING) && !Fk.getInstance().getPlayerManager().getPlayer(player).getState().equals(PlayerState.EDITING_SCOREBOARD))
 		{
 			List<String> lines = new ArrayList<>();
@@ -89,14 +94,18 @@ public class FkScoreboard
 		try
 		{
 			player.setScoreboard(bukkitBoard);
-		}catch(IllegalStateException whynot)
+		}catch(IllegalStateException ignored)
 		{
-			// dropgg
+			// Pas de player connection
 		}
 	}
 
 	public void refresh(PlaceHolder... placeHolders)
 	{
+		Player player = this.player.get();
+		if(player == null)
+			return;
+
 		if(placeHolders.length == 0)
 		{
 			refreshAll();
@@ -128,6 +137,10 @@ public class FkScoreboard
 
 	private void refreshLine(int i)
 	{
+		Player player = this.player.get();
+		if(player == null || !Fk.getInstance().getWorldManager().isAffected(player.getWorld()))
+			return;
+
 		if(Fk.getInstance().getGame().getState() == GameState.BEFORE_STARTING && !Fk.getInstance().getPlayerManager().getPlayer(player).getState().equals(PlayerState.EDITING_SCOREBOARD))
 			return;
 
