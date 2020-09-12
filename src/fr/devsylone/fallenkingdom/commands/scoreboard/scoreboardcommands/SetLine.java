@@ -18,7 +18,7 @@ public class SetLine extends FkCommand
 {
 	public SetLine()
 	{
-		super("setLine", "<i1;15:number> <text>", Messages.CMD_MAP_SCOREBOARD_SET_LINE, CommandPermission.ADMIN);
+		super("setLine", "<i0;14:number> <text>", Messages.CMD_MAP_SCOREBOARD_SET_LINE, CommandPermission.ADMIN);
 	}
 
 	@Override
