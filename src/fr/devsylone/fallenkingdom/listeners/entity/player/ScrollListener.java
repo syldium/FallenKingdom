@@ -15,6 +15,8 @@ public class ScrollListener implements Listener
 	@EventHandler
 	public void scroll(PlayerItemHeldEvent e)
 	{
+		if(!Fk.getInstance().getWorldManager().isAffected(e.getPlayer().getWorld()))
+			return;
 		if(Fk.getInstance().getPlayerManager().getPlayer(e.getPlayer()).getState() == PlayerState.EDITING_SCOREBOARD && System.currentTimeMillis() - last > 200)
 		{
 			Fk.getInstance().getPlayerManager().getPlayer(e.getPlayer()).getScoreboard().setFormatted(alternate);
