@@ -58,7 +58,7 @@ public class PacketManager1_8 extends PacketManager
 		if(loc == null && p != null)
 			loc = p.getLocation();
 
-		int id = lastId++;
+		int id = entityIdSupplier.get();
 		playerById.put(id, p.getUniqueId());
 		try
 		{
@@ -155,7 +155,6 @@ public class PacketManager1_8 extends PacketManager
 		try
 		{
 			ItemStack bukkitItem = new ItemStack(material);
-			System.out.println(getItemSlot(slot));
 			Object nmsItem = NMSUtils.getClass("CraftItemStack").getDeclaredMethod("asNMSCopy", ItemStack.class).invoke(null, bukkitItem);
 			Object armors = NMSUtils.getClass("PacketPlayOutEntityEquipment").getConstructor(int.class, int.class, NMSUtils.getClass("ItemStack")).newInstance(id, getItemSlot(slot), nmsItem);
 

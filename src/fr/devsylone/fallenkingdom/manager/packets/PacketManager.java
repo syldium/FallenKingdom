@@ -3,6 +3,8 @@ package fr.devsylone.fallenkingdom.manager.packets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -12,8 +14,20 @@ import org.bukkit.entity.Player;
 
 public abstract class PacketManager
 {
-	protected Map<Integer, UUID> playerById = new HashMap<>();
-	protected int lastId = 100000;
+	protected final Map<Integer, UUID> playerById = new HashMap<>();
+	protected final Supplier<Integer> entityIdSupplier;
+
+	@SuppressWarnings("deprecation")
+	public PacketManager() {
+		Supplier<Integer> supplier;
+		try {
+			Bukkit.getUnsafe().getClass().getDeclaredMethod("nextEntityId");
+			supplier = Bukkit.getUnsafe()::nextEntityId;
+		} catch (NoSuchMethodException e) {
+			supplier = new AtomicInteger(100000)::getAndIncrement;
+		}
+		entityIdSupplier = supplier;
+	}
 
 	protected Player getPlayer(int entityId)
 	{
