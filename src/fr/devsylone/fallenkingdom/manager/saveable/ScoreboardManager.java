@@ -9,16 +9,20 @@ import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.teams.Team;
 import fr.devsylone.fkpi.util.Saveable;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
+import java.util.Set;
 
 public class ScoreboardManager implements Saveable
 {
@@ -30,11 +34,21 @@ public class ScoreboardManager implements Saveable
 			noInfo = "§4?",
 			arrows;
 	private List<String> sidebar = new ArrayList<>();
+	private final Map<PlaceHolder, List<Integer>> placeHolders = new EnumMap<>(PlaceHolder.class);
 	private final List<List<String>> revisions = new ArrayList<>();
 
 	public ScoreboardManager()
 	{
 		reset();
+	}
+
+	public Set<Integer> getLinesWith(PlaceHolder... placeHolders)
+	{
+		Set<Integer> lines = new HashSet<>();
+		for (PlaceHolder placeHolder : placeHolders) {
+			lines.addAll(this.placeHolders.get(placeHolder));
+		}
+		return lines;
 	}
 
 	public Map<String, String> getCustomStrings()
@@ -52,7 +66,7 @@ public class ScoreboardManager implements Saveable
 
 	public void setName(String name)
 	{
-		this.name = name.replaceAll("&", "§");
+		this.name = ChatColor.translateAlternateColorCodes('&', name);
 
 		recreateAllScoreboards();
 	}
@@ -70,6 +84,7 @@ public class ScoreboardManager implements Saveable
 		if(line < 0)
 			line = 0;
 		sidebar.set(line, newl);
+		computePlaceHoldersIndexes();
 		recreateAllScoreboards();
 		return true;
 	}
@@ -81,6 +96,7 @@ public class ScoreboardManager implements Saveable
 		line = sidebar.size() - line - 1;
 		createSnapshot();
 		sidebar.remove(line);
+		computePlaceHoldersIndexes();
 		recreateAllScoreboards();
 		return true;
 	}
@@ -90,6 +106,7 @@ public class ScoreboardManager implements Saveable
 		if (revisions.size() < 1)
 			return false;
 		sidebar = revisions.remove(revisions.size() - 1);
+		computePlaceHoldersIndexes();
 		recreateAllScoreboards();
 		return true;
 	}
@@ -109,6 +126,27 @@ public class ScoreboardManager implements Saveable
 	public List<String> getSidebar()
 	{
 		return sidebar;
+	}
+
+	public String getSidebarLine(int index, Player player)
+	{
+		String line = sidebar.get(index);
+		if (player == null) {
+			return line.replaceAll("§", "&").replaceAll("(&.)+$", ScoreboardManager.randomFakeEmpty());
+		}
+
+		for (PlaceHolder placeHolder : PlaceHolder.values()) {
+			List<Integer> lines = placeHolders.get(placeHolder);
+			if (lines == null) {
+				continue;
+			}
+
+			int position = lines.indexOf(index);
+			if (position > -1) {
+				line = placeHolder.replace(line, player, position);
+			}
+		}
+		return line;
 	}
 
 	public String getTrue()
@@ -233,6 +271,7 @@ public class ScoreboardManager implements Saveable
 			return;
 		name = config.getString("Name", name);
 		sidebar = config.getStringList("Sidebar");
+		computePlaceHoldersIndexes();
 
 		stringTrue = config.getString("Boolean", "§2✔:§4✘").split(":")[0];
 		stringFalse = config.getString("Boolean", "§2✔:§4✘").split(":")[1];
@@ -254,9 +293,12 @@ public class ScoreboardManager implements Saveable
 	}
 
 	@Override
-	public String toString()
-	{
-		return "name: " + this.name;
+	public String toString() {
+		return "ScoreboardManager{" +
+				"name='" + name + '\'' +
+				",\n sidebar=" + sidebar +
+				",\n placeHolders=" + placeHolders +
+				'}';
 	}
 
 	public void removeAllScoreboards()
@@ -276,5 +318,17 @@ public class ScoreboardManager implements Saveable
 			rdms.append("§").append((char) (rdm.nextInt(26) + 97));
 
 		return rdms.toString();
+	}
+
+	private void computePlaceHoldersIndexes()
+	{
+		for (PlaceHolder placeHolder : PlaceHolder.values()) {
+			placeHolders.put(placeHolder, new ArrayList<>(1));
+			for (int i = 0; i < sidebar.size(); i++) {
+				if (placeHolder.isInLine(sidebar.get(i))) {
+					placeHolders.get(placeHolder).add(i);
+				}
+			}
+		}
 	}
 }
