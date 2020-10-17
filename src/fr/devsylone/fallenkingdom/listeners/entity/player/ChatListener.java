@@ -6,12 +6,29 @@ import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.teams.Team;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
+import java.util.UUID;
+
 public class ChatListener implements Listener
 {
+	private static final boolean MESSAGE_WITH_UUID;
+
+	static {
+		boolean method;
+		try {
+			CommandSender.class.getMethod("sendMessage", UUID.class, String.class);
+			method = true;
+		} catch (NoSuchMethodException e) {
+			method = false;
+		}
+		MESSAGE_WITH_UUID = method;
+	}
+
 	@EventHandler
 	public void event(AsyncPlayerChatEvent e)
 	{
@@ -32,8 +49,17 @@ public class ChatListener implements Listener
 		{
 			e.setCancelled(true);
 			for(String pl : team.getPlayers())
-				if(Bukkit.getPlayer(pl) != null)
-					Bukkit.getPlayer(pl).sendMessage(Messages.CHAT_TEAM.getMessage() + teamColor + e.getPlayer().getName() + " : " + ChatColor.WHITE + msg);
+			{
+				Player player = Bukkit.getPlayer(pl);
+				if(player == null)
+					continue;
+
+				String message = Messages.CHAT_TEAM.getMessage() + teamColor + e.getPlayer().getName() + " : " + ChatColor.WHITE + msg;
+				if(MESSAGE_WITH_UUID)
+					player.sendMessage(e.getPlayer().getUniqueId(), message);
+				else
+					player.sendMessage(message);
+			}
 		}
 	}
 }
