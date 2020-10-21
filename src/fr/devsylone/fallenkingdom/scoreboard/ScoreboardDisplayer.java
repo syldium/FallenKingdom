@@ -1,151 +1,143 @@
 package fr.devsylone.fallenkingdom.scoreboard;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import fr.devsylone.fallenkingdom.Fk;
+import fr.devsylone.fallenkingdom.manager.packets.PacketManager;
+import fr.devsylone.fallenkingdom.players.FkPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
-import fr.devsylone.fallenkingdom.Fk;
-import fr.devsylone.fallenkingdom.players.FkPlayer;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ScoreboardDisplayer
 {
-	private final String player;
-	private final List<Integer> headIds = new ArrayList<>();
-	private final List<Integer> footerIds = new ArrayList<>();
-	private final List<Integer> placeholdersIds = new ArrayList<>();
+	private final FkPlayer fkPlayer;
+	private final WeakReference<Player> player;
 
-	private final List<BukkitRunnable> runnables = new ArrayList<>();
+	private final PacketManager packetManager;
 
-	public ScoreboardDisplayer(FkPlayer p)
+	private BukkitRunnable runnable;
+	private final List<Integer> entities = new ArrayList<>();
+
+	public ScoreboardDisplayer(FkPlayer fkPlayer)
 	{
-		player = p.getName();
+		this.fkPlayer = fkPlayer;
+		this.player = new WeakReference<>(Bukkit.getPlayer(fkPlayer.getName()));
+		this.packetManager = Fk.getInstance().getPacketManager();
 	}
 
 	public void display()
 	{
-		if(Bukkit.getPlayer(player) == null)
+		Player player = this.player.get();
+		if (player == null)
 			return;
 
-		Player p = Bukkit.getPlayer(player);
+		Location location = player.getLocation();
 
-		headIds.add(Fk.getInstance().getPacketManager().createFloatingText("§e Pour modifier une ligne : ", p, null));
-		headIds.add(Fk.getInstance().getPacketManager().createFloatingText("§e >>>>> /fk scoreboard SetLine <<<<< ", p, null));
-		headIds.add(Fk.getInstance().getPacketManager().createFloatingText("§aUtilise la §2molette §a de ta §2souris", p, null));
-		headIds.add(Fk.getInstance().getPacketManager().createFloatingText("§aPuis regarde ton scoreboard     ↘↘↘↘↘↘↘", p, null));
+		entities.add(packetManager.createFloatingText("§e Pour modifier une ligne : ", player, location));
+		entities.add(packetManager.createFloatingText("§e >>>>> /fk scoreboard SetLine <<<<< ", player, location));
+		entities.add(packetManager.createFloatingText("§aUtilise la §2molette §a de ta §2souris", player, location));
+		entities.add(packetManager.createFloatingText("§aPuis regarde ton scoreboard     ↘↘↘↘↘↘↘", player, location));
 
-		placeholdersIds.add(Fk.getInstance().getPacketManager().createFloatingText("§bVoici la liste des variables utilisables !", p, null));
+		entities.add(packetManager.createFloatingText("§bVoici la liste des variables utilisables !", player, location));
 
 		for(PlaceHolder ph : PlaceHolder.values())
-			placeholdersIds.add(Fk.getInstance().getPacketManager().createFloatingText("§8" + ph.getDescription() + "        §c->§r        " + ph.getShortestKey(), p, null));
+			entities.add(packetManager.createFloatingText("§8" + ph.getDescription() + "        §c->§r        " + ph.getShortestKey(), player, location));
 
-		footerIds.add(Fk.getInstance().getPacketManager().createFloatingText("Pour §cquitter §r: §e/fk scoreboard LeaveEdit", p, null));
+		entities.add(packetManager.createFloatingText("Pour §cquitter §r: §e/fk scoreboard leaveEdit", player, location));
 
 		startUpdateRunnable();
-		Fk.getInstance().getScoreboardManager().recreateAllScoreboards();
+		fkPlayer.recreateScoreboard();
 	}
 
-	public void updateLoc()
+	public void updateLoc(Player player)
 	{
-		Location loc = Bukkit.getPlayer(player).getLocation().add(0, 1, 0);
+		Location loc = player.getLocation().add(0, 1, 0);
 		loc.setPitch(0.0f);
-		loc = getSight(loc, 5);
-		loc.setY(loc.getY() + 0.25 * ((headIds.size() + placeholdersIds.size() + footerIds.size()) / 2) - 1);
+		loc = getSight(loc, 10);
+		loc.setY(loc.getY() + 0.25 * ((float) entities.size() / 2) - 1);
 
-		for (Integer headId : headIds) {
-			Fk.getInstance().getPacketManager().updateFloatingText(headId, loc);
+		for (int entity : entities) {
+			Fk.getInstance().getPacketManager().updateFloatingText(entity, loc);
 			loc.add(0, -0.25, 0);
 		}
-
-		loc.add(0, -0.75, 0);
-		for (Integer placeholdersId : placeholdersIds) {
-			Fk.getInstance().getPacketManager().updateFloatingText(placeholdersId, loc);
-			loc.add(0, -0.25, 0);
-		}
-		
-		loc.add(0, -0.75, 0);
-		for (Integer footerId : footerIds) {
-			Fk.getInstance().getPacketManager().updateFloatingText(footerId, loc);
-			loc.add(0, -0.25, 0);
-		}
-
 	}
 
 	private Location getSight(final Location loc, int limit)
 	{
-		Location end = loc.clone();
-		while(end.getBlock().getType().equals(Material.AIR) && loc.distance(end) < limit)
-			end.add(loc.getDirection().multiply(0.2));
+		Location end = loc;
+		Vector direction = loc.getDirection();
 
-		if(loc.distance(end) > 1)
-			end.add(loc.getDirection().multiply(-1));
+		for (int offset = 0; offset < limit; offset++) {
+			float off = (float) offset / 2;
+			Location location = loc.clone().add(direction.getX() * off, direction.getY() * off, direction.getZ() * off);
+			if (location.getBlock().getType() != Material.AIR) {
+				return end;
+			}
+			end = location;
+		}
 
 		return end;
 	}
 
 	public void exit()
 	{
-		cancelRunnables();
+		if (runnable != null) {
+			if (runnable.isCancelled()) {
+				runnable.cancel();
+			}
+			runnable = null;
+		}
 
-		for(int id : headIds)
-			Fk.getInstance().getPacketManager().remove(id);
+		for(int id : entities)
+			packetManager.remove(id);
+		entities.clear();
 
-		for(int id : placeholdersIds)
-			Fk.getInstance().getPacketManager().remove(id);
-		
-		for(int id : footerIds)
-			Fk.getInstance().getPacketManager().remove(id);
-
-
-		headIds.clear();
-		placeholdersIds.clear();
-		footerIds.clear();
-		FkScoreboard scoreboard;
-		if((scoreboard = Fk.getInstance().getPlayerManager().getPlayer(player).getScoreboard()) != null)
+		if(fkPlayer.getScoreboard() != null)
 		{
-			scoreboard.setFormatted(true);
-			scoreboard.refreshAll();
+			fkPlayer.getScoreboard().setFormatted(true);
+			fkPlayer.getScoreboard().refreshAll();
 		}
 	}
 
 	public void startUpdateRunnable()
 	{
-		BukkitRunnable br = new BukkitRunnable()
-		{
+		runnable = new BukkitRunnable() {
+
 			private double lastX = 0;
 			private double lastY = 0;
 			private double lastZ = 0;
-
 			private float lastYaw = 0;
+			private float lastPitch = 0;
 
 			@Override
-			public void run()
-			{
-				Location l = Bukkit.getPlayer(player).getLocation();
-
-				if(lastX != l.getX() || lastY != l.getY() || lastZ != l.getZ() || lastYaw != l.getYaw())
-				{
-					lastX = l.getX();
-					lastY = l.getY();
-					lastZ = l.getZ();
-					lastYaw = l.getYaw();
-					updateLoc();
+			public void run() {
+				Player p = player.get();
+				if (p == null) {
+					this.cancel();
+					return;
 				}
 
+				Location loc = p.getLocation();
+				if (
+						Double.compare(lastX, loc.getX()) != 0 || Double.compare(lastY, loc.getY()) != 0 || Double.compare(lastZ, loc.getZ()) != 0
+								|| Double.compare(lastYaw, loc.getYaw()) != 0 || Double.compare(lastPitch, loc.getPitch()) != 0
+				)
+				{
+					lastX = loc.getX();
+					lastY = loc.getY();
+					lastZ = loc.getZ();
+					lastYaw = loc.getYaw();
+					lastPitch = loc.getPitch();
+					updateLoc(p);
+				}
 			}
 		};
-		br.runTaskTimer(Fk.getInstance(), 5l, 3l);
-		runnables.add(br);
-	}
-
-	public void cancelRunnables()
-	{
-		for(BukkitRunnable br : runnables)
-			br.cancel();
-		runnables.clear();
+		runnable.runTaskTimer(Fk.getInstance(), 5L, 3L);
 	}
 }
