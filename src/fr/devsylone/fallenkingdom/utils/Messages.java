@@ -7,6 +7,9 @@ import java.util.Arrays;
 
 public enum Messages
 {
+    BROADCAST_CHEST_ROOM_CAPTURED("broadcast.chest-room.captured"),
+    BROADCAST_CHEST_ROOM_TITLE("broadcast.chest-room.title"),
+    BROADCAST_CHEST_ROOM_SUBTITLE("broadcast.chest-room.subtitle"),
     BROADCAST_DAY("broadcast.day"),
     BROADCAST_DAY_ASSAULT("broadcast.day.assault"),
     BROADCAST_DAY_CHEST("broadcast.day.chest"),
@@ -23,6 +26,8 @@ public enum Messages
     BROADCAST_PREGAME_TP("broadcast.pregame.tp"),
     BROADCAST_START("broadcast.start"),
     BROADCAST_SUN_WILL_RISE("broadcast.sun-will-rise"),
+    BROADCAST_VICTORY_TITLE("broadcast.victory.title"),
+    BROADCAST_VICTORY_SUBTITLE("broadcast.victory.subtitle"),
 
     CHAT_GLOBAL("chat.global"),
     CHAT_JOIN("chat.join"),
@@ -242,6 +247,8 @@ public enum Messages
     PLAYER_BLOCK_BREAK_ENEMY("player.block.break-enemy"),
     PLAYER_BLOCK_BREAK_LOCKED("player.block.break-locked"),
     PLAYER_BLOCK_NOT_ALLOWED("player.block.not-allowed"),
+    PLAYER_CHEST_ROOM_CAPTURE_INTERRUPTED("player.base.chest-room.capture.interrupted"),
+    PLAYER_CHEST_ROOM_CAPTURE_STARTED("player.base.chest-room.capture.started"),
     PLAYER_CHEST_ROOM_ENTER("player.base.chest-room.enter"),
     PLAYER_CHEST_ROOM_EXIT("player.base.chest-room.exit"),
     PLAYER_CHEST_TOO_FAR("player.chest-room.too-far"),
