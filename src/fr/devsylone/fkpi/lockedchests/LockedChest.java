@@ -1,10 +1,14 @@
 package fr.devsylone.fkpi.lockedchests;
 
+import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fallenkingdom.utils.Version;
 import fr.devsylone.fallenkingdom.utils.XAdvancement;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.api.event.PlayerLockedChestInteractEvent;
+import fr.devsylone.fkpi.teams.Team;
+import fr.devsylone.fkpi.util.Saveable;
+import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.lang.NotImplementedException;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -12,11 +16,10 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
-
-import fr.devsylone.fallenkingdom.Fk;
-import fr.devsylone.fkpi.util.Saveable;
 import org.bukkit.entity.Player;
 import org.bukkit.loot.LootTable;
+
+import java.util.UUID;
 
 public class LockedChest implements Saveable
 {
@@ -27,7 +30,8 @@ public class LockedChest implements Saveable
 		UNLOCKED
 	}
 
-	private String unlocker;
+	private UUID unlocker;
+	private ChatColor chatColor = ChatColor.RESET;
 	private Location loc;
 	private int time;
 	private int day;
@@ -58,7 +62,7 @@ public class LockedChest implements Saveable
 		return loc.clone();
 	}
 
-	public String getUnlocker()
+	public UUID getUnlocker()
 	{
 		return unlocker;
 	}
@@ -80,13 +84,16 @@ public class LockedChest implements Saveable
 
 	public void changeUnlocker(Player newPlayer)
 	{
-		unlocker = newPlayer == null ? null : newPlayer.getName();
+		unlocker = newPlayer == null ? null : newPlayer.getUniqueId();
 		startUnlocking = System.currentTimeMillis();
 
 		if(newPlayer == null)
 			setState(ChestState.LOCKED);
 		else
 			setState(ChestState.UNLOCKING);
+
+		Team team = FkPI.getInstance().getTeamManager().getPlayerTeam(newPlayer);
+		chatColor = team == null ? ChatColor.RESET : team.getChatColor();
 	}
 
 	public ChestState getState()
@@ -127,10 +134,10 @@ public class LockedChest implements Saveable
 			return;
 
 		if(unlocker != null)
-			Fk.broadcast(Messages.BROADCAST_LOCKED_CHEST_ABORT.getMessage().replace("%name%", name).replace("%player%", getColoredPlayerName()));
+			Fk.broadcast(Messages.BROADCAST_LOCKED_CHEST_ABORT.getMessage().replace("%name%", name).replace("%player%", chatColor.toString() + Bukkit.getOfflinePlayer(unlocker).getName()));
 
 		changeUnlocker(player);
-		Fk.broadcast(Messages.BROADCAST_LOCKED_CHEST_START.getMessage().replace("%name%", name).replace("%player%", getColoredPlayerName()));
+		Fk.broadcast(Messages.BROADCAST_LOCKED_CHEST_START.getMessage().replace("%name%", name).replace("%player%", chatColor + player.getName()));
 
 		if(task > 0)
 			Bukkit.getScheduler().cancelTask(task);
@@ -140,14 +147,16 @@ public class LockedChest implements Saveable
 		final int armorstand = Fk.getInstance().getPacketManager().createFloatingText("§b0%", player, loc.clone().add(0.5, yFix, 0.5));
 
 		task = Bukkit.getScheduler().scheduleSyncRepeatingTask(Fk.getInstance(), () -> {
-			Fk.getInstance().getPacketManager().updateFloatingText(armorstand, "§b" + (int) (((double) (System.currentTimeMillis() - startUnlocking) / 1000.0d / (double) time) * 100.0d) + "%");
+			if(player.isOnline())
+				Fk.getInstance().getPacketManager().updateFloatingText(armorstand, "§b" + (int) (((double) (System.currentTimeMillis() - startUnlocking) / 1000.0d / (double) time) * 100.0d) + "%");
 			if(lastInteract + 1000 < System.currentTimeMillis())
 			{
 				if(!getState().equals(ChestState.UNLOCKED))
-					Fk.broadcast(Messages.BROADCAST_LOCKED_CHEST_ABORT.getMessage().replace("%name%", name).replace("%player%", getColoredPlayerName()));
+					Fk.broadcast(Messages.BROADCAST_LOCKED_CHEST_ABORT.getMessage().replace("%name%", name).replace("%player%", chatColor + player.getName()));
 				Bukkit.getScheduler().cancelTask(task);
 				changeUnlocker(null);
-				Fk.getInstance().getPacketManager().remove(armorstand);
+				if(player.isOnline())
+					Fk.getInstance().getPacketManager().remove(armorstand);
 			}
 
 			if(startUnlocking + time * 1000 <= System.currentTimeMillis())
@@ -157,17 +166,13 @@ public class LockedChest implements Saveable
 				if(!endEvent.isCancelled())
 				{
 					setState(ChestState.UNLOCKED);
-					Fk.broadcast(Messages.BROADCAST_LOCKED_CHEST_UNLOCKED.getMessage().replace("%name%", name).replace("%player%", getColoredPlayerName()));
+					Fk.broadcast(Messages.BROADCAST_LOCKED_CHEST_UNLOCKED.getMessage().replace("%name%", name).replace("%player%", chatColor + player.getName()));
 				}
 				Bukkit.getScheduler().cancelTask(task);
-				Fk.getInstance().getPacketManager().remove(armorstand);
+				if(player.isOnline())
+					Fk.getInstance().getPacketManager().remove(armorstand);
 			}
 		}, 1L, 1L);
-	}
-
-	private String getColoredPlayerName()
-	{
-		return (FkPI.getInstance().getTeamManager().getPlayerTeam(unlocker) != null ? FkPI.getInstance().getTeamManager().getPlayerTeam(unlocker).getChatColor() : "§r") + unlocker;
 	}
 
 	@Override

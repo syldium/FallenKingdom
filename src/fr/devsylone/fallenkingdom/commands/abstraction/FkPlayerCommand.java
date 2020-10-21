@@ -30,7 +30,7 @@ public abstract class FkPlayerCommand extends FkCommand {
 
     @Override
     public final CommandResult execute(Fk plugin, CommandSender sender, List<String> args, String label) {
-        return execute(plugin, (Player) sender, plugin.getPlayerManager().getPlayer(sender.getName()),  args, label);
+        return execute(plugin, (Player) sender, plugin.getPlayerManager().getPlayer(((Player) sender)),  args, label);
     }
 
     @Override

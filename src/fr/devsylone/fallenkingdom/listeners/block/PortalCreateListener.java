@@ -1,8 +1,11 @@
 package fr.devsylone.fallenkingdom.listeners.block;
 
-import java.lang.reflect.Method;
-import java.util.List;
-
+import fr.devsylone.fallenkingdom.Fk;
+import fr.devsylone.fallenkingdom.game.Game.GameState;
+import fr.devsylone.fallenkingdom.utils.Messages;
+import fr.devsylone.fallenkingdom.utils.XBlock;
+import fr.devsylone.fkpi.FkPI;
+import fr.devsylone.fkpi.rules.Rule;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.block.Block;
@@ -12,12 +15,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.world.PortalCreateEvent;
 import org.bukkit.event.world.PortalCreateEvent.CreateReason;
 
-import fr.devsylone.fallenkingdom.Fk;
-import fr.devsylone.fallenkingdom.game.Game.GameState;
-import fr.devsylone.fallenkingdom.utils.Messages;
-import fr.devsylone.fallenkingdom.utils.XBlock;
-import fr.devsylone.fkpi.FkPI;
-import fr.devsylone.fkpi.rules.Rule;
+import java.lang.reflect.Method;
+import java.util.List;
 
 
 public class PortalCreateListener implements Listener
@@ -44,7 +43,7 @@ public class PortalCreateListener implements Listener
 			Fk.getInstance().getPortalsManager().addPortal(air.getLocation());
 			e.setCancelled(true);
 			for(Player p : Bukkit.getOnlinePlayers())
-				if(p.getLocation().distance(air.getLocation()) <= 15)
+				if(p.getLocation().distanceSquared(air.getLocation()) <= 15*15)
 				{
 					if(Fk.getInstance().getGame().getState().equals(GameState.BEFORE_STARTING) && p.getGameMode().equals(GameMode.CREATIVE))
 					{

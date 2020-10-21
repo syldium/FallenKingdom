@@ -36,7 +36,7 @@ public class ChatListener implements Listener
 			return;
 
 		String msg = e.getMessage();
-		Team team = FkPI.getInstance().getTeamManager().getPlayerTeam(e.getPlayer().getName());
+		Team team = FkPI.getInstance().getTeamManager().getPlayerTeam(e.getPlayer());
 		ChatColor teamColor = team == null ? ChatColor.WHITE : team.getChatColor();
 
 		if(msg.startsWith("!") || team == null)

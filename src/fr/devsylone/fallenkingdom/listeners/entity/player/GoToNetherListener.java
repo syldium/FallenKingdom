@@ -1,12 +1,11 @@
 package fr.devsylone.fallenkingdom.listeners.entity.player;
 
+import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
 import org.bukkit.World.Environment;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
-
-import fr.devsylone.fallenkingdom.Fk;
 
 public class GoToNetherListener implements Listener
 {
@@ -18,12 +17,12 @@ public class GoToNetherListener implements Listener
 
 		if(Fk.getInstance().getWorldManager().isAffected(e.getPlayer().getWorld()))
 		{
-			FkPlayer player = Fk.getInstance().getPlayerManager().getPlayer(e.getPlayer().getName());
+			FkPlayer player = Fk.getInstance().getPlayerManager().getPlayer(e.getPlayer());
 			player.recreateScoreboard();
 		}
 		else
 		{
-			FkPlayer player = Fk.getInstance().getPlayerManager().getPlayerIfExist(e.getPlayer().getName());
+			FkPlayer player = Fk.getInstance().getPlayerManager().getPlayerIfExist(e.getPlayer());
 			if(player != null)
 				player.removeScoreboard();
 			Fk.getInstance().getScoreboardManager().refreshNicks();

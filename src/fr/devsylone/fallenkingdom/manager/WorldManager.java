@@ -1,6 +1,6 @@
 package fr.devsylone.fallenkingdom.manager;
 
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fkpi.managers.TeamManager;
 import fr.devsylone.fkpi.teams.Team;
@@ -9,23 +9,22 @@ import org.bukkit.World;
 
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 public class WorldManager {
 
     private final boolean perWorld;
-    private final List<UUID> affectedWorlds;
+    private final Set<UUID> affectedWorlds;
     private final Set<UUID> baseWorldsCache = new HashSet<>();
 
     public WorldManager(Fk plugin) {
         perWorld = plugin.getConfig().getBoolean("world-check", false);
         if (!perWorld) {
-            affectedWorlds = Collections.emptyList();
+            affectedWorlds = Collections.emptySet();
             return;
         }
-        ImmutableList.Builder<UUID> builder = ImmutableList.builder();
+        ImmutableSet.Builder<UUID> builder = ImmutableSet.builder();
         plugin.getConfig().getStringList("affected-worlds")
                 .forEach(current -> {
                     World world = Bukkit.getWorld(current);
@@ -38,7 +37,7 @@ public class WorldManager {
         affectedWorlds = builder.build();
     }
 
-    public List<UUID> getAffectedWorlds() {
+    public Set<UUID> getAffectedWorlds() {
         return affectedWorlds;
     }
 
