@@ -17,6 +17,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
+import java.util.UUID;
 
 public class LockedChestTest {
 
@@ -44,11 +45,11 @@ public class LockedChestTest {
     public void unlock_Start() {
         GameHelper.setDay(2);
         fireInteractEvent();
-        assertEventFired(LockedChest.ChestState.UNLOCKING, MockUtils.getConstantPlayer().getName());
+        assertEventFired(LockedChest.ChestState.UNLOCKING, MockUtils.getConstantPlayer().getUniqueId());
         setLastInteractionTime(600L);
         MockUtils.getServerMockSafe().getScheduler().performOneTick();
         Assert.assertEquals(LockedChest.ChestState.UNLOCKING, lockedChest.getState());
-        Assert.assertEquals(MockUtils.getConstantPlayer().getName(), lockedChest.getUnlocker());
+        Assert.assertEquals(MockUtils.getConstantPlayer().getUniqueId(), lockedChest.getUnlocker());
     }
 
     @Test
@@ -65,7 +66,7 @@ public class LockedChestTest {
         lockedChest.startUnlocking(MockUtils.getConstantPlayer());
         setStartUnlockingTime(20001L);
         MockUtils.getServerMockSafe().getScheduler().performOneTick();
-        assertEventFired(LockedChest.ChestState.UNLOCKED, MockUtils.getConstantPlayer().getName());
+        assertEventFired(LockedChest.ChestState.UNLOCKED, MockUtils.getConstantPlayer().getUniqueId());
     }
 
     private void fireInteractEvent() {
@@ -93,7 +94,7 @@ public class LockedChestTest {
         }
     }
 
-    private void assertEventFired(LockedChest.ChestState excepted, String unlocker) {
+    private void assertEventFired(LockedChest.ChestState excepted, UUID unlocker) {
         MockUtils.getServerMockSafe().getPluginManager().assertEventFired(PlayerLockedChestInteractEvent.class, event ->
             lockedChest.equals(event.getChest()) && lockedChest.getState().equals(excepted) && lockedChest.getUnlocker().equals(unlocker)
         );
