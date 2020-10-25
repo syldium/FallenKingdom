@@ -19,6 +19,10 @@ public class XItemStack {
     private final static Method CHAT_COMPONENT_FROM_JSON;
     private final static Method CHAT_COMPONENT_TO_JSON;
 
+    public final static Class<?> ITEM_STACK;
+    private final static Method AS_NMS_COPY;
+    private final static Method AS_CRAFT_MIRROR;
+
     private final static boolean HAS_COMPONENT_API;
 
     static {
@@ -35,6 +39,12 @@ public class XItemStack {
                     .filter(m -> m.getReturnType().equals(String.class))
                     .filter(m -> Arrays.equals(m.getParameterTypes(), new Class[]{CHAT_COMPONENT}))
                     .findAny().orElseThrow(RuntimeException::new);
+
+            ITEM_STACK = NMSUtils.nmsClass("ItemStack");
+            AS_NMS_COPY = NMSUtils.obcClass("inventory.CraftItemStack")
+                    .getDeclaredMethod("asNMSCopy", ItemStack.class);
+            AS_CRAFT_MIRROR = NMSUtils.obcClass("inventory.CraftItemStack")
+                    .getDeclaredMethod("asCraftMirror", ITEM_STACK);
 
             boolean hasComponentApi;
             try {
@@ -93,6 +103,29 @@ public class XItemStack {
             }
         }
         return itemStack;
+    }
+
+    public static Object asCraftItem(ItemStack itemStack) {
+        try {
+            return AS_NMS_COPY.invoke(null, itemStack);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static ItemStack asBukkitItem(Object nmsItemStack) {
+        if (nmsItemStack == null) {
+            return null;
+        }
+        if (!ITEM_STACK.isAssignableFrom(nmsItemStack.getClass())) {
+            throw new IllegalArgumentException("Can't convert " + nmsItemStack + " to bukkit item stack.");
+        }
+
+        try {
+            return (ItemStack) AS_CRAFT_MIRROR.invoke(null, nmsItemStack);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     static BaseComponent[] getTextComponent(Object obj, int count) throws ReflectiveOperationException {
