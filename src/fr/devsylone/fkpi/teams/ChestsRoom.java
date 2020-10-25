@@ -1,45 +1,40 @@
 package fr.devsylone.fkpi.teams;
 
+import com.cryptomorin.xseries.XMaterial;
+import fr.devsylone.fallenkingdom.Fk;
+import fr.devsylone.fallenkingdom.game.ChestRoomRunnable;
+import fr.devsylone.fallenkingdom.manager.packets.PacketManager;
+import fr.devsylone.fallenkingdom.utils.ChatUtils;
+import fr.devsylone.fallenkingdom.utils.Messages;
+import fr.devsylone.fallenkingdom.utils.XBlock;
+import fr.devsylone.fkpi.FkPI;
+import fr.devsylone.fkpi.api.event.TeamCaptureEvent;
+import fr.devsylone.fkpi.util.Saveable;
+import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import fr.devsylone.fkpi.api.event.TeamCaptureEvent;
-import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
-import org.bukkit.Color;
-import org.bukkit.FireworkEffect;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Firework;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.meta.FireworkMeta;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
-
-import com.cryptomorin.xseries.XMaterial;
-
-import fr.devsylone.fallenkingdom.Fk;
-import fr.devsylone.fallenkingdom.manager.packets.PacketManager;
-import fr.devsylone.fallenkingdom.utils.XBlock;
-import fr.devsylone.fkpi.FkPI;
-import fr.devsylone.fkpi.util.Saveable;
+import java.util.UUID;
 
 public class ChestsRoom implements Saveable
 {
 	private Location min;
 	private Location max;
 
-	private List<Location> chests;
+	private final List<Location> chests = new ArrayList<>();
+	private final List<UUID> enemyInside = new ArrayList<>();
+	private ChestRoomState state = ChestRoomState.NORMAL;
 
-	private List<String> enemyInside;
-
-	private Base base;
-
-	private ChestRoomState state;
+	private final Base base;
 
 	private BukkitTask captureTask;
 	private Team captureTeam;
@@ -53,15 +48,12 @@ public class ChestsRoom implements Saveable
 
 	public ChestsRoom(Base base)
 	{
-		chests = new ArrayList<Location>();
-		enemyInside = new ArrayList<String>();
 		this.base = base;
-		state = ChestRoomState.NORMAL;
 	}
 
 	public static boolean isIn(Location test, Location min, Location max, int offset)
 	{
-		return min == null ? false : test.getX() >= Math.min(min.getX(), max.getX()) + offset && test.getY() >= Math.min(min.getY(), max.getY()) + offset && test.getZ() >= Math.min(min.getZ(), max.getZ()) + offset && test.getX() <= Math.max(min.getX(), max.getX()) - offset && test.getY() <= Math.max(min.getY(), max.getY()) - offset && test.getZ() <= Math.max(min.getZ(), max.getZ() - offset);
+		return min != null && test.getX() >= Math.min(min.getX(), max.getX()) + offset && test.getY() >= Math.min(min.getY(), max.getY()) + offset && test.getZ() >= Math.min(min.getZ(), max.getZ()) + offset && test.getX() <= Math.max(min.getX(), max.getX()) - offset && test.getY() <= Math.max(min.getY(), max.getY()) - offset && test.getZ() <= Math.max(min.getZ(), max.getZ() - offset);
 	}
 
 	public boolean contains(Location test)
@@ -71,10 +63,10 @@ public class ChestsRoom implements Saveable
 
 	public void removeChest(Location loc)
 	{
-		if(!chests.contains(loc.getBlock().getLocation()))
+		if(!chests.contains(loc))
 			return;
 
-		chests.remove(loc.getBlock().getLocation());
+		chests.remove(loc);
 
 		if(chests.isEmpty())
 		{
@@ -95,7 +87,7 @@ public class ChestsRoom implements Saveable
 
 	public void newChest(Location loc)
 	{
-		if(!chests.contains(loc.getBlock().getLocation()))
+		if(!chests.contains(loc))
 			chests.add(loc);
 
 		if(min == null)
@@ -136,14 +128,13 @@ public class ChestsRoom implements Saveable
 		double xDif = max.getX() - min.getX();
 		double yDif = max.getY() - min.getY();
 		double zDif = max.getZ() - min.getZ();
-		final Set<Chunk> toReset = new HashSet<Chunk>();
+		final Set<Chunk> toReset = new HashSet<>();
 		for(int ix = 0; ix <= Math.abs(xDif); ix++)
 			for(int iy = 0; iy <= Math.abs(yDif); iy++)
 				for(int iz = 0; iz <= Math.abs(zDif); iz++)
 				{
 					final Location loc = min.clone().add(xDif < 0 ? -ix : ix, yDif < 0 ? -iy : iy, zDif < 0 ? -iz : iz);
-					int inter = 0;
-					inter = inter + (ix == Math.abs(xDif) ? 1 : 0);
+					int inter = ix == Math.abs(xDif) ? 1 : 0;
 					inter = inter + (iy == Math.abs(yDif) ? 1 : 0);
 					inter = inter + (iz == Math.abs(zDif) ? 1 : 0);
 					inter = inter + (ix == 0 ? 1 : 0);
@@ -163,36 +154,26 @@ public class ChestsRoom implements Saveable
 						if(inter > 1)
 							id = Fk.getInstance().getPacketManager().displayItem(PacketManager.ItemSlot.HEAD, p, loc.add(0.5, -1, 0.5), Material.CHEST);
 
-						else if(min.distance(max) <= 20)
+						else if(min.distanceSquared(max) <= 20*20)
 							id = Fk.getInstance().getPacketManager().displayItem(PacketManager.ItemSlot.MAINHAND, p, loc.add(1, 0, 0), Material.CHEST);
 
 					}
 
 					final int finalid = id;
 
-					Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), new Runnable()
-					{
-
-						@Override
-						public void run()
-						{
-							if(finalid > 0)
-								Fk.getInstance().getPacketManager().remove(finalid);
+					Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), () -> {
+						if (finalid > 0) {
+							Fk.getInstance().getPacketManager().remove(finalid);
 						}
-					}, Math.abs(seetime) * 20l);
+					}, Math.abs(seetime) * 20L);
 				}
 
-		Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), new Runnable()
-		{
-
-			@Override
-			public void run()
-			{
-				for(Chunk c : toReset)
-					Fk.getInstance().getPacketManager().sendChunkReset(p, c);
-
+		Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), () -> {
+			for (Chunk chunk : toReset) {
+				Fk.getInstance().getPacketManager().sendChunkReset(p, chunk);
 			}
-		}, Math.abs(seetime) * 20l);
+
+		}, Math.abs(seetime) * 20L);
 
 		new BukkitRunnable()
 		{
@@ -210,43 +191,40 @@ public class ChestsRoom implements Saveable
 				initLoc.setPitch(p.getLocation().getPitch());
 				p.teleport(initLoc.clone().add(0, 0.2, 0));
 			}
-		}.runTaskTimer(Fk.getInstance(), 20l, 20l);
+		}.runTaskTimer(Fk.getInstance(), 20L, 20L);
 	}
 
-	public void addEnemyInside(String player)
+	public void addEnemyInside(Player player)
 	{
-
 		Team team = FkPI.getInstance().getTeamManager().getPlayerTeam(player);
-		if(team != null && !team.equals(base.getTeam()))
+		if (team != null && !team.equals(base.getTeam()))
 		{
-			enemyInside.add(player);
-			boolean allMates = true;
-			for(String mate : team.getPlayers())
-				if(!enemyInside.contains(mate))
-				{
-					allMates = false;
-					break;
-				}
-
-			if(allMates)
-			{
+			enemyInside.add(player.getUniqueId());
+			if (enemyInside.size() >= team.getPlayers().size()) {
 				startCapture(team);
 			}
 		}
 	}
 
-	public void removeEnemyInside(String player)
+	public void removeEnemyInside(Player player)
 	{
 		Team team = FkPI.getInstance().getTeamManager().getPlayerTeam(player);
-		if(team != null && !team.equals(base.getTeam()))
+		if (team != null && !team.equals(base.getTeam()))
 		{
-			enemyInside.remove(player);
+			enemyInside.remove(player.getUniqueId());
 
 			if(captureTeam != null && captureTeam.equals(team) && state != ChestRoomState.CAPTURED)
 			{
 				for(String mate : team.getPlayers())
-					if(Bukkit.getPlayer(mate) != null)
-						Fk.getInstance().getPlayerManager().getPlayer(mate).sendMessage(team.getChatColor() + "[Équipe]§r " + player + " est sorti de la salle des coffres, capture §cannulée");
+				{
+					Player p = Bukkit.getPlayer(mate);
+					if (p != null) {
+						ChatUtils.sendMessage(p,
+								team.getChatColor() + Messages.PLAYER_CHEST_ROOM_CAPTURE_INTERRUPTED.getMessage()
+										.replace("%player%", player.getDisplayName())
+						);
+					}
+				}
 
 				captureTeam = null;
 				captureTask.cancel();
@@ -255,84 +233,29 @@ public class ChestsRoom implements Saveable
 		}
 	}
 
+	public List<UUID> getEnemiesInside() {
+		return enemyInside;
+	}
+
 	public void startCapture(final Team team)
 	{
-		if(state != ChestRoomState.CAPTURING && state != ChestRoomState.CAPTURED)
-			state = ChestRoomState.CAPTURING;
-		else
+		if (state != ChestRoomState.NORMAL)
 			return;
 
+		state = ChestRoomState.CAPTURING;
 		captureTeam = team;
 
 		Bukkit.getServer().getPluginManager().callEvent(new TeamCaptureEvent(team, base.getTeam(), false));  // EVENT
 
 		for(String player : team.getPlayers())
-			if(Bukkit.getPlayer(player) != null)
-				Fk.getInstance().getPlayerManager().getPlayer(player).sendMessage(team.getChatColor() + "[Équipe]§r Vous commencez la capture de la salle des coffres  !");
-
-		final long startCaptureTimestamp = System.currentTimeMillis();
-		captureTask = new BukkitRunnable()
 		{
-			@Override
-			public void run()
-			{
-				if(System.currentTimeMillis() >= startCaptureTimestamp + FkPI.getInstance().getChestsRoomsManager().getCaptureTime() * 1000)
-				{
-					state = ChestRoomState.CAPTURED;
-					Fk.broadcast("\n\n\n\n§dL'équipe " + team.toString() + " §da capturé la salle des coffres de l'équipe " + base.getTeam().toString());
-					Fk.broadcast("");
-					Fk.broadcast("");
-					for(Player p : Bukkit.getOnlinePlayers())
-						Fk.getInstance().getPacketManager().sendTitle(p, "Équipe " + base.getTeam().toString(), "§cÉliminée", 10, 60, 10);
-
-					if(FkPI.getInstance().getTeamManager().getTeams().size() > 2)
-						Bukkit.dispatchCommand((CommandSender) Bukkit.getOnlinePlayers().toArray()[0], "fk game pause");
-
-					else
-					{
-						Bukkit.getServer().getPluginManager().callEvent(new TeamCaptureEvent(team, base.getTeam(), true)); // EVENT
-						if(Fk.getInstance().getConfig().getBoolean("enable-mcfunction-support", false))
-							Bukkit.dispatchCommand(Bukkit.getConsoleSender(),"function fallenkingdom:win");
-						for(Player p : Bukkit.getOnlinePlayers())
-							Fk.getInstance().getPacketManager().sendTitle(p, "Victoire !!", "Gagnants : " + team.toString(), 10, 10 * 20, 10);
-						new BukkitRunnable()
-						{
-							private int i;
-
-							@Override
-							public void run()
-							{
-								if(++i >= 20)
-									cancel();
-								for(String player : team.getPlayers())
-								{
-									if(player != null && Bukkit.getPlayer(player) != null)
-									{
-										Firework fw = (Firework) Bukkit.getPlayer(player).getWorld().spawn(Bukkit.getPlayer(player).getLocation(), Firework.class);
-										FireworkMeta meta = fw.getFireworkMeta();
-										meta.addEffect(FireworkEffect.builder().withColor(Color.fromRGB(188, 166, 22), Color.GREEN).build());
-										fw.setFireworkMeta(meta);
-										fw.setVelocity(fw.getVelocity().multiply(0.2d));
-									}
-								}
-							}
-						}.runTaskTimer(Fk.getInstance(), 20l, 20l);
-					}
-
-					cancel();
-
-				}
-				else
-					for(String player : team.getPlayers())
-						if(Bukkit.getPlayer(player) != null)
-						{
-							if(!contains(Bukkit.getPlayer(player).getLocation()) || Bukkit.getPlayer(player).isDead())
-								removeEnemyInside(player);
-
-							Fk.getInstance().getPacketManager().sendTitle(Bukkit.getPlayer(player), "", "§b" + (int) ((System.currentTimeMillis() - startCaptureTimestamp) / 1000.0d / (double) FkPI.getInstance().getChestsRoomsManager().getCaptureTime() * 100) + "%", 0, 20, 20);
-						}
+			Player p = Bukkit.getPlayer(player);
+			if (p != null) {
+				ChatUtils.sendMessage(p, team.getChatColor() + Messages.PLAYER_CHEST_ROOM_CAPTURE_STARTED.getMessage());
 			}
-		}.runTaskTimer(Fk.getInstance(), 5l, 5l);
+		}
+
+		captureTask = new ChestRoomRunnable(this, team, base.getTeam()).runTaskTimer(Fk.getInstance(), 5L, 5L);
 	}
 
 	public ChestRoomState getState()

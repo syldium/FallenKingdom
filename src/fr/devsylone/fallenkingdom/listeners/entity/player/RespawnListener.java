@@ -1,10 +1,12 @@
 package fr.devsylone.fallenkingdom.listeners.entity.player;
 
+import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fallenkingdom.utils.Version;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.rules.Rule;
+import fr.devsylone.fkpi.teams.Team;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -13,9 +15,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
-import fr.devsylone.fallenkingdom.Fk;
-import fr.devsylone.fkpi.teams.Team;
-
 public class RespawnListener implements Listener
 {
 	@EventHandler
@@ -23,10 +22,10 @@ public class RespawnListener implements Listener
 	{
 		if(!Fk.getInstance().getWorldManager().isAffected(e.getPlayer().getWorld()))
 			return;
-		final Team team = Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(e.getPlayer().getName());
+		final Team team = Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(e.getPlayer());
 
 		if(FkPI.getInstance().getRulesManager().getRule(Rule.DEATH_LIMIT) > 0)
-			if(Fk.getInstance().getPlayerManager().getPlayer(e.getPlayer().getName()).getDeaths() >= FkPI.getInstance().getRulesManager().getRule(Rule.DEATH_LIMIT))
+			if(Fk.getInstance().getPlayerManager().getPlayer(e.getPlayer()).getDeaths() >= FkPI.getInstance().getRulesManager().getRule(Rule.DEATH_LIMIT))
 				return;
 
 		if(!isBedOrAnchorSpawn(e) && FkPI.getInstance().getRulesManager().getRule(Rule.RESPAWN_AT_HOME) && team != null && team.getBase() != null)

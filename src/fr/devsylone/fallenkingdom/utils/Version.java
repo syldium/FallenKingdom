@@ -3,7 +3,9 @@ package fr.devsylone.fallenkingdom.utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public class Version {
@@ -11,6 +13,7 @@ public class Version {
     public static final VersionType VERSION_TYPE;
 
     private static final boolean HAS_ASYNC_TELEPORT;
+    private static final boolean HAS_UUID_BY_PLAYER_NAME;
 
     static {
         if (classExists("org.bukkit.block.data.BlockData")) {
@@ -33,6 +36,15 @@ public class Version {
             hasAsyncTeleport = false;
         }
         HAS_ASYNC_TELEPORT = hasAsyncTeleport;
+
+        boolean hasUuidByPlayerName;
+        try {
+            Bukkit.class.getMethod("getPlayerUniqueId", String.class);
+            hasUuidByPlayerName = true;
+        } catch (NoSuchMethodException e) {
+            hasUuidByPlayerName = false;
+        }
+        HAS_UUID_BY_PLAYER_NAME = hasUuidByPlayerName;
     }
 
     public static boolean hasSpigotApi() {
@@ -64,6 +76,14 @@ public class Version {
             return entity.teleportAsync(location);
         }
         return CompletableFuture.completedFuture(entity.teleport(location)); // Sinon synchrone
+    }
+
+    public static UUID getPlayerUniqueId(String playerName) {
+        if (HAS_UUID_BY_PLAYER_NAME) {
+            return Bukkit.getPlayerUniqueId(playerName);
+        }
+        Player player = Bukkit.getPlayerExact(playerName);
+        return player == null ? null : player.getUniqueId();
     }
 
     public static boolean classExists(String name) {

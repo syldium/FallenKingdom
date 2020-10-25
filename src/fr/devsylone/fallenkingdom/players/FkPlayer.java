@@ -7,15 +7,18 @@ import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
-import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
 import fr.devsylone.fallenkingdom.scoreboard.FkScoreboard;
 import fr.devsylone.fallenkingdom.scoreboard.ScoreboardDisplayer;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fallenkingdom.utils.FkSound;
 
+import java.util.regex.Pattern;
+
 public class FkPlayer implements Saveable
 {
+	private static final Pattern NEW_LINE_PATTERN = Pattern.compile("\\n(?=(§.)*?[^(§.)\\n])");
+
 	private boolean knowsSbEdit = false;
 	private PlayerState state = PlayerState.INGAME;
 	private final String name;
@@ -34,10 +37,7 @@ public class FkPlayer implements Saveable
 
 	public FkPlayer(String name)
 	{
-		Fk.getInstance().getPlayerManager().registerNewPlayer(this);
 		this.name = name;
-		if(Bukkit.getPlayerExact(name) != null)
-			board = new FkScoreboard(Bukkit.getPlayer(name));
 	}
 
 	public String getName()
@@ -112,8 +112,7 @@ public class FkPlayer implements Saveable
 
 			String full = message.length() < 4 ? "" : ChatUtils.PREFIX + prefix;
 
-			message = "\n" + message;
-			message = message.replaceAll("\\n(?=(§.)*?[^(§.)\\n])", "\n" + full);
+			message = NEW_LINE_PATTERN.matcher("\n" + message).replaceAll("\n" + full);
 			message = message.substring(1);
 
 			p.sendMessage(message);
@@ -151,6 +150,8 @@ public class FkPlayer implements Saveable
 
 	public FkScoreboard getScoreboard()
 	{
+		if(board == null)
+			board = new FkScoreboard(Bukkit.getPlayerExact(name));
 		return board;
 	}
 
@@ -159,7 +160,7 @@ public class FkPlayer implements Saveable
 		if(board != null)
 			board.remove();
 
-		board = new FkScoreboard(Bukkit.getPlayer(name));
+		board = new FkScoreboard(Bukkit.getPlayerExact(name));
 	}
 
 	public void removeScoreboard()

@@ -1,16 +1,5 @@
 package fr.devsylone.fallenkingdom.listeners.block;
 
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
-
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.game.Game.GameState;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
@@ -21,6 +10,16 @@ import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.rules.Rule;
 import fr.devsylone.fkpi.teams.Team;
 import fr.devsylone.fkpi.util.BlockDescription;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 
 public class BlockListener implements Listener
 {
@@ -40,7 +39,7 @@ public class BlockListener implements Listener
 
 		Player p = e.getPlayer();
 		FkPlayer fkp = Fk.getInstance().getPlayerManager().getPlayer(p);
-		Team team = Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(p.getName());
+		Team team = Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(p);
 
 		if(p.getGameMode() == GameMode.CREATIVE)
 			return;
@@ -66,12 +65,12 @@ public class BlockListener implements Listener
 							{
 								if(t.getBase().contains(bLoc, -3))
 								{
-									if(Fk.getInstance().getPlayerManager().wasOnTnt(e.getPlayer().getName()))
-										Fk.getInstance().getPlayerManager().removeOnTnt(e.getPlayer().getName());
+									if(Fk.getInstance().getPlayerManager().wasOnTnt(e.getPlayer().getUniqueId()))
+										Fk.getInstance().getPlayerManager().removeOnTnt(e.getPlayer().getUniqueId());
 								}
 								else
 								{
-									if(Fk.getInstance().getPlayerManager().wasOnTnt(e.getPlayer().getName()) && t.getBase().contains(bLoc, 3))
+									if(Fk.getInstance().getPlayerManager().wasOnTnt(e.getPlayer().getUniqueId()) && t.getBase().contains(bLoc, 3))
 									{
 										fkp.sendMessage(Messages.PLAYER_TNT_JUMP_DENIED);
 										Location tp = e.getBlock().getLocation().clone().add(0.5, 0.1, 0.5);
@@ -82,7 +81,7 @@ public class BlockListener implements Listener
 									}
 									else
 									{
-										Fk.getInstance().getPlayerManager().putOnTnt(e.getPlayer().getName(), e.getPlayer().getLocation().getBlock().getLocation());
+										Fk.getInstance().getPlayerManager().putOnTnt(e.getPlayer().getUniqueId(), e.getPlayer().getLocation().getBlock().getLocation());
 									}
 								}
 								break;
@@ -123,7 +122,7 @@ public class BlockListener implements Listener
 			else if(XBlock.canBePartOfChestRoom(e.getBlock().getType()))
 			{
 				int limit = FkPI.getInstance().getRulesManager().getRule(Rule.CHEST_LIMIT);
-				int baseY = Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(e.getPlayer().getName()).getBase().getCenter().getBlockY();
+				int baseY = Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(e.getPlayer()).getBase().getCenter().getBlockY();
 				if(limit > 0 && Math.abs(baseY - block.getBlockY()) > limit)
 				{
 					ChatUtils.sendMessage(e.getPlayer(), Messages.PLAYER_CHEST_TOO_FAR);
@@ -145,7 +144,7 @@ public class BlockListener implements Listener
 			return;
 
 		Player p = e.getPlayer();
-		Team team = Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(p.getName());
+		Team team = Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(p);
 
 		if(team == null || plugin.getGame().getState().equals(GameState.BEFORE_STARTING))
 			return;

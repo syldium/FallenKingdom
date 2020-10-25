@@ -1,23 +1,24 @@
 package fr.devsylone.fallenkingdom.manager.saveable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import fr.devsylone.fallenkingdom.Fk;
+import fr.devsylone.fallenkingdom.players.FkPlayer;
+import fr.devsylone.fkpi.util.Saveable;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
-import fr.devsylone.fallenkingdom.players.FkPlayer;
-import fr.devsylone.fkpi.util.Saveable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class PlayerManager implements Saveable
 {
-	protected final Map<String, Location> onTnt = new HashMap<>();
+	protected final Map<UUID, Location> onTnt = new HashMap<>();
+	protected final Map<UUID, FkPlayer> playersByUUID = new HashMap<>();
 	protected final List<FkPlayer> players = new ArrayList<>();
 
 	public List<FkPlayer> getConnectedPlayers()
@@ -30,30 +31,24 @@ public class PlayerManager implements Saveable
 				.collect(Collectors.toList());
 	}
 
-	public void putOnTnt(String player, Location tnt)
+	public void putOnTnt(UUID player, Location tnt)
 	{
 		onTnt.put(player, tnt);
 	}
 
-	public boolean wasOnTnt(String player)
+	public boolean wasOnTnt(UUID player)
 	{
 		return onTnt.containsKey(player);
 	}
 
-	public void removeOnTnt(String player)
+	public void removeOnTnt(UUID player)
 	{
 		onTnt.remove(player);
 	}
 
-	public Location getTntLoc(String player)
+	public Location getTntLoc(UUID player)
 	{
-		return onTnt.getOrDefault(player, null);
-	}
-
-	public void registerNewPlayer(FkPlayer p)
-	{
-		if(!players.contains(p))
-			players.add(p);
+		return onTnt.get(player);
 	}
 
 	public FkPlayer getPlayer(String name)
@@ -62,21 +57,19 @@ public class PlayerManager implements Saveable
 			if(player.getName().equalsIgnoreCase(name))
 				return player;
 
-		return new FkPlayer(name);
+		FkPlayer player = new FkPlayer(name);
+		players.add(player);
+		return player;
 	}
 
-	public FkPlayer getPlayer(Player p)
+	public FkPlayer getPlayer(Player player)
 	{
-		return getPlayer(p.getName());
+		return playersByUUID.computeIfAbsent(player.getUniqueId(), s -> getPlayer(player.getName()));
 	}
 
-	public FkPlayer getPlayerIfExist(String name)
+	public FkPlayer getPlayerIfExist(Player player)
 	{
-		for(FkPlayer player : players)
-			if(player.getName().equalsIgnoreCase(name))
-				return player;
-
-		return null;
+		return playersByUUID.get(player.getUniqueId());
 	}
 
 	@Override

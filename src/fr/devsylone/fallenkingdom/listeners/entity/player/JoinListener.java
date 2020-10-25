@@ -1,17 +1,16 @@
 package fr.devsylone.fallenkingdom.listeners.entity.player;
 
+import fr.devsylone.fallenkingdom.Fk;
+import fr.devsylone.fallenkingdom.players.FkPlayer;
+import fr.devsylone.fallenkingdom.players.FkPlayer.PlayerState;
+import fr.devsylone.fallenkingdom.utils.Messages;
+import fr.devsylone.fkpi.teams.Team;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent.Result;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-
-import fr.devsylone.fallenkingdom.Fk;
-import fr.devsylone.fallenkingdom.players.FkPlayer;
-import fr.devsylone.fallenkingdom.players.FkPlayer.PlayerState;
-import fr.devsylone.fallenkingdom.utils.Messages;
-import fr.devsylone.fkpi.teams.Team;
 
 public class JoinListener implements Listener
 {
@@ -42,7 +41,7 @@ public class JoinListener implements Listener
 
 		player.recreateScoreboard();
 
-		final Team pTeam = Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(e.getPlayer().getName());
+		final Team pTeam = Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(e.getPlayer());
 		if(pTeam != null) //REFRESH LES TEAMS SCOREBOARD (MC=CACA)
 			Fk.getInstance().getScoreboardManager().refreshNicks();
 
@@ -57,8 +56,8 @@ public class JoinListener implements Listener
 	@EventHandler
 	public void quit(PlayerQuitEvent e)
 	{
-		if(Fk.getInstance().getPlayerManager().getPlayer(e.getPlayer().getName()).getState() == PlayerState.EDITING_SCOREBOARD)
-			Fk.getInstance().getPlayerManager().getPlayer(e.getPlayer().getName()).getSbDisplayer().exit();
+		if(Fk.getInstance().getPlayerManager().getPlayer(e.getPlayer()).getState() == PlayerState.EDITING_SCOREBOARD)
+			Fk.getInstance().getPlayerManager().getPlayer(e.getPlayer()).getSbDisplayer().exit();
 
 		if (!Fk.getInstance().getWorldManager().isAffected(e.getPlayer().getWorld()))
 			return;

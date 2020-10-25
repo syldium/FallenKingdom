@@ -1,17 +1,16 @@
 package fr.devsylone.fallenkingdom.utils;
 
-import java.util.Comparator;
-import java.util.Optional;
-import java.util.function.Supplier;
-
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
-
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.game.Game;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.teams.Team;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
+
+import java.util.Comparator;
+import java.util.Optional;
+import java.util.function.Supplier;
 
 public class PlaceHolderUtils
 {
@@ -20,7 +19,7 @@ public class PlaceHolderUtils
 	private static Location getPointingLocation(Player player)
 	{
 		// Vers la base
-		Team pTeam = FkPI.getInstance().getTeamManager().getPlayerTeam(player.getName());
+		Team pTeam = FkPI.getInstance().getTeamManager().getPlayerTeam(player);
 		if (pTeam != null && pTeam.getBase().getCenter() != null && player.getWorld().equals(pTeam.getBase().getCenter().getWorld()))
 			return pTeam.getBase().getCenter().clone();
 
@@ -37,7 +36,7 @@ public class PlaceHolderUtils
 		return Fk.getInstance().getFkPI().getTeamManager().getTeams().stream()
 				.filter(team -> team.getBase() != null && !team.getPlayers().contains(player.getName()))
 				.filter(team -> team.getBase().getCenter().getWorld().equals(player.getWorld()))
-				.sorted(Comparator.comparingDouble(team -> team.getBase().getCenter().distance(player.getLocation())))
+				.sorted(Comparator.comparingDouble(team -> team.getBase().getCenter().distanceSquared(player.getLocation())))
 				.skip(iteration)
 				.findFirst();
 	}
@@ -45,7 +44,7 @@ public class PlaceHolderUtils
 	public static String getBaseDistance(Player player)
 	{
 		Location pLoc = player.getLocation();
-		Team pTeam = FkPI.getInstance().getTeamManager().getPlayerTeam(player.getName());
+		Team pTeam = FkPI.getInstance().getTeamManager().getPlayerTeam(player);
 		if (pTeam == null)
 			return Fk.getInstance().getScoreboardManager().getNoTeam();
 		if (pTeam.getBase() == null)
@@ -61,7 +60,7 @@ public class PlaceHolderUtils
 	public static String getBaseDirection(Player player)
 	{
 		Location pLoc = player.getLocation();
-		Team pTeam = FkPI.getInstance().getTeamManager().getPlayerTeam(player.getName());
+		Team pTeam = FkPI.getInstance().getTeamManager().getPlayerTeam(player);
 		if (pTeam == null)
 			return Fk.getInstance().getScoreboardManager().getNoTeam();
 		if (pTeam.getBase() == null)
@@ -98,7 +97,7 @@ public class PlaceHolderUtils
 
 	public static String getTeamOf(Player p)
 	{
-		Team t = Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(p.getName());
+		Team t = Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(p);
 		return t == null ? Fk.getInstance().getScoreboardManager().getNoTeam() : t.toString();
 	}
 
@@ -124,7 +123,7 @@ public class PlaceHolderUtils
 	
 	public static String getBaseOrPortal(Player player)
 	{
-		Team pTeam = FkPI.getInstance().getTeamManager().getPlayerTeam(player.getName());
+		Team pTeam = FkPI.getInstance().getTeamManager().getPlayerTeam(player);
 		if (pTeam != null && pTeam.getBase() != null && pTeam.getBase().getCenter().getWorld().equals(player.getWorld()))
 			return "Base";
 		Location portal = Fk.getInstance().getPlayerManager().getPlayer(player).getPortal();

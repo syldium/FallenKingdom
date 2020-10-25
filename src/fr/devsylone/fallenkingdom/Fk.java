@@ -14,7 +14,6 @@ import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.command.PluginCommand;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
@@ -215,12 +214,6 @@ public class Fk extends JavaPlugin
 
 		if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null)
 			new PlaceHolderExpansion().register();
-
-		/*
-		 * Set le sb a tout le monde si jamais rl
-		 */
-		for(Player p : Bukkit.getOnlinePlayers())
-			playerManager.registerNewPlayer(playerManager.getPlayer(p));
 
 		/*
 		 * IF EternalDay
