@@ -139,8 +139,9 @@ public class LockedChest implements Saveable
 
 		final int armorstand = Fk.getInstance().getPacketManager().createFloatingText("§b0%", player, loc.clone().add(0.5, yFix, 0.5));
 
-		task = Bukkit.getScheduler().scheduleSyncRepeatingTask(Fk.getInstance(), () -> {
+		task = Bukkit.getScheduler().runTaskTimer(Fk.getInstance(), () -> {
 			Fk.getInstance().getPacketManager().updateFloatingText(armorstand, "§b" + (int) (((double) (System.currentTimeMillis() - startUnlocking) / 1000.0d / (double) time) * 100.0d) + "%");
+
 			if(lastInteract + 1000 < System.currentTimeMillis())
 			{
 				if(!getState().equals(ChestState.UNLOCKED))
@@ -162,7 +163,7 @@ public class LockedChest implements Saveable
 				Bukkit.getScheduler().cancelTask(task);
 				Fk.getInstance().getPacketManager().remove(armorstand);
 			}
-		}, 1L, 1L);
+		}, 1L, 1L).getTaskId();
 	}
 
 	private String getColoredPlayerName()

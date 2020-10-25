@@ -15,7 +15,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.java.JavaPluginLoader;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import fr.devsylone.fallenkingdom.commands.FkAsyncCommandExecutor;
@@ -57,26 +59,26 @@ import lombok.Getter;
 @Getter
 public class Fk extends JavaPlugin
 {
-    @Getter
-    private static boolean debugMode;
-
-    private Game game;
-	private CommandManager commandManager;
-	private PlayerManager playerManager;
-	private WorldManager worldManager;
-	private PauseRestorer pauseRestorer;
-	private StarterInventoryManager starterInventoryManager;
-	private ScoreboardManager scoreboardManager;
-	private PacketManager packetManager;
-	private DeepPauseManager deepPauseManager;
-	private TipsManager tipsManager;
-	private SaveablesManager saveableManager;
-	private PortalsManager portalsManager;
-	
 	@Getter
-	private static Fk instance;
+	private static boolean debugMode;
 
-	private FkPI fkPI;
+	protected Game game;
+	protected CommandManager commandManager;
+	protected PlayerManager playerManager;
+	protected WorldManager worldManager;
+	protected PauseRestorer pauseRestorer;
+	protected StarterInventoryManager starterInventoryManager;
+	protected ScoreboardManager scoreboardManager;
+	protected PacketManager packetManager;
+	protected DeepPauseManager deepPauseManager;
+	protected TipsManager tipsManager;
+	protected SaveablesManager saveableManager;
+	protected PortalsManager portalsManager;
+
+	@Getter
+	protected static Fk instance;
+
+	protected FkPI fkPI;
 
 	private final List<String> onConnectWarnings = new ArrayList<>();
 	private String pluginError = "";
@@ -86,6 +88,11 @@ public class Fk extends JavaPlugin
 	public Fk()
 	{
 		instance = this;
+	}
+
+	// Test only
+	public Fk(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
+		super(loader, description, dataFolder, file);
 	}
 
 	@Override
@@ -240,8 +247,8 @@ public class Fk extends JavaPlugin
 		 * Updater
 		 */
 
-        PluginUpdater updater = new PluginUpdater(Fk.getInstance());
-        updater.runTaskAsynchronously(this);
+		PluginUpdater updater = new PluginUpdater(Fk.getInstance());
+		updater.runTaskAsynchronously(this);
 
 
 		new BukkitRunnable() {

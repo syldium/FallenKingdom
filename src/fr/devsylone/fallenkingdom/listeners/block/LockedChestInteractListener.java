@@ -34,7 +34,7 @@ public class LockedChestInteractListener implements Listener
 			if(chest.getState().equals(ChestState.UNLOCKED))
 				return;
 
-			if (Version.VersionType.V1_13.isHigherOrEqual() && isInvEmpty(((Chest) e.getClickedBlock().getState()).getBlockInventory())) {
+			if (Version.VersionType.V1_13.isHigherOrEqual() && e.getClickedBlock().getState() instanceof Chest && isInvEmpty(((Chest) e.getClickedBlock().getState()).getBlockInventory())) {
 				LootTable lootTable = chest.getLootTable();
 				if (lootTable != null) {
 					Chest state = (Chest) e.getClickedBlock().getState();

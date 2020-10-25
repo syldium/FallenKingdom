@@ -21,6 +21,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -105,6 +107,10 @@ public class CommandManager
 		plugin.getTipsManager().addUsed(main);
 
 		return result;
+	}
+
+	public CommandResult executeCommand(Fk plugin, CommandSender sender, String literal) {
+		return executeCommand(plugin, sender, "fk", new ArrayList<>(Arrays.asList(literal.split(" "))));
 	}
 
 	public List<String> tabCompleteCommand(Fk plugin, CommandSender sender, List<String> arguments) {

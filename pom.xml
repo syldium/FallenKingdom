@@ -26,6 +26,7 @@
         <finalName>${project.name}-${project.version}</finalName>
         <defaultGoal>clean package</defaultGoal>
         <sourceDirectory>src/</sourceDirectory> <!-- Force Maven to explore src/ because of its unusual structure -->
+        <testSourceDirectory>test/</testSourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -68,6 +69,11 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.22.2</version>
+            </plugin>
         </plugins>
         <resources>
             <resource>
@@ -75,6 +81,12 @@
                 <filtering>true</filtering>
             </resource>
         </resources>
+        <testResources>
+            <testResource>
+                <directory>testResources</directory>
+                <filtering>true</filtering>
+            </testResource>
+        </testResources>
     </build>
 
     <repositories>
@@ -106,6 +118,12 @@
     </repositories>
 
     <dependencies>
+        <dependency> <!-- Units tests - seems like it needs to be before paper-api -->
+            <groupId>com.github.seeseemelk</groupId>
+            <artifactId>MockBukkit-v1.16</artifactId>
+            <version>0.5.0</version>
+            <scope>test</scope>
+        </dependency>
         <!-- Used to check the structure of NMS packets -->
         <!--<dependency>
             <groupId>1.16.3_R2</groupId>
@@ -175,6 +193,20 @@
             <artifactId>lombok</artifactId>
             <version>1.18.12</version>
             <scope>provided</scope>
+        </dependency>
+
+        <!-- Units tests -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.6.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>3.3.3</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

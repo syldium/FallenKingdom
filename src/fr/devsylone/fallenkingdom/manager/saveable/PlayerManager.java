@@ -17,8 +17,8 @@ import fr.devsylone.fkpi.util.Saveable;
 
 public class PlayerManager implements Saveable
 {
-	private final Map<String, Location> onTnt = new HashMap<>();
-	private final List<FkPlayer> players = new ArrayList<>();
+	protected final Map<String, Location> onTnt = new HashMap<>();
+	protected final List<FkPlayer> players = new ArrayList<>();
 
 	public List<FkPlayer> getConnectedPlayers()
 	{

@@ -38,9 +38,9 @@ public class DeepPauseManager implements Saveable
 	private static Method NMS_NBTTAG_INT;
 	private static Method NMS_ENTITY_F;
 
-	private static final Field FIELD_ITEM;
+	private static Field FIELD_ITEM;
 
-	static
+	protected static void init()
 	{
 		try {
             if (VERSION1_8) {
@@ -58,6 +58,11 @@ public class DeepPauseManager implements Saveable
 		} catch (ReflectiveOperationException e) {
 		    throw new ExceptionInInitializerError(e);
 		}
+	}
+
+	public DeepPauseManager()
+	{
+		init();
 	}
 
 	public void unfreezePlayers()
