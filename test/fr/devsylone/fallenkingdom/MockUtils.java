@@ -5,7 +5,9 @@ import be.seeseemelk.mockbukkit.ServerMock;
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import fr.devsylone.fkpi.teams.Team;
 import org.apache.commons.lang.RandomStringUtils;
+import org.bukkit.Material;
 import org.bukkit.World.Environment;
+import org.bukkit.inventory.ItemStack;
 
 public class MockUtils {
 
@@ -30,6 +32,7 @@ public class MockUtils {
     public static PlayerMock getConstantPlayer() {
         if (playerMock == null) {
             playerMock = getServerMockSafe().addPlayer(RandomStringUtils.random(6, true, true));
+            playerMock.getInventory().setItemInMainHand(new ItemStack(Material.AIR));
         }
         return playerMock;
     }
