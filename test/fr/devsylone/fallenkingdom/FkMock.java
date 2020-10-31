@@ -39,7 +39,8 @@ public class FkMock extends Fk {
     public void onEnable() {
         ListenersManager.registerListeners(this);
         getConfig().set("lang", "fr");
-        LanguageManager.init(this);
+        languageManager = new LanguageManager();
+        languageManager.init(this);
 
         fkPI = new FkPI();
 

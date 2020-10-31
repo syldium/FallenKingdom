@@ -1,6 +1,6 @@
 package fr.devsylone.fkpi.util;
 
-import fr.devsylone.fallenkingdom.manager.LanguageManager;
+import fr.devsylone.fallenkingdom.Fk;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 
@@ -83,7 +83,7 @@ public class Color
 
 	public String getGenredName(int genre)
 	{
-		if(LanguageManager.getLocalePrefix().equalsIgnoreCase("fr"))
+		if(Fk.getInstance().getLanguageManager().getLocalePrefix().equalsIgnoreCase("fr"))
 			return genre == GENRE_M ? maleColor : femColor;
 		return dyeColor.name().toLowerCase().replace('_', ' ');
 	}

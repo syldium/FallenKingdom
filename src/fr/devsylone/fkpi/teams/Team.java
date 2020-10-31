@@ -88,7 +88,7 @@ public class Team implements ITeam, Saveable
 	{
 		this.color = color == null ? Color.NO_COLOR : color;
 		if(Version.VersionType.V1_13.isHigherOrEqual())
-			scoreboardTeam.setColor(color.getBukkitChatColor());
+			scoreboardTeam.setColor(this.color.getBukkitChatColor());
 		else
 			scoreboardTeam.setPrefix(String.valueOf(this.color.getChatColor()));
 	}

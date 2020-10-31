@@ -73,6 +73,7 @@ public class Fk extends JavaPlugin
 	protected TipsManager tipsManager;
 	protected SaveablesManager saveableManager;
 	protected PortalsManager portalsManager;
+	protected LanguageManager languageManager;
 
 	@Getter
 	protected static Fk instance;
@@ -125,7 +126,8 @@ public class Fk extends JavaPlugin
 		if (!check())
 			return;
 
-		LanguageManager.init(this);
+		languageManager = new LanguageManager();
+		languageManager.init(this);
 
 		/*
 		 * FkPI
@@ -409,7 +411,7 @@ public class Fk extends JavaPlugin
 	{
 		Metrics metrics = new Metrics(this, 6738);
 		metrics.addCustomChart(new Metrics.SingleLineChart("server_running_1-8_version", () -> Bukkit.getVersion().contains("1.8") ? 1 : 0));
-		metrics.addCustomChart(new Metrics.SimplePie("lang_used", LanguageManager::getLocalePrefix));
+		metrics.addCustomChart(new Metrics.SimplePie("lang_used", languageManager::getLocalePrefix));
 	}
 
 	public void addOnConnectWarning(String warning)

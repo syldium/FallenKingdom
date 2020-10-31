@@ -47,7 +47,7 @@ public class SetLang extends FkCommand
         } catch (IOException e) {
             e.printStackTrace();
         }
-        LanguageManager.init(plugin);
+        plugin.getLanguageManager().init(plugin);
         ChatUtils.sendMessage(sender, Messages.CMD_LANG_SET);
         return CommandResult.SUCCESS;
     }

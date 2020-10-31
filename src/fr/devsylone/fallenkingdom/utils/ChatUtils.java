@@ -1,6 +1,6 @@
 package fr.devsylone.fallenkingdom.utils;
 
-import fr.devsylone.fallenkingdom.manager.LanguageManager;
+import fr.devsylone.fallenkingdom.Fk;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -19,7 +19,7 @@ public class ChatUtils
 
 	public static String colorMessage(Messages message)
 	{
-		String msg = LanguageManager.getLanguageMessage(message.getAccessor());
+		String msg = Fk.getInstance().getLanguageManager().getLanguageMessage(message.getAccessor());
 		return msg == null ? null : ChatColor.translateAlternateColorCodes('&', msg);
 	}
 

@@ -26,21 +26,16 @@ import net.md_5.bungee.api.chat.TextComponent;
 
 public class LanguageManager
 {
-    private static String langPrefix;
+    private String langPrefix;
 
-    private static final Properties defaultLocale = new Properties();
-    private static final Properties locale = new Properties();
+    private final Properties defaultLocale = new Properties();
+    private final Properties locale = new Properties();
 
-    private static int taskId = -1;
+    private int taskId = -1;
 
-    private LanguageManager()
-    {
-    }
-
-    public static void init(Fk plugin)
-    {
+    public void init(Fk plugin) {
         if (taskId > 0) {
-            Bukkit.getScheduler().cancelTask(taskId);
+            plugin.getServer().getScheduler().cancelTask(taskId);
         }
 
         langPrefix = plugin.getConfig().getString("lang", "unknown");
@@ -108,12 +103,12 @@ public class LanguageManager
         }
     }
 
-    public static String getLanguageMessage(String path)
+    public String getLanguageMessage(String path)
     {
         return getLanguageMessage(path, false);
     }
 
-    public static String getLanguageMessage(String path, boolean strict)
+    public String getLanguageMessage(String path, boolean strict)
     {
         String prop = locale.getProperty(path);
         if (prop == null && !strict) {
@@ -123,7 +118,7 @@ public class LanguageManager
         return prop;
     }
 
-    public static String getLocalePrefix() {
+    public String getLocalePrefix() {
         return langPrefix;
     }
 }
