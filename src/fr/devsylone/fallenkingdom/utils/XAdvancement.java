@@ -34,7 +34,7 @@ public class XAdvancement {
 
     static {
         Optional<Class<?>> achievement = NMSUtils.optionalClass("org.bukkit.Achievement");
-        if (achievement.isPresent()) {
+        if (achievement.isPresent() && achievement.get().getAnnotations().length < 1) {
             ACHIEVEMENT = (Class<Enum>) achievement.get();
             try {
                 HAS_ACHIEVEMENT = Player.class.getDeclaredMethod("hasAchievement", ACHIEVEMENT);
