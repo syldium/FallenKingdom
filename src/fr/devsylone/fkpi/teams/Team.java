@@ -3,7 +3,7 @@ package fr.devsylone.fkpi.teams;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.devsylone.fallenkingdom.utils.Version;
+import fr.devsylone.fallenkingdom.version.Version;
 import fr.devsylone.fkpi.api.ITeam;
 import fr.devsylone.fkpi.api.event.TeamUpdateEvent;
 import net.md_5.bungee.api.ChatColor;

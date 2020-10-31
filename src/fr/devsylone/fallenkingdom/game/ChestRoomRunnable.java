@@ -9,13 +9,11 @@ import fr.devsylone.fkpi.teams.ChestsRoom;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
@@ -59,7 +57,7 @@ public class ChestRoomRunnable extends BukkitRunnable {
             Bukkit.getServer().getPluginManager().callEvent(new TeamCaptureEvent(assailants, defenders, true)); // EVENT
 
             if (FkPI.getInstance().getTeamManager().getTeams().size() > 2) {
-                Bukkit.dispatchCommand(Bukkit.getOnlinePlayers().iterator().next(), "fk game pause");
+                Fk.getInstance().getCommandManager().executeCommand(Fk.getInstance(), Bukkit.getConsoleSender(), "game pause");
                 return;
             }
 

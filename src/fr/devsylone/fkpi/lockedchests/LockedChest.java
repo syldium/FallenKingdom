@@ -2,7 +2,7 @@ package fr.devsylone.fkpi.lockedchests;
 
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.utils.Messages;
-import fr.devsylone.fallenkingdom.utils.Version;
+import fr.devsylone.fallenkingdom.version.Version;
 import fr.devsylone.fallenkingdom.utils.XAdvancement;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.api.event.PlayerLockedChestInteractEvent;

@@ -48,7 +48,7 @@ import fr.devsylone.fallenkingdom.updater.PluginUpdater;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fallenkingdom.utils.DebuggerUtils;
 import fr.devsylone.fallenkingdom.utils.FkSound;
-import fr.devsylone.fallenkingdom.utils.Version;
+import fr.devsylone.fallenkingdom.version.Version;
 import fr.devsylone.fallenkingdom.utils.ZipUtils;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.rules.Rule;

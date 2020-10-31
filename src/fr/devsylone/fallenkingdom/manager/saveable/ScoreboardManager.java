@@ -4,7 +4,7 @@ import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fallenkingdom.scoreboard.PlaceHolder;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
-import fr.devsylone.fallenkingdom.utils.Version;
+import fr.devsylone.fallenkingdom.version.Version;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.teams.Team;
 import fr.devsylone.fkpi.util.Saveable;
@@ -132,7 +132,21 @@ public class ScoreboardManager implements Saveable
 	{
 		String line = sidebar.get(index);
 		if (player == null) {
-			return line.replaceAll("§", "&").replaceAll("(&.)+$", ScoreboardManager.randomFakeEmpty());
+			char[] b = line.toCharArray();
+			boolean atEnd = true;
+			for (int i = b.length - 1; i >= 0; i--) {
+				if (b[i] == ChatColor.COLOR_CHAR) {
+					if ((b.length - i) % 2 != 0) {
+						atEnd = false;
+					}
+					if (!atEnd) {
+						b[i] = '&';
+					}
+				} else if (atEnd && (b.length - i) % 2 == 0) {
+					atEnd = false;
+				}
+			}
+			return new String(b);
 		}
 
 		for (PlaceHolder placeHolder : PlaceHolder.values()) {
@@ -262,6 +276,7 @@ public class ScoreboardManager implements Saveable
 		sidebar.add("End {END?}");
 		sidebar.add("§m------------");
 		sidebar.add(ChatUtils.DEVSYLONE);
+		computePlaceHoldersIndexes();
 	}
 
 	@Override

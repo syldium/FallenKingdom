@@ -5,7 +5,7 @@ import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
 import fr.devsylone.fallenkingdom.utils.Messages;
-import fr.devsylone.fallenkingdom.utils.Version;
+import fr.devsylone.fallenkingdom.version.Version;
 import org.bukkit.command.CommandSender;
 
 import fr.devsylone.fallenkingdom.Fk;

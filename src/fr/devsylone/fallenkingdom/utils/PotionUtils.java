@@ -1,5 +1,6 @@
 package fr.devsylone.fallenkingdom.utils;
 
+import fr.devsylone.fallenkingdom.version.Version;
 import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.Constructor;

@@ -3,7 +3,7 @@ package fr.devsylone.fkpi.managers;
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
 import fr.devsylone.fallenkingdom.utils.Messages;
-import fr.devsylone.fallenkingdom.utils.Version;
+import fr.devsylone.fallenkingdom.version.Environment;
 import fr.devsylone.fkpi.api.ITeam;
 import fr.devsylone.fkpi.api.event.PlayerTeamChangeEvent;
 import fr.devsylone.fkpi.api.event.TeamUpdateEvent;
@@ -62,7 +62,7 @@ public class TeamManager implements Saveable
 		Bukkit.getPluginManager().callEvent(new TeamUpdateEvent(team, TeamUpdateEvent.TeamUpdate.DELETION)); // EVENT
 
 		for (String player : team.getPlayers()) {
-			teamByPlayerUUID.remove(Version.getPlayerUniqueId(player));
+			teamByPlayerUUID.remove(Environment.getPlayerUniqueId(player));
 		}
 		team.getPlayers().clear();
 
@@ -136,7 +136,7 @@ public class TeamManager implements Saveable
 
 		Bukkit.getPluginManager().callEvent(new PlayerTeamChangeEvent(player, team, null)); // EVENT
 		team.removePlayer(player);
-		teamByPlayerUUID.remove(Version.getPlayerUniqueId(player));
+		teamByPlayerUUID.remove(Environment.getPlayerUniqueId(player));
 	}
 
 	public void random(List<String> players)
