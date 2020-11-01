@@ -9,7 +9,6 @@ import fr.devsylone.fallenkingdom.utils.XBlock;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.rules.Rule;
 import fr.devsylone.fkpi.teams.Team;
-import fr.devsylone.fkpi.util.BlockDescription;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -91,7 +90,7 @@ public class BlockListener implements Listener
 			return;
 		}
 
-		if(FkPI.getInstance().getRulesManager().getRule(Rule.ALLOWED_BLOCKS).isAllowed(new BlockDescription(e.getBlock())))
+		if(FkPI.getInstance().getRulesManager().getRule(Rule.ALLOWED_BLOCKS).isAllowed(e.getBlock()))
 			return;
 
 		Location block = e.getBlock().getLocation();

@@ -4,8 +4,6 @@ import fr.devsylone.fallenkingdom.commands.ArgumentParser;
 import fr.devsylone.fallenkingdom.commands.abstraction.*;
 import fr.devsylone.fallenkingdom.exception.ArgumentParseException;
 import fr.devsylone.fallenkingdom.utils.Messages;
-import fr.devsylone.fkpi.util.BlockDescription;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import fr.devsylone.fallenkingdom.Fk;
@@ -25,7 +23,7 @@ public class SetBase extends FkPlayerCommand
 	@Override
 	public CommandResult execute(Fk plugin, Player sender, FkPlayer fkp, List<String> args, String label) {
 		int radius = ArgumentParser.parseInt(args.get(1), Messages.CMD_ERROR_RADIUS_FORMAT);
-		BlockDescription block = ArgumentParser.parseBlock(2, args, sender, false);
+		ArgumentParser.MaterialWithData block = ArgumentParser.parseBlock(2, args, sender, false);
 
 		if(!plugin.getFkPI().getTeamManager().getTeamNames().contains(args.get(0)))
 			throw new FkLightException(Messages.CMD_ERROR_UNKNOWN_TEAM.getMessage().replace("%team%", args.get(0)));

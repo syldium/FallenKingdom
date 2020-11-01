@@ -5,7 +5,8 @@ import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fallenkingdom.version.Version;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.lockedchests.LockedChest;
-import fr.devsylone.fkpi.util.BlockDescription;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.TranslatableComponent;
 import org.bukkit.Material;
@@ -53,16 +54,21 @@ public class ArgumentParser {
         return Boolean.parseBoolean(bool);
     }
 
-    public static BlockDescription parseBlock(String block) throws ArgumentParseException {
-        Material m = Material.matchMaterial(block.substring(0, block.contains("[") ? block.indexOf("[") : block.length()));
+    public static MaterialWithData parseBlock(String block) throws ArgumentParseException {
+        int sep = block.indexOf(":");
+        Material m = Material.matchMaterial(block.substring(0, sep < 0 ? block.length() : sep));
         if (m == null || !m.isBlock()) {
             throw new ArgumentParseException(Messages.CMD_ERROR_UNKNOWN_BLOCK.getMessage().replace("%block%", block));
         }
-        return new BlockDescription(m);
+        byte data = -1;
+        if (sep > 0) {
+            data = (byte) parsePositiveInt(block.substring(sep + 1), true, Messages.CMD_ERROR_NAN);
+        }
+        return new MaterialWithData(m, data);
     }
 
     @SuppressWarnings("deprecation")
-    public static BlockDescription parseBlock(int index, List<String> args, Player player, boolean denyAir) throws ArgumentParseException {
+    public static MaterialWithData parseBlock(int index, List<String> args, Player player, boolean denyAir) throws ArgumentParseException {
         if (index < args.size()) {
             return parseBlock(args.get(index));
         }
@@ -70,7 +76,7 @@ public class ArgumentParser {
         if (!m.isBlock() || (denyAir && isAir(m))) {
             throw new ArgumentParseException(Messages.CMD_ERROR_UNKNOWN_BLOCK.getMessage().replace("%block%", m.name()));
         }
-        return new BlockDescription(player.getItemInHand());
+        return new MaterialWithData(player.getItemInHand().getType(), (byte) -1);
     }
 
     public static boolean isAir(Material material) {
@@ -136,5 +142,20 @@ public class ArgumentParser {
             }
         }
         throw new ArgumentParseException(Messages.CMD_ERROR_NOT_LOCKED_CHEST.getMessage());
+    }
+
+    @AllArgsConstructor @Getter
+    public static class MaterialWithData {
+
+        private final Material material;
+        private final byte data;
+
+        @Override
+        public String toString() {
+            if (data < 0) {
+                return material.name();
+            }
+            return material.name() + ':' + data;
+        }
     }
 }
