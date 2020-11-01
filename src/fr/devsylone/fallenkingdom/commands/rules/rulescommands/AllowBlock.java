@@ -41,7 +41,7 @@ public class AllowBlock extends FkCommand
 		} else {
 			blockDescription = ArgumentParser.parseBlock(0, args, (Player) sender, true);
 		}
-		makeSuggestionIf(blockDescription.getBlockName(), "ender", ENDER_EYE_MSG, sender);
+		makeSuggestionIf(blockDescription.getMaterial().name(), "ender", ENDER_EYE_MSG, sender);
 
 		AllowedBlocks rule = FkPI.getInstance().getRulesManager().getRule(Rule.ALLOWED_BLOCKS);
 

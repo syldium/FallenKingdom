@@ -36,7 +36,7 @@ public class SetBase extends FkPlayerCommand
 		if(radius < 4)
 			throw new ArgumentParseException(Messages.CMD_ERROR_RADIUS_FORMAT.getMessage());
 
-		Base base = new Base(plugin.getFkPI().getTeamManager().getTeam(args.get(0)), sender.getLocation(), radius, Material.getMaterial(block.getBlockName()), block.getData());
+		Base base = new Base(plugin.getFkPI().getTeamManager().getTeam(args.get(0)), sender.getLocation(), radius, block.getMaterial(), block.getData());
 		plugin.getFkPI().getTeamManager().getTeam(args.get(0)).setBase(base);
 		base.construct();
 		broadcast(Messages.CMD_TEAM_SET_BASE.getMessage()

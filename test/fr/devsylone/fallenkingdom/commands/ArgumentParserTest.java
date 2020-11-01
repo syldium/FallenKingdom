@@ -28,13 +28,13 @@ public class ArgumentParserTest {
 
     @Test
     public void parseBlock_ValidTypes() {
-        Assert.assertEquals(Material.COBBLESTONE.name(), ArgumentParser.parseBlock("minecraft:COBBLESTONE").getBlockName());
-        Assert.assertEquals(Material.MOSSY_COBBLESTONE_STAIRS.name(), ArgumentParser.parseBlock("mossy_cobblestone_stairs").getBlockName());
+        Assert.assertEquals(Material.COBBLESTONE, ArgumentParser.parseBlock("minecraft:COBBLESTONE").getMaterial());
+        Assert.assertEquals(Material.MOSSY_COBBLESTONE_STAIRS, ArgumentParser.parseBlock("mossy_cobblestone_stairs").getMaterial());
         MockUtils.getConstantPlayer().setItemInHand(new ItemStack(Material.STONE));
-        Assert.assertEquals(Material.COAL_BLOCK.name(), ArgumentParser.parseBlock(0, Collections.singletonList("coal_block"), MockUtils.getConstantPlayer(), true).getBlockName());
-        Assert.assertEquals(Material.STONE.name(), ArgumentParser.parseBlock(0, Collections.emptyList(), MockUtils.getConstantPlayer(), true).getBlockName());
+        Assert.assertEquals(Material.COAL_BLOCK, ArgumentParser.parseBlock(0, Collections.singletonList("coal_block"), MockUtils.getConstantPlayer(), true).getMaterial());
+        Assert.assertEquals(Material.STONE, ArgumentParser.parseBlock(0, Collections.emptyList(), MockUtils.getConstantPlayer(), true).getMaterial());
         MockUtils.getConstantPlayer().setItemInHand(new ItemStack(Material.AIR));
-        Assert.assertEquals(Material.AIR.name(), ArgumentParser.parseBlock(0, Collections.emptyList(), MockUtils.getConstantPlayer(), false).getBlockName());
+        Assert.assertEquals(Material.AIR, ArgumentParser.parseBlock(0, Collections.emptyList(), MockUtils.getConstantPlayer(), false).getMaterial());
     }
 
     @Test

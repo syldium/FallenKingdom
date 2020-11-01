@@ -1,15 +1,18 @@
 package fr.devsylone.fkpi.rules;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fkpi.api.event.RuleChangeEvent;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
+import org.bukkit.Tag;
 import org.bukkit.configuration.ConfigurationSection;
 
 import com.cryptomorin.xseries.XMaterial;
@@ -18,9 +21,9 @@ import fr.devsylone.fkpi.util.BlockDescription;
 
 public class AllowedBlocks implements RuleValue
 {
-	private final List<BlockDescription> allowed = new ArrayList<>();
+	private final Set<BlockDescription> allowed = new HashSet<>();
 
-	public List<BlockDescription> getValue()
+	public Set<BlockDescription> getValue()
 	{
 		return allowed;
 	}
@@ -30,14 +33,17 @@ public class AllowedBlocks implements RuleValue
 		return getValue().contains(block);
 	}
 
-	public List<BlockDescription> reducedList()
+	public Set<String> reducedList()
 	{
-		List<BlockDescription> list = new ArrayList<>(getValue());
-		if (list.containsAll(allSigns())) {
-			list.removeIf(b -> b.getBlockName().contains("SIGN"));
-			list.add(new BlockDescription("SIGN (tous types)"));
+		if (allowed.containsAll(SIGNS)) {
+			return Stream.concat(
+					Stream.of("SIGN (tous types)"),
+					allowed.stream()
+							.filter(bd -> !SIGNS.contains(bd))
+							.map(BlockDescription::toString)
+			).collect(Collectors.toSet());
 		}
-		return list;
+		return allowed.stream().map(BlockDescription::toString).collect(Collectors.toSet());
 	}
 
 	@Override
@@ -53,9 +59,7 @@ public class AllowedBlocks implements RuleValue
 		}
 
 		allowed.add(new BlockDescription("FIRE"));
-		allowed.addAll(allSigns());
-		allowed.add(new BlockDescription("TNT"));
-
+		allowed.addAll(SIGNS);
 	}
 
 	@Override
@@ -68,42 +72,23 @@ public class AllowedBlocks implements RuleValue
 		return jsonArray;
 	}
 
-	public static List<BlockDescription> allSigns()
-	{
-		List<BlockDescription> signs = new ArrayList<>();
-		if (XMaterial.isNewVersion())
-			signs.add(new BlockDescription(XMaterial.OAK_SIGN.parseMaterial()));
-		else
-			signs.add(new BlockDescription("SIGN_POST"));
-		signs.add(new BlockDescription(XMaterial.OAK_WALL_SIGN.parseMaterial()));
-		if (Material.getMaterial("ACACIA_SIGN") != null)
-		{
-			signs.add(new BlockDescription(XMaterial.ACACIA_SIGN.parseMaterial()));
-			signs.add(new BlockDescription(XMaterial.ACACIA_WALL_SIGN.parseMaterial()));
-			signs.add(new BlockDescription(XMaterial.BIRCH_SIGN.parseMaterial()));
-			signs.add(new BlockDescription(XMaterial.BIRCH_WALL_SIGN.parseMaterial()));
-			signs.add(new BlockDescription(XMaterial.DARK_OAK_SIGN.parseMaterial()));
-			signs.add(new BlockDescription(XMaterial.DARK_OAK_WALL_SIGN.parseMaterial()));
-			signs.add(new BlockDescription(XMaterial.JUNGLE_SIGN.parseMaterial()));
-			signs.add(new BlockDescription(XMaterial.JUNGLE_WALL_SIGN.parseMaterial()));
-			signs.add(new BlockDescription(XMaterial.SPRUCE_SIGN.parseMaterial()));
-			signs.add(new BlockDescription(XMaterial.SPRUCE_WALL_SIGN.parseMaterial()));
-		}
-		return signs;
-	}
-
 	public String format()
 	{
 		StringBuilder formatted = new StringBuilder();
-		for(BlockDescription b : reducedList())
-			formatted.append("\n§a✔ ").append(b.toString());
+		for(String b : reducedList())
+			formatted.append("\n§a✔ ").append(b);
 		return formatted.toString();
 	}
 
 	public void load(ConfigurationSection config)
 	{
-		List<String> blocksString = config.getStringList("value");
-		allowed.addAll(blocksString.stream().map(BlockDescription::new).collect(Collectors.toList()));
+		for (String blockString : config.getStringList("value")) {
+			try {
+				allowed.add(new BlockDescription(blockString));
+			} catch (IllegalArgumentException e) {
+				Fk.getInstance().getLogger().warning("AllowedBlocks: " + e.getMessage());
+			}
+		}
 	}
 
 	public void save(ConfigurationSection config)
@@ -130,5 +115,20 @@ public class AllowedBlocks implements RuleValue
 	{
 		Bukkit.getPluginManager().callEvent(new RuleChangeEvent<>(Rule.ALLOWED_BLOCKS, this));
 		allowed.removeIf(filter);
+	}
+
+	private static Set<BlockDescription> SIGNS = new HashSet<>();
+
+	static {
+		try {
+			SIGNS.addAll(Tag.SIGNS.getValues().stream().map(BlockDescription::new).collect(Collectors.toSet()));
+		} catch (Exception e) {
+			if (XMaterial.isNewVersion()) {
+				SIGNS.add(new BlockDescription(XMaterial.OAK_SIGN.parseMaterial()));
+			} else {
+				SIGNS.add(new BlockDescription("SIGN_POST"));
+			}
+			SIGNS.add(new BlockDescription(XMaterial.OAK_WALL_SIGN.parseMaterial()));
+		}
 	}
 }

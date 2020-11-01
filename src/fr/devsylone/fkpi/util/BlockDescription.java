@@ -1,50 +1,53 @@
 package fr.devsylone.fkpi.util;
 
 import com.cryptomorin.xseries.XMaterial;
+import com.google.common.base.Preconditions;
+import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 
-import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.util.Objects;
 
-public class BlockDescription implements Serializable
+@Getter
+public class BlockDescription
 {
-    private String blockName;
+    private final Material material;
     private byte data = -1;
 
     public BlockDescription(String blockName)
     {
         if (blockName.contains(":")) {
-            this.blockName = blockName.split(":")[0].toUpperCase();
+            this.material = matchMaterial(blockName.split(":")[0]);
             this.data = Byte.parseByte(blockName.split(":")[1]);
         } else {
-            this.blockName = blockName.toUpperCase();
+            this.material = matchMaterial(blockName);
         }
     }
 
     public BlockDescription(String blockName, byte data)
     {
-        this.blockName = blockName.toUpperCase();
+        this.material = matchMaterial(blockName);
         this.data = data;
     }
 
     public BlockDescription(Material material)
     {
-        this.blockName = material.name();
+        this.material = material;
     }
 
     @SuppressWarnings("deprecated")
     public BlockDescription(Block block)
     {
-        this.blockName = block.getType().name();
+        this.material = block.getType();
         if (!XMaterial.isNewVersion())
             this.data = block.getData(); // 1.12.2-
     }
 
     public BlockDescription(ItemStack itemStack)
     {
-        this.blockName = itemStack.getType().name();
+        this.material = itemStack.getType();
         if (XMaterial.isNewVersion()) return;
         try {
             Method getDataMethod = ItemStack.class.getMethod("getData");
@@ -55,16 +58,22 @@ public class BlockDescription implements Serializable
             if (data2 instanceof Byte) {
                 this.data = (byte) data2;
             }
-        } catch (ReflectiveOperationException e) {
+        } catch (ReflectiveOperationException ignored) {
 
         }
+    }
+
+    private Material matchMaterial(String name) {
+        Material material = Material.matchMaterial(name);
+        Preconditions.checkArgument(material != null, "Unknown material: " + name);
+        return material;
     }
 
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof BlockDescription)) return false;
         BlockDescription other = (BlockDescription) obj;
-        if (!this.blockName.equalsIgnoreCase(other.blockName)) {
+        if (this.material != other.material) {
             return false;
         }
         if (this.data < 0 || other.data < 0) {
@@ -74,28 +83,17 @@ public class BlockDescription implements Serializable
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(this.material, this.data);
+    }
+
+    @Override
     public String toString()
     {
         if (this.data == -1) {
-            return this.blockName;
+            return this.material.name();
         } else {
-            return this.blockName + ":" + this.data;
+            return this.material + ":" + this.data;
         }
-    }
-
-    public String getBlockName() {
-        return blockName;
-    }
-
-    public void setBlockName(String blockName) {
-        this.blockName = blockName;
-    }
-
-    public byte getData() {
-        return data;
-    }
-
-    public void setData(byte data) {
-        this.data = data;
     }
 }
