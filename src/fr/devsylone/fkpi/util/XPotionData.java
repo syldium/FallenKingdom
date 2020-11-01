@@ -85,10 +85,12 @@ public final class XPotionData
 			return potion.getType() == null ? null : new XPotionData(potion.getType(), potion.hasExtendedDuration(), potion.getType().getMaxLevel() > 1 && potion.getLevel() > 1);
 		}
 		else
-		{
-			PotionData data = ((PotionMeta) potionItem.getItemMeta()).getBasePotionData();
-			return new XPotionData(data.getType(), data.isExtended(), data.isUpgraded());
-		}
+			return fromPotionData(((PotionMeta) potionItem.getItemMeta()).getBasePotionData());
+	}
+
+	public static XPotionData fromPotionData(PotionData data)
+	{
+		return data == null ? null : new XPotionData(data.getType(), data.isExtended(), data.isUpgraded());
 	}
 
 	public void applyTo(ItemStack potionItem)

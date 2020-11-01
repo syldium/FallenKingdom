@@ -5,13 +5,16 @@ import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fallenkingdom.utils.PotionUtils;
+import fr.devsylone.fallenkingdom.version.Version;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.rules.DisabledPotions;
 import fr.devsylone.fkpi.rules.Rule;
 import fr.devsylone.fkpi.util.XPotionData;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Projectile;
 import org.bukkit.entity.ThrownPotion;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -123,11 +126,24 @@ public class DisabledPotionsListener implements Listener
 	@EventHandler
 	public void event(ProjectileLaunchEvent e)
 	{
-		if(e.getEntityType() == EntityType.SPLASH_POTION && FkPI.getInstance().getRulesManager().getRule(Rule.DISABLED_POTIONS).isDisabled(XPotionData.fromItemStack(((ThrownPotion) e.getEntity()).getItem())))
+		if(e.getEntityType() == EntityType.SPLASH_POTION || Version.VersionType.V1_9_V1_12.isHigherOrEqual() && e.getEntityType() == EntityType.ARROW)
 		{
-			e.setCancelled(true);
-			if(e.getEntity().getShooter() instanceof CommandSender)
-				ChatUtils.sendMessage((CommandSender) e.getEntity().getShooter(), Messages.PLAYER_DISABLED_POTION_CONSUME);
+			Projectile projectile = e.getEntity();
+			XPotionData potionData;
+			if(projectile instanceof ThrownPotion)
+				potionData = XPotionData.fromItemStack(((ThrownPotion) projectile).getItem());
+			else
+				potionData = XPotionData.fromPotionData(((Arrow) projectile).getBasePotionData());
+
+			if(FkPI.getInstance().getRulesManager().getRule(Rule.DISABLED_POTIONS).isDisabled(potionData))
+			{
+				if(projectile instanceof Arrow)
+					projectile.getWorld().spawnArrow(projectile.getLocation(), projectile.getVelocity(), (float) projectile.getVelocity().length(), 12f);
+				e.setCancelled(true);
+
+				if(e.getEntity().getShooter() instanceof CommandSender)
+					ChatUtils.sendMessage((CommandSender) e.getEntity().getShooter(), Messages.PLAYER_DISABLED_POTION_CONSUME);
+			}
 		}
 	}
 }
