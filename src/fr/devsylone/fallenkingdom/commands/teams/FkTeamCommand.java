@@ -20,6 +20,7 @@ public class FkTeamCommand extends FkParentCommand
                 .add(new Random())
                 .add(new Remove())
                 .add(new RemovePlayer())
+                .add(new TeamTeleport())
                 .add(new SetBase())
                 .add(new SetColor())
                 .build()

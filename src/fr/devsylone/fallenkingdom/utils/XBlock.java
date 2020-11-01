@@ -60,7 +60,9 @@ import com.cryptomorin.xseries.XMaterial;
  */
 @SuppressWarnings("deprecation")
 public final class XBlock {
-    public static final EnumSet<XMaterial> REPLACABLE = EnumSet.of(
+    private static final boolean ISFLAT = XMaterial.isNewVersion();
+
+    public static final EnumSet<XMaterial> REPLACEABLE = EnumSet.of(
             XMaterial.DANDELION, XMaterial.POPPY, XMaterial.BLUE_ORCHID, XMaterial.ALLIUM, XMaterial.AZURE_BLUET, XMaterial.RED_TULIP,
             XMaterial.ORANGE_TULIP, XMaterial.WHITE_TULIP, XMaterial.PINK_TULIP, XMaterial.OXEYE_DAISY, XMaterial.CORNFLOWER,
             XMaterial.LILY_OF_THE_VALLEY, XMaterial.WITHER_ROSE, XMaterial.SUNFLOWER, XMaterial.LILAC, XMaterial.ROSE_BUSH,
@@ -73,18 +75,13 @@ public final class XBlock {
     public static final EnumSet<Material> CONTAINERS = EnumSet.of(
             Material.CHEST, XMaterial.BARREL.parseMaterial(true)
     );
-    private static final boolean ISFLAT = XMaterial.isNewVersion();
+    private static final Material GRASS = ISFLAT ? Material.getMaterial("GRASS") : Material.getMaterial("TALLGRASS");
 
-    public static Material grass() {
-        // En 1.13+, grass désigne la plante, en 1.12.2-, grass désigne le bloc
-        return ISFLAT ? Material.getMaterial("GRASS") : Material.getMaterial("TALLGRASS");
-    }
-
-    public static boolean isReplacable(Material material) {
-        if (REPLACABLE.contains(XMaterial.matchXMaterial(material))) {
-            return true;
+    public static boolean isReplaceable(Block block) {
+        if (ISFLAT) {
+            return block.isPassable();
         }
-        return material.equals(grass());
+        return REPLACEABLE.contains(XMaterial.matchXMaterial(block.getType())) || block.getType() == GRASS;
     }
 
     public static boolean isBlockInCave(Material material) {

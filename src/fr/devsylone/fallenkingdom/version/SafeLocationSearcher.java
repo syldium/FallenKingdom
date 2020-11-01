@@ -2,6 +2,7 @@ package fr.devsylone.fallenkingdom.version;
 
 import com.cryptomorin.xseries.XMaterial;
 import fr.devsylone.fallenkingdom.utils.Messages;
+import fr.devsylone.fallenkingdom.utils.XBlock;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -87,7 +88,7 @@ public class SafeLocationSearcher {
 
         Environment.getChunkAtAsync(around.getWorld(), chunkPos.x, chunkPos.z).thenApply(chunk -> {
             for (Block2DPos pos : positions) {
-                Location loc = getSafeDestination(chunk, pos.x, pos.z, base.getBlockY() + radius, base.getBlockY() - radius);
+                Location loc = getSafeDestination(chunk, pos.x, pos.z, base.getBlockY() + 3 + radius, base.getBlockY() - 2 - radius);
                 if (loc != null) {
                     future.complete(loc);
                     return true;
@@ -100,14 +101,14 @@ public class SafeLocationSearcher {
     private Location getSafeDestination(Chunk chunk, int x, int z, int upY, int downY) {
         int y = upY;
         Block block = chunk.getBlock(x, y, z);
-        Material type = block.getType();
+        Material type;
         int airCount = 0;
         while (y > downY) {
-            airCount = type.isAir() ? airCount + 1 : 0;
+            airCount = XBlock.isReplaceable(block) && !block.isLiquid() ? airCount + 1 : 0;
             y -= 1;
             block = chunk.getBlock(x, y, z);
             type = block.getType();
-            if (airCount > 1 && !type.isAir()) {
+            if (airCount > 1 && !XBlock.isReplaceable(block)) {
                 if (!DAMAGING_TYPES.contains(type) && !block.isLiquid()) {
                     return block.getLocation().add(0.5, 1, 0.5);
                 }
