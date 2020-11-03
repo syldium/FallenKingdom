@@ -52,7 +52,12 @@ public class RulesManager implements Saveable
 				rules.put(entry.getKey(), loaded);
 			} else {
 				Object defaultValue = entry.getKey().getDefaultValue();
-				rules.put(entry.getKey(), config != null ? config.get(configPath + ".value", defaultValue) : defaultValue);
+				if (defaultValue.getClass().equals(Character.class) && config != null) {
+					String s = config.getString(configPath + ".value", String.valueOf(defaultValue));
+					rules.put(entry.getKey(), s.isEmpty() ? ' ' : s.charAt(0));
+				} else {
+					rules.put(entry.getKey(), config != null ? config.get(configPath + ".value", defaultValue) : defaultValue);
+				}
 			}
 		}
 	}

@@ -43,6 +43,9 @@ public class Rule<T>
 	public static final Rule<Boolean> HEALTH_BELOW_NAME = new Rule<>("HealthBelowName", true);
 	public static final Rule<Boolean> ENDERPEARL_ASSAULT = new Rule<>("EnderpearlAssault", true);
 
+	// Chars
+	public static final Rule<Character> GLOBAL_CHAT_PREFIX = new Rule<>("GlobalChatPrefix", '!');
+
 	// Valeurs complexes
 	public static final Rule<AllowedBlocks> ALLOWED_BLOCKS = new Rule<>("AllowedBlocks", new AllowedBlocks());
 	public static final Rule<ChargedCreepers> CHARGED_CREEPERS = new Rule<>("ChargedCreepers", new ChargedCreepers());

@@ -57,7 +57,7 @@ public class ArgumentParser {
     }
 
     public static MaterialWithData parseBlock(String block) throws ArgumentParseException {
-        int sep = block.indexOf(":");
+        int sep = Version.VersionType.V1_13.isHigherOrEqual() ? -1 : block.indexOf(":");
         Material m = Material.matchMaterial(block.substring(0, sep < 0 ? block.length() : sep));
         if (m == null || !m.isBlock()) {
             throw new ArgumentParseException(Messages.CMD_ERROR_UNKNOWN_BLOCK.getMessage().replace("%block%", block));
@@ -81,7 +81,7 @@ public class ArgumentParser {
         }
 
         byte data = -1;
-        if (itemStackData && !XMaterial.isNewVersion()) {
+        if (itemStackData && !Version.VersionType.V1_13.isHigherOrEqual()) {
             data = item.getData().getData();
         }
         return new MaterialWithData(player.getItemInHand().getType(), data);

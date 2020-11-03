@@ -30,6 +30,7 @@ public class FkRuleCommand extends FkParentCommand
 				.add(new EnderpearlAssault())
 				.add(new EternalDay())
 				.add(new FriendlyFire())
+				.add(new GlobalChatPrefix())
 				.add(new HealthBelowName())
 				.add(new RulesList())
 				.add(new NetherCap())
