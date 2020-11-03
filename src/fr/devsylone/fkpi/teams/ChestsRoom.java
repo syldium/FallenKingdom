@@ -201,7 +201,7 @@ public class ChestsRoom implements Saveable
 		if (team != null && !team.equals(base.getTeam()))
 		{
 			enemyInside.add(player.getUniqueId());
-			if ((enemyInside.size() / team.getPlayers().size()) * 100 >= FkPI.getInstance().getRulesManager().getRule(Rule.CAPTURE_RATE)) {
+			if (((float) enemyInside.size() / team.getPlayers().size()) * 100 >= FkPI.getInstance().getRulesManager().getRule(Rule.CAPTURE_RATE)) {
 				startCapture(team);
 			}
 		}
@@ -214,7 +214,7 @@ public class ChestsRoom implements Saveable
 		{
 			enemyInside.remove(player.getUniqueId());
 
-			if ((enemyInside.size() / team.getPlayers().size()) * 100 >= FkPI.getInstance().getRulesManager().getRule(Rule.CAPTURE_RATE)) {
+			if (((float) enemyInside.size() / team.getPlayers().size()) * 100 >= FkPI.getInstance().getRulesManager().getRule(Rule.CAPTURE_RATE)) {
 				return;
 			}
 
