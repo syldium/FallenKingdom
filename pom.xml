@@ -6,7 +6,7 @@
 
     <groupId>fr.devsylone</groupId>
     <artifactId>fallenkingdom</artifactId>
-    <version>2.20.1</version>
+    <version>2.20.2-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>FallenKingdom</name>
 
@@ -121,27 +121,27 @@
         <dependency> <!-- Units tests - seems like it needs to be before paper-api -->
             <groupId>com.github.seeseemelk</groupId>
             <artifactId>MockBukkit-v1.16</artifactId>
-            <version>0.13.0</version>
+            <version>0.13.1</version>
             <scope>test</scope>
         </dependency>
         <!-- Used to check the structure of NMS packets -->
         <!--<dependency>
-            <groupId>1.16.3_R2</groupId>
-            <artifactId>paper_1_16_3</artifactId>
-            <version>1.16.3-R2</version>
+            <groupId>io.papermc.minecraft-server</groupId>
+            <artifactId>paper_1_16_4</artifactId>
+            <version>v1_16_R3</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/../cache/patched_1.16.3.jar</systemPath>
+            <systemPath>${project.basedir}/../cache/patched_1.16.4.jar</systemPath>
         </dependency>-->
         <dependency>
             <groupId>com.destroystokyo.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>1.16.3-R0.1-SNAPSHOT</version>
+            <version>1.16.4-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.destroystokyo.paper</groupId>
             <artifactId>paper-mojangapi</artifactId>
-            <version>1.16.3-R0.1-SNAPSHOT</version>
+            <version>1.16.4-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

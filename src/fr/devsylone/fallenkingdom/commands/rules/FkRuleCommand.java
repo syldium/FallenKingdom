@@ -17,6 +17,7 @@ public class FkRuleCommand extends FkParentCommand
 	{
 		super("rules", ImmutableList.<FkCommand>builder()
 				.add(new AllowBlock())
+				.add(new CaptureRate())
 				.add(new ChargedCreepers())
 				.add(new ChestLimit())
 				.add(new DayDuration())

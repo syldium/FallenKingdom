@@ -9,6 +9,7 @@ import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fallenkingdom.utils.XBlock;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.api.event.TeamCaptureEvent;
+import fr.devsylone.fkpi.rules.Rule;
 import fr.devsylone.fkpi.util.Saveable;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -200,7 +201,7 @@ public class ChestsRoom implements Saveable
 		if (team != null && !team.equals(base.getTeam()))
 		{
 			enemyInside.add(player.getUniqueId());
-			if (enemyInside.size() >= team.getPlayers().size()) {
+			if ((enemyInside.size() / team.getPlayers().size()) * 100 >= FkPI.getInstance().getRulesManager().getRule(Rule.CAPTURE_RATE)) {
 				startCapture(team);
 			}
 		}
@@ -212,6 +213,10 @@ public class ChestsRoom implements Saveable
 		if (team != null && !team.equals(base.getTeam()))
 		{
 			enemyInside.remove(player.getUniqueId());
+
+			if ((enemyInside.size() / team.getPlayers().size()) * 100 >= FkPI.getInstance().getRulesManager().getRule(Rule.CAPTURE_RATE)) {
+				return;
+			}
 
 			if(captureTeam != null && captureTeam.equals(team) && state != ChestRoomState.CAPTURED)
 			{

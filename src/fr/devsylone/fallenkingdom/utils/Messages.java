@@ -125,6 +125,7 @@ public enum Messages
 
     CMD_MAP_RULES("cmd.map.rules"),
     CMD_MAP_RULES_ALLOW_BLOCK("cmd.map.rules.allowBlock"),
+    CMD_MAP_RULES_CAPTURE_RATE("cmd.map.rules.captureRate"),
     CMD_MAP_RULES_CHARGED_CREEPERS("cmd.map.rules.chargedCreepers"),
     CMD_MAP_RULES_CHEST_LIMIT("cmd.map.rules.chestLimit"),
     CMD_MAP_RULES_DAY_DURATION("cmd.map.rules.dayDuration"),
@@ -169,6 +170,7 @@ public enum Messages
     CMD_MAP_TEAM_REMOVE_PLAYER("cmd.map.team.removePlayer"),
     CMD_MAP_TEAM_SET_BASE("cmd.map.team.setBase"),
     CMD_MAP_TEAM_SET_COLOR("cmd.map.team.setColor"),
+    CMD_MAP_TEAM_TP("cmd.map.team.tp"),
 
     CMD_RULES_ACTIVATED("cmd.rules.activated"),
     CMD_RULES_ALLOW_BLOCK("cmd.rules.allow-block.allowed"),
@@ -188,6 +190,7 @@ public enum Messages
     CMD_RULES_CAP_NETHER("cmd.rules.cap.nether"),
     CMD_RULES_CAP_PVP("cmd.rules.cap.pvp"),
     CMD_RULES_CAP_TNT("cmd.rules.cap.tnt"),
+    CMD_RULES_CAPTURE_RATE_SET("cmd.rules.capture-rate.set"),
     CMD_RULES_CHARGED_CREEPERS_DROP_RATE("cmd.rules.charged-creepers.drop-rate"),
     CMD_RULES_CHARGED_CREEPERS_SPAWN_RATE("cmd.rules.charged-creepers.spawn-rate"),
     CMD_RULES_CHEST_LIMIT_FIXED("cmd.rules.chest-limit.fixed"),

@@ -46,6 +46,10 @@ public class ChestRoomRunnable extends BukkitRunnable {
             Fk.broadcast("");
 
             for (Player player : Bukkit.getOnlinePlayers()) {
+                if (!Fk.getInstance().getWorldManager().isAffected(player.getWorld())) {
+                    continue;
+                }
+
                 Fk.getInstance().getPacketManager().sendTitle(
                         player,
                         Messages.BROADCAST_CHEST_ROOM_TITLE.getMessage().replace("%defenders%", defenders.toString()).replace("%assailants%", assailants.toString()),
@@ -65,6 +69,10 @@ public class ChestRoomRunnable extends BukkitRunnable {
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "function fallenkingdom:win");
 
             for (Player p : Bukkit.getOnlinePlayers()) {
+                if (!Fk.getInstance().getWorldManager().isAffected(p.getWorld())) {
+                    continue;
+                }
+
                 Fk.getInstance().getPacketManager().sendTitle(p, Messages.BROADCAST_VICTORY_TITLE.getMessage(), Messages.BROADCAST_VICTORY_SUBTITLE.getMessage().replace("%assailants%", assailants.toString()), 10, 10 * 20, 10);
             }
 

@@ -31,6 +31,7 @@ public class Rule<T>
 
 	// Entiers
 	public static final Rule<Integer> DAY_DURATION = new Rule<>("DayDuration", 24000);
+	public static final Rule<Integer> CAPTURE_RATE = new Rule<>("CaptureRate", 100);
 
 	// Booléens
 	public static final Rule<Boolean> FRIENDLY_FIRE = new Rule<>("FriendlyFire", true);

@@ -20,7 +20,7 @@ import java.util.List;
 public class TeamTeleport extends FkPlayerCommand {
 
     public TeamTeleport() {
-        super("tp", "[team]", null, CommandPermission.ADMIN);
+        super("tp", "[team]", Messages.CMD_MAP_TEAM_LIST, CommandPermission.ADMIN);
     }
 
     @Override
