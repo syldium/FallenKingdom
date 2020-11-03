@@ -1,5 +1,6 @@
 package fr.devsylone.fallenkingdom.commands;
 
+import com.cryptomorin.xseries.XMaterial;
 import fr.devsylone.fallenkingdom.exception.ArgumentParseException;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fallenkingdom.version.Version;
@@ -13,6 +14,7 @@ import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.Collections;
 import java.util.List;
@@ -68,15 +70,25 @@ public class ArgumentParser {
     }
 
     @SuppressWarnings("deprecation")
-    public static MaterialWithData parseBlock(int index, List<String> args, Player player, boolean denyAir) throws ArgumentParseException {
+    public static MaterialWithData parseBlock(int index, List<String> args, Player player, boolean denyAir, boolean itemStackData) throws ArgumentParseException {
         if (index < args.size()) {
             return parseBlock(args.get(index));
         }
-        Material m = player.getItemInHand().getType();
+        ItemStack item = player.getItemInHand();
+        Material m = item.getType();
         if (!m.isBlock() || (denyAir && isAir(m))) {
             throw new ArgumentParseException(Messages.CMD_ERROR_UNKNOWN_BLOCK.getMessage().replace("%block%", m.name()));
         }
-        return new MaterialWithData(player.getItemInHand().getType(), (byte) -1);
+
+        byte data = -1;
+        if (itemStackData && !XMaterial.isNewVersion()) {
+            data = item.getData().getData();
+        }
+        return new MaterialWithData(player.getItemInHand().getType(), data);
+    }
+
+    public static MaterialWithData parseBlock(int index, List<String> args, Player player, boolean denyAir) throws ArgumentParseException {
+        return parseBlock(index, args, player, denyAir, false);
     }
 
     public static boolean isAir(Material material) {

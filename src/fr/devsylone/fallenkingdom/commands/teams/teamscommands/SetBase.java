@@ -23,7 +23,7 @@ public class SetBase extends FkPlayerCommand
 	@Override
 	public CommandResult execute(Fk plugin, Player sender, FkPlayer fkp, List<String> args, String label) {
 		int radius = ArgumentParser.parseInt(args.get(1), Messages.CMD_ERROR_RADIUS_FORMAT);
-		ArgumentParser.MaterialWithData block = ArgumentParser.parseBlock(2, args, sender, false);
+		ArgumentParser.MaterialWithData block = ArgumentParser.parseBlock(2, args, sender, false, true);
 
 		if(!plugin.getFkPI().getTeamManager().getTeamNames().contains(args.get(0)))
 			throw new FkLightException(Messages.CMD_ERROR_UNKNOWN_TEAM.getMessage().replace("%team%", args.get(0)));
