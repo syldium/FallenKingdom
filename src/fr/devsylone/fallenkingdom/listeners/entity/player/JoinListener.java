@@ -91,7 +91,7 @@ public class JoinListener implements Listener
 		ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
 		SkullMeta meta = (SkullMeta) skull.getItemMeta();
 		meta.setDisplayName(Messages.EASTER_EGG_ANNIVERSARY_NAME);
-		ArrayList<String> lore = new ArrayList<String>();
+		List<String> lore = new ArrayList<String>();
 		lore.add(Messages.EASTER_EGG_ANNIVERSARY_LORE_1);
 		lore.add(Messages.EASTER_EGG_ANNIVERSARY_LORE_2.replace("%age%", currentDate.getYear() - 2016)));
 		meta.setLore(lore);
