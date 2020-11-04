@@ -58,7 +58,7 @@ public class JoinListener implements Listener
 			
 		LocalDate currentDate = LocalDate.now();
 
-		if(Fk.getInstance().getGame().getState().equals(GameState.BEFORE_STARTING) && (currentDate.getDayOfMonth() == 12) && (currentDate.getMonth() == Month.JUNE))
+		if(Fk.getInstance().getGame().getState().equals(GameState.BEFORE_STARTING) && player.getInventory().getHelmet() == null && (currentDate.getDayOfMonth() == 12) && (currentDate.getMonth() == Month.JUNE))
 			player.setHelmet(head());
 	}
 
@@ -88,7 +88,7 @@ public class JoinListener implements Listener
 		LocalDate currentDate = LocalDate.now();
 
 		ItemStack skull = new ItemStack(XMaterial.PLAYER_HEAD.parseItem());
-		SkullMeta skullMeta = SkullUtils.applySkin(skull.getItemMeta(), "MHF_Cake");
+		SkullMeta skullMeta = SkullUtils.applySkin(skull.getItemMeta(), "ewogICJ0aW1lc3RhbXAiIDogMTYwNDUxNzcwODc5OSwKICAicHJvZmlsZUlkIiA6ICJhZmI0ODljNDlmYzg0OGE0OThmMmRkN2JlYTQxNGM5YSIsCiAgInByb2ZpbGVOYW1lIiA6ICJNSEZfQ2FrZSIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9lYzI0MWE1OTdjMjg1ZTEwNGMyNzExOTZkNzg1ZGI0Y2QwMTEwYTQwYzhmOGU1ZDM1NGM1NjQ0MTU5NTY3YzlkIgogICAgfQogIH0KfQ=="); // MHF_Cake's skin
 		skullMeta.setDisplayName(Messages.EASTER_EGG_ANNIVERSARY_NAME);
 		ArrayList<String> lore = new ArrayList<String>();
 		lore.add(Messages.EASTER_EGG_ANNIVERSARY_LORE_2);
