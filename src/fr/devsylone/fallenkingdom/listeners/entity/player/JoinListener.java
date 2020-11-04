@@ -1,5 +1,7 @@
 package fr.devsylone.fallenkingdom.listeners.entity.player;
 
+import java.time.LocalDate;
+import java.time.Month;
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fallenkingdom.players.FkPlayer.PlayerState;
@@ -11,6 +13,9 @@ import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent.Result;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.Material;
+import org.bukkit.inventory.meta.SkullMeta;
 
 public class JoinListener implements Listener
 {
@@ -50,7 +55,11 @@ public class JoinListener implements Listener
 
 		if(player.getState() == PlayerState.EDITING_SCOREBOARD)
 			player.getSbDisplayer().display();
+			
+		LocalDate currentDate = LocalDate.now();
 
+		if(Fk.getInstance().getGame().getState().equals(GameState.BEFORE_STARTING) && (currentDate.getDayOfMonth() == 12) && (currentDate.getMonth() == Month.JUNE))
+			player.setHelmet(head());
 	}
 
 	@EventHandler
@@ -72,5 +81,20 @@ public class JoinListener implements Listener
 				+ "\n"
 				+ "§6Le plugin a rencontré une erreur\n\n"
 				+ "§7Erreur : §c" + Fk.getInstance().getPluginError();
+	}
+	
+	private ItemStack head()
+	{
+		LocalDate currentDate = LocalDate.now();
+
+		ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+		SkullMeta meta = (SkullMeta) skull.getItemMeta();
+		meta.setDisplayName(Messages.EASTER_EGG_ANNIVERSARY_NAME);
+		ArrayList<String> lore = new ArrayList<String>();
+		lore.add(Messages.EASTER_EGG_ANNIVERSARY_LORE_1);
+		lore.add(Messages.EASTER_EGG_ANNIVERSARY_LORE_2.replace("%age%", currentDate.getYear() - 2016)));
+		meta.setLore(lore);
+		meta.setOwner("MHF_Cake");
+		return skull.setItemMeta(meta);
 	}
 }
