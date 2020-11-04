@@ -241,6 +241,7 @@ public enum Messages
     EASTER_EGG_ANNIVERSARY_NAME("easter-egg.anniversary-name"),
     EASTER_EGG_ANNIVERSARY_LORE_1("easter-egg.anniversary-lore-1"),
     EASTER_EGG_ANNIVERSARY_LORE_2("easter-egg.anniversary-lore-2"),
+    EASTER_EGG_ANNIVERSARY_LORE_3("easter-egg.anniversary-lore-3"),
 
     INVENTORY_POTION_DISABLE("inv.potion.disable"),
     INVENTORY_POTION_DISABLE_CLICK("inv.potion.disable-click"),
