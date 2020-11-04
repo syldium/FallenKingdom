@@ -14,9 +14,8 @@ import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent.Result;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.Material;
-import org.bukkit.inventory.meta.SkullMeta;
+import com.cryptomorin.xseries.SkullUtils;
+import com.cryptomorin.xseries.XMaterial;
 
 public class JoinListener implements Listener
 {
@@ -88,14 +87,13 @@ public class JoinListener implements Listener
 	{
 		LocalDate currentDate = LocalDate.now();
 
-		ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
-		SkullMeta meta = (SkullMeta) skull.getItemMeta();
-		meta.setDisplayName(Messages.EASTER_EGG_ANNIVERSARY_NAME);
-		List<String> lore = new ArrayList<String>();
+		ItemStack skull = new ItemStack(XMaterial.PLAYER_HEAD.parseItem());
+		SkullMeta skullMeta = SkullUtils.applySkin(skull.getItemMeta(), "MHF_Cake");
+		skullMeta.setDisplayName(Messages.EASTER_EGG_ANNIVERSARY_NAME);
+		ArrayList<String> lore = new ArrayList<String>();
 		lore.add(Messages.EASTER_EGG_ANNIVERSARY_LORE_1);
 		lore.add(Messages.EASTER_EGG_ANNIVERSARY_LORE_2.replace("%age%", currentDate.getYear() - 2016)));
-		meta.setLore(lore);
-		meta.setOwner("MHF_Cake");
-		return skull.setItemMeta(meta);
+		skullMeta.setLore(lore);
+		return skull.setItemMeta(skullMeta);
 	}
 }
