@@ -63,7 +63,7 @@ public class JoinListener implements Listener
 		LocalDate currentDate = LocalDate.now();
 
 		if(Fk.getInstance().getGame().getState().equals(GameState.BEFORE_STARTING) && e.getPlayer().getInventory().getHelmet() == null && (currentDate.getDayOfMonth() == 12) && (currentDate.getMonth() == Month.JUNE))
-			e.getPlayer().setHelmet(head());
+			e.getPlayer().getInventory().setHelmet(head());
 	}
 
 	@EventHandler
