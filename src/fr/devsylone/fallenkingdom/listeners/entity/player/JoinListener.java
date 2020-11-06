@@ -2,6 +2,7 @@ package fr.devsylone.fallenkingdom.listeners.entity.player;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.ArrayList;
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fallenkingdom.players.FkPlayer.PlayerState;
@@ -15,6 +16,7 @@ import org.bukkit.event.player.AsyncPlayerPreLoginEvent.Result;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.SkullMeta;
 import com.cryptomorin.xseries.SkullUtils;
 import com.cryptomorin.xseries.XMaterial;
 
@@ -59,7 +61,7 @@ public class JoinListener implements Listener
 			
 		LocalDate currentDate = LocalDate.now();
 
-		if(Fk.getInstance().getGame().getState().equals(GameState.BEFORE_STARTING) && player.getInventory().getHelmet() == null && (currentDate.getDayOfMonth() == 12) && (currentDate.getMonth() == Month.JUNE))
+		if(Fk.getInstance().getGame().getState().equals(GameState.BEFORE_STARTING) && e.getPlayer().getInventory().getHelmet() == null && (currentDate.getDayOfMonth() == 12) && (currentDate.getMonth() == Month.JUNE))
 			player.setHelmet(head());
 	}
 
@@ -90,10 +92,11 @@ public class JoinListener implements Listener
 
 		ItemStack skull = new ItemStack(XMaterial.PLAYER_HEAD.parseItem());
 		SkullMeta skullMeta = SkullUtils.applySkin(skull.getItemMeta(), "ewogICJ0aW1lc3RhbXAiIDogMTYwNDUxNzcwODc5OSwKICAicHJvZmlsZUlkIiA6ICJhZmI0ODljNDlmYzg0OGE0OThmMmRkN2JlYTQxNGM5YSIsCiAgInByb2ZpbGVOYW1lIiA6ICJNSEZfQ2FrZSIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9lYzI0MWE1OTdjMjg1ZTEwNGMyNzExOTZkNzg1ZGI0Y2QwMTEwYTQwYzhmOGU1ZDM1NGM1NjQ0MTU5NTY3YzlkIgogICAgfQogIH0KfQ=="); // MHF_Cake's skin
-		skullMeta.setDisplayName(Messages.EASTER_EGG_ANNIVERSARY_NAME);
+		skullMeta.setDisplayName(Messages.EASTER_EGG_ANNIVERSARY_NAME.getMessage());
 		ArrayList<String> lore = new ArrayList<String>();
-		lore.add(Messages.EASTER_EGG_ANNIVERSARY_LORE_2);
-		lore.add(Messages.EASTER_EGG_ANNIVERSARY_LORE_3.replace("%age%", currentDate.getYear() - 2016));
+		lore.add(Messages.EASTER_EGG_ANNIVERSARY_LORE_1.getMessage());
+		lore.add(Messages.EASTER_EGG_ANNIVERSARY_LORE_2.getMessage());
+		lore.add(Messages.EASTER_EGG_ANNIVERSARY_LORE_3.getMessage().replace("%age%", currentDate.getYear() - 2016));
 		skullMeta.setLore(lore);
 		return skull.setItemMeta(skullMeta);
 	}
