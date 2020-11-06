@@ -17,6 +17,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.inventory.PlayerInventory;
 import com.cryptomorin.xseries.SkullUtils;
 import com.cryptomorin.xseries.XMaterial;
 
@@ -96,8 +97,9 @@ public class JoinListener implements Listener
 		ArrayList<String> lore = new ArrayList<String>();
 		lore.add(Messages.EASTER_EGG_ANNIVERSARY_LORE_1.getMessage());
 		lore.add(Messages.EASTER_EGG_ANNIVERSARY_LORE_2.getMessage());
-		lore.add(Messages.EASTER_EGG_ANNIVERSARY_LORE_3.getMessage().replace("%age%", currentDate.getYear() - 2016));
+		lore.add(Messages.EASTER_EGG_ANNIVERSARY_LORE_3.getMessage().replace("%age%", Integer.toString(currentDate.getYear() - 2016)));
 		skullMeta.setLore(lore);
-		return skull.setItemMeta(skullMeta);
+		skull.setItemMeta(skullMeta);
+		return skull;
 	}
 }
