@@ -92,7 +92,7 @@ public class JoinListener implements Listener
 		skullMeta.setDisplayName(Messages.EASTER_EGG_ANNIVERSARY_NAME);
 		ArrayList<String> lore = new ArrayList<String>();
 		lore.add(Messages.EASTER_EGG_ANNIVERSARY_LORE_2);
-		lore.add(Messages.EASTER_EGG_ANNIVERSARY_LORE_3.replace("%age%", currentDate.getYear() - 2016)));
+		lore.add(Messages.EASTER_EGG_ANNIVERSARY_LORE_3.replace("%age%", currentDate.getYear() - 2016));
 		skullMeta.setLore(lore);
 		return skull.setItemMeta(skullMeta);
 	}
