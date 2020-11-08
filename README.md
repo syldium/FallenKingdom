@@ -17,7 +17,7 @@ Le wiki est encore en cours d'écriture, mais n'hésitez pas à jeter un coup d'
 
 ## Compiler avec Maven/Artifacts
 Utiliser `mvn clean install` pour créer un JAR prêt à l'emploi.
-Si vous utilisez les *artifacts*, il est nécessaire d'inclure le JAR extrait de XSeries. Pour ce faire, aller dans **Project Structure** → **Artifacts** et depuis **Available Elements**, choisir **FallenKingdom** puis *com.github.cryptomorin.XSeries* → clic droit → **Extract Into Output Root**.
+Si vous utilisez les *artifacts*, il peut être nécessaire d'inclure certaines dépendances. Pour ce faire, aller dans **Project Structure** → **Artifacts** et depuis **Available Elements**, choisir **FallenKingdom** et sélectionner les éléments non trouvés (**Extract Into Output Root**).
 
 ## Signaler un bug
 Si vous rencontrez un problème, [rendez-vous sur le discord](https://discord.gg/2mPXHYX) !

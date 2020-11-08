@@ -22,8 +22,13 @@
 package fr.devsylone.fallenkingdom.utils;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
@@ -62,31 +67,28 @@ import com.cryptomorin.xseries.XMaterial;
 public final class XBlock {
     private static final boolean ISFLAT = XMaterial.isNewVersion();
 
-    public static final EnumSet<XMaterial> REPLACEABLE = EnumSet.of(
+    public static final Set<Material> REPLACEABLE = materialSet(
             XMaterial.DANDELION, XMaterial.POPPY, XMaterial.BLUE_ORCHID, XMaterial.ALLIUM, XMaterial.AZURE_BLUET, XMaterial.RED_TULIP,
             XMaterial.ORANGE_TULIP, XMaterial.WHITE_TULIP, XMaterial.PINK_TULIP, XMaterial.OXEYE_DAISY, XMaterial.CORNFLOWER,
             XMaterial.LILY_OF_THE_VALLEY, XMaterial.WITHER_ROSE, XMaterial.SUNFLOWER, XMaterial.LILAC, XMaterial.ROSE_BUSH,
             XMaterial.PEONY, XMaterial.TALL_GRASS, XMaterial.LARGE_FERN, XMaterial.FERN, XMaterial.DEAD_BUSH,
             XMaterial.OAK_FENCE, XMaterial.AIR
     );
-    public static final EnumSet<Material> BLOCKS_IN_CAVES = EnumSet.of(
-            Material.STONE, XMaterial.GRANITE.parseMaterial(), XMaterial.DIORITE.parseMaterial(), XMaterial.ANDESITE.parseMaterial()
+    public static final Set<Material> BLOCKS_IN_CAVES = materialSet(
+            XMaterial.STONE, XMaterial.GRANITE, XMaterial.DIORITE, XMaterial.ANDESITE
     );
-    public static final EnumSet<Material> CONTAINERS = EnumSet.of(
-            Material.CHEST, XMaterial.BARREL.parseMaterial(true)
+    public static final Set<Material> CONTAINERS = materialSet(
+            XMaterial.CHEST, XMaterial.BARREL
     );
-    private static final Material GRASS = ISFLAT ? Material.getMaterial("GRASS") : Material.getMaterial("TALLGRASS");
 
     public static boolean isReplaceable(Block block) {
-        if (ISFLAT) {
-            return block.isPassable();
-        }
-        return REPLACEABLE.contains(XMaterial.matchXMaterial(block.getType())) || block.getType() == GRASS;
+        if (ISFLAT) return block.isPassable();
+        return REPLACEABLE.contains(block.getType());
     }
 
     public static boolean isBlockInCave(Material material) {
-        if (!ISFLAT) return material.equals(Material.STONE);
-        return BLOCKS_IN_CAVES.contains(material);
+        if (ISFLAT) return BLOCKS_IN_CAVES.contains(material);
+        return material == Material.STONE;
     }
 
     public static boolean canBePartOfChestRoom(Material material) {
@@ -159,5 +161,16 @@ public final class XBlock {
             }
         }
         return null;
+    }
+
+    public static Set<Material> materialSet(XMaterial... materials) {
+        return materialSet(Arrays.stream(materials));
+    }
+
+    private static Set<Material> materialSet(Stream<XMaterial> stream) {
+        return stream
+                .map(XMaterial::parseMaterial)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toCollection(() -> EnumSet.noneOf(Material.class)));
     }
 }

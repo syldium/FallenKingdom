@@ -9,31 +9,21 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Cherche un endroit sûr pour téléporter.
  */
 public class SafeLocationSearcher {
 
-    private static final Set<Material> DAMAGING_TYPES;
-
-    static {
-        DAMAGING_TYPES = Stream.of(
-                XMaterial.CACTUS, XMaterial.CAMPFIRE, XMaterial.FIRE, XMaterial.MAGMA_BLOCK, XMaterial.SOUL_CAMPFIRE, XMaterial.SOUL_FIRE, XMaterial.SWEET_BERRY_BUSH, XMaterial.WITHER_ROSE
-        )
-                .map(XMaterial::parseMaterial)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toCollection(() -> EnumSet.noneOf(Material.class)));
-    }
+    private static final Set<Material> DAMAGING_TYPES = XBlock.materialSet(
+            XMaterial.CACTUS, XMaterial.CAMPFIRE, XMaterial.FIRE, XMaterial.MAGMA_BLOCK, XMaterial.SOUL_CAMPFIRE, XMaterial.SOUL_FIRE, XMaterial.SWEET_BERRY_BUSH, XMaterial.WITHER_ROSE
+    );
 
     private final Location around;
 
