@@ -114,7 +114,7 @@ public class ChestLock extends FkPlayerCommand implements Listener {
             }
             String root = advancement.getKey().toString().substring(0, index);
 
-            if (root.equals("minecraft:recipes")) {
+            if (root.startsWith("minecraft:recipes")) {
                 continue;
             }
 
