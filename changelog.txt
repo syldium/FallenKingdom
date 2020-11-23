@@ -393,3 +393,15 @@ RETRAIT      = [-]
 [*] Fix d'une exception avec les couleurs pour les versions 1.8.7 et moins
 [*] Fix d'une NPE lorsque l'api Spigot cohabite avec celle de Forge
 [*] Sécurité supplémentaire lorsque la ligne du scoreboard fait plus de 30 caractères (1.12-)
+
+      >> 2.20.2
+[+] Support des versions 1.16.2, 1.16.3 et 1.16.4
+[+] Règle captureRate : pourcentage de joueurs d'une équipe pour une capture
+[+] Règle globalChatPrefix : définit le caractère du chat global ou désactive le chat d'équipe
+[+] /fk team tp [team] pour se téléporter à la base d'une équipe
+[+] Easter egg à l'anniversaire du plugin
+[*] Détection améliorée pour la règle respawnAtHome
+[*] Les flèches à effets sont bloquées comme les lancers de potions (selon la règle disabledPotions)
+[*] Les advancements de type "recipes" n'apparaissent plus dans /fk chests lock
+[*] La liste des commandes issues de help tiennent compte de la désactivation des permissions
+[*] API : De nombreuses méthodes utilisent désormais des UUIDs plutôt que des String
