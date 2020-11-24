@@ -78,14 +78,16 @@ public class SafeLocationSearcher {
 
         Environment.getChunkAtAsync(around.getWorld(), chunkPos.x, chunkPos.z).thenApply(chunk -> {
             for (Block2DPos pos : positions) {
-                Location loc = getSafeDestination(chunk, pos.x, pos.z, base.getBlockY() + 3 + radius, base.getBlockY() - 2 - radius);
+                int upY = Math.min(base.getBlockY() + 3 + radius, 255);
+                int downY = Math.max(base.getBlockY() - 2 - radius, 0);
+                Location loc = getSafeDestination(chunk, pos.x, pos.z, upY, downY);
                 if (loc != null) {
                     future.complete(loc);
                     return true;
                 }
             }
             return false;
-        });
+        }).exceptionally(future::completeExceptionally);
     }
 
     private Location getSafeDestination(Chunk chunk, int x, int z, int upY, int downY) {

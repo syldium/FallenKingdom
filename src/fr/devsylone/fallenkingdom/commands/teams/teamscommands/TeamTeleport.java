@@ -36,8 +36,11 @@ public class TeamTeleport extends FkPlayerCommand {
         new SafeLocationSearcher(base.getCenter())
                 .find(Math.min(base.getRadius(), 8))
                 .thenApply(loc -> entity.teleport(loc, cause))
-                .exceptionally(ex -> {
-                    ChatUtils.sendMessage(entity, ex.getCause().getMessage());
+                .exceptionally(throwable -> {
+                    ChatUtils.sendMessage(entity, Messages.PLAYER_BASE_OBSTRUCTED);
+                    if (!(throwable.getCause() instanceof SafeLocationSearcher.LocationNotFound)) {
+                        throwable.getCause().printStackTrace();
+                    }
                     return true;
                 });
     }
