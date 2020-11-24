@@ -12,7 +12,7 @@ public class IntegerArgument extends Argument<Integer> {
     }
 
     public IntegerArgument(String name, boolean required, String description, int minimum) {
-        this(name, required, description, 0, Integer.MAX_VALUE);
+        this(name, required, description, minimum, Integer.MAX_VALUE);
     }
 
     public int getMinimum() {

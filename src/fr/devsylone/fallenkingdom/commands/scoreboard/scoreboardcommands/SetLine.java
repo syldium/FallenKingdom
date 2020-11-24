@@ -5,7 +5,7 @@ import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
 import fr.devsylone.fallenkingdom.utils.Messages;
-import fr.devsylone.fallenkingdom.utils.Version;
+import fr.devsylone.fallenkingdom.version.Version;
 import org.bukkit.command.CommandSender;
 
 import fr.devsylone.fallenkingdom.Fk;
@@ -18,7 +18,7 @@ public class SetLine extends FkCommand
 {
 	public SetLine()
 	{
-		super("setLine", "<i1;15:number> <text>", Messages.CMD_MAP_SCOREBOARD_SET_LINE, CommandPermission.ADMIN);
+		super("setLine", "<i0;14:number> <text>", Messages.CMD_MAP_SCOREBOARD_SET_LINE, CommandPermission.ADMIN);
 	}
 
 	@Override

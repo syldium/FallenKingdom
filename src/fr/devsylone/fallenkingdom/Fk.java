@@ -10,22 +10,26 @@ import java.util.List;
 import java.util.Objects;
 import java.util.zip.ZipOutputStream;
 
-import fr.devsylone.fallenkingdom.commands.FkAsyncCommandExecutor;
-import fr.devsylone.fallenkingdom.commands.FkAsyncRegisteredCommandExecutor;
-import fr.devsylone.fallenkingdom.commands.brigadier.BrigadierSpigotManager;
-import fr.devsylone.fallenkingdom.manager.*;
-import fr.devsylone.fallenkingdom.scoreboard.PlaceHolderExpansion;
-import fr.devsylone.fkpi.rules.Rule;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.command.PluginCommand;
-import org.bukkit.entity.Player;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.java.JavaPluginLoader;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import fr.devsylone.fallenkingdom.commands.FkAsyncCommandExecutor;
+import fr.devsylone.fallenkingdom.commands.FkAsyncRegisteredCommandExecutor;
 import fr.devsylone.fallenkingdom.commands.FkCommandExecutor;
+import fr.devsylone.fallenkingdom.commands.brigadier.BrigadierSpigotManager;
 import fr.devsylone.fallenkingdom.game.Game;
+import fr.devsylone.fallenkingdom.manager.CommandManager;
+import fr.devsylone.fallenkingdom.manager.LanguageManager;
+import fr.devsylone.fallenkingdom.manager.ListenersManager;
+import fr.devsylone.fallenkingdom.manager.SaveablesManager;
+import fr.devsylone.fallenkingdom.manager.TipsManager;
+import fr.devsylone.fallenkingdom.manager.WorldManager;
 import fr.devsylone.fallenkingdom.manager.packets.PacketManager;
 import fr.devsylone.fallenkingdom.manager.packets.PacketManager1_13;
 import fr.devsylone.fallenkingdom.manager.packets.PacketManager1_14;
@@ -39,49 +43,56 @@ import fr.devsylone.fallenkingdom.manager.saveable.ScoreboardManager;
 import fr.devsylone.fallenkingdom.manager.saveable.StarterInventoryManager;
 import fr.devsylone.fallenkingdom.pause.PauseRestorer;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
+import fr.devsylone.fallenkingdom.scoreboard.PlaceHolderExpansion;
 import fr.devsylone.fallenkingdom.updater.PluginUpdater;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fallenkingdom.utils.DebuggerUtils;
 import fr.devsylone.fallenkingdom.utils.FkSound;
-import fr.devsylone.fallenkingdom.utils.Version;
+import fr.devsylone.fallenkingdom.version.Version;
 import fr.devsylone.fallenkingdom.utils.ZipUtils;
 import fr.devsylone.fkpi.FkPI;
+import fr.devsylone.fkpi.rules.Rule;
 import fr.devsylone.fkpi.teams.Team;
+import lombok.Getter;
 
+@Getter
 public class Fk extends JavaPlugin
 {
-	private static boolean DEBUG_MODE;
+	@Getter
+	private static boolean debugMode;
 
-	private Game game;
-	private CommandManager cmdManager;
-	private PlayerManager pManager;
-	private WorldManager wManager;
-	private PauseRestorer pRestorer;
-	private StarterInventoryManager siManager;
-	private ScoreboardManager sbManager;
-	private PacketManager pcktManager;
-	private DeepPauseManager dpManager;
-	private TipsManager tipsManager;
-	private SaveablesManager saveableManager;
-	private PortalsManager portalManager;
+	protected Game game;
+	protected CommandManager commandManager;
+	protected PlayerManager playerManager;
+	protected WorldManager worldManager;
+	protected PauseRestorer pauseRestorer;
+	protected StarterInventoryManager starterInventoryManager;
+	protected ScoreboardManager scoreboardManager;
+	protected PacketManager packetManager;
+	protected DeepPauseManager deepPauseManager;
+	protected TipsManager tipsManager;
+	protected SaveablesManager saveableManager;
+	protected PortalsManager portalsManager;
+	protected LanguageManager languageManager;
 
-	private static Fk instance;
+	@Getter
+	protected static Fk instance;
 
-	private FkPI fkpi;
+	protected FkPI fkPI;
 
 	private final List<String> onConnectWarnings = new ArrayList<>();
 	private String pluginError = "";
 
-	private String lastVersion = getDescription().getVersion();
-
-	public static Fk getInstance()
-	{
-		return instance;
-	}
+	private String previousVersion = getDescription().getVersion();
 
 	public Fk()
 	{
 		instance = this;
+	}
+
+	// Test only
+	public Fk(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
+		super(loader, description, dataFolder, file);
 	}
 
 	@Override
@@ -92,8 +103,8 @@ public class Fk extends JavaPlugin
 			/*
 			 * Mode debug
 			 */
-			DEBUG_MODE = DebuggerUtils.getServerFolderName().endsWith("-debug") || new File(getDataFolder(), "debug").exists();
-			if(DEBUG_MODE)
+			debugMode = DebuggerUtils.getServerFolderName().endsWith("-debug") || new File(getDataFolder(), "debug").exists();
+			if(debugMode)
 			{
 				debug("##########################");
 				debug("STARTED IN DEBUG MODE");
@@ -101,7 +112,7 @@ public class Fk extends JavaPlugin
 			}
 		}catch(Exception e)
 		{
-			DEBUG_MODE = false;
+			debugMode = false;
 		}
 
 		/*
@@ -115,13 +126,14 @@ public class Fk extends JavaPlugin
 		if (!check())
 			return;
 
-		LanguageManager.init(this);
+		languageManager = new LanguageManager();
+		languageManager.init(this);
 
 		/*
 		 * FkPI
 		 */
 
-		fkpi = new FkPI();
+		fkPI = new FkPI();
 
 		/*
 		 * command /fk
@@ -130,28 +142,28 @@ public class Fk extends JavaPlugin
 		PluginCommand command = Objects.requireNonNull(getCommand("fk"), "Unable to register /fk command");
 		if (Version.isAsyncTabCompleteSupported())
 			if (Version.isAsyncPlayerSendCommandsEventSupported())
-				this.cmdManager = new FkAsyncRegisteredCommandExecutor(this, command);
+				this.commandManager = new FkAsyncRegisteredCommandExecutor(this, command);
 			else
-				this.cmdManager = new FkAsyncCommandExecutor(this, command);
+				this.commandManager = new FkAsyncCommandExecutor(this, command);
 		else
-			this.cmdManager = new FkCommandExecutor(this, command);
+			this.commandManager = new FkCommandExecutor(this, command);
 
 		if (Version.isBrigadierSupported() && !Version.isAsyncPlayerSendCommandsEventSupported())
-			new BrigadierSpigotManager<>(this).register(this.cmdManager, command);
+			new BrigadierSpigotManager<>(this).register(this.commandManager, command);
 
 		/*
 		 * MANAGER
 		 */
-		pManager = new PlayerManager();
-		pRestorer = new PauseRestorer();
-		siManager = new StarterInventoryManager();
-		sbManager = new ScoreboardManager();
-		wManager = new WorldManager(this);
-		pcktManager = initPacketManager();
-		dpManager = new DeepPauseManager();
+		playerManager = new PlayerManager();
+		pauseRestorer = new PauseRestorer();
+		starterInventoryManager = new StarterInventoryManager();
+		scoreboardManager = new ScoreboardManager();
+		worldManager = new WorldManager(this);
+		packetManager = initPacketManager();
+		deepPauseManager = new DeepPauseManager();
 		tipsManager = new TipsManager();
 		tipsManager.startBroadcasts();
-		portalManager = new PortalsManager();
+		portalsManager = new PortalsManager();
 
 		game = new Game();
 
@@ -164,7 +176,7 @@ public class Fk extends JavaPlugin
 		if(!saveableManager.getFileConfiguration("save.yml").contains("last_version"))
 			saveableManager.getFileConfiguration("save.yml").set("last_version", "2.5.0");
 
-		lastVersion = saveableManager.getFileConfiguration("save.yml").getString("last_version");
+		previousVersion = saveableManager.getFileConfiguration("save.yml").getString("last_version");
 
 		try
 		{
@@ -206,15 +218,9 @@ public class Fk extends JavaPlugin
 			new PlaceHolderExpansion().register();
 
 		/*
-		 * Set le sb a tout le monde si jamais rl
-		 */
-		for(Player p : Bukkit.getOnlinePlayers())
-			pManager.registerNewPlayer(pManager.getPlayer(p));
-
-		/*
 		 * IF EternalDay
 		 */
-		if(fkpi.getRulesManager().getRulesList().containsKey(Rule.ETERNAL_DAY) && fkpi.getRulesManager().getRule(Rule.ETERNAL_DAY))
+		if(fkPI.getRulesManager().getRulesList().containsKey(Rule.ETERNAL_DAY) && fkPI.getRulesManager().getRule(Rule.ETERNAL_DAY))
 			for(World w : Bukkit.getWorlds())
 			{
 				if(!Fk.getInstance().getWorldManager().isAffected(w))
@@ -236,8 +242,8 @@ public class Fk extends JavaPlugin
 		 * Updater
 		 */
 
-        PluginUpdater updater = new PluginUpdater(Fk.getInstance());
-        updater.runTaskAsynchronously(this);
+		PluginUpdater updater = new PluginUpdater(Fk.getInstance());
+		updater.runTaskAsynchronously(this);
 
 
 		new BukkitRunnable() {
@@ -259,75 +265,10 @@ public class Fk extends JavaPlugin
 			getDeepPauseManager().resetAIs();
 		}
 
-		sbManager.removeAllScoreboards();
+		scoreboardManager.removeAllScoreboards();
 
 		for(FkPlayer p : getPlayerManager().getConnectedPlayers())
 			p.getScoreboard().remove();
-	}
-
-	public static boolean isDebug()
-	{
-		return DEBUG_MODE;
-	}
-
-	public CommandManager getCommandManager()
-	{
-		return cmdManager;
-	}
-
-	public PlayerManager getPlayerManager()
-	{
-		return pManager;
-	}
-
-	public WorldManager getWorldManager()
-	{
-		return wManager;
-	}
-
-	public ScoreboardManager getScoreboardManager()
-	{
-		return sbManager;
-	}
-
-	public PacketManager getPacketManager()
-	{
-		return pcktManager;
-	}
-
-	public PauseRestorer getPauseRestorer()
-	{
-		return pRestorer;
-	}
-
-	public DeepPauseManager getDeepPauseManager()
-	{
-		return dpManager;
-	}
-
-	public StarterInventoryManager getStarterInventoryManager()
-	{
-		return siManager;
-	}
-
-	public TipsManager getTipsManager()
-	{
-		return tipsManager;
-	}
-
-	public SaveablesManager getSaveableManager()
-	{
-		return saveableManager;
-	}
-
-	public PortalsManager getPortalsManager()
-	{
-		return portalManager;
-	}
-
-	public String getPreviousVersion()
-	{
-		return lastVersion;
 	}
 
 	public static void broadcast(String message, String prefix, FkSound sound)
@@ -357,7 +298,7 @@ public class Fk extends JavaPlugin
 
 	public static void debug(Object message)
 	{
-		if(DEBUG_MODE)
+		if(debugMode)
 		{
 			if(!Fk.getInstance().isEnabled())
 				Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), () -> Bukkit.broadcastMessage(ChatUtils.DEBUG + (message == null ? "null" : message.toString())));
@@ -367,48 +308,33 @@ public class Fk extends JavaPlugin
 
 	}
 
-	public Game getGame()
-	{
-		return game;
-	}
-
-	public List<String> getOnConnectWarnings()
-	{
-		return onConnectWarnings;
-	}
-
 	public void addError(String s)
 	{
 		pluginError = s;
 	}
 
-	public String getError()
-	{
-		return pluginError;
-	}
-
 	public void reset()
 	{
 		Bukkit.getScheduler().cancelTasks(instance);
-		fkpi.reset();
+		fkPI.reset();
 		game = new Game();
 
 		for(FkPlayer p : getPlayerManager().getConnectedPlayers())
 			p.getScoreboard().remove();
 
-		pManager = new PlayerManager();
-		portalManager = new PortalsManager();
-		dpManager.unprotectItems();
-		dpManager.resetAIs();
+		playerManager = new PlayerManager();
+		portalsManager = new PortalsManager();
+		deepPauseManager.unprotectItems();
+		deepPauseManager.resetAIs();
 
 		// Reset saveFile & Restorer
 
 		saveableManager.reset();
 
-		pRestorer = new PauseRestorer();
+		pauseRestorer = new PauseRestorer();
 
 		// Scoreboards
-		sbManager = new ScoreboardManager(); //Le recréer pour le réinitialiser
+		scoreboardManager = new ScoreboardManager(); //Le recréer pour le réinitialiser
 
 		getScoreboardManager().recreateAllScoreboards();
 
@@ -423,8 +349,8 @@ public class Fk extends JavaPlugin
 		tipsManager.startBroadcasts();
 
 		game.stop();
-		dpManager.resetAIs();
-		dpManager.unprotectItems();
+		deepPauseManager.resetAIs();
+		deepPauseManager.unprotectItems();
 
 		for(FkPlayer p : getPlayerManager().getConnectedPlayers())
 		{
@@ -432,7 +358,7 @@ public class Fk extends JavaPlugin
 			p.clearKills();
 		}
 
-		for(Team team : fkpi.getTeamManager().getTeams())
+		for(Team team : fkPI.getTeamManager().getTeams())
 		{
 			if(team.getBase() != null)
 				team.getBase().resetChestoom();
@@ -481,16 +407,11 @@ public class Fk extends JavaPlugin
 		}
 	}
 
-	public FkPI getFkPI()
-	{
-		return fkpi;
-	}
-
 	private void metrics() throws NoClassDefFoundError // gson en 1.8.0
 	{
 		Metrics metrics = new Metrics(this, 6738);
 		metrics.addCustomChart(new Metrics.SingleLineChart("server_running_1-8_version", () -> Bukkit.getVersion().contains("1.8") ? 1 : 0));
-		metrics.addCustomChart(new Metrics.SimplePie("lang_used", LanguageManager::getLocalePrefix));
+		metrics.addCustomChart(new Metrics.SimplePie("lang_used", languageManager::getLocalePrefix));
 	}
 
 	public void addOnConnectWarning(String warning)

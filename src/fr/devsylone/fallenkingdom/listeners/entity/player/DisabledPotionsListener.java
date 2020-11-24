@@ -1,14 +1,20 @@
 package fr.devsylone.fallenkingdom.listeners.entity.player;
 
-import java.lang.reflect.Method;
-import java.util.Arrays;
-
+import com.cryptomorin.xseries.XMaterial;
 import fr.devsylone.fallenkingdom.Fk;
+import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fallenkingdom.utils.Messages;
+import fr.devsylone.fallenkingdom.utils.PotionUtils;
+import fr.devsylone.fallenkingdom.version.Version;
+import fr.devsylone.fkpi.FkPI;
+import fr.devsylone.fkpi.rules.DisabledPotions;
 import fr.devsylone.fkpi.rules.Rule;
+import fr.devsylone.fkpi.util.XPotionData;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Projectile;
 import org.bukkit.entity.ThrownPotion;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -23,13 +29,7 @@ import org.bukkit.inventory.BrewerInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 
-import com.cryptomorin.xseries.XMaterial;
-
-import fr.devsylone.fallenkingdom.utils.ChatUtils;
-import fr.devsylone.fallenkingdom.utils.NMSUtils;
-import fr.devsylone.fallenkingdom.utils.Utils;
-import fr.devsylone.fkpi.FkPI;
-import fr.devsylone.fkpi.util.XPotionData;
+import java.util.Arrays;
 
 public class DisabledPotionsListener implements Listener
 {
@@ -103,43 +103,13 @@ public class DisabledPotionsListener implements Listener
 		if(ingredient == null || Arrays.equals(potions, new ItemStack[]{null, null, null}))
 			return false;
 
-		if(Bukkit.getVersion().contains("1.8"))
-			try
-			{
-				Class<?> tileEntityStandClass = NMSUtils.nmsClass("TileEntityBrewingStand");
-				Object fakeTileEntityStand = tileEntityStandClass.getDeclaredConstructor().newInstance();
-				for(int i = 0; i < potions.length; i++)
-					if(potions[i] != null)
-						tileEntityStandClass.getDeclaredMethod("setItem", int.class, NMSUtils.nmsClass("ItemStack")).invoke(fakeTileEntityStand, i, NMSUtils.obcClass("inventory.CraftItemStack").getDeclaredMethod("asNMSCopy", ItemStack.class).invoke(null, potions[i]));
-				tileEntityStandClass.getDeclaredMethod("setItem", int.class, NMSUtils.nmsClass("ItemStack")).invoke(fakeTileEntityStand, 3, NMSUtils.obcClass("inventory.CraftItemStack").getDeclaredMethod("asNMSCopy", ItemStack.class).invoke(null, ingredient));
-
-				Method isBrewingRecipeMethod = tileEntityStandClass.getDeclaredMethod("n");
-				isBrewingRecipeMethod.setAccessible(true);
-				if(!(boolean) isBrewingRecipeMethod.invoke(fakeTileEntityStand))
-					return false;
-
-				Method emulateBrewingMethod = tileEntityStandClass.getDeclaredMethod("o");
-				emulateBrewingMethod.setAccessible(true);
-				emulateBrewingMethod.invoke(fakeTileEntityStand);
-				for(int i = 0; i < 3; i++) // items[3] = ingredient
-				{
-					ItemStack potion = (ItemStack) NMSUtils.obcClass("inventory.CraftItemStack").getDeclaredMethod("asCraftMirror", NMSUtils.nmsClass("ItemStack")).invoke(null, tileEntityStandClass.getDeclaredMethod("getItem", int.class).invoke(fakeTileEntityStand, i));
-					if(FkPI.getInstance().getRulesManager().getRule(Rule.DISABLED_POTIONS).isDisabled(XPotionData.fromItemStack(potion)))
-						return true;
-				}
-			}catch(Exception ex)
-			{
-				ex.printStackTrace();
+		DisabledPotions rule = FkPI.getInstance().getRulesManager().getRule(Rule.DISABLED_POTIONS);
+		for (ItemStack potion : PotionUtils.getBrewedPotions(potions, ingredient)) {
+			if (rule.isDisabled(XPotionData.fromItemStack(potion))) {
+				return true;
 			}
+		}
 
-		else
-			for(ItemStack potion : potions)
-				if(potion != null && (potion.getType() == XMaterial.POTION.parseMaterial() || potion.getType() == XMaterial.SPLASH_POTION.parseMaterial() || potion.getType() == XMaterial.LINGERING_POTION.parseMaterial()))
-				{
-					ItemStack predicatedResult = Utils.getPredicatedBrewedPotion(potion, ingredient);
-					if(predicatedResult.getItemMeta() instanceof PotionMeta && FkPI.getInstance().getRulesManager().getRule(Rule.DISABLED_POTIONS).isDisabled(XPotionData.fromItemStack(predicatedResult)))
-						return true;
-				}
 		return false;
 	}
 
@@ -156,11 +126,24 @@ public class DisabledPotionsListener implements Listener
 	@EventHandler
 	public void event(ProjectileLaunchEvent e)
 	{
-		if(e.getEntityType() == EntityType.SPLASH_POTION && FkPI.getInstance().getRulesManager().getRule(Rule.DISABLED_POTIONS).isDisabled(XPotionData.fromItemStack(((ThrownPotion) e.getEntity()).getItem())))
+		if(e.getEntityType() == EntityType.SPLASH_POTION || Version.VersionType.V1_9_V1_12.isHigherOrEqual() && e.getEntityType() == EntityType.ARROW)
 		{
-			e.setCancelled(true);
-			if(e.getEntity().getShooter() instanceof CommandSender)
-				ChatUtils.sendMessage((CommandSender) e.getEntity().getShooter(), Messages.PLAYER_DISABLED_POTION_CONSUME);
+			Projectile projectile = e.getEntity();
+			XPotionData potionData;
+			if(projectile instanceof ThrownPotion)
+				potionData = XPotionData.fromItemStack(((ThrownPotion) projectile).getItem());
+			else
+				potionData = XPotionData.fromPotionData(((Arrow) projectile).getBasePotionData());
+
+			if(FkPI.getInstance().getRulesManager().getRule(Rule.DISABLED_POTIONS).isDisabled(potionData))
+			{
+				if(projectile instanceof Arrow)
+					projectile.getWorld().spawnArrow(projectile.getLocation(), projectile.getVelocity(), (float) projectile.getVelocity().length(), 12f);
+				e.setCancelled(true);
+
+				if(e.getEntity().getShooter() instanceof CommandSender)
+					ChatUtils.sendMessage((CommandSender) e.getEntity().getShooter(), Messages.PLAYER_DISABLED_POTION_CONSUME);
+			}
 		}
 	}
 }

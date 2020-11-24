@@ -17,7 +17,6 @@ import com.cryptomorin.xseries.XMaterial;
 
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.game.Game.GameState;
-import fr.devsylone.fallenkingdom.manager.LanguageManager;
 import fr.devsylone.fkpi.util.Color;
 
 public class FilesUpdater
@@ -199,7 +198,7 @@ public class FilesUpdater
                 {
                     e.printStackTrace();
                 }
-                LanguageManager.init(Fk.getInstance());
+                Fk.getInstance().getLanguageManager().init(Fk.getInstance());
             }
         }
     }

@@ -31,6 +31,7 @@ public class Rule<T>
 
 	// Entiers
 	public static final Rule<Integer> DAY_DURATION = new Rule<>("DayDuration", 24000);
+	public static final Rule<Integer> CAPTURE_RATE = new Rule<>("CaptureRate", 100);
 
 	// Booléens
 	public static final Rule<Boolean> FRIENDLY_FIRE = new Rule<>("FriendlyFire", true);
@@ -41,6 +42,9 @@ public class Rule<T>
 	public static final Rule<Boolean> RESPAWN_AT_HOME = new Rule<>("RespawnAtHome", false);
 	public static final Rule<Boolean> HEALTH_BELOW_NAME = new Rule<>("HealthBelowName", true);
 	public static final Rule<Boolean> ENDERPEARL_ASSAULT = new Rule<>("EnderpearlAssault", true);
+
+	// Chars
+	public static final Rule<Character> GLOBAL_CHAT_PREFIX = new Rule<>("GlobalChatPrefix", '!');
 
 	// Valeurs complexes
 	public static final Rule<AllowedBlocks> ALLOWED_BLOCKS = new Rule<>("AllowedBlocks", new AllowedBlocks());

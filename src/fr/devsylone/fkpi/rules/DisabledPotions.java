@@ -1,7 +1,7 @@
 package fr.devsylone.fkpi.rules;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
@@ -15,9 +15,9 @@ import org.bukkit.potion.PotionType;
 
 public class DisabledPotions implements RuleValue
 {
-	private final List<XPotionData> effects = new ArrayList<>();
+	private final Set<XPotionData> effects = new HashSet<>();
 
-	public List<XPotionData> getValue()
+	public Set<XPotionData> getValue()
 	{
 		return effects;
 	}
@@ -29,26 +29,22 @@ public class DisabledPotions implements RuleValue
 
 	public boolean disablePotion(XPotionData potionData)
 	{
-		if(!isDisabled(potionData))
+		if(effects.add(potionData))
 		{
 			Bukkit.getPluginManager().callEvent(new RuleChangeEvent<>(Rule.DISABLED_POTIONS, this));
-			effects.add(potionData);
+			return true;
 		}
-		else
-			return false;
-		return true;
+		return false;
 	}
 
 	public boolean enablePotion(XPotionData potionData)
 	{
-		if(isDisabled(potionData))
+		if(effects.remove(potionData))
 		{
 			Bukkit.getPluginManager().callEvent(new RuleChangeEvent<>(Rule.DISABLED_POTIONS, this));
-			effects.remove(potionData);
+			return true;
 		}
-		else
-			return false;
-		return true;
+		return false;
 	}
 
 	@Override
@@ -74,11 +70,13 @@ public class DisabledPotions implements RuleValue
 	@Override
 	public void save(ConfigurationSection config)
 	{
-		for(int i = 0; i < effects.size(); i++)
+		int i = 0;
+		for(XPotionData potion : effects)
 		{
-			config.set(i + ".Type", effects.get(i).getType().name());
-			config.set(i + ".Extended", effects.get(i).isExtended());
-			config.set(i + ".Upgraded", effects.get(i).isUpgraded());
+			config.set(i + ".Type", potion.getType().name());
+			config.set(i + ".Extended", potion.isExtended());
+			config.set(i + ".Upgraded", potion.isUpgraded());
+			i++;
 		}
 	}
 

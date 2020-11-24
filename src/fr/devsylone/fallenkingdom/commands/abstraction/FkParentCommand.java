@@ -32,7 +32,7 @@ public abstract class FkParentCommand extends AbstractCommand
 		}
 		// Affiche la description
 		children.stream()
-				.filter(s -> s.hasPermission(sender))
+				.filter(s -> !plugin.getCommandManager().withPermissions() || s.hasPermission(sender))
 				.forEach(s -> sender.sendMessage(ChatColor.GREEN + "/" + label + " " + s.getFullUsage() + " " + ChatColor.GRAY + s.getDescription()));
 		return CommandResult.SUCCESS;
 	}

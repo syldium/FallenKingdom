@@ -26,7 +26,6 @@ public class Remove extends FkCommand
 		if(team == null)
 			throw new FkLightException(Messages.CMD_ERROR_UNKNOWN_TEAM.getMessage().replace("%team%", args.get(0)));
 
-		team.getPlayers().clear();
 		plugin.getFkPI().getTeamManager().removeTeam(args.get(0));
 		broadcast(Messages.CMD_TEAM_REMOVE.getMessage().replace("%team%", team.toString()),1, args);
 		plugin.getScoreboardManager().refreshAllScoreboards();

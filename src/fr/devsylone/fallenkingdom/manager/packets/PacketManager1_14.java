@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class PacketManager1_14 extends PacketManager1_13 {
@@ -54,10 +55,12 @@ public class PacketManager1_14 extends PacketManager1_13 {
     @Override
     protected int sendSpawn(Player p, Location loc)
     {
-        if(loc == null && p != null)
+        Objects.requireNonNull(p, "Unable to create an entity for an offline player.");
+
+        if(loc == null)
             loc = p.getLocation();
 
-        int id = lastid++;
+        int id = entityIdSupplier.get();
         playerById.put(id, p.getUniqueId());
         try
         {
@@ -75,7 +78,7 @@ public class PacketManager1_14 extends PacketManager1_13 {
             PacketUtils.setField("k", NMSUtils.getClass("EntityTypes").getDeclaredField("ARMOR_STAND").get(null), spawn);
             PacketUtils.setField("l", 0, spawn);
             PacketUtils.sendPacket(p, spawn);
-        }catch(Exception ex)
+        }catch(ReflectiveOperationException ex)
         {
             ex.printStackTrace();
         }

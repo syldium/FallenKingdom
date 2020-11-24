@@ -1,16 +1,15 @@
 package fr.devsylone.fkpi.managers;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-import com.google.common.base.Preconditions;
 import fr.devsylone.fkpi.api.event.RuleChangeEvent;
 import fr.devsylone.fkpi.rules.Rule;
 import fr.devsylone.fkpi.rules.RuleValue;
+import fr.devsylone.fkpi.util.Saveable;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 
-import fr.devsylone.fkpi.util.Saveable;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
 
 public class RulesManager implements Saveable
 {
@@ -24,8 +23,7 @@ public class RulesManager implements Saveable
 	@SuppressWarnings("unchecked")
 	public <T> T getRule(Rule<T> rule)
 	{
-		Preconditions.checkArgument(rules.containsKey(rule), "The rule doesn't seem to be loaded. Has the manager been initialized?");
-		return (T) rules.get(rule);
+		return (T) Objects.requireNonNull(rules.get(rule), "The rule doesn't seem to be loaded. Has the manager been initialized?");
 	}
 
 	public <T> void setRule(Rule<T> rule, T value)
@@ -54,7 +52,12 @@ public class RulesManager implements Saveable
 				rules.put(entry.getKey(), loaded);
 			} else {
 				Object defaultValue = entry.getKey().getDefaultValue();
-				rules.put(entry.getKey(), config != null ? config.get(configPath + ".value", defaultValue) : defaultValue);
+				if (defaultValue.getClass().equals(Character.class) && config != null) {
+					String s = config.getString(configPath + ".value", String.valueOf(defaultValue));
+					rules.put(entry.getKey(), s.isEmpty() ? ' ' : s.charAt(0));
+				} else {
+					rules.put(entry.getKey(), config != null ? config.get(configPath + ".value", defaultValue) : defaultValue);
+				}
 			}
 		}
 	}
@@ -75,21 +78,5 @@ public class RulesManager implements Saveable
 				config.set("Rules." + rule.getName() + ".value", value);
 			}
 		});
-	}
-
-	/**
-	 * @deprecated
-	 */
-	public Object getRuleByName(String name)
-	{
-		return getRule(Rule.getByName(name));
-	}
-
-	/**
-	 * @deprecated
-	 */
-	public void setRuleByName(String name, Object value)
-	{
-		setRule(Rule.getByName(name), value);
 	}
 }

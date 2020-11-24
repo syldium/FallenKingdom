@@ -1,13 +1,11 @@
 package fr.devsylone.fallenkingdom.scoreboard;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
+import fr.devsylone.fallenkingdom.Fk;
+import fr.devsylone.fallenkingdom.game.Game.GameState;
+import fr.devsylone.fallenkingdom.players.FkPlayer.PlayerState;
 import fr.devsylone.fallenkingdom.utils.Messages;
-import fr.devsylone.fallenkingdom.utils.Version;
+import fr.devsylone.fallenkingdom.utils.RulesFormatter;
+import fr.devsylone.fallenkingdom.version.Version;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.rules.Rule;
 import fr.mrmicky.fastboard.FastBoard;
@@ -15,28 +13,23 @@ import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
 
-import fr.devsylone.fallenkingdom.Fk;
-import fr.devsylone.fallenkingdom.game.Game.GameState;
-import fr.devsylone.fallenkingdom.manager.saveable.ScoreboardManager;
-import fr.devsylone.fallenkingdom.players.FkPlayer.PlayerState;
-import fr.devsylone.fallenkingdom.utils.RulesFormatter;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class FkScoreboard
 {
+	private boolean formatted = true;
+
 	private final Scoreboard bukkitBoard;
 	private final FastBoard sidebarBoard;
 
-	private final Player player;
-
-	private final Map<PlaceHolder, List<Integer>> placeHolders;
-
-	private boolean formatted;
+	private final WeakReference<Player> player;
 
 	public FkScoreboard(Player player)
 	{
-		formatted = true;
-		this.player = player;
-		this.placeHolders = new HashMap<>();
+		this.player = new WeakReference<>(player);
 		this.bukkitBoard = FkPI.getInstance().getTeamManager().getScoreboard();
 
 		sidebarBoard = new FastBoard(player);
@@ -45,22 +38,16 @@ public class FkScoreboard
 		if(FkPI.getInstance().getRulesManager().getRule(Rule.HEALTH_BELOW_NAME) && bukkitBoard.getObjective("§c❤") == null)
 			bukkitBoard.registerNewObjective("§c❤", "health").setDisplaySlot(DisplaySlot.BELOW_NAME);
 
-		List<String> sidebarConfig = Fk.getInstance().getScoreboardManager().getSidebar();
-
-		for(PlaceHolder placeHolder : PlaceHolder.values())
-		{
-			placeHolders.put(placeHolder, new ArrayList<>());
-			for(int i = 0; i < sidebarConfig.size(); i++)
-				if(placeHolder.isInLine(sidebarConfig.get(i)))
-					placeHolders.get(placeHolder).add(i);
-		}
-
 		player.setScoreboard(bukkitBoard);
 		refreshAll();
 	}
 
 	public void refreshAll()
 	{
+		Player player = this.player.get();
+		if(player == null)
+			return;
+
 		if(Fk.getInstance().getGame().getState().equals(GameState.BEFORE_STARTING) && !Fk.getInstance().getPlayerManager().getPlayer(player).getState().equals(PlayerState.EDITING_SCOREBOARD))
 		{
 			List<String> lines = new ArrayList<>();
@@ -89,14 +76,18 @@ public class FkScoreboard
 		try
 		{
 			player.setScoreboard(bukkitBoard);
-		}catch(IllegalStateException whynot)
+		}catch(IllegalStateException ignored)
 		{
-			// dropgg
+			// Pas de player connection
 		}
 	}
 
 	public void refresh(PlaceHolder... placeHolders)
 	{
+		Player player = this.player.get();
+		if(player == null)
+			return;
+
 		if(placeHolders.length == 0)
 		{
 			refreshAll();
@@ -105,17 +96,8 @@ public class FkScoreboard
 		if(Fk.getInstance().getGame().getState() == GameState.BEFORE_STARTING && !Fk.getInstance().getPlayerManager().getPlayer(player).getState().equals(PlayerState.EDITING_SCOREBOARD))
 			return;
 
-		List<Integer> linesToRefresh = new ArrayList<>();
-
-		for(PlaceHolder p : placeHolders)
-		{
-			for(Integer i : this.placeHolders.get(p))
-				if(!linesToRefresh.contains(i))
-					linesToRefresh.add(i);
-		}
-
-		for(Integer i : linesToRefresh)
-			refreshLine(i);
+		for(int line : Fk.getInstance().getScoreboardManager().getLinesWith(placeHolders))
+			refreshLine(line);
 	}
 
 	public void setFormatted(boolean bool)
@@ -128,21 +110,14 @@ public class FkScoreboard
 
 	private void refreshLine(int i)
 	{
+		Player player = this.player.get();
+		if(player == null || !Fk.getInstance().getWorldManager().isAffected(player.getWorld()))
+			return;
+
 		if(Fk.getInstance().getGame().getState() == GameState.BEFORE_STARTING && !Fk.getInstance().getPlayerManager().getPlayer(player).getState().equals(PlayerState.EDITING_SCOREBOARD))
 			return;
 
-		String line = Fk.getInstance().getScoreboardManager().getSidebar().get(i);
-		if(formatted)
-		{
-			for(PlaceHolder placeHolder : placeHolders.keySet())
-				if(placeHolders.get(placeHolder).contains(i))
-					line = placeHolder.replace(line, player, placeHolders.get(placeHolder).indexOf(i));
-		}
-		else
-		{
-			line = line.replaceAll("§", "&");
-			line = line.replaceAll("(&.)+$", ScoreboardManager.randomFakeEmpty());
-		}
+		String line = Fk.getInstance().getScoreboardManager().getSidebarLine(i, formatted ? player : null);
 
 		if(i >= sidebarBoard.getLines().size() || !sidebarBoard.getLine(i).equals(line))
 		{

@@ -14,7 +14,11 @@ public class NMSUtils
 
 	static
 	{
-		version = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
+		try {
+			version = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
+		} catch (ArrayIndexOutOfBoundsException e) {
+			version = "v1_15_R1";
+		}
 		classes = new HashSet<Class<?>>();
 	}
 

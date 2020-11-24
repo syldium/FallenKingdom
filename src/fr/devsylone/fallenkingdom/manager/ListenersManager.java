@@ -22,7 +22,7 @@ import fr.devsylone.fallenkingdom.listeners.entity.player.PvpListener;
 import fr.devsylone.fallenkingdom.listeners.entity.player.RespawnListener;
 import fr.devsylone.fallenkingdom.listeners.entity.player.ScrollListener;
 import fr.devsylone.fallenkingdom.listeners.entity.player.UsePortalListener;
-import fr.devsylone.fallenkingdom.utils.Version;
+import fr.devsylone.fallenkingdom.version.Version;
 
 public class ListenersManager
 {

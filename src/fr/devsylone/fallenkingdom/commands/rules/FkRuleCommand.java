@@ -17,6 +17,7 @@ public class FkRuleCommand extends FkParentCommand
 	{
 		super("rules", ImmutableList.<FkCommand>builder()
 				.add(new AllowBlock())
+				.add(new CaptureRate())
 				.add(new ChargedCreepers())
 				.add(new ChestLimit())
 				.add(new DayDuration())
@@ -29,6 +30,7 @@ public class FkRuleCommand extends FkParentCommand
 				.add(new EnderpearlAssault())
 				.add(new EternalDay())
 				.add(new FriendlyFire())
+				.add(new GlobalChatPrefix())
 				.add(new HealthBelowName())
 				.add(new RulesList())
 				.add(new NetherCap())

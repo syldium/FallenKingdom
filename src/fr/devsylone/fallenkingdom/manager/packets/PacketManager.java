@@ -1,7 +1,10 @@
 package fr.devsylone.fallenkingdom.manager.packets;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -11,15 +14,19 @@ import org.bukkit.entity.Player;
 
 public abstract class PacketManager
 {
-	public static final int BIG_ITEM = 4; // Slot helmet
-	public static final int SMALL_ITEM = 0; //Slot Hand
+	protected final Map<Integer, UUID> playerById = new HashMap<>();
+	protected final Supplier<Integer> entityIdSupplier;
 
-	protected HashMap<Integer, UUID> playerById;
-	protected static int lastid = 100000;
-
-	public PacketManager()
-	{
-		playerById = new HashMap<Integer, UUID>();
+	@SuppressWarnings("deprecation")
+	public PacketManager() {
+		Supplier<Integer> supplier;
+		try {
+			Bukkit.getUnsafe().getClass().getDeclaredMethod("nextEntityId");
+			supplier = Bukkit.getUnsafe()::nextEntityId;
+		} catch (NoSuchMethodException e) {
+			supplier = new AtomicInteger(100000)::getAndIncrement;
+		}
+		entityIdSupplier = supplier;
 	}
 
 	protected Player getPlayer(int entityId)
@@ -35,7 +42,7 @@ public abstract class PacketManager
 
 	protected abstract void sendDestroy(int id);
 
-	protected abstract void sendEquipment(int id, int slot, Material material);
+	protected abstract void sendEquipment(int id, ItemSlot slot, Material material);
 
 	public abstract void sendBlockChange(Player p, Location loc, Material newBlock);
 
@@ -45,19 +52,19 @@ public abstract class PacketManager
 
 	public abstract void openBook(final Player p, String nbtTags);
 
-	public int createFloattingText(String text, Player p, Location loc)
+	public int createFloatingText(String text, Player p, Location loc)
 	{
 		int id = sendSpawn(p, loc);
 		sendMetadata(id, false, text);
 		return id;
 	}
 
-	public void updateFloattingText(int id, String newLine)
+	public void updateFloatingText(int id, String newLine)
 	{
 		sendMetadata(id, false, newLine);
 	}
 
-	public void updateFloattingText(int id, Location loc)
+	public void updateFloatingText(int id, Location loc)
 	{
 		sendTeleport(id, loc);
 	}
@@ -67,11 +74,11 @@ public abstract class PacketManager
 		sendDestroy(id);
 	}
 
-	public int displayItem(int size, Player p, Location loc, Material item)
+	public int displayItem(ItemSlot slot, Player p, Location loc, Material item)
 	{
 		int id = sendSpawn(p, loc.clone().add(0, -1, 0));
 		sendMetadata(id, false, "");
-		sendEquipment(id, size, item);
+		sendEquipment(id, slot, item);
 		return id;
 	}
 
@@ -87,5 +94,14 @@ public abstract class PacketManager
 		sendTitlePacket(p, TitleType.TIMES, null, fadeIn, stay, fadeOut);
 		sendTitlePacket(p, TitleType.SUBTITLE, "{\"text\":\"" + subtitle + "\"}", 0, 0, 0);
 		sendTitlePacket(p, TitleType.TITLE, "{\"text\":\"" + title + "\"}", 0, 0, 0);
+	}
+
+	public enum ItemSlot {
+		MAINHAND,
+		OFFHAND,
+		FEET,
+		LEGS,
+		CHEST,
+		HEAD
 	}
 }

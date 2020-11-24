@@ -3,6 +3,7 @@ package fr.devsylone.fkpi.managers;
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
 import fr.devsylone.fallenkingdom.utils.Messages;
+import fr.devsylone.fallenkingdom.version.Environment;
 import fr.devsylone.fkpi.api.ITeam;
 import fr.devsylone.fkpi.api.event.PlayerTeamChangeEvent;
 import fr.devsylone.fkpi.api.event.TeamUpdateEvent;
@@ -16,13 +17,17 @@ import org.bukkit.scoreboard.Scoreboard;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class TeamManager implements Saveable
 {
 	private final List<Team> teams = Collections.synchronizedList(new ArrayList<>());
+	private final Map<UUID, Team> teamByPlayerUUID = new HashMap<>();
 	private final Scoreboard board = Bukkit.getScoreboardManager().getNewScoreboard();
 
 	public boolean createTeam(String name)
@@ -55,6 +60,12 @@ public class TeamManager implements Saveable
 			throw new FkLightException(Messages.CMD_ERROR_UNKNOWN_TEAM.getMessage().replace("%team%", name));
 
 		Bukkit.getPluginManager().callEvent(new TeamUpdateEvent(team, TeamUpdateEvent.TeamUpdate.DELETION)); // EVENT
+
+		for (String player : team.getPlayers()) {
+			teamByPlayerUUID.remove(Environment.getPlayerUniqueId(player));
+		}
+		team.getPlayers().clear();
+
 		team.getScoreboardTeam().unregister();
 		teams.remove(team);
 		Fk.getInstance().getWorldManager().invalidateBaseWorldsCache(this);
@@ -79,7 +90,7 @@ public class TeamManager implements Saveable
 		return teams.stream().map(Team::getName).collect(Collectors.toList());
 	}
 
-	public Team getPlayerTeam(String player)
+	private Team getPlayerTeam(String player)
 	{
 		if(player == null)
 			return null;
@@ -94,7 +105,10 @@ public class TeamManager implements Saveable
 
 	public Team getPlayerTeam(Player player)
 	{
-		return player == null ? null : getPlayerTeam(player.getName());
+		if (player == null) {
+			return null;
+		}
+		return teamByPlayerUUID.computeIfAbsent(player.getUniqueId(), s -> getPlayerTeam(player.getName()));
 	}
 
 	public ITeam addPlayer(String player, String teamName)
@@ -122,6 +136,7 @@ public class TeamManager implements Saveable
 
 		Bukkit.getPluginManager().callEvent(new PlayerTeamChangeEvent(player, team, null)); // EVENT
 		team.removePlayer(player);
+		teamByPlayerUUID.remove(Environment.getPlayerUniqueId(player));
 	}
 
 	public void random(List<String> players)

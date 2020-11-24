@@ -150,11 +150,11 @@ public class Game implements Saveable
 		delayedRunnable(() -> broadcastStartIn(10), time);
 		time += 5;
 
-		Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), () -> {
+		Bukkit.getScheduler().runTaskLater(Fk.getInstance(), () -> {
 			for(int i = 5; i > 0; i--)
 			{
 				final int a = i;
-				Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), () -> broadcastTpIn(6 - a), i * 20);
+				Bukkit.getScheduler().runTaskLater(Fk.getInstance(), () -> broadcastTpIn(6 - a), i * 20);
 			}
 		}, time * 20L);
 
@@ -183,7 +183,7 @@ public class Game implements Saveable
 
 	private void delayedRunnable(Runnable runnable, long delay)
 	{
-		Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), runnable, delay * 20L);
+		Bukkit.getScheduler().runTaskLater(Fk.getInstance(), runnable, delay * 20L);
 	}
 
 	private void broadcastStartIn(int time)

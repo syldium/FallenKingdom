@@ -2,8 +2,10 @@ package fr.devsylone.fallenkingdom.utils;
 
 import java.util.ArrayList;
 
-import fr.devsylone.fallenkingdom.Fk;
+import fr.devsylone.fallenkingdom.version.Version;
 import org.bukkit.Sound;
+
+import fr.devsylone.fallenkingdom.Fk;
 
 /**
  * Version independent spigot sounds.
@@ -295,7 +297,7 @@ public enum FkSound
 			}
 			notResolved.remove(maxFSound);
 			maxFSound.setSound(maxSound);
-			if (Fk.isDebug())
+			if (Fk.isDebugMode())
 				Fk.getInstance().getLogger().warning("Sound " + maxFSound.post113sound + " not found, using " + maxSound.name());
 		}
 	}

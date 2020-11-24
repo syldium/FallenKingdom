@@ -1,16 +1,11 @@
-package fr.devsylone.fallenkingdom.utils;
+package fr.devsylone.fallenkingdom.version;
 
+import fr.devsylone.fallenkingdom.utils.NMSUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.entity.Entity;
-
-import java.util.concurrent.CompletableFuture;
 
 public class Version {
 
     public static final VersionType VERSION_TYPE;
-
-    private static final boolean HAS_ASYNC_TELEPORT;
 
     static {
         if (classExists("org.bukkit.block.data.BlockData")) {
@@ -24,15 +19,6 @@ public class Version {
         } else {
             VERSION_TYPE = VersionType.V1_9_V1_12;
         }
-
-        boolean hasAsyncTeleport;
-        try {
-            Entity.class.getMethod("teleportAsync", Location.class);
-            hasAsyncTeleport = true;
-        } catch (NoSuchMethodException e) {
-            hasAsyncTeleport = false;
-        }
-        HAS_ASYNC_TELEPORT = hasAsyncTeleport;
     }
 
     public static boolean hasSpigotApi() {
@@ -57,13 +43,6 @@ public class Version {
 
     public static boolean isAsyncPlayerSendCommandsEventSupported() {
         return classExists("com.destroystokyo.paper.event.brigadier.CommandRegisteredEvent");
-    }
-
-    public static CompletableFuture<Boolean> teleportAsync(Entity entity, Location location) {
-        if (HAS_ASYNC_TELEPORT) {
-            return entity.teleportAsync(location);
-        }
-        return CompletableFuture.completedFuture(entity.teleport(location)); // Sinon synchrone
     }
 
     public static boolean classExists(String name) {

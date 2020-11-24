@@ -8,6 +8,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.util.Locale;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
@@ -25,15 +27,21 @@ import fr.devsylone.fallenkingdom.Fk;
 public class PluginUpdater extends BukkitRunnable
 {
     private final Plugin plugin;
-    private boolean enabled = true;
+    private boolean enabled;
 
     private static final String URL_FK_LATEST_RELEASE = "https://api.github.com/repos/Etrenak/FallenKingdom/releases/latest";
     private static final String URL_UPDATER_LATEST_RELEASE = "https://api.github.com/repos/Etrenak/FkUpdater/releases/latest";
+    private static final Pattern VERSION_PATTERN = Pattern.compile("^\\d+\\.\\d+(\\.\\d+)?(-BETA\\d*)?$");
 
     public PluginUpdater(Plugin plugin)
     {
         Validate.notNull(plugin, "Plugin cannot be null");
         this.plugin = plugin;
+
+        boolean isRelease = VERSION_PATTERN.matcher(plugin.getDescription().getVersion().toUpperCase(Locale.ROOT)).find();
+        if(!isRelease)
+            plugin.getLogger().info("[Updater] " + plugin.getDescription().getVersion() + " is a development version.");
+        this.enabled = isRelease;
     }
 
     public void run()

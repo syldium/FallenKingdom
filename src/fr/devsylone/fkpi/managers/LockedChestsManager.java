@@ -1,13 +1,12 @@
 package fr.devsylone.fkpi.managers;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import fr.devsylone.fkpi.lockedchests.LockedChest;
+import fr.devsylone.fkpi.util.Saveable;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 
-import fr.devsylone.fkpi.lockedchests.LockedChest;
-import fr.devsylone.fkpi.util.Saveable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class LockedChestsManager implements Saveable
 {
@@ -29,7 +28,7 @@ public class LockedChestsManager implements Saveable
 	public LockedChest getChestAt(Location loc)
 	{
 		for(LockedChest chest : chests)
-			if(chest.getLocation().getWorld().getUID().equals(loc.getWorld().getUID()) && chest.getLocation().distance(loc.getBlock().getLocation()) < 0.5) // Jsp si equals marche
+			if(chest.getLocation().equals(loc))
 				return chest;
 		return null;
 	}

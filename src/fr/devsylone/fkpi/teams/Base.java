@@ -132,6 +132,11 @@ public class Base implements Saveable
 		return team;
 	}
 
+	public int getRadius()
+	{
+		return radius;
+	}
+
 	/**
 	 * Construit la base en jeu.
 	 */
@@ -240,10 +245,10 @@ public class Base implements Saveable
 		if(loc == null)
 			return null;
 
-		while(XBlock.isReplacable(loc.getBlock().getType()) && loc.getY() > 1.0D)
+		while(XBlock.isReplaceable(loc.getBlock()) && loc.getY() > 1.0D)
 			loc.add(0, -1, 0);
 		
-		while(!XBlock.isReplacable(loc.getBlock().getType()))
+		while(!XBlock.isReplaceable(loc.getBlock()))
 			loc.add(0, 1, 0);
 
 		return loc;

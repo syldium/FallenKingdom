@@ -7,6 +7,9 @@ import java.util.Arrays;
 
 public enum Messages
 {
+    BROADCAST_CHEST_ROOM_CAPTURED("broadcast.chest-room.captured"),
+    BROADCAST_CHEST_ROOM_TITLE("broadcast.chest-room.title"),
+    BROADCAST_CHEST_ROOM_SUBTITLE("broadcast.chest-room.subtitle"),
     BROADCAST_DAY("broadcast.day"),
     BROADCAST_DAY_ASSAULT("broadcast.day.assault"),
     BROADCAST_DAY_CHEST("broadcast.day.chest"),
@@ -23,6 +26,8 @@ public enum Messages
     BROADCAST_PREGAME_TP("broadcast.pregame.tp"),
     BROADCAST_START("broadcast.start"),
     BROADCAST_SUN_WILL_RISE("broadcast.sun-will-rise"),
+    BROADCAST_VICTORY_TITLE("broadcast.victory.title"),
+    BROADCAST_VICTORY_SUBTITLE("broadcast.victory.subtitle"),
 
     CHAT_GLOBAL("chat.global"),
     CHAT_JOIN("chat.join"),
@@ -33,6 +38,7 @@ public enum Messages
     CMD_ERROR_UNKNOWN("cmd.error.unknown-cmd"),
     CMD_ERROR_ALREADY_IN_PAUSE("cmd.error.already-in-pause"),
     CMD_ERROR_BOOL_FORMAT("cmd.error.format.bool"),
+    CMD_ERROR_CHAT_CHAR_FORMAT("cmd.error.format.chat-char"),
     CMD_ERROR_PERCENTAGE_FORMAT("cmd.error.format.percentage"),
     CMD_ERROR_CAP_PASSED("cmd.error.rules.cap.passed"),
     CMD_ERROR_CHEST_ROOM_CAPTURE_TIME_FORMAT("cmd.error.team.chestRoom.captureTime-format"),
@@ -120,6 +126,7 @@ public enum Messages
 
     CMD_MAP_RULES("cmd.map.rules"),
     CMD_MAP_RULES_ALLOW_BLOCK("cmd.map.rules.allowBlock"),
+    CMD_MAP_RULES_CAPTURE_RATE("cmd.map.rules.captureRate"),
     CMD_MAP_RULES_CHARGED_CREEPERS("cmd.map.rules.chargedCreepers"),
     CMD_MAP_RULES_CHEST_LIMIT("cmd.map.rules.chestLimit"),
     CMD_MAP_RULES_DAY_DURATION("cmd.map.rules.dayDuration"),
@@ -164,6 +171,7 @@ public enum Messages
     CMD_MAP_TEAM_REMOVE_PLAYER("cmd.map.team.removePlayer"),
     CMD_MAP_TEAM_SET_BASE("cmd.map.team.setBase"),
     CMD_MAP_TEAM_SET_COLOR("cmd.map.team.setColor"),
+    CMD_MAP_TEAM_TP("cmd.map.team.tp"),
 
     CMD_RULES_ACTIVATED("cmd.rules.activated"),
     CMD_RULES_ALLOW_BLOCK("cmd.rules.allow-block.allowed"),
@@ -183,6 +191,7 @@ public enum Messages
     CMD_RULES_CAP_NETHER("cmd.rules.cap.nether"),
     CMD_RULES_CAP_PVP("cmd.rules.cap.pvp"),
     CMD_RULES_CAP_TNT("cmd.rules.cap.tnt"),
+    CMD_RULES_CAPTURE_RATE_SET("cmd.rules.capture-rate.set"),
     CMD_RULES_CHARGED_CREEPERS_DROP_RATE("cmd.rules.charged-creepers.drop-rate"),
     CMD_RULES_CHARGED_CREEPERS_SPAWN_RATE("cmd.rules.charged-creepers.spawn-rate"),
     CMD_RULES_CHEST_LIMIT_FIXED("cmd.rules.chest-limit.fixed"),
@@ -202,6 +211,8 @@ public enum Messages
     CMD_RULES_ENDERPEARL_ASSAULT("cmd.rules.enderpearl-assault"),
     CMD_RULES_ETERNAL_DAY("cmd.rules.eternal-day"),
     CMD_RULES_FRIENDLY_FIRE("cmd.rules.friendly-fire"),
+    CMD_RULES_GLOBAL_CHAT_PREFIX_SET("cmd.rules.global-chat-prefix.set"),
+    CMD_RULES_GLOBAL_CHAT_PREFIX_UNSET("cmd.rules.global-chat-prefix.unset"),
     CMD_RULES_HEALTH_BELOW_NAME_HIDDEN("cmd.rules.health-below-name.hidden"),
     CMD_RULES_HEALTH_BELOW_NAME_VISIBLE("cmd.rules.health-below-name.visible"),
     CMD_RULES_IMPOSSIBLE("cmd.rules.impossible"),
@@ -227,6 +238,10 @@ public enum Messages
 
     CMD_TEAM_SET_COLOR("cmd.team.setColor"),
     EASTER_EGG_CHEST_EXPLODE("easter-egg.chest-explode"),
+    EASTER_EGG_ANNIVERSARY_NAME("easter-egg.anniversary-name"),
+    EASTER_EGG_ANNIVERSARY_LORE_1("easter-egg.anniversary-lore-1"),
+    EASTER_EGG_ANNIVERSARY_LORE_2("easter-egg.anniversary-lore-2"),
+    EASTER_EGG_ANNIVERSARY_LORE_3("easter-egg.anniversary-lore-3"),
 
     INVENTORY_POTION_DISABLE("inv.potion.disable"),
     INVENTORY_POTION_DISABLE_CLICK("inv.potion.disable-click"),
@@ -242,6 +257,8 @@ public enum Messages
     PLAYER_BLOCK_BREAK_ENEMY("player.block.break-enemy"),
     PLAYER_BLOCK_BREAK_LOCKED("player.block.break-locked"),
     PLAYER_BLOCK_NOT_ALLOWED("player.block.not-allowed"),
+    PLAYER_CHEST_ROOM_CAPTURE_INTERRUPTED("player.base.chest-room.capture.interrupted"),
+    PLAYER_CHEST_ROOM_CAPTURE_STARTED("player.base.chest-room.capture.started"),
     PLAYER_CHEST_ROOM_ENTER("player.base.chest-room.enter"),
     PLAYER_CHEST_ROOM_EXIT("player.base.chest-room.exit"),
     PLAYER_CHEST_TOO_FAR("player.chest-room.too-far"),

@@ -15,7 +15,7 @@ public class RemoveLine extends FkCommand
 {
     public RemoveLine()
     {
-        super("removeLine", "<i1;15number>", Messages.CMD_MAP_SCOREBOARD_REMOVE_LINE, CommandPermission.ADMIN);
+        super("removeLine", "<i0;14:number>", Messages.CMD_MAP_SCOREBOARD_REMOVE_LINE, CommandPermission.ADMIN);
     }
 
     @Override

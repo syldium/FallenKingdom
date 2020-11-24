@@ -25,7 +25,7 @@ public class TryLoad extends FkCommand
         plugin.getLogger().info("Start of lang report");
         // Recherche des traductions en mode strict
         long missingTranslations = Arrays.stream(Messages.values()).filter(message -> {
-            String msg = LanguageManager.getLanguageMessage(message.getAccessor(), true);
+            String msg = plugin.getLanguageManager().getLanguageMessage(message.getAccessor(), true);
             if (msg == null && message.getMessage() == null)
                 Fk.getInstance().getLogger().severe("Value of " + message.getAccessor() + " not set in any file!");
             return msg == null;

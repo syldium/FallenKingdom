@@ -36,11 +36,9 @@ public class Edit extends FkPlayerCommand
 		else
 		{
 			playersBeingLearningHowToEditTheBeautifulScoreboard.add(sender.getUniqueId());
-			long time = 0;
+			fkp.sendMessage(Messages.SCOREBOARD_INTRO_SET_LINE);
 
-			Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), () -> fkp.sendMessage(Messages.SCOREBOARD_INTRO_SET_LINE), time * 20L);
-
-			time += 7;
+			long time = 7;
 
 			Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), () -> fkp.sendMessage(Messages.SCOREBOARD_INTRO_NUMBERS), time * 20L);
 
