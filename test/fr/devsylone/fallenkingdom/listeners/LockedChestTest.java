@@ -12,12 +12,14 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
 import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class LockedChestTest {
 
@@ -37,8 +39,8 @@ public class LockedChestTest {
     public void unlock_TooEarly() {
         GameHelper.setDay(1);
         fireInteractEvent();
-        Assert.assertEquals(LockedChest.ChestState.LOCKED, lockedChest.getState());
-        Assert.assertNull(lockedChest.getUnlocker());
+        assertEquals(LockedChest.ChestState.LOCKED, lockedChest.getState());
+        assertNull(lockedChest.getUnlocker());
     }
 
     @Test
@@ -48,8 +50,8 @@ public class LockedChestTest {
         assertEventFired(LockedChest.ChestState.UNLOCKING, MockUtils.getConstantPlayer().getUniqueId());
         setLastInteractionTime(600L);
         MockUtils.getServerMockSafe().getScheduler().performOneTick();
-        Assert.assertEquals(LockedChest.ChestState.UNLOCKING, lockedChest.getState());
-        Assert.assertEquals(MockUtils.getConstantPlayer().getUniqueId(), lockedChest.getUnlocker());
+        assertEquals(LockedChest.ChestState.UNLOCKING, lockedChest.getState());
+        assertEquals(MockUtils.getConstantPlayer().getUniqueId(), lockedChest.getUnlocker());
     }
 
     @Test

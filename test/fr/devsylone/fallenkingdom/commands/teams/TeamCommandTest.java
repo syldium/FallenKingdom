@@ -6,8 +6,11 @@ import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.teams.Team;
 import fr.devsylone.fkpi.util.Color;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class TeamCommandTest extends CommandTest {
 
@@ -15,9 +18,9 @@ public class TeamCommandTest extends CommandTest {
     public void create() {
         assertRun("team create purple");
         Team purpleTeam = FkPI.getInstance().getTeamManager().getTeam("purple");
-        Assert.assertNotNull(purpleTeam);
-        Assert.assertEquals("purple", purpleTeam.getName());
-        Assert.assertEquals(Color.VIOLET, purpleTeam.getColor());
+        assertNotNull(purpleTeam);
+        assertEquals("purple", purpleTeam.getName());
+        assertEquals(Color.VIOLET, purpleTeam.getColor());
 
         assertRun("team create purple", CommandResult.STATE_ERROR);
     }
@@ -35,7 +38,7 @@ public class TeamCommandTest extends CommandTest {
         FkPI.getInstance().getTeamManager().createTeam("Demo");
         assertRun(MockUtils.getConstantPlayer(), "team addPlayer " + MockUtils.getConstantPlayer().getName() + " DEmo");
         if (!FkPI.getInstance().getTeamManager().getTeam("Demo").getPlayers().contains(MockUtils.getConstantPlayer().getName()))
-            Assert.fail();
+            fail();
         FkPI.getInstance().getTeamManager().removeTeam("Demo");
     }
 
@@ -45,7 +48,6 @@ public class TeamCommandTest extends CommandTest {
         FkPI.getInstance().getTeamManager().getTeam("Demo").addPlayer(MockUtils.getConstantPlayer().getName());
         FkPI.getInstance().getTeamManager().getTeam("Demo").getPlayers().forEach(System.out::println);
         assertRun(MockUtils.getConstantPlayer(), "team removePlayer " + MockUtils.getConstantPlayer().getName());
-        assertRun("team removePlayer " + MockUtils.getConstantPlayer().getName(), CommandResult.STATE_ERROR);
         FkPI.getInstance().getTeamManager().removeTeam("Demo");
     }
 
