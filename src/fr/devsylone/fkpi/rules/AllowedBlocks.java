@@ -70,8 +70,8 @@ public class AllowedBlocks implements RuleValue
 	public void fillWithDefaultValue()
 	{
 		add(Material.TORCH);
-		add(Material.WALL_TORCH);
 		if (XMaterial.isNewVersion()) {
+			add(Material.WALL_TORCH);
 			add(Material.REDSTONE_TORCH);
 			add(Material.REDSTONE_WALL_TORCH);
 		} else {
