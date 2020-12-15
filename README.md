@@ -14,7 +14,9 @@ Le plugin dispose d'un wiki pour aider dans la configuration et l'explication de
 - [Index](https://github.com/Etrenak/FallenKingdom/wiki#diff%C3%A9rentes-page-du-wiki--index-%EF%B8%8F)
 
 ## Compiler avec Maven/Artifacts
-Utiliser `mvn clean install` pour créer un JAR prêt à l'emploi.
+Utiliser `mvn clean install` pour créer un JAR prêt à l'emploi. Le build échouera jusqu'à ce que l'API Paper inclue [Adventure](https://github.com/KyoriPowered/adventure) - son support est actuellement au stade de PR. La solution temporaire est de télécharger le [test build](https://github.com/PaperMC/Paper/pull/4842) d'Adventure et de l'installer dans le dépôt local de Maven :
+`java -Dpaperclip.install=true -jar paperclip.jar`
+
 Si vous utilisez les *artifacts*, il peut être nécessaire d'inclure certaines dépendances. Pour ce faire, aller dans **Project Structure** → **Artifacts** et depuis **Available Elements**, choisir **FallenKingdom** et sélectionner les éléments non trouvés (**Extract Into Output Root**).
 
 ## Signaler un bug
