@@ -1,6 +1,5 @@
 package fr.devsylone.fallenkingdom.commands;
 
-import com.cryptomorin.xseries.XMaterial;
 import fr.devsylone.fallenkingdom.exception.ArgumentParseException;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fallenkingdom.version.Version;
@@ -25,14 +24,18 @@ import static org.bukkit.Bukkit.getServer;
 public class ArgumentParser {
 
     public static List<String> parsePlayers(CommandSender sender, String players) {
-        if (Version.VersionType.V1_13.isHigherOrEqual() && players.startsWith("@")) {
+        return parseEntities(sender, players).stream()
+                .filter(entity -> entity instanceof Player)
+                .map(Entity::getName)
+                .collect(Collectors.toList());
+    }
+
+    public static List<Entity> parseEntities(CommandSender sender, String selector) {
+        if (Version.VersionType.V1_13.isHigherOrEqual() && selector.startsWith("@")) {
             try {
-                List<String> affected = getServer().selectEntities(sender, players).stream()
-                        .filter(entity -> entity instanceof Player)
-                        .map(Entity::getName)
-                        .collect(Collectors.toList());
+                List<Entity> affected = getServer().selectEntities(sender, selector);
                 if (affected.isEmpty()) {
-                    TranslatableComponent notFound = new TranslatableComponent("argument.entity.notfound.player");
+                    TranslatableComponent notFound = new TranslatableComponent("argument.entity.notfound.entity");
                     notFound.setColor(ChatColor.RED);
                     sender.spigot().sendMessage(notFound);
                 }
@@ -40,13 +43,13 @@ public class ArgumentParser {
             } catch (IllegalArgumentException e) {
                 TranslatableComponent unknownOption = new TranslatableComponent("argument.entity.options.unknown");
                 unknownOption.setColor(ChatColor.RED);
-                unknownOption.addWith(players);
+                unknownOption.addWith(selector);
                 sender.spigot().sendMessage(unknownOption);
                 return Collections.emptyList();
             }
 
         }
-        return Collections.singletonList(players);
+        return sender instanceof Entity ? Collections.singletonList((Entity) sender) : Collections.emptyList();
     }
 
     public static boolean parseBoolean(String bool, Messages errorMessage) throws ArgumentParseException {

@@ -115,20 +115,20 @@ public class Argument<T>
     }
 
     public boolean shouldBrigadierAskServer() {
-        return typeClazz == String.class && !name.equals("name") && !name.equals("block") && !name.equals("player");
+        return typeClazz == String.class && !name.equals("name") && !name.equals("block") && !name.equals("player") && !name.equals("entity");
     }
 
     public List<String> provideTabComplete(Fk plugin, String typed) {
         switch (name) {
             case "team":
                 return plugin.getFkPI().getTeamManager().getTeams().stream()
-                        .filter(team -> startsWith(team.getName(), typed))
                         .map(Team::getName)
+                        .filter(s -> startsWith(s, typed))
                         .collect(Collectors.toList());
             case "player":
                 return plugin.getServer().getOnlinePlayers().stream()
-                        .filter(team -> startsWith(team.getName(), typed))
                         .map(Player::getName)
+                        .filter(s -> startsWith(s, typed))
                         .collect(Collectors.toList());
             case "block":
                 return Arrays.stream(Material.values())
@@ -159,8 +159,8 @@ public class Argument<T>
                 return suggestions;
             case "chest":
                 return plugin.getFkPI().getLockedChestsManager().getChestList().stream()
-                        .filter(chest -> startsWith(chest.getName(), typed))
                         .map(LockedChest::getName)
+                        .filter(s -> startsWith(s, typed))
                         .collect(Collectors.toList());
             default:
                 if (name.contains("|")) {
