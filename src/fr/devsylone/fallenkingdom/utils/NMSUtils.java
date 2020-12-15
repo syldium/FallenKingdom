@@ -9,17 +9,21 @@ import org.bukkit.Bukkit;
 
 public class NMSUtils
 {
-	private static String version;
-	private static Set<Class<?>> classes;;
+	private static final String version = getServerVersion();
+	private static final Set<Class<?>> classes = new HashSet<>();
 
-	static
+	private static String getServerVersion()
 	{
-		try {
-			version = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
-		} catch (ArrayIndexOutOfBoundsException e) {
-			version = "v1_15_R1";
+		Class<?> server = Bukkit.getServer().getClass();
+		if (!server.getSimpleName().equals("CraftServer")) {
+			return "";
 		}
-		classes = new HashSet<Class<?>>();
+		if (server.getName().equals("org.bukkit.craftbukkit.CraftServer")) {
+			return "";
+		} else {
+			String version = server.getName().substring("org.bukkit.craftbukkit.".length());
+			return version.substring(0, version.length() - ".CraftServer".length());
+		}
 	}
 
 	public static void register(String clazz) throws ClassNotFoundException

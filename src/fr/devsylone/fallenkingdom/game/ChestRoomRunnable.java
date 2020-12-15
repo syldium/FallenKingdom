@@ -62,6 +62,7 @@ public class ChestRoomRunnable extends BukkitRunnable {
 
             if (FkPI.getInstance().getTeamManager().getTeams().size() > 2) {
                 Fk.getInstance().getCommandManager().executeCommand(Fk.getInstance(), Bukkit.getConsoleSender(), "game pause");
+                this.cancel();
                 return;
             }
 

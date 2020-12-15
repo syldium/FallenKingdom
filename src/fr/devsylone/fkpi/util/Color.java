@@ -105,7 +105,12 @@ public class Color
 
 	public String getHexString()
 	{
-		return String.format("#%06x", value.getRGB() & 0x00FFFFFF);
+		return String.format("#%06x", value.getRGB() & 0xFFFFFF);
+	}
+
+	public int getRGB()
+	{
+		return value.getRGB() & 0xFFFFFF;
 	}
 
 	public static Color[] values()

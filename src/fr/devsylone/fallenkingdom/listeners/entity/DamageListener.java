@@ -8,11 +8,11 @@ import fr.devsylone.fallenkingdom.scoreboard.PlaceHolder;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fallenkingdom.utils.FkSound;
 import fr.devsylone.fallenkingdom.utils.Messages;
+import fr.devsylone.fallenkingdom.version.Environment;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.rules.ChargedCreepers;
 import fr.devsylone.fkpi.rules.Rule;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Creeper;
@@ -53,7 +53,11 @@ public class DamageListener implements Listener
 		if(e.getEntity().hasMetadata("NPC") || !Fk.getInstance().getWorldManager().isAffected(e.getEntity().getWorld()))
 			return;
 
-		e.setDeathMessage(ChatUtils.PREFIX + e.getDeathMessage());
+		Environment.setDeathMessage(
+				e,
+				FkPI.getInstance().getTeamManager().getPlayerTeam(e.getEntity()),
+				FkPI.getInstance().getTeamManager().getPlayerTeam(e.getEntity().getKiller())
+		);
 
 		/*
 		 * Si le killer a une team
@@ -67,21 +71,11 @@ public class DamageListener implements Listener
 				p.playSound(p.getLocation(), FkSound.WITHER_SPAWN.bukkitSound(), 1, 1);
 
 			/*
-			 * Replace color killer
-			 */
-			e.setDeathMessage(e.getDeathMessage().replace(e.getEntity().getKiller().getName(), e.getEntity().getKiller().getDisplayName() + ChatColor.GRAY));
-
-			/*
 			 * Add kill Si killer != dead
 			*/
 			if(e.getEntity().getKiller() != null && !e.getEntity().getKiller().getName().equals(e.getEntity().getName()))
 				Fk.getInstance().getPlayerManager().getPlayer(e.getEntity().getKiller()).addKill();
 		}
-		/*
-		 * Replace color killed
-		 */
-		if(Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(e.getEntity()) != null)
-			e.setDeathMessage(e.getDeathMessage().replace(e.getEntity().getName(), e.getEntity().getDisplayName() + ChatColor.GRAY));
 
 		/*
 		 * Si tué ou tueur pas de team pas de deathlimit

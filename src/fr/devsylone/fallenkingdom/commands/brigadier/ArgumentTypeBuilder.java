@@ -29,8 +29,9 @@ class ArgumentTypeBuilder
             case "color":
                 argumentType = MinecraftArgumentTypes.getByKey(NamespacedKey.minecraft("function")); // Type le plus proche autorisant le #
                 break;
+            case "entity":
             case "player":
-                argumentType = MinecraftArgumentTypes.constructMinecraftArgumentType(NamespacedKey.minecraft("entity"), new Class[]{boolean.class, boolean.class}, false, true);
+                argumentType = MinecraftArgumentTypes.constructMinecraftArgumentType(NamespacedKey.minecraft("entity"), new Class[]{boolean.class, boolean.class}, false, "player".equals(arg.getName()));
                 break;
             default:
                 argumentType = getArgumentType(arg);
