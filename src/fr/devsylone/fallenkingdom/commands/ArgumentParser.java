@@ -24,6 +24,9 @@ import static org.bukkit.Bukkit.getServer;
 public class ArgumentParser {
 
     public static List<String> parsePlayers(CommandSender sender, String players) {
+        if (!players.startsWith("@")) {
+            return Collections.singletonList(players);
+        }
         return parseEntities(sender, players).stream()
                 .filter(entity -> entity instanceof Player)
                 .map(Entity::getName)

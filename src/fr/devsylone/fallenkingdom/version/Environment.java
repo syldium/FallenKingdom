@@ -76,6 +76,7 @@ public class Environment {
     public static void setDeathMessage(PlayerDeathEvent event, Team playerTeam, Team killerTeam) {
         if (HAS_ADVENTURE_API) {
             AdventureFormat.setDeathMessage(event, playerTeam, killerTeam);
+            return;
         }
 
         String deathMessage = event.getDeathMessage();
