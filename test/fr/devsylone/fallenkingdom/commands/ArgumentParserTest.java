@@ -21,6 +21,11 @@ public class ArgumentParserTest {
     }
 
     @Test
+    public void parsePlayerName() {
+        assertEquals(Collections.singletonList("username"), ArgumentParser.parsePlayers(MockUtils.getConstantPlayer(), "username"));
+    }
+
+    @Test
     public void parseBoolean() {
         assertTrue(ArgumentParser.parseBoolean("TRUE", Messages.CMD_ERROR_BOOL_FORMAT));
         assertFalse(ArgumentParser.parseBoolean("fAlSe", Messages.CMD_ERROR_BOOL_FORMAT));

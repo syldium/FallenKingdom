@@ -23,6 +23,7 @@ public class TeamCommandTest extends CommandTest {
         assertEquals(Color.VIOLET, purpleTeam.getColor());
 
         assertRun("team create purple", CommandResult.STATE_ERROR);
+        assertRun("team create violet");
     }
 
     @Test
@@ -31,6 +32,7 @@ public class TeamCommandTest extends CommandTest {
         FkPI.getInstance().getTeamManager().getTeam("DemoR").addPlayer(MockUtils.getConstantPlayer().getName());
         assertRun("team remove demor");
         assertRun("team remove unknown", CommandResult.STATE_ERROR);
+        assertRun("team remove demor", CommandResult.STATE_ERROR);
     }
 
     @Test
@@ -39,6 +41,8 @@ public class TeamCommandTest extends CommandTest {
         assertRun(MockUtils.getConstantPlayer(), "team addPlayer " + MockUtils.getConstantPlayer().getName() + " DEmo");
         if (!FkPI.getInstance().getTeamManager().getTeam("Demo").getPlayers().contains(MockUtils.getConstantPlayer().getName()))
             fail();
+        assertRun("team addPlayer " + MockUtils.getConstantPlayer().getName() + " demo", CommandResult.STATE_ERROR);
+        assertRun(MockUtils.getConstantPlayer(), "team addPlayer velo demo");
         FkPI.getInstance().getTeamManager().removeTeam("Demo");
     }
 
@@ -48,6 +52,7 @@ public class TeamCommandTest extends CommandTest {
         FkPI.getInstance().getTeamManager().getTeam("Demo").addPlayer(MockUtils.getConstantPlayer().getName());
         FkPI.getInstance().getTeamManager().getTeam("Demo").getPlayers().forEach(System.out::println);
         assertRun(MockUtils.getConstantPlayer(), "team removePlayer " + MockUtils.getConstantPlayer().getName());
+        assertRun("team removePlayer " + MockUtils.getConstantPlayer().getName(), CommandResult.STATE_ERROR);
         FkPI.getInstance().getTeamManager().removeTeam("Demo");
     }
 
@@ -55,6 +60,9 @@ public class TeamCommandTest extends CommandTest {
     public void setColor() {
         FkPI.getInstance().getTeamManager().createTeam("FallenKingdom");
         assertRun("team setColor FallenKingdom green");
+        assertEquals(Color.VERT, FkPI.getInstance().getTeamManager().getTeam("FallenKingdom").getColor());
         assertRun("team setColor unknown green", CommandResult.STATE_ERROR);
+        assertRun("team setColor FallenKingdom idontknow");
+        assertEquals(Color.NO_COLOR, FkPI.getInstance().getTeamManager().getTeam("FallenKingdom").getColor());
     }
 }
