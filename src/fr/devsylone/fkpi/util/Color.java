@@ -44,12 +44,8 @@ public class Color
 		this.femColor = femColor;
 		this.value = new java.awt.Color(value);
 		this.bukkitChatColor = chatColor;
-		try {
-			this.bungeeChatColor = net.md_5.bungee.api.ChatColor.class.isEnum() ? chatColor.asBungee() : net.md_5.bungee.api.ChatColor.of(this.value);
-		} catch (NoSuchMethodError e) {
-			// noinspection deprecation
-			this.bungeeChatColor = net.md_5.bungee.api.ChatColor.valueOf(chatColor.name());
-		}
+		// noinspection deprecation
+		this.bungeeChatColor = net.md_5.bungee.api.ChatColor.class.isEnum() ? net.md_5.bungee.api.ChatColor.valueOf(chatColor.name()) : net.md_5.bungee.api.ChatColor.of(this.value);
 		this.dyeColor = dyeColor;
 		LEGACY_VALUES.add(this);
 	}

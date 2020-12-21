@@ -5,6 +5,7 @@ import java.util.List;
 
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fallenkingdom.utils.Messages;
+import fr.devsylone.fallenkingdom.version.Version;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -43,10 +44,12 @@ public class BlockExplodeListener implements Listener
 			{
 				final ArmorStand as = (ArmorStand) block.getWorld().spawnEntity(block.getLocation().add(0.5, -1, 0.5), EntityType.ARMOR_STAND);
 				as.setVisible(false);
-				as.setCustomName(ChatUtils.colorMessage(Messages.EASTER_EGG_CHEST_EXPLODE));
-				as.setCustomNameVisible(true);
+				if (Version.VersionType.V1_9_V1_12.isHigherOrEqual()) {
+					as.setCustomName(ChatUtils.colorMessage(Messages.EASTER_EGG_CHEST_EXPLODE));
+					as.setCustomNameVisible(true);
+					as.setGravity(false);
+				}
 				as.setNoDamageTicks(10000);
-				as.setGravity(false);
 				Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), as::remove, 40L);
 				iterator.remove();
 			}

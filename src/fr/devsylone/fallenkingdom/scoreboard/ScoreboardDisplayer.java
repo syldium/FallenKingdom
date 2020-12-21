@@ -88,9 +88,7 @@ public class ScoreboardDisplayer
 	public void exit()
 	{
 		if (runnable != null) {
-			if (runnable.isCancelled()) {
-				runnable.cancel();
-			}
+			runnable.cancel();
 			runnable = null;
 		}
 

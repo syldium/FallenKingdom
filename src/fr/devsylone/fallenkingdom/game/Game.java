@@ -65,7 +65,7 @@ public class Game implements Saveable
 
 	public void startTimer()
 	{
-		if(task != null && !task.isCancelled())
+		if(task != null)
 			throw new IllegalStateException("Main timer already running");
 
 		if(!state.equals(GameState.BEFORE_STARTING))
