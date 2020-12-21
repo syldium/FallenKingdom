@@ -121,7 +121,7 @@
         <dependency> <!-- Units tests - seems like it needs to be before paper-api -->
             <groupId>com.github.seeseemelk</groupId>
             <artifactId>MockBukkit-v1.16</artifactId>
-            <version>0.15.0</version>
+            <version>0.18.0</version>
             <scope>test</scope>
         </dependency>
         <!-- Used to check the structure of NMS packets -->
@@ -166,7 +166,7 @@
         <dependency>
             <groupId>com.github.cryptomorin</groupId>
             <artifactId>XSeries</artifactId>
-            <version>7.6.0</version>
+            <version>7.7.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -178,7 +178,7 @@
         <dependency>
             <groupId>org.bstats</groupId>
             <artifactId>bstats-bukkit</artifactId>
-            <version>1.7</version>
+            <version>1.8</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
