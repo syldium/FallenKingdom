@@ -405,3 +405,6 @@ RETRAIT      = [-]
 [*] Les advancements de type "recipes" n'apparaissent plus dans /fk chests lock
 [*] La liste des commandes issues de help tiennent compte de la désactivation des permissions
 [*] API : De nombreuses méthodes utilisent désormais des UUIDs plutôt que des String
+
+      >> 2.20.3
+[*] Certaines commandes utilisaient le joueur courant plutôt que le joueur en argument
