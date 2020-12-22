@@ -16,7 +16,7 @@ import java.util.List;
 public class GlobalChatPrefix extends FkCommand {
 
     public GlobalChatPrefix() {
-        super("globalChatPrefix", "[char]", null, CommandPermission.ADMIN);
+        super("globalChatPrefix", "[char]", Messages.CMD_MAP_RULES_GLOBAL_CHAT_PREFIX, CommandPermission.ADMIN);
     }
 
     @Override
