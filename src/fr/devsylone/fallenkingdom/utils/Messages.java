@@ -147,6 +147,7 @@ public enum Messages
     CMD_MAP_RULES_RESPAWN_AT_HOME("cmd.map.rules.respawnAtHome"),
     CMD_MAP_RULES_TNT_CAP("cmd.map.rules.tntCap"),
     CMD_MAP_RULES_TNT_JUMP("cmd.map.rules.tntJump"),
+    CMD_MAP_RULES_GLOBAL_CHAT_PREFIX("cmd.map.rules.globalChatPrefix"),
 
     CMD_MAP_SCOREBOARD("cmd.map.scoreboard"),
     CMD_MAP_SCOREBOARD_EDIT("cmd.map.scoreboard.edit"),
