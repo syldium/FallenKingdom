@@ -408,3 +408,8 @@ RETRAIT      = [-]
 
       >> 2.20.3
 [*] Certaines commandes utilisaient le joueur courant plutôt que le joueur en argument
+
+      >> 2.20.4
+[*] Fix de la commande /fk scoreboard leaveEdit (1.11.2-)
+[*] Description ajoutée pour globalChatPrefix et correction de celle de team tp
+[*] Mise à jour de bStats : décalage des premiers envois de données
