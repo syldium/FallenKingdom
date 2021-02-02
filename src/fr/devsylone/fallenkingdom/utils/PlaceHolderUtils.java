@@ -6,7 +6,6 @@ import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.teams.Team;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
 
 import java.util.Comparator;
 import java.util.Optional;
@@ -15,7 +14,8 @@ import java.util.function.Supplier;
 public class PlaceHolderUtils
 {
     public static final Supplier<Game> GAME_SUPPLIER = Fk.getInstance()::getGame;
-    
+	private static final double ANGLE_OFFSET = ((double) 360 / 16) * 13;
+
 	private static Location getPointingLocation(Player player)
 	{
 		// Vers la base
@@ -59,7 +59,6 @@ public class PlaceHolderUtils
 
 	public static String getBaseDirection(Player player)
 	{
-		Location pLoc = player.getLocation();
 		Team pTeam = FkPI.getInstance().getTeamManager().getPlayerTeam(player);
 		if (pTeam == null)
 			return Fk.getInstance().getScoreboardManager().getNoTeam();
@@ -68,7 +67,7 @@ public class PlaceHolderUtils
 
 		Location point = getPointingLocation(player);
 		if (point != null)
-			return getDirectionOf(pLoc, point);
+			return getDirectionOf(player.getLocation(), point);
 
 		return Fk.getInstance().getScoreboardManager().getNoInfo(); // ?
 	}
@@ -81,7 +80,7 @@ public class PlaceHolderUtils
 		Optional<Team> nearestTeam = getNearestTeam(player, iteration);
 		return nearestTeam
 				.map(team -> team.getChatColor() + team.getName())
-				.orElseGet(() -> Fk.getInstance().getScoreboardManager().getNoInfo());
+				.orElse(Fk.getInstance().getScoreboardManager().getNoInfo());
 	}
 
 	public static String getNearestBaseDirection(Player player, int iteration)
@@ -92,7 +91,7 @@ public class PlaceHolderUtils
 		Optional<Team> nearestTeam = getNearestTeam(player, iteration);
 		return nearestTeam
 				.map(team -> getDirectionOf(player.getLocation(), team.getBase().getCenter()))
-				.orElseGet(() -> Fk.getInstance().getScoreboardManager().getNoInfo());
+				.orElse(Fk.getInstance().getScoreboardManager().getNoInfo());
 	}
 
 	public static String getTeamOf(Player p)
@@ -101,24 +100,15 @@ public class PlaceHolderUtils
 		return t == null ? Fk.getInstance().getScoreboardManager().getNoTeam() : t.toString();
 	}
 
-	private static String getDirectionOf(Location ploc, Location to)
+	private static String getDirectionOf(Location location, Location target)
 	{
-		ploc.setY(0);
-		to.setY(0);
+		double yaw = location.getYaw();
+		double z = target.getZ() - location.getZ();
+		double x = target.getX() - location.getX();
 
-		Vector d = ploc.getDirection();
-
-		Vector v = to.subtract(ploc).toVector().normalize();
-
-		double a = Math.toDegrees(Math.atan2(d.getX(), d.getZ()));
-		a -= Math.toDegrees(Math.atan2(v.getX(), v.getZ()));
-
-		a = (int) (a + 22.5) % 360;
-
-		if(a < 0)
-			a += 360;
-
-		return "" + Fk.getInstance().getScoreboardManager().getArrows().charAt((int) a / 45);
+		double theta = Math.toDegrees(Math.atan2(z, x));
+		int angle = Math.floorMod((int) (ANGLE_OFFSET + theta - yaw), 360);
+		return String.valueOf(Fk.getInstance().getScoreboardManager().getArrows().charAt(angle / 45));
 	}
 	
 	public static String getBaseOrPortal(Player player)
