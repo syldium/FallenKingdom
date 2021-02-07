@@ -2,12 +2,19 @@ package fr.devsylone.fkpi.util;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Projectile;
+import org.bukkit.entity.ThrownPotion;
+import org.bukkit.entity.TippedArrow;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
 
+import static fr.devsylone.fallenkingdom.version.Version.VersionType.V1_16;
+
+@SuppressWarnings("deprecation")
 public final class XPotionData
 {
 	private final PotionType type;
@@ -91,6 +98,17 @@ public final class XPotionData
 	public static XPotionData fromPotionData(PotionData data)
 	{
 		return data == null ? null : new XPotionData(data.getType(), data.isExtended(), data.isUpgraded());
+	}
+
+	public static XPotionData fromProjectile(Projectile projectile)
+	{
+		if(projectile instanceof ThrownPotion)
+			return fromItemStack(((ThrownPotion) projectile).getItem());
+		else if(projectile instanceof TippedArrow)
+			return fromPotionData(((TippedArrow) projectile).getBasePotionData());
+		else if(projectile instanceof Arrow)
+			return V1_16.isHigherOrEqual() ? fromPotionData(((Arrow) projectile).getBasePotionData()) : null;
+		return null;
 	}
 
 	public void applyTo(ItemStack potionItem)
