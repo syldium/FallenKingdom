@@ -21,6 +21,8 @@ import org.bukkit.loot.LootTable;
 
 import java.util.UUID;
 
+import static fr.devsylone.fallenkingdom.utils.KeyHelper.parseKey;
+
 public class LockedChest implements Saveable
 {
 	public enum ChestState
@@ -188,13 +190,12 @@ public class LockedChest implements Saveable
 		requiredAdvancement = config.getString("Advancement");
 	}
 
-	@SuppressWarnings("deprecation")
 	public Advancement getRequiredAdvancement()
 	{
-		if (requiredAdvancement == null || !requiredAdvancement.contains(":")) {
+		if (requiredAdvancement == null || requiredAdvancement.isEmpty()) {
 			return null;
 		}
-		return Bukkit.getAdvancement(new NamespacedKey(requiredAdvancement.split(":")[0], requiredAdvancement.split(":")[1]));
+		return Bukkit.getAdvancement(parseKey(requiredAdvancement));
 	}
 
 	public void setRequiredAdvancement(String advancement)
@@ -210,14 +211,13 @@ public class LockedChest implements Saveable
 		return XAdvancement.hasAdvancement(player, requiredAdvancement);
 	}
 
-	@SuppressWarnings("deprecation")
 	public LootTable getLootTable()
 	{
-		if (lootTable == null || !lootTable.contains(":")) {
+		if (lootTable == null || lootTable.isEmpty()) {
 			return null;
 		}
 		if (Version.VersionType.V1_13.isHigherOrEqual())
-			return Bukkit.getLootTable(new NamespacedKey(lootTable.split(":")[0], lootTable.split(":")[1]));
+			return Bukkit.getLootTable(parseKey(lootTable));
 		throw new NotImplementedException("Loot tables api don't exist in versions prior to 1.13.");
 	}
 

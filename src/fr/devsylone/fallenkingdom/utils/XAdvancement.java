@@ -8,7 +8,6 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -26,7 +25,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-@SuppressWarnings({"deprecation", "rawtypes", "unchecked"})
+import static fr.devsylone.fallenkingdom.utils.KeyHelper.parseKey;
+
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class XAdvancement {
 
     private static final Class<Enum> ACHIEVEMENT;
@@ -67,11 +68,8 @@ public class XAdvancement {
      * @return Si l'association a pu se faire
      */
     public static boolean exist(String name) {
-        if (isAdvancement() && !name.contains(":")) {
-            name = "minecraft:" + name;
-        }
         if (isAdvancement()) {
-            return Bukkit.getServer().getAdvancement(new NamespacedKey(name.split(":")[0], name.split(":")[1])) != null;
+            return Bukkit.getServer().getAdvancement(parseKey(name)) != null;
         }
         try {
             Enum.valueOf(ACHIEVEMENT, name.toUpperCase());
@@ -91,7 +89,7 @@ public class XAdvancement {
      */
     public static boolean hasAdvancement(Player player, String name) {
         if (isAdvancement()) {
-            Advancement advancement = Bukkit.getAdvancement(new NamespacedKey(name.split(":")[0], name.split(":")[1]));
+            Advancement advancement = Bukkit.getAdvancement(parseKey(name));
             Objects.requireNonNull(advancement, "The success " + name + " does not exist.");
             return player.getAdvancementProgress(advancement).isDone();
         }

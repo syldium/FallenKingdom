@@ -12,9 +12,11 @@ import java.util.regex.Pattern;
 
 /**
  * Paper seulement.
- * Permet l'autcomplétion asynchrone des arguments.
+ * Permet l'autocomplétion asynchrone des arguments.
  */
 public class FkAsyncCommandExecutor extends FkCommandExecutor implements Listener {
+
+    private final Pattern delimiter = Pattern.compile(" ");
 
     public FkAsyncCommandExecutor(Fk plugin, PluginCommand command) {
         super(plugin, command);
@@ -32,7 +34,7 @@ public class FkAsyncCommandExecutor extends FkCommandExecutor implements Listene
             return;
         }
 
-        String[] args = Pattern.compile(" ").split(e.getBuffer(), -1);
+        String[] args = delimiter.split(e.getBuffer(), -1);
         String label = e.getBuffer().charAt(0) == '/' ? args[0].substring(1) : args[0];
         args = args.length > 1 ? Arrays.copyOfRange(args, 1, args.length) : new String[]{""};
 
