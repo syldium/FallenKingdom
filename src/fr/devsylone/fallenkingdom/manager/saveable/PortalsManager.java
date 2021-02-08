@@ -1,11 +1,11 @@
 package fr.devsylone.fallenkingdom.manager.saveable;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.cryptomorin.xseries.XMaterial;
+import fr.devsylone.fallenkingdom.utils.ConfigHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -43,23 +43,17 @@ public class PortalsManager implements Saveable
 	@Override
 	public void load(ConfigurationSection config)
 	{
-		if(config.contains("Portals"))
-			for(String loc : config.getStringList("Portals"))
-			{
-				String[] split = loc.split(":");
-				addPortal(new Location(Bukkit.getWorld(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2]), Integer.parseInt(split[3])));
-			}
+		for(String serialized : config.getStringList("Portals"))
+		{
+			Location location = ConfigHelper.getLocation(serialized);
+			if(location != null)
+				addPortal(location);
+		}
 	}
 
 	@Override
 	public void save(ConfigurationSection config)
 	{
-		List<String> sList = new ArrayList<>();
-
-		for(Location l : portals)
-			if(l != null && l.getWorld() != null)
-				sList.add(l.getWorld().getName() + ":" + l.getBlockX() + ":" + l.getBlockY() + ":" + l.getBlockZ());
-
-		config.set("Portals", sList);
+		config.set("Portals", portals.stream().map(ConfigHelper::serializeBlockPos).collect(Collectors.toList()));
 	}
 }

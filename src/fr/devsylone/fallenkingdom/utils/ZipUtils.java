@@ -23,15 +23,7 @@ public class ZipUtils
 		}
 		if(fileToZip.isDirectory())
 		{
-			File[] children = fileToZip.listFiles(new FilenameFilter()
-			{
-
-				@Override
-				public boolean accept(File dir, String name)
-				{
-					return !name.endsWith(".jar") && (zipZipped || !name.endsWith(".zip"));
-				}
-			});
+			File[] children = fileToZip.listFiles((dir, name) -> !name.endsWith(".jar") && (zipZipped || !name.endsWith(".zip")));
 			for(File childFile : children)
 			{
 				zipFile(childFile, folderName + (!folderName.isEmpty() ? File.separator : "") + fileToZip.getName(), zipOut, zipZipped);
@@ -56,10 +48,7 @@ public class ZipUtils
 			zipOut.flush();
 			zipOut.closeEntry();
 			fis.close();
-		}catch(FileNotFoundException e)
-		{
-			e.printStackTrace();
-		}catch(IOException e)
+		} catch(IOException e)
 		{
 			e.printStackTrace();
 		}

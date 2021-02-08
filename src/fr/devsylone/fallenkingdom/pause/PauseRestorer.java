@@ -2,6 +2,7 @@ package fr.devsylone.fallenkingdom.pause;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -12,6 +13,8 @@ import org.bukkit.entity.Player;
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
 import fr.devsylone.fkpi.util.Saveable;
+
+import static fr.devsylone.fallenkingdom.utils.ConfigHelper.loadSectionsWithIndex;
 
 public class PauseRestorer implements Saveable
 {
@@ -25,12 +28,9 @@ public class PauseRestorer implements Saveable
 
 	public void registerPlayer(int id, PausedPlayer pp)
 	{
-		if(!pauses.containsKey(id))
-			pauses.put(id, new ArrayList<>());
-
-		pauses.get(id).remove(pp);
-
-		pauses.get(id).add(pp);
+		List<PausedPlayer> pausedPlayers = pauses.computeIfAbsent(id, s -> new ArrayList<>());
+		pausedPlayers.remove(pp);
+		pausedPlayers.add(pp);
 	}
 
 	public int registerAll()
@@ -43,38 +43,35 @@ public class PauseRestorer implements Saveable
 
 	public int restoreAll(int id)
 	{
-		if(id == -1)
+		if(id < 0)
 			id  = lastID;
-		
-		if(!pauses.containsKey(id))
+
+		List<PausedPlayer> pausedPlayers = pauses.get(id);
+		if(pausedPlayers == null)
 			throw new FkLightException("id invalide");
-		List<String> failed = new ArrayList<>();
-		for(PausedPlayer p : pauses.get(id))
+
+		List<String> failed = new LinkedList<>();
+		for(PausedPlayer p : pausedPlayers)
 			if(!p.tryRestore())
 				failed.add(p.getPlayer());
 
 		if(!failed.isEmpty())
-			Fk.broadcast("§cAttention, les joueurs suivants ne sont pas connectés et leur état n'a pas été réstauré : §b" + String.join("§c, §b", failed));
+			Fk.broadcast("§cAttention, les joueurs suivants ne sont pas connectés et leur état n'a pas été restauré : §b" + String.join("§c, §b", failed));
 		return id;
 	}
 
 	@Override
 	public void load(ConfigurationSection config)
 	{
-		for(String id : config.getKeys(false))
-		{
-			for(String pp : config.getConfigurationSection(id).getKeys(false))
-				registerPlayer(Integer.parseInt(id), new PausedPlayer(config.getConfigurationSection(id + "." + pp)));
-			lastID = Integer.parseInt(id);
-		}
+		loadSectionsWithIndex(config, (id, section) -> registerPlayer(id, new PausedPlayer(section)));
 	}
 
 	@Override
 	public void save(ConfigurationSection config)
 	{
-		for(int i = 1; i <= lastID; i++)
-			for(PausedPlayer p : pauses.get(i))
-				p.save(config.createSection(i + "." + p.getPlayer()));
+		for(Map.Entry<Integer, List<PausedPlayer>> entry : pauses.entrySet())
+			for(PausedPlayer p : entry.getValue())
+				p.save(config.createSection(entry.getKey() + "." + p.getPlayer()));
 	}
 
 }

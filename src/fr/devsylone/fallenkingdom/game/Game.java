@@ -16,6 +16,8 @@ import fr.devsylone.fkpi.rules.Rule;
 import fr.devsylone.fkpi.util.Saveable;
 import lombok.Getter;
 
+import static fr.devsylone.fallenkingdom.utils.ConfigHelper.enumValueOf;
+
 public class Game implements Saveable
 {
 	@Getter protected GameState state = GameState.BEFORE_STARTING;
@@ -97,9 +99,9 @@ public class Game implements Saveable
 
 	public void load(ConfigurationSection config)
 	{
-		state = GameState.valueOf(config.getString("State"));
 		day = config.getInt("Day");
 		time = config.getInt("Time");
+		state = enumValueOf(GameState.class, config.getString("State"), day > 1 ? GameState.STARTED : GameState.BEFORE_STARTING);
 
 		pvpEnabled = FkPI.getInstance().getRulesManager().getRule(Rule.PVP_CAP) <= day;
 		assaultsEnabled = FkPI.getInstance().getRulesManager().getRule(Rule.TNT_CAP) <= day;

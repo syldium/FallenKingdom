@@ -1,15 +1,11 @@
 package fr.devsylone.fallenkingdom;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
-import java.util.zip.ZipOutputStream;
 
+import fr.devsylone.fallenkingdom.utils.FkConfig;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -17,7 +13,6 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import fr.devsylone.fallenkingdom.commands.FkAsyncCommandExecutor;
 import fr.devsylone.fallenkingdom.commands.FkAsyncRegisteredCommandExecutor;
@@ -49,7 +44,6 @@ import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fallenkingdom.utils.DebuggerUtils;
 import fr.devsylone.fallenkingdom.utils.FkSound;
 import fr.devsylone.fallenkingdom.version.Version;
-import fr.devsylone.fallenkingdom.utils.ZipUtils;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.rules.Rule;
 import fr.devsylone.fkpi.teams.Team;
@@ -178,40 +172,8 @@ public class Fk extends JavaPlugin
 
 		previousVersion = saveableManager.getFileConfiguration("save.yml").getString("last_version");
 
-		try
-		{
-			saveableManager.loadAll();
-		}catch(Exception ex)
-		{
-			onConnectWarnings.add("§cVotre configuration était corrompue ou invalide, elle a donc été sauvegardée puis supprimée. Désolé :S");
-			File zip = new File(getDataFolder(), "invalid-" + new SimpleDateFormat("yyyy-MM-dd HH-mm-ss").format(Calendar.getInstance().getTimeInMillis()) + ".zip");
-			ZipOutputStream outputStream;
-			try
-			{
-				zip.createNewFile();
-				outputStream = new ZipOutputStream(new FileOutputStream(zip));
-				ZipUtils.zipFile(getDataFolder(), "FallenKingdom", outputStream, false);
-				outputStream.flush();
-				outputStream.close();
-			} catch(IOException e1)
-			{
-				e1.printStackTrace();
-			}
-			for(File f : getDataFolder().listFiles())
-				if(f.getName().endsWith(".yml"))
-					f.delete();
-			saveableManager = new SaveablesManager(this);
-			saveableManager.loadAll();
-			ex.printStackTrace();
-		}
+		saveableManager.loadAll();
 
-		/*
-		 * ServerSocket & load du config.yml
-		 */
-
-		File conf = new File(getDataFolder(), "config.yml");
-		if(conf.length() == 0L)
-			conf.delete();
 		saveDefaultConfig();
 
 		if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null)
@@ -245,19 +207,14 @@ public class Fk extends JavaPlugin
 		PluginUpdater updater = new PluginUpdater(Fk.getInstance());
 		updater.runTaskAsynchronously(this);
 
-
-		new BukkitRunnable() {
-			@Override
-			public void run() {
-				saveableManager.saveAll();
-			}
-		}.runTaskTimerAsynchronously(this, 5L * 60L * 20L, 5L * 60L * 20L);
+		getServer().getScheduler().runTaskTimer(this, saveableManager::delayedSaveAll, 5L * 60L * 20L, 5L * 60L * 20L);
 	}
 
 	@Override
 	public void onDisable()
 	{
-		saveableManager.saveAll();
+		saveableManager.delayedSaveAll();
+		FkConfig.awaitSaveEnd();
 
 		if(game.getState().equals(Game.GameState.PAUSE))
 		{

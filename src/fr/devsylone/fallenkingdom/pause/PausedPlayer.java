@@ -17,6 +17,10 @@ import org.bukkit.potion.PotionEffectType;
 
 import fr.devsylone.fkpi.util.Saveable;
 
+import static fr.devsylone.fallenkingdom.utils.ConfigHelper.enumValueOf;
+import static fr.devsylone.fallenkingdom.utils.ConfigHelper.getLocation;
+import static fr.devsylone.fallenkingdom.utils.ConfigHelper.setLocation;
+
 public class PausedPlayer implements Saveable
 {
 	private String player;
@@ -51,7 +55,7 @@ public class PausedPlayer implements Saveable
 		this.gm = gm;
 		this.loc = loc;
 
-		effects = new ArrayList<PotionEffect>();
+		effects = new ArrayList<>();
 		effects.addAll(e);
 
 		inv = new ItemStack[40];
@@ -124,11 +128,11 @@ public class PausedPlayer implements Saveable
 		saturation = (float) config.getDouble("player");
 		xp = (float) config.getDouble("player");
 		oxygen = config.getInt("oxygen", 300);
-		gm = GameMode.valueOf(config.getString("gm"));
+		gm = enumValueOf(GameMode.class, config.getString("gm"), GameMode.SURVIVAL);
 
-		loc = new Location(Bukkit.getWorld(UUID.fromString(config.getString("loc.world"))), config.getInt("loc.x"), config.getInt("loc.y"), config.getInt("loc.z"), config.getInt("loc.yaw"), config.getInt("loc.pitch"));
+		loc = getLocation(config.getConfigurationSection("loc"));
 
-		effects = new ArrayList<PotionEffect>();
+		effects = new ArrayList<>();
 
 		if(config.isConfigurationSection("effects"))
 			for(String key : config.getConfigurationSection("effects").getKeys(false))
@@ -157,14 +161,7 @@ public class PausedPlayer implements Saveable
 		config.set("oxygen", oxygen);
 		config.set("gm", gm.name());
 
-		if(loc != null && loc.getWorld() != null) {
-			config.set("loc.x", loc.getBlockX());
-			config.set("loc.y", loc.getBlockY());
-			config.set("loc.z", loc.getBlockZ());
-			config.set("loc.yaw", loc.getYaw());
-			config.set("loc.pitch", loc.getPitch());
-			config.set("loc.world", loc.getWorld().getUID().toString());
-		}
+		setLocation(config.createSection("loc"), loc);
 
 		config.createSection("effects");
 
