@@ -5,69 +5,88 @@ import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fkpi.util.Saveable;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
+
+import static java.util.Objects.requireNonNull;
 
 public class PlayerManager implements Saveable
 {
 	protected final Map<UUID, Location> onTnt = new HashMap<>();
 	protected final Map<UUID, FkPlayer> playersByUUID = new HashMap<>();
-	protected final List<FkPlayer> players = new ArrayList<>();
+	protected final Map<String, FkPlayer> playersByString = new HashMap<>();
 
-	public List<FkPlayer> getConnectedPlayers()
+	public @NotNull List<@NotNull FkPlayer> getConnectedPlayers()
 	{
-		return players.stream()
-				.filter(player -> {
-					Player p = Bukkit.getPlayer(player.getName());
-					return p != null && Fk.getInstance().getWorldManager().isAffected(p.getWorld());
-				})
-				.collect(Collectors.toList());
+		List<FkPlayer> players = new LinkedList<>();
+		for (Map.Entry<UUID, FkPlayer> entry : playersByUUID.entrySet()) {
+			Player player = Bukkit.getPlayer(entry.getKey());
+			if (player != null && Fk.getInstance().getWorldManager().isAffected(player.getWorld())) {
+				players.add(entry.getValue());
+			}
+		}
+		return players;
 	}
 
-	public void putOnTnt(UUID player, Location tnt)
+	public @NotNull List<@NotNull Player> getOnlinePlayers()
+	{
+		List<Player> players = new LinkedList<>();
+		for (Map.Entry<UUID, FkPlayer> entry : playersByUUID.entrySet()) {
+			Player player = Bukkit.getPlayer(entry.getKey());
+			if (player != null && Fk.getInstance().getWorldManager().isAffected(player.getWorld())) {
+				players.add(player);
+			}
+		}
+		return players;
+	}
+
+	public void putOnTnt(@NotNull UUID player, @NotNull Location tnt)
 	{
 		onTnt.put(player, tnt);
 	}
 
-	public boolean wasOnTnt(UUID player)
+	public boolean wasOnTnt(@NotNull UUID player)
 	{
 		return onTnt.containsKey(player);
 	}
 
-	public void removeOnTnt(UUID player)
+	public void removeOnTnt(@NotNull UUID player)
 	{
 		onTnt.remove(player);
 	}
 
-	public Location getTntLoc(UUID player)
+	public @Nullable Location getTntLoc(@NotNull UUID player)
 	{
 		return onTnt.get(player);
 	}
 
-	public FkPlayer getPlayer(String name)
+	public @NotNull FkPlayer getPlayer(@NotNull String name)
 	{
-		for(FkPlayer player : players)
-			if(player.getName().equalsIgnoreCase(name))
-				return player;
-
-		FkPlayer player = new FkPlayer(name);
-		players.add(player);
-		return player;
+		return this.playersByString.computeIfAbsent(name, FkPlayer::new);
 	}
 
-	public FkPlayer getPlayer(Player player)
+	public @NotNull FkPlayer getPlayer(@NotNull OfflinePlayer player)
 	{
-		return playersByUUID.computeIfAbsent(player.getUniqueId(), s -> getPlayer(player.getName()));
+		FkPlayer fkPlayer = playersByUUID.get(player.getUniqueId());
+		if (fkPlayer != null) {
+			return fkPlayer;
+		}
+
+		fkPlayer = getPlayer(requireNonNull(player.getName(), "player name is not set"));
+		playersByUUID.put(player.getUniqueId(), fkPlayer);
+		return fkPlayer;
 	}
 
-	public FkPlayer getPlayerIfExist(Player player)
+	public @Nullable FkPlayer getPlayerIfExist(@NotNull Player player)
 	{
 		return playersByUUID.get(player.getUniqueId());
 	}
@@ -75,15 +94,17 @@ public class PlayerManager implements Saveable
 	@Override
 	public void load(ConfigurationSection config)
 	{
-		if(config.contains("Players"))
-			for(String key : config.getConfigurationSection("Players").getKeys(false))
-				getPlayer(key).load(config.getConfigurationSection("Players." + key));
+		ConfigurationSection section = config.getConfigurationSection("Players");
+		if(section == null)
+			return;
+		for(String key : section.getKeys(false))
+			getPlayer(key).loadNullable(section.getConfigurationSection(key));
 	}
 
 	@Override
 	public void save(ConfigurationSection config)
 	{
-		for(FkPlayer p : players)
-			p.save(config.createSection("Players." + p.getName()));
+		for(Map.Entry<String, FkPlayer> entry : playersByString.entrySet())
+			entry.getValue().save(config.createSection("Players." + entry.getKey()));
 	}
 }

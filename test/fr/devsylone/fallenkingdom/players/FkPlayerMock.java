@@ -9,7 +9,7 @@ public class FkPlayerMock extends FkPlayer {
     private final FkScoreboard board = mock(FkScoreboard.class);
 
     public FkPlayerMock(String name) {
-        super(name + "mock");
+        super(name);
     }
 
     @Override

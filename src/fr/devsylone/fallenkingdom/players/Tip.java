@@ -5,6 +5,7 @@ import fr.devsylone.fallenkingdom.commands.abstraction.AbstractCommand;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
 import fr.devsylone.fallenkingdom.utils.Messages;
 
+import java.util.Objects;
 import java.util.Optional;
 
 public class Tip
@@ -47,5 +48,18 @@ public class Tip
 		{
 			return "§b" + tip.getMessage();
 		}
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Tip tip1 = (Tip) o;
+		return Objects.equals(command, tip1.command) && tip == tip1.tip;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(command, tip);
 	}
 }

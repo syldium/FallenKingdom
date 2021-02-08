@@ -118,11 +118,9 @@ public abstract class AbstractCommand
 
     protected void broadcast(String message, FkSound sound) {
         broadcast(message);
-        Fk.getInstance().getPlayerManager().getConnectedPlayers()
-                .forEach(p -> {
-                    Player player = Bukkit.getPlayer(p.getName());
-                    player.playSound(player.getLocation(), sound.bukkitSound(),1.0f,1.0f);
-                });
+        for (Player player : Fk.getInstance().getPlayerManager().getOnlinePlayers()) {
+            player.playSound(player.getLocation(), sound.bukkitSound(),1.0f,1.0f);
+        }
     }
 
     public boolean shouldDisplay() {

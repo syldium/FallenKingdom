@@ -1,9 +1,11 @@
 package fr.devsylone.fallenkingdom.manager;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.Set;
 
 import fr.devsylone.fallenkingdom.commands.abstraction.AbstractCommand;
 import fr.devsylone.fallenkingdom.commands.debug.Bug;
@@ -31,8 +33,8 @@ import fr.devsylone.fallenkingdom.utils.FkSound;
 public class TipsManager
 {
 	private final List<Tip> tips = new ArrayList<>();
-	private final List<Tip> displayed = new ArrayList<>();
-	private final List<Tip> used = new ArrayList<>();
+	private final Set<Tip> displayed = new HashSet<>();
+	private final Set<Tip> used = new HashSet<>();
 	private final int tipsSize;
 	private int task;
 
@@ -95,7 +97,7 @@ public class TipsManager
 	public void addUsed(AbstractCommand cmd)
 	{
 		Optional<Tip> usedTip = tips.stream().filter(t -> t.getCommandClass() != null && t.getCommandClass().equals(cmd.getClass())).findFirst();
-		if(usedTip.isPresent() && !used.contains(usedTip.get()))
+		if(usedTip.isPresent())
 			used.add(usedTip.get());
 	}
 

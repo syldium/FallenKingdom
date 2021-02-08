@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
 
@@ -249,8 +248,8 @@ public class ScoreboardManager implements Saveable
 					team.getScoreboardTeam().removeEntry(entry);
 			}
 		}
-		for(FkPlayer player : Fk.getInstance().getPlayerManager().getConnectedPlayers())
-			Objects.requireNonNull(Bukkit.getPlayer(player.getName()), "Player is offline.").setScoreboard(scoreboard);
+		for(Player player : Fk.getInstance().getPlayerManager().getOnlinePlayers())
+			player.setScoreboard(scoreboard);
 	}
 
 	public void reset()
@@ -320,7 +319,7 @@ public class ScoreboardManager implements Saveable
 	{
 		for(FkPlayer p : Fk.getInstance().getPlayerManager().getConnectedPlayers())
 		{
-			if(p != null && p.getScoreboard() != null) // http://fkdevsylone.000webhostapp.com/FK/manage/viewissue.php?id=120
+			if(p.getScoreboard() != null) // http://fkdevsylone.000webhostapp.com/FK/manage/viewissue.php?id=120
 				p.getScoreboard().remove();
 		}
 	}
