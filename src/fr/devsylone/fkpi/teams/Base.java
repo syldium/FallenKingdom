@@ -4,10 +4,14 @@ import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 
 import fr.devsylone.fallenkingdom.utils.XBlock;
 import fr.devsylone.fkpi.util.Saveable;
+
+import java.util.Objects;
 
 /**
  * Cette classe Base reprèsente la base d'une Team.
@@ -53,6 +57,8 @@ public class Base implements Saveable
 
 	private ChestsRoom chestRoom;
 
+	private int minX, minZ, maxX, maxZ;
+
 	/**
 	 * <b>Note : </b>Le champs {@link fr.devsylone.fkpi.teams.Base#tp} est instancié en fonction du centre donné.
 	 * @param team L'équipe à qui appartient la base.
@@ -76,25 +82,75 @@ public class Base implements Saveable
 		 */
 		if(center != null)
 			tp = getCenter().add(0, 1, 1);
+
+		updateMinMaxLoc();
+	}
+
+	private void updateMinMaxLoc()
+	{
+		if (center == null) return;
+		this.minX = center.getBlockX() - radius;
+		this.minZ = center.getBlockZ() - radius;
+		this.maxX = center.getBlockX() + radius;
+		this.maxZ = center.getBlockZ() + radius;
 	}
 
 	/**
-	 * Repère si la Location se trouve dans la base ou non, sans prendre en compte l'axe y (hauteur).
-	 * @param loc Location à vérifier.
-	 * @param lag Le nombre à ajouter au rayon de la base
-	 * @return
-	 * 	- <b>true</b> Si la Location est à l'intérieur de la base.<br>
-	 *         - <b>false</b> Dans le cas contraire.
+	 * Teste si le point avec ces coordonnées se trouve dans la base.
+	 *
+	 * <p>L'axe Y n'a pas d'incidence, mais il pourrait être utilisé dans le futur.</p>
+	 *
+	 * @param world Le monde où ce point est situé.
+	 * @param x La coordonnée X.
+	 * @param y La coordonnée Y, actuellement inutilisée.
+	 * @param z La coordonnée Z.
+	 * @param lag Le nombre à ajouter au rayon de la base.
+	 * @return {@code true} Si le point est à l'intérieur de la base, {@code false} sinon.
 	 */
+	public boolean contains(World world, int x, int y, int z, int lag)
+	{
+		return x >= minX - lag && x <= maxX + lag
+				&& z >= minZ - lag && z <= maxZ + lag
+				&& Objects.equals(world, center.getWorld());
+	}
 
+	public boolean contains(World world, int x, int y, int z)
+	{
+		return contains(world, x, y, z, 0);
+	}
+
+	/**
+	 * Teste si cet endroit se trouve dans la base.
+	 *
+	 * @param loc L'endroit à tester.
+	 * @param lag Le nombre à ajouter au rayon de la base.
+	 * @return {@code true} Si l'endroit est à l'intérieur de la base, {@code false} sinon.
+	 */
 	public boolean contains(Location loc, int lag)
 	{
-		return loc.getBlockX() >= center.getBlockX() - (radius + lag) && loc.getBlockX() <= (center.getBlockX() + radius + lag) && loc.getBlockZ() >= center.getBlockZ() - (radius + lag) && loc.getBlockZ() <= center.getBlockZ() + radius + lag && loc.getWorld() == center.getWorld();
+		return contains(loc.getWorld(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), lag);
 	}
 
 	public boolean contains(Location loc)
 	{
 		return contains(loc, 0);
+	}
+
+	/**
+	 * Teste si ce bloc se trouve dans la base.
+	 *
+	 * @param block Le bloc à tester.
+	 * @param lag Le nombre à ajouter au rayon de la base.
+	 * @return {@code true} Si le bloc est à l'intérieur de la base, {@code false} sinon.
+	 */
+	public boolean contains(Block block, int lag)
+	{
+		return contains(block.getWorld(), block.getX(), block.getY(), block.getZ(), lag);
+	}
+
+	public boolean contains(Block block)
+	{
+		return contains(block, 0);
 	}
 
 	/**
@@ -122,7 +178,7 @@ public class Base implements Saveable
 		return chestRoom;
 	}
 	
-	public void resetChestoom()
+	public void resetChestRoom()
 	{
 		chestRoom = new ChestsRoom(this);
 	}
@@ -245,6 +301,9 @@ public class Base implements Saveable
 		if(loc == null)
 			return null;
 
+		if(loc.getWorld() == null)
+			return loc;
+
 		while(XBlock.isReplaceable(loc.getBlock()) && loc.getY() > 1.0D)
 			loc.add(0, -1, 0);
 		
@@ -264,6 +323,7 @@ public class Base implements Saveable
 
 		if(config.isConfigurationSection("ChestsRoom"))
 			chestRoom.load(config.getConfigurationSection("ChestsRoom"));
+		updateMinMaxLoc();
 	}
 
 	@Override

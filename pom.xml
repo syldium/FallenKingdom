@@ -124,6 +124,12 @@
             <version>0.22.1</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>20.1.0</version>
+            <scope>provided</scope>
+        </dependency>
         <!-- Used to check the structure of NMS packets -->
         <!--<dependency>
             <groupId>io.papermc.minecraft-server</groupId>

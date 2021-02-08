@@ -361,7 +361,7 @@ public class Fk extends JavaPlugin
 		for(Team team : fkPI.getTeamManager().getTeams())
 		{
 			if(team.getBase() != null)
-				team.getBase().resetChestoom();
+				team.getBase().resetChestRoom();
 		}
 		getScoreboardManager().recreateAllScoreboards();
 	}

@@ -7,22 +7,30 @@ import fr.devsylone.fallenkingdom.version.Environment;
 import fr.devsylone.fkpi.api.ITeam;
 import fr.devsylone.fkpi.api.event.PlayerTeamChangeEvent;
 import fr.devsylone.fkpi.api.event.TeamUpdateEvent;
+import fr.devsylone.fkpi.teams.Base;
 import fr.devsylone.fkpi.teams.Team;
 import fr.devsylone.fkpi.util.Color;
 import fr.devsylone.fkpi.util.Saveable;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import static java.util.Objects.requireNonNull;
 
 public class TeamManager implements Saveable
 {
@@ -80,6 +88,43 @@ public class TeamManager implements Saveable
 		return null;
 	}
 
+	public @NotNull Optional<@NotNull Base> getBase(@NotNull Location location, int lag) {
+		requireNonNull(location, "location");
+
+		// N'arrondir qu'une seule fois
+		World world = location.getWorld();
+		int x = location.getBlockX();
+		int y = location.getBlockY();
+		int z = location.getBlockZ();
+
+		for (Team team : teams) {
+			Base base = team.getBase();
+			if (base != null && base.contains(world, x, y, z, lag)) {
+				return Optional.of(base);
+			}
+		}
+		return Optional.empty();
+	}
+
+	public @NotNull Optional<@NotNull Base> getBase(@NotNull Location location) {
+		return getBase(location, 0);
+	}
+
+	public @NotNull Optional<@NotNull Base> getBase(@NotNull Block block, int lag) {
+		requireNonNull(block, "block");
+		for (Team team : teams) {
+			Base base = team.getBase();
+			if (base != null && base.contains(block, lag)) {
+				return Optional.of(base);
+			}
+		}
+		return Optional.empty();
+	}
+
+	public @NotNull Optional<@NotNull Base> getBase(@NotNull Block block) {
+		return getBase(block, 0);
+	}
+
 	public List<Team> getTeams()
 	{
 		return teams;
@@ -90,7 +135,7 @@ public class TeamManager implements Saveable
 		return teams.stream().map(Team::getName).collect(Collectors.toList());
 	}
 
-	private Team getPlayerTeam(String player)
+	public Team getPlayerTeam(String player)
 	{
 		if(player == null)
 			return null;
@@ -174,11 +219,14 @@ public class TeamManager implements Saveable
 	@Override
 	public void load(ConfigurationSection config)
 	{
-		for(String teamS : config.getKeys(false))
-			createTeam(teamS);
-
-		for(Team t : teams)
-			t.load(config.getConfigurationSection(t.getName()));
+		for (Map.Entry<String, Object> entry : config.getValues(false).entrySet()) {
+			if (!createTeam(entry.getKey())) {
+				continue;
+			}
+			if (entry.getValue() instanceof ConfigurationSection) {
+				getTeam(entry.getKey()).load((ConfigurationSection) entry.getValue());
+			}
+		}
 
 		Fk.getInstance().getWorldManager().invalidateBaseWorldsCache(this);
 	}
