@@ -75,11 +75,7 @@ public class Environment {
 
     public static void setDeathMessage(PlayerDeathEvent event, Team playerTeam, Team killerTeam) {
         if (HAS_ADVENTURE_API) {
-            try {
-                AdventureFormat.setDeathMessage(event, playerTeam, killerTeam);
-            } catch (ReflectiveOperationException e) {
-                e.printStackTrace();
-            }
+            AdventureFormat.setDeathMessage(event, playerTeam, killerTeam);
             return;
         }
 
