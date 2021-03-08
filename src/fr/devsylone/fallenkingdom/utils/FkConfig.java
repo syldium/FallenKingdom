@@ -88,7 +88,7 @@ public class FkConfig extends YamlConfiguration {
 
                 try {
                     File parent = file.getCanonicalFile().getParentFile();
-                    if (!parent.mkdirs()) {
+                    if (!parent.exists() && !parent.mkdirs()) {
                         LOGGER.log(Level.SEVERE, "Unable to create the parent folder.");
                     }
 
