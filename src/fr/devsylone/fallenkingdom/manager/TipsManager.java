@@ -25,6 +25,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.commands.chests.chestscommands.Add;
+import fr.devsylone.fallenkingdom.commands.chests.chestscommands.ChestLock;
 import fr.devsylone.fallenkingdom.game.Game.GameState;
 import fr.devsylone.fallenkingdom.players.Tip;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
@@ -51,6 +52,7 @@ public class TipsManager
 		newTip(Add.class, Messages.TIP_LOCKED_CHEST);
 		newTip(DayDuration.class, Messages.TIP_DAY_DURATION);
 		newTip(DisabledPotions.class, Messages.TIP_DISABLED_POTIONS);
+		newTip(ChestLock.class, Messages.TIP_CHEST_LOCK);
 
 		newTip(null, Messages.TIP_TAB_COMPLETION);
 		newTip(null, Messages.TIP_DISCORD);

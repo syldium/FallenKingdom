@@ -311,6 +311,7 @@ public enum Messages
     TIP_TAB_COMPLETION("tip.tabCompletion"),
     TIP_TNT_JUMP("tip.tntJump"),
     TIP_WATER_NEXT_TO_BASE("tip.waterNextToBase"),
+    TIP_CHEST_LOCK("tip.chestLock"),
 
     UNIT_BLOCK("block"),
     UNIT_BLOCKS("blocks"),
