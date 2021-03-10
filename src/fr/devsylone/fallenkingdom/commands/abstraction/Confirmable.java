@@ -38,7 +38,7 @@ public interface Confirmable {
     default String createWarning(Messages warning, boolean format) {
         StringBuilder builder = new StringBuilder();
         if (format)
-            builder.append("§c§m--------------§c ").append(Messages.WARNING.getMessage()).append("§c§m--------------\n");
+            builder.append("§c§m--------------§c ").append(Messages.WARNING.getMessage()).append(" §c§m--------------\n");
         builder.append(ChatColor.RESET).append(ChatColor.RED).append(warning.getMessage());
         if (format)
             builder.append("§c§m--------------------------------------");
