@@ -3,6 +3,8 @@ package fr.devsylone.fallenkingdom.scoreboard;
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.manager.packets.PacketManager;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
+import fr.devsylone.fallenkingdom.utils.Messages;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -39,17 +41,17 @@ public class ScoreboardDisplayer
 
 		Location location = player.getLocation();
 
-		entities.add(packetManager.createFloatingText("§e Pour modifier une ligne : ", player, location));
-		entities.add(packetManager.createFloatingText("§e >>>>> /fk scoreboard SetLine <<<<< ", player, location));
-		entities.add(packetManager.createFloatingText("§aUtilise la §2molette §a de ta §2souris", player, location));
-		entities.add(packetManager.createFloatingText("§aPuis regarde ton scoreboard     ↘↘↘↘↘↘↘", player, location));
+		entities.add(packetManager.createFloatingText(Messages.CMD_MAP_SCOREBOARD_DISPLAYER_EDIT_LINE.getMessage(), player, location));
+		entities.add(packetManager.createFloatingText("§e >>>>> /fk scoreboard setLine <<<<< ", player, location));
+		entities.add(packetManager.createFloatingText(Messages.CMD_MAP_SCOREBOARD_DISPLAYER_USE_WHEEL.getMessage(), player, location));
+		entities.add(packetManager.createFloatingText(Messages.CMD_MAP_SCOREBOARD_DISPLAYER_LOOK_SCOREBOARD.getMessage(), player, location));
 
-		entities.add(packetManager.createFloatingText("§bVoici la liste des variables utilisables !", player, location));
+		entities.add(packetManager.createFloatingText(Messages.CMD_MAP_SCOREBOARD_DISPLAYER_VARIABLES.getMessage(), player, location));
 
 		for(PlaceHolder ph : PlaceHolder.values())
 			entities.add(packetManager.createFloatingText("§8" + ph.getDescription() + "        §c->§r        " + ph.getShortestKey(), player, location));
 
-		entities.add(packetManager.createFloatingText("Pour §cquitter §r: §e/fk scoreboard leaveEdit", player, location));
+		entities.add(packetManager.createFloatingText(Messages.CMD_MAP_SCOREBOARD_DISPLAYER_LEAVE_EDIT.getMessage(), player, location));
 
 		startUpdateRunnable();
 		fkPlayer.recreateScoreboard();

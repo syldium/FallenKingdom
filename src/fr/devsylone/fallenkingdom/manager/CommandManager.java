@@ -16,6 +16,7 @@ import fr.devsylone.fallenkingdom.commands.teams.FkTeamCommand;
 import fr.devsylone.fallenkingdom.exception.ArgumentParseException;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
 import fr.devsylone.fallenkingdom.game.Game;
+import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -97,7 +98,7 @@ public class CommandManager
 			result = CommandResult.STATE_ERROR;
 		} catch (Throwable e) {
 			e.printStackTrace();
-			sender.sendMessage(ChatColor.RED + "Une erreur inconnue est survenue, merci de la signaler");
+			sender.sendMessage("§c" + Messages.CMD_ERROR);
 			result = CommandResult.FAILURE;
 		}
 

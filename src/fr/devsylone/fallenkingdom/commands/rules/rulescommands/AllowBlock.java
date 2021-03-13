@@ -22,9 +22,6 @@ import java.util.List;
 
 public class AllowBlock extends FkCommand
 {
-	// Si ENDER dans le nom, même si c'est un mauvais material, prévenir que les yeux c'est une state du ENDER_PORTAL_FRAME
-	private static final String ENDER_EYE_MSG = "§a[Note] Si vous souhaitez autoriser les joueurs à compléter les portails de l'end avec des yeux, utilisez §e/fk rules allowblock " + XMaterial.END_PORTAL_FRAME.parseMaterial().name();
-
 	public AllowBlock()
 	{
 		super("allowBlock", Argument.list(Argument.create("block", false, "sinon prendra le bloc tenu en main")), Messages.CMD_MAP_RULES_ALLOW_BLOCK, CommandPermission.ADMIN);
@@ -41,7 +38,8 @@ public class AllowBlock extends FkCommand
 		} else {
 			material = ArgumentParser.parseBlock(0, args, (Player) sender, true);
 		}
-		makeSuggestionIf(material.getMaterial().name(), "ender", ENDER_EYE_MSG, sender);
+			// Si ENDER dans le nom, même si c'est un mauvais material, prévenir que les yeux c'est une state du ENDER_PORTAL_FRAME
+		makeSuggestionIf(material.getMaterial().name(), "ender", Messages.CMD_RULES_ENDER_EYE_MSG + " " + XMaterial.END_PORTAL_FRAME.parseMaterial().name() + "&a.", sender);
 
 		AllowedBlocks rule = FkPI.getInstance().getRulesManager().getRule(Rule.ALLOWED_BLOCKS);
 

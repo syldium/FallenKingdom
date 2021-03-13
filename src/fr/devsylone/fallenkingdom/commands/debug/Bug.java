@@ -20,7 +20,7 @@ public class Bug extends FkCommand
 	@Override
 	public CommandResult execute(Fk plugin, CommandSender sender, List<String> args, String label)
 	{
-		ChatUtils.sendMessage(sender, "Pour signaler un bug : https://discord.gg/2mPXHYX");
+		ChatUtils.sendMessage(sender, Messages.CMD_MAP_BUG_BUG);
 		return CommandResult.SUCCESS;
 	}
 }

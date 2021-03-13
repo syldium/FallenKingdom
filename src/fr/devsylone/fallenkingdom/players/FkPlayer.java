@@ -122,7 +122,7 @@ public class FkPlayer implements Saveable
 	public void exitSbDisplayer()
 	{
 		if(sbDisplayer == null)
-			throw new FkLightException("Tu n'es pas en train d'éditer le scoreboard !");
+			throw new FkLightException(Messages.CMD_ERROR_SCOREBOARD_NOT_EDITING);
 
 		setState(PlayerState.INGAME);
 		sbDisplayer.exit();
@@ -132,14 +132,14 @@ public class FkPlayer implements Saveable
 	public ScoreboardDisplayer getSbDisplayer()
 	{
 		if(sbDisplayer == null)
-			throw new FkLightException("Tu n'es pas en train d'éditer le scoreboard !");
+			throw new FkLightException(Messages.CMD_ERROR_SCOREBOARD_NOT_EDITING);
 		return sbDisplayer;
 	}
 
 	public void newSbDisplayer()
 	{
 		if(sbDisplayer != null)
-			throw new FkLightException("Tu es déjà en train d'éditer le scoreboard !");
+			throw new FkLightException(Messages.CMD_ERROR_SCOREBOARD_ALREADY_EDITING);
 
 		setState(PlayerState.EDITING_SCOREBOARD);
 		sbDisplayer = new ScoreboardDisplayer(this);

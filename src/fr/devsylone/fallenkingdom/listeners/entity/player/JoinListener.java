@@ -87,7 +87,7 @@ public class JoinListener implements Listener
 
 	private String kickMessage()
 	{
-		return "§d§m----------§5 Fallenkingdom §d§m----------\n"
+		return "§d§m----------§5 FallenKingdom §d§m----------\n"
 				+ "\n"
 				+ "§6Le plugin a rencontré une erreur\n\n"
 				+ "§7Erreur : §c" + Fk.getInstance().getPluginError();

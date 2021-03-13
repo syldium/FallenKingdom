@@ -28,7 +28,7 @@ public class SetLine extends FkCommand
 		String content = args.stream().skip(1).collect(Collectors.joining(" "));
 		int maxLength = Version.VersionType.V1_13.isHigherOrEqual() ? 64 : 32;
 		if (content.length() > maxLength) {
-			throw new FkLightException("La ligne contient trop de caractères.");
+			throw new FkLightException(Messages.CMD_ERROR_SCOREBOARD_TOO_MANY_CHARS);
 		}
 		plugin.getScoreboardManager().setLine(line, content.replace("&", "§"));
 		return CommandResult.SUCCESS;

@@ -26,7 +26,7 @@ public class ChestsList extends FkCommand
         if(Fk.getInstance().getFkPI().getLockedChestsManager().getChestList().size() == 0)
             throw new FkLightException(Messages.CMD_ERROR_EMPTY_CHESTS_LIST);
         List<String> builder = new ArrayList<>();
-        builder.add(ChatColor.DARK_GREEN + "§m-----------------" + ChatColor.BLUE + " Liste " + ChatColor.DARK_GREEN + "§m-----------------");
+        builder.add(ChatColor.DARK_GREEN + "§m----------------- " + ChatColor.BLUE + Messages.CMD_TEAMS_AND_CHESTS_LIST + ChatColor.DARK_GREEN + " §m-----------------");
         for(LockedChest chest : Fk.getInstance().getFkPI().getLockedChestsManager().getChestList())
         {
             builder.add(Messages.CMD_LOCKED_CHEST_LIST_INFO.getMessage()

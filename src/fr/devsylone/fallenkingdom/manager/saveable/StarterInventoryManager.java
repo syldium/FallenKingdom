@@ -7,6 +7,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
+import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fkpi.util.Saveable;
 
 import java.util.Arrays;
@@ -48,7 +49,7 @@ public class StarterInventoryManager implements Saveable
 
 	public void show(Player p)
 	{
-		Inventory inv = Bukkit.createInventory(null, 6 * 9, "§bInventaire de départ");
+		Inventory inv = Bukkit.createInventory(null, 6 * 9, Messages.CMD_MAP_GAME_STARTER_INV_INVENTORY.getMessage());
 
 		for(int i = 0; i < armors.length; i++)
 			inv.setItem(i, armors[i]);

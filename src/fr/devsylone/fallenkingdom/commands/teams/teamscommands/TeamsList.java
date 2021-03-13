@@ -29,7 +29,7 @@ public class TeamsList extends FkCommand
 			throw new FkLightException(Messages.CMD_ERROR_NO_TEAM);
 
 		List<String> builder = new ArrayList<>();
-		builder.add(ChatColor.DARK_GREEN + "§m-------------------" + ChatColor.DARK_BLUE + " Liste " + ChatColor.DARK_GREEN + "§m-------------------");
+		builder.add(ChatColor.DARK_GREEN + "§m------------------- " + ChatColor.DARK_BLUE + Messages.CMD_TEAMS_AND_CHESTS_LIST + ChatColor.DARK_GREEN + " §m-------------------");
 
 		for(Team team : plugin.getFkPI().getTeamManager().getTeams())
 		{

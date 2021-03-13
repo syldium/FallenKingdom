@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
+import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fkpi.util.Saveable;
 
 import static fr.devsylone.fallenkingdom.utils.ConfigHelper.loadSectionsWithIndex;
@@ -48,7 +49,7 @@ public class PauseRestorer implements Saveable
 
 		List<PausedPlayer> pausedPlayers = pauses.get(id);
 		if(pausedPlayers == null)
-			throw new FkLightException("id invalide");
+			throw new FkLightException(Messages.CMD_GAME_RESTORE_INVALID_ID);
 
 		List<String> failed = new LinkedList<>();
 		for(PausedPlayer p : pausedPlayers)
@@ -56,7 +57,7 @@ public class PauseRestorer implements Saveable
 				failed.add(p.getPlayer());
 
 		if(!failed.isEmpty())
-			Fk.broadcast("§cAttention, les joueurs suivants ne sont pas connectés et leur état n'a pas été restauré : §b" + String.join("§c, §b", failed));
+			Fk.broadcast(Messages.CMD_GAME_RESTORE_PLAYERS_DOESNOT_CONNECT + " §b" + String.join("§c, §b", failed));
 		return id;
 	}
 

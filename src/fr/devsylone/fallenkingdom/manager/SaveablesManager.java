@@ -3,6 +3,7 @@ package fr.devsylone.fallenkingdom.manager;
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.updater.FilesUpdater;
 import fr.devsylone.fallenkingdom.utils.FkConfig;
+import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fallenkingdom.utils.ZipUtils;
 import fr.devsylone.fkpi.util.Saveable;
 import org.bukkit.configuration.ConfigurationSection;
@@ -97,7 +98,7 @@ public class SaveablesManager {
 		}
 
 		if (!corrupted.isEmpty()) {
-			plugin.getOnConnectWarnings().add("§cVotre configuration était corrompue ou invalide, elle a donc été sauvegardée puis supprimée. Désolé :S");
+			plugin.getOnConnectWarnings().add(Messages.CORRUPT_CONFIG_FILES.getMessage());
 			File zip = new File(plugin.getDataFolder(), "invalid-" + new SimpleDateFormat("yyyy-MM-dd HH-mm-ss").format(Calendar.getInstance().getTimeInMillis()) + ".zip");
 			try {
 				zip.createNewFile();

@@ -24,7 +24,7 @@ public class SetName extends FkCommand
 		String line = String.join(" ", args);
 
 		if(line.length() >= 32)
-			throw new FkLightException("Le titre ne peut faire plus de 32 caractères");
+			throw new FkLightException(Messages.CMD_ERROR_SCOREBOARD_TITLE_TOO_LONG);
 
 		Fk.getInstance().getScoreboardManager().setName(line.replace("&", "§"));
 		return CommandResult.SUCCESS;

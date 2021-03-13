@@ -72,6 +72,10 @@ public enum Messages
     CMD_ERROR_SCOREBOARD_CANNOT_UNDO("cmd.error.scoreboard.cannot-undo"),
     CMD_ERROR_SCOREBOARD_BEING_LEARN_EDIT("cmd.error.scoreboard.learn"),
     CMD_ERROR_SCOREBOARD_INVALID_LINE("cmd.error.scoreboard.invalid-line"),
+    CMD_ERROR_SCOREBOARD_TOO_MANY_CHARS("cmd.error.scoreboard.too-many-chars"),
+    CMD_ERROR_SCOREBOARD_TITLE_TOO_LONG("cmd.error.scoreboard.title-too-long"),
+    CMD_ERROR_SCOREBOARD_ALREADY_EDITING("cmd.error.scoreboard.already-editing"),
+    CMD_ERROR_SCOREBOARD_NOT_EDITING("cmd.error.scoreboard.not.editing"),
     CMD_ERROR_STARTER_INV_CANNOT_UNDO("cmd.error.game.starterInv.cannot-undo"),
     CMD_ERROR_TEAM_ALREADY_EXIST("cmd.error.team.already-exist"),
     CMD_ERROR_TEAM_INVALID_NAME("cmd.error.team.invalid-name"),
@@ -86,6 +90,8 @@ public enum Messages
     CMD_GAME_PAUSE_SAVE_INFO("cmd.game.pause.save-info"),
     CMD_GAME_RESET("cmd.game.reset"),
     CMD_GAME_RESTORE("cmd.game.restore"),
+    CMD_GAME_RESTORE_INVALID_ID("cmd.game.restore.invalid.id"),
+    CMD_GAME_RESTORE_PLAYERS_DOESNOT_CONNECT("cmd.game.restore.players-doesnot-connect"),
     CMD_GAME_RESUME("cmd.game.resume"),
     CMD_GAME_STARTER_INV_CANCEL("cmd.game.starterInv.cancel"),
     CMD_GAME_STARTER_INV_UNDO("cmd.game.starterInv.undo"),
@@ -103,6 +109,7 @@ public enum Messages
     CMD_LOCKED_CHEST_UNLOCKED("cmd.chests.unlocked"),
 
     CMD_MAP_BUG("cmd.map.bug"),
+    CMD_MAP_BUG_BUG("cmd.map.bug.bug"),
 
     CMD_MAP_CHEST("cmd.map.chests"),
     CMD_MAP_CHEST_ADD("cmd.map.chests.add"),
@@ -118,6 +125,7 @@ public enum Messages
     CMD_MAP_GAME_RESUME("cmd.map.game.resume"),
     CMD_MAP_GAME_START("cmd.map.game.start"),
     CMD_MAP_GAME_STARTER_INV("cmd.map.game.starterInv"),
+    CMD_MAP_GAME_STARTER_INV_INVENTORY("cmd.map.game.starterInv.inventory"),
     CMD_MAP_GAME_STOP("cmd.map.game.stop"),
 
     CMD_MAP_LANG("cmd.map.lang"),
@@ -158,6 +166,15 @@ public enum Messages
     CMD_MAP_SCOREBOARD_SET_NAME("cmd.map.scoreboard.setName"),
     CMD_MAP_SCOREBOARD_UNDO("cmd.map.scoreboard.undo"),
 
+    CMD_MAP_SCOREBOARD_DISPLAYER_EDIT_LINE("cmd.map.scoreboard.displayer.edit-line"),
+    CMD_MAP_SCOREBOARD_DISPLAYER_USE_WHEEL("cmd.map.scoreboard.displayer.use-wheel"),
+    CMD_MAP_SCOREBOARD_DISPLAYER_LOOK_SCOREBOARD("cmd.map.scoreboard.displayer.look-scoreboard"),
+    CMD_MAP_SCOREBOARD_DISPLAYER_VARIABLES("cmd.map.scoreboard.displayer.variables"),
+    CMD_MAP_SCOREBOARD_DISPLAYER_LEAVE_EDIT("cmd.map.scoreboard.displayer.leave-edit"),
+
+    CMD_SCOREBOARD_NO_TEAM("cmd.scoreboard.no-team"),
+    CMD_SCOREBOARD_NO_BASE("cmd.scoreboard.no-base"),
+
     CMD_MAP_TEAM("cmd.map.team"),
     CMD_MAP_TEAM_ADD_PLAYER("cmd.map.team.addPlayer"),
     CMD_MAP_CHEST_ROOM("cmd.map.team.chestRoom"),
@@ -176,6 +193,7 @@ public enum Messages
 
     CMD_RULES_ACTIVATED("cmd.rules.activated"),
     CMD_RULES_ALLOW_BLOCK("cmd.rules.allow-block.allowed"),
+    CMD_RULES_ENDER_EYE_MSG("cmd.rules.ender-eye-msg"),
     CMD_RULES_BLOCK_CAVE_ACTIVE("cmd.rules.placeBlockInCave.active"),
     CMD_RULES_BLOCK_CAVE_CONSECUTIVE("cmd.rules.placeBlockInCave.consecutive"),
     CMD_RULES_BLOCK_CAVE_INACTIVE("cmd.rules.placeBlockInCave.inactive"),
@@ -236,8 +254,13 @@ public enum Messages
     CMD_TEAM_REMOVE("cmd.team.remove"),
     CMD_TEAM_REMOVE_PLAYER("cmd.team.removePlayer"),
     CMD_TEAM_SET_BASE("cmd.team.setBase"),
-
     CMD_TEAM_SET_COLOR("cmd.team.setColor"),
+
+    CMD_TEAMS_AND_CHESTS_LIST("cmd.teams.and.chests.list"),
+
+    CMD_DEBUG_SUCCES("cmd.debug-succes"),
+    CMD_DEBUG_ERROR("cmd.debug-error"),
+
     EASTER_EGG_CHEST_EXPLODE("easter-egg.chest-explode"),
     EASTER_EGG_ANNIVERSARY_NAME("easter-egg.anniversary-name"),
     EASTER_EGG_ANNIVERSARY_LORE_1("easter-egg.anniversary-lore-1"),
@@ -313,12 +336,17 @@ public enum Messages
     TIP_WATER_NEXT_TO_BASE("tip.waterNextToBase"),
     TIP_CHEST_LOCK("tip.chestLock"),
 
+    CORRUPT_CONFIG_FILES("corrupt.config-files"),
+
     UNIT_BLOCK("block"),
     UNIT_BLOCKS("blocks"),
     UNIT_DAY("day"),
+    UNIT_DAY_MAJ("majday"),
     UNIT_DAYS("days"),
     UNIT_DEATH("death"),
     UNIT_DEATHS("deaths"),
+    UNIT_DEATHS_MAJ("majdeaths"),
+    UNIT_KILLED_MAJ("majkilled"),
     UNIT_HOUR("hour"),
     UNIT_HOURS("hours"),
     UNIT_MINUTE("minute"),
@@ -331,6 +359,8 @@ public enum Messages
     UNIT_TIMES("times"),
     UNIT_TRIES("tries"),
     UNIT_TRY("try"),
+    UNIT_TEAM_MAJ("majteam"),
+    UNIT_ASSAULTS_MAJ("majassaults"),
 
     WARNING("warning"),
     WARNING_GAME_RESET("warning.game.reset"),

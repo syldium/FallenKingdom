@@ -4,7 +4,10 @@ import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
+import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fallenkingdom.utils.DebuggerUtils;
+import fr.devsylone.fallenkingdom.utils.Messages;
+
 import org.bukkit.command.CommandSender;
 
 import java.util.List;
@@ -21,7 +24,7 @@ public class Debug extends FkCommand
     {
         boolean send = args.size() > 0 && args.get(0).equalsIgnoreCase("send");
         boolean result = DebuggerUtils.debugGame(send, sender.getName());
-        sender.sendMessage(result ? "§aFait" : "§cError");
+        sender.sendMessage(result ? Messages.CMD_DEBUG_SUCCES.getMessage() : Messages.CMD_DEBUG_ERROR.getMessage());
         plugin.getLogger().info("DEBUG DONE - send=" + send + " result=" + result + " username=" + sender.getName());
         return CommandResult.SUCCESS;
     }
