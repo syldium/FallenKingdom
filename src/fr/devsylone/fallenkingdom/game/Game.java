@@ -99,8 +99,8 @@ public class Game implements Saveable
 
 	public void load(ConfigurationSection config)
 	{
-		day = config.getInt("Day");
-		time = config.getInt("Time");
+		day = Math.max(0, config.getInt("Day"));
+		time = Math.max(0, config.getInt("Time"));
 		state = enumValueOf(GameState.class, config.getString("State"), day > 1 ? GameState.STARTED : GameState.BEFORE_STARTING);
 
 		pvpEnabled = FkPI.getInstance().getRulesManager().getRule(Rule.PVP_CAP) <= day;
