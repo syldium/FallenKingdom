@@ -122,7 +122,7 @@ public class ChestsRoom implements Saveable
 	public void show(final Player p, final int seetime)
 	{
 		if(chests.isEmpty() || min == null)
-			throw new IllegalStateException("Pas de salle des coffres");
+			throw new IllegalStateException(Messages.CMD_ERROR_NO_CHEST_ROOM.getMessage());
 
 		final Location initLoc = p.getLocation().clone();
 

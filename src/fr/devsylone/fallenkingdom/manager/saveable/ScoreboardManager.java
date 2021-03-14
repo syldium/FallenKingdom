@@ -263,19 +263,7 @@ public class ScoreboardManager implements Saveable
 		noInfo = "§4?";
 		arrows = Version.VersionType.V1_13.isHigherOrEqual() ? "⇑⇗⇒⇘⇓⇙⇐⇖" : "↑↗→↘↓↙←↖";
 		sidebar.clear();
-		sidebar.add("§f§a§k§e");
-		sidebar.add("§6" + Messages.UNIT_DAY_MAJ.getMessage() + " {D} §2{H}h{M}");
-		sidebar.add("§m------------");
-		sidebar.add(Messages.UNIT_TEAM_MAJ.getMessage() + " §e{TEAM}");
-		sidebar.add(Messages.UNIT_DEATHS_MAJ.getMessage() + " §e{MORTS}");
-		sidebar.add(Messages.UNIT_KILLED_MAJ.getMessage() + " §e{KILLS}");
-		sidebar.add("{BASE_PORTAL} : §e{DIST} §l{ARROW}");
-		sidebar.add("Pvp {PVP?}");
-		sidebar.add(Messages.UNIT_ASSAULTS_MAJ.getMessage() + " {TNT?}");
-		sidebar.add("Nether {NETHER?}");
-		sidebar.add("End {END?}");
-		sidebar.add("§m------------");
-		sidebar.add(ChatUtils.DEVSYLONE);
+		sidebar.add(Messages.SCOREBOARD_DEFAULT.getMessage());
 		computePlaceHoldersIndexes();
 	}
 

@@ -115,11 +115,11 @@ public class PlaceHolderUtils
 	{
 		Team pTeam = FkPI.getInstance().getTeamManager().getPlayerTeam(player);
 		if (pTeam != null && pTeam.getBase() != null && pTeam.getBase().getCenter().getWorld().equals(player.getWorld()))
-			return "Base";
+			return Messages.SCOREBOARD_BASE.getMessage();
 		Location portal = Fk.getInstance().getPlayerManager().getPlayer(player).getPortal();
 		if (portal != null && portal.getWorld().equals(player.getWorld()))
-			return "Portail";
-		return "Base"; // Même si on pointe vers rien
+			return Messages.SCOREBOARD_PORTAL.getMessage();
+		return Messages.SCOREBOARD_BASE.getMessage(); // Même si on pointe vers rien
 	}
 
 	public static int getDeaths(Player p)

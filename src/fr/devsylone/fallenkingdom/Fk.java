@@ -331,10 +331,10 @@ public class Fk extends JavaPlugin
 			warns.add("L'option Charged_creepers dans le fichier de configuration n'est plus utilisée, il faut utiliser /fk rules ChargedCreepers");
 
 		if(!Version.hasSpigotApi())
-			addError("Le serveur n'est pas supporté par le plugin. Seuls les serveurs basés sur Spigot sont supportés.");
+			addError("Le serveur n'est pas supporté par le plugin. Seuls les serveurs basés sur Spigot sont supportés.\nThe server is not supported by the plugin. Only Spigot based servers are supported.");
 
 		if(Version.isTooOldApi())
-			addError("La version du serveur n'est pas compatible avec le plugin,\nmerci d'utiliser au minimum la version §l§n1.8.3 de Spigot.");
+			addError("La version du serveur n'est pas compatible avec le plugin,\nmerci d'utiliser au minimum la version §l§n1.8.3 de Spigot.\n\nThe server version isn't compatible with the plugin,\nplease use at least the §l§n1.8.3 version of Spigot.");
 
 		for(String warn : warns)
 		{

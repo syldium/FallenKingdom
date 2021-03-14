@@ -12,27 +12,28 @@ import org.bukkit.entity.Player;
 
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.game.Game;
+import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fallenkingdom.utils.PlaceHolderUtils;
 
 public enum PlaceHolder
 {
-    DAY(PlaceHolderUtils.GAME_SUPPLIER, Game::getDay, "Jour", "DAY", "DAYS", "JOUR", "JOURS", "D", "J"),
-    HOUR(PlaceHolderUtils.GAME_SUPPLIER, Game::getHour, "Heure", "Heure", "HOUR", "HOURS", "HEURE", "HEURES", "H"),
-    MINUTE(PlaceHolderUtils.GAME_SUPPLIER, Game::getMinute, "Minutes", "Minute", "MINUTE", "MINUTES", "M"),
-    TEAM(PlaceHolderUtils::getTeamOf, "Équipe du joueur", "PLAYER_TEAM", "TEAM", "EQUIPE"),
-    DEATHS(PlaceHolderUtils::getDeaths, "Nombre de morts", "PLAYER_DEATHS", "DEATHS", "MORTS"),
-    KILLS(PlaceHolderUtils::getKills,"Nombre de kills", "PLAYER_KILLS", "KILLS"),
+    DAY(PlaceHolderUtils.GAME_SUPPLIER, Game::getDay, Messages.PLACE_HOLDER_DAY.getMessage(), "DAY", "DAYS", "JOUR", "JOURS", "D", "J"),
+    HOUR(PlaceHolderUtils.GAME_SUPPLIER, Game::getHour, Messages.PLACE_HOLDER_HOUR.getMessage(), "Heure", "HOUR", "HOURS", "HEURE", "HEURES", "H"),
+    MINUTE(PlaceHolderUtils.GAME_SUPPLIER, Game::getMinute, Messages.PLACE_HOLDER_MINUTES.getMessage(), "Minute", "MINUTE", "MINUTES", "M"),
+    TEAM(PlaceHolderUtils::getTeamOf, Messages.PLACE_HOLDER_PLAYER_TEAM.getMessage(), "PLAYER_TEAM", "TEAM", "EQUIPE"),
+    DEATHS(PlaceHolderUtils::getDeaths, Messages.PLACE_HOLDER_DEATHS_COUNT.getMessage(), "PLAYER_DEATHS", "DEATHS", "MORTS"),
+    KILLS(PlaceHolderUtils::getKills, Messages.PLACE_HOLDER_KILLS_COUNT.getMessage(), "KILLS"),
 
-    BASE_DISTANCE(PlaceHolderUtils::getBaseDistance,"Distance de la base", "PLAYER_DISTANCE_TO_BASE", "BASE_DISTANCE", "DISTANCE", "DIST"),
-    BASE_DIRECTION(PlaceHolderUtils::getBaseDirection,"Direction de la base", "PLAYER_BASE_DIRECTION", "BASE_DIRECTION", "DIRECTION", "ARROW", "ARROWS"),
-    BASE_OR_PORTAL(PlaceHolderUtils::getBaseOrPortal, "Base/portail selon la dimension", "BASE_OR_PORTAL", "BASE_PORTAL"),
-    NEAREST_TEAM_BASE(PlaceHolderUtils::getNearestTeamBase, "Base ennemie la plus proche", "NEAREST_TEAM_BASE", "ENEMY_TEAM_BASE", "ENEMY_BASE"),
-    NEAREST_BASE_DIRECTION(PlaceHolderUtils::getNearestBaseDirection, "Direction de la base ennemie la plus proche", "NEAREST_BASE_DIRECTION", "ENEMY_BASE_DIRECTION", "ENEMY_BASE_DIR", "ENEMY_DIR"),
+    BASE_DISTANCE(PlaceHolderUtils::getBaseDistance, Messages.PLACE_HOLDER_BASE_DISTANCE.getMessage(), "PLAYER_DISTANCE_TO_BASE", "BASE_DISTANCE", "DISTANCE", "DIST"),
+    BASE_DIRECTION(PlaceHolderUtils::getBaseDirection, Messages.PLACE_HOLDER_BASE_DIRECTION.getMessage(), "PLAYER_BASE_DIRECTION", "BASE_DIRECTION", "DIRECTION", "ARROW", "ARROWS"),
+    BASE_OR_PORTAL(PlaceHolderUtils::getBaseOrPortal, Messages.PLACE_HOLDER_BASE_OR_PORTAL.getMessage(), "BASE_OR_PORTAL", "BASE_PORTAL"),
+    NEAREST_TEAM_BASE(PlaceHolderUtils::getNearestTeamBase, Messages.PLACE_HOLDER_ENEMY_TEAM_BASE.getMessage(), "NEAREST_TEAM_BASE", "ENEMY_TEAM_BASE", "ENEMY_BASE"),
+    NEAREST_BASE_DIRECTION(PlaceHolderUtils::getNearestBaseDirection, Messages.PLACE_HOLDER_ENEMY_TEAM_BASE_DIRECTION.getMessage(), "NEAREST_BASE_DIRECTION", "ENEMY_BASE_DIRECTION", "ENEMY_BASE_DIR", "ENEMY_DIR"),
 
-    PVPCAP(PlaceHolderUtils.GAME_SUPPLIER, Game::isPvpEnabled, "Pvp actif ?", "PVP?"),
-    TNTCAP(PlaceHolderUtils.GAME_SUPPLIER, Game::isAssaultsEnabled, "Assauts actifs ?", "TNT?"),
-    NETHERCAP(PlaceHolderUtils.GAME_SUPPLIER, Game::isNetherEnabled, "Nether ouvert ?", "NETHER?"),
-    ENDCAP(PlaceHolderUtils.GAME_SUPPLIER, Game::isEndEnabled, "End ouvert ?", "END?");
+    PVPCAP(PlaceHolderUtils.GAME_SUPPLIER, Game::isPvpEnabled, Messages.PLACE_HOLDER_ACTIVE_PVP.getMessage(), "PVP?"),
+    TNTCAP(PlaceHolderUtils.GAME_SUPPLIER, Game::isAssaultsEnabled, Messages.PLACE_HOLDER_ACTIVE_ASSAULTS.getMessage(), "TNT?"),
+    NETHERCAP(PlaceHolderUtils.GAME_SUPPLIER, Game::isNetherEnabled, Messages.PLACE_HOLDER_OPEN_NETHER.getMessage(), "NETHER?"),
+    ENDCAP(PlaceHolderUtils.GAME_SUPPLIER, Game::isEndEnabled, Messages.PLACE_HOLDER_OPEN_END.getMessage(), "END?");
 
 	private final BiFunction<Player, Integer, ?> callable;
 	private final String description;
