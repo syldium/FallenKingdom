@@ -38,7 +38,7 @@ public class PortalCreateListener implements Listener
 				ex.printStackTrace(); // Dommage...
 			}
 			if (Fk.isDebugMode())
-				Fk.getInstance().getLogger().info(air.getType().toString() + " en " + air.getLocation().toString());
+				Fk.getInstance().getLogger().info(air.getType().toString() + " " + Messages.CONSOLE_AT + " " + air.getLocation().toString());
 
 			Fk.getInstance().getPortalsManager().addPortal(air.getLocation());
 			e.setCancelled(true);

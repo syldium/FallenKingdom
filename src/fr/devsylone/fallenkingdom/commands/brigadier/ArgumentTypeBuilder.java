@@ -4,6 +4,8 @@ import com.mojang.brigadier.arguments.*;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import fr.devsylone.fallenkingdom.commands.abstraction.Argument;
 import fr.devsylone.fallenkingdom.commands.abstraction.IntegerArgument;
+import fr.devsylone.fallenkingdom.utils.Messages;
+
 import org.bukkit.NamespacedKey;
 
 class ArgumentTypeBuilder
@@ -48,7 +50,7 @@ class ArgumentTypeBuilder
         switch (arg.getType().getSimpleName()) {
             case "int":
                 if (!(arg instanceof IntegerArgument))
-                    throw new RuntimeException(arg.getName() + " doit contenir un entier mais n'implémente pas l'IntegerArgument.");
+                    throw new RuntimeException(arg.getName() + " " + Messages.CMD_ERROR_ARGUMENT_MUST_CONTAIN_INTEGER.getMessage());
                 IntegerArgument intArg = (IntegerArgument) arg;
                 return IntegerArgumentType.integer(intArg.getMinimum(), intArg.getMaximum());
             case "double":

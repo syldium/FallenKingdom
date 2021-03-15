@@ -20,7 +20,7 @@ public final class ConfigHelper {
     private final static Pattern SEPARATOR = Pattern.compile(":");
 
     private ConfigHelper() throws IllegalAccessException {
-        throw new IllegalAccessException(this.getClass().getSimpleName() + " cannot be instantiated.");
+        throw new IllegalAccessException(this.getClass().getSimpleName() + " " + Messages.CONSOLE_CANNOT_BE_INSTANTIATED.getMessage());
     }
 
     public static void loadSectionsWithIndex(

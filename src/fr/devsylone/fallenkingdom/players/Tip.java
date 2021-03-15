@@ -18,7 +18,7 @@ public class Tip
 		if (cmd != null) {
 			Optional<? extends AbstractCommand> e = Fk.getInstance().getCommandManager().search(cmd);
 			if (!e.isPresent()) {
-				throw new RuntimeException("Manager don't have command " + cmd.getName() + " registered!");
+				throw new RuntimeException(Messages.CONSOLE_MANAGER_DONOT_HAVE_COMMAND_REGISTERED.getMessage() + " " + cmd.getName() + ".");
 			}
 			command = e.get();
 		}

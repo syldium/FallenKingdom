@@ -29,7 +29,7 @@ public class WorldManager {
                 .forEach(current -> {
                     World world = Bukkit.getWorld(current);
                     if (world == null) {
-                        plugin.getLogger().warning("World " + current + " not found!");
+                        plugin.getLogger().warning(Messages.CONSOLE_WORLD_NOT_FOUND_1.getMessage() + " " + current + " " + Messages.CONSOLE_WORLD_NOT_FOUND_2.getMessage());
                     } else {
                         builder.add(world.getUID());
                     }

@@ -113,7 +113,7 @@ public class SaveablesManager {
 					file.delete();
 				}
 			} catch (IOException e) {
-				plugin.getLogger().log(Level.SEVERE, "Unable to make a backup", e);
+				plugin.getLogger().log(Level.SEVERE, Messages.CONSOLE_UNABLE_TO_MAKE_BACKUP.getMessage(), e);
 			}
 		}
 

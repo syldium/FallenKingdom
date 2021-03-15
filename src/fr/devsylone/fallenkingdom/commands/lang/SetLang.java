@@ -27,14 +27,14 @@ public class SetLang extends FkCommand
 
     @Override
     public CommandResult execute(Fk plugin, CommandSender sender, List<String> args, String label) {
-        File[] files = Objects.requireNonNull(new File(plugin.getDataFolder(), File.separator + "locales").listFiles(), "Could not list files in locales/ directory.");
+        File[] files = Objects.requireNonNull(new File(plugin.getDataFolder(), File.separator + "locales").listFiles(), Messages.CONSOLE_LANG_COULD_NOT_LIST_FILES.getMessage());
 
         String lang = Arrays.stream(files)
                 .filter(File::isFile)
                 .map(file -> file.getName().substring(0, file.getName().lastIndexOf('.')))
                 .filter(locale -> locale.equals(args.get(0)))
                 .findFirst()
-                .orElseThrow(() -> new FkLightException("Unable to find language file for " + args.get(0) + "."));
+                .orElseThrow(() -> new FkLightException(Messages.CMD_ERROR_LANG_SET_LANG_LANG_NOT_FOUND + " " + args.get(0) + "."));
 
         plugin.getConfig().set("lang", lang);
         Path path = new File(plugin.getDataFolder(), "config.yml").toPath();

@@ -207,7 +207,7 @@ public class ScoreboardManager implements Saveable
 				player.getScoreboard().refresh(placeHolders);
 			}catch(NullPointerException npe)
 			{
-				Fk.getInstance().getLogger().warning("Scoreboard null, recreated");
+				Fk.getInstance().getLogger().warning(Messages.CONSOLE_SCOREBOARD_NULL.getMessage());
 				player.recreateScoreboard();
 			}
 		refreshNicks();

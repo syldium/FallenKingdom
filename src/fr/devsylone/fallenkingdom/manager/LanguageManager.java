@@ -17,6 +17,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
+import fr.devsylone.fallenkingdom.utils.Messages;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -61,7 +62,7 @@ public class LanguageManager
             for (String locale : locales) {
                 BaseComponent[] localeComponent = TextComponent.fromLegacyText(ChatColor.GRAY + "[" + ChatColor.UNDERLINE + ChatColor.DARK_AQUA + locale + ChatColor.GRAY + "] ");
                 for (BaseComponent component : localeComponent) {
-                    component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(ChatColor.BLUE + "Use this locale").create()));
+                    component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§1Utiliser ce §brépertoire\n§1Use this §blocale").create()));
                     component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/fk lang set " + locale));
                 }
                 localeComponent[1].setItalic(true);
@@ -83,7 +84,7 @@ public class LanguageManager
         }
 
         // Chargement de la langue par défaut
-        InputStream stream = Objects.requireNonNull(plugin.getResource("locales/fr.properties"), "Cannot load default language file in resources");
+        InputStream stream = Objects.requireNonNull(plugin.getResource("locales/fr.properties"), Messages.CONSOLE_CANNOT_LOAD_DEFAULT_LANGUAGE.getMessage());
         try (InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8)) {
             defaultLocale.load(reader);
         } catch (IOException e) {

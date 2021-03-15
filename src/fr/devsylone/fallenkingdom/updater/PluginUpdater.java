@@ -23,6 +23,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import fr.devsylone.fallenkingdom.Fk;
+import fr.devsylone.fallenkingdom.utils.Messages;
 
 public class PluginUpdater extends BukkitRunnable
 {
@@ -35,12 +36,12 @@ public class PluginUpdater extends BukkitRunnable
 
     public PluginUpdater(Plugin plugin)
     {
-        Validate.notNull(plugin, "Plugin cannot be null");
+        Validate.notNull(plugin, Messages.CONSOLE_PLUGIN_CANNOT_BE_NULL.getMessage());
         this.plugin = plugin;
 
         boolean isRelease = VERSION_PATTERN.matcher(plugin.getDescription().getVersion().toUpperCase(Locale.ROOT)).find();
         if(!isRelease)
-            plugin.getLogger().info("[Updater] " + plugin.getDescription().getVersion() + " is a development version.");
+            plugin.getLogger().info("[Updater] " + plugin.getDescription().getVersion() + " " + Messages.CONSOLE_PLUGIN_IS_DEVELOPMENT_VERSION.getMessage());
         this.enabled = isRelease;
     }
 
@@ -57,8 +58,8 @@ public class PluginUpdater extends BukkitRunnable
 
             if(FilesUpdater.isGrowing(plugin.getDescription().getVersion(), latestPluginVersion))
             {
-                this.plugin.getLogger().info("[Updater] Une nouvelle version est disponible : " + latestPluginVersion + " ! (Version actuelle : " + this.plugin.getDescription().getVersion() + ")");
-                this.plugin.getLogger().info("[Updater] Téléchargement de la nouvelle version...");
+                this.plugin.getLogger().info("[Updater] " + Messages.CONSOLE_NEW_VERSION_AVAILABLE_1.getMessage() + " " + latestPluginVersion + Messages.CONSOLE_NEW_VERSION_AVAILABLE_2.getMessage() + " (" + Messages.CONSOLE_NEW_VERSION_AVAILABLE_3.getMessage() + " " + this.plugin.getDescription().getVersion() + ").");
+                this.plugin.getLogger().info("[Updater] " + Messages.CONSOLE_DOWNLOADING_NEW_VERSION.getMessage());
                 try
                 {
                     JsonObject pluginAssetInfo = latestPluginReleaseInfo.get("assets").getAsJsonArray().get(0).getAsJsonObject();
@@ -68,8 +69,8 @@ public class PluginUpdater extends BukkitRunnable
                     fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
                     fos.close();
 
-                    this.plugin.getLogger().info("[Updater] Version téléchargée");
-                    this.plugin.getLogger().info("[Updater] Téléchargement de l'updater...");
+                    this.plugin.getLogger().info("[Updater] " + Messages.CONSOLE_VERSION_DOWNLOADED.getMessage());
+                    this.plugin.getLogger().info("[Updater] " + Messages.CONSOLE_DOWNLOADING_UPDATER.getMessage());
 
                     URLConnection latestUpdaterReleaseConnection = new URL(URL_UPDATER_LATEST_RELEASE).openConnection();
                     latestUpdaterReleaseConnection.setRequestProperty("User-Agent", "FallenKingdom/" + plugin.getDescription().getVersion());
@@ -82,8 +83,8 @@ public class PluginUpdater extends BukkitRunnable
                     fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
                     fos.close();
 
-                    this.plugin.getLogger().info("[Updater] Updater téléchargé");
-                    this.plugin.getLogger().info("[Updater] Mise à jour...");
+                    this.plugin.getLogger().info("[Updater] " + Messages.CONSOLE_UPDATER_DOWNLOADED.getMessage());
+                    this.plugin.getLogger().info("[Updater] " + Messages.CONSOLE_UPDATE.getMessage());
 
                     Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), () -> {
                         try
@@ -98,14 +99,14 @@ public class PluginUpdater extends BukkitRunnable
 
                 }catch(Exception e)
                 {
-                    this.plugin.getLogger().info("[Updater] Echec, veuilez la télécharger manuellement ici : http://www.spigotmc.org/resources/38878");
-                    Fk.getInstance().addOnConnectWarning("Une nouvelle version est diponible : http://www.spigotmc.org/resources/38878");
+                    this.plugin.getLogger().info("[Updater] " + Messages.CONSOLE_UPDATE_ERROR.getMessage());
+                    Fk.getInstance().addOnConnectWarning(Messages.CONSOLE_NEW_VERSION_AVAILABLE.getMessage());
                 }
             }
         }catch(IOException ex)
         {
             ex.printStackTrace();
-            this.plugin.getLogger().warning("[Updater] Une erreur est survenue");
+            this.plugin.getLogger().warning("[Updater] " + Messages.CONSOLE_UPDATE_ERROR_OCCURRED.getMessage());
         }
     }
 }

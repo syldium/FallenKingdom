@@ -80,7 +80,7 @@ public class CommandManager
 
 		// Vérifie qu'il y a le bon nombre d'arguments
 		if (main.getMinArgumentCount() > arguments.size()) {
-			sender.sendMessage(ChatColor.RED + "Usage : /" + label + " " + main.getFullUsage());
+			sender.sendMessage(ChatColor.RED + Messages.CMD_ERROR_UNKNOWN_ARG + label + " " + main.getFullUsage());
 			return CommandResult.INVALID_ARGS;
 		}
 
@@ -94,7 +94,7 @@ public class CommandManager
 		} catch (FkLightException e) {
 			sender.sendMessage(ChatColor.RED + e.getMessage());
 			if (sender instanceof Player)
-				plugin.getLogger().info("Light error : " + e.getMessage());
+				plugin.getLogger().info(Messages.CONSOLE_LIGHT_ERROR.getMessage() + " " + e.getMessage());
 			result = CommandResult.STATE_ERROR;
 		} catch (Throwable e) {
 			e.printStackTrace();

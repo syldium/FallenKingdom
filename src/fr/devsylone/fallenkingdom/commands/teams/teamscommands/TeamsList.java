@@ -35,7 +35,7 @@ public class TeamsList extends FkCommand
 		{
 			ChatColor color = team.getChatColor();
 			builder.add(color + " " + team.getName() + " :");
-			builder.add(color + "  Joueurs :");
+			builder.add(color + " " + Messages.CMD_TEAM_LIST_PLAYERS.getMessage());
 
 			if(!team.getPlayers().isEmpty())
 				for(String pl : team.getPlayers())

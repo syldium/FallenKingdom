@@ -32,7 +32,7 @@ class GameRunnable extends BukkitRunnable
     {
         if(!game.state.equals(Game.GameState.STARTED))
         {
-            Bukkit.getLogger().warning("Game is not running. Cancelling game task.");
+            Bukkit.getLogger().warning(Messages.CONSOLE_GAME_NOT_RUNNING.getMessage());
             game.task = null;
             this.cancel();
             return;
@@ -58,7 +58,7 @@ class GameRunnable extends BukkitRunnable
 
             if(w.getEnvironment().equals(World.Environment.NORMAL) && Math.abs(w.getTime() - worldTime) > 32 && game.time < game.dayDurationCache && !(game.day == 0 && game.time < 20))
             {
-                Bukkit.getLogger().info("Ajustement de l'heure de la partie en fonction de l'heure du monde.");
+                Bukkit.getLogger().info(Messages.CONSOLE_ADJUSTMENT_GAME_TIME.getMessage());
                 game.time = (int) (w.getTime() * game.dayTickFactor);
                 worldTime = game.getExceptedWorldTime();
             }

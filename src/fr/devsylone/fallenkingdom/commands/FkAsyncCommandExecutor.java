@@ -2,6 +2,8 @@ package fr.devsylone.fallenkingdom.commands;
 
 import com.destroystokyo.paper.event.server.AsyncTabCompleteEvent;
 import fr.devsylone.fallenkingdom.Fk;
+import fr.devsylone.fallenkingdom.utils.Messages;
+
 import org.bukkit.command.PluginCommand;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -21,7 +23,7 @@ public class FkAsyncCommandExecutor extends FkCommandExecutor implements Listene
     public FkAsyncCommandExecutor(Fk plugin, PluginCommand command) {
         super(plugin, command);
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
-        plugin.getLogger().info("Enable asynchronous tab completion...");
+        plugin.getLogger().info(Messages.CONSOLE_ENABLE_ASYNCHRONOUS_TAB_COMPLETION.getMessage());
     }
 
     @EventHandler(ignoreCancelled = true)
