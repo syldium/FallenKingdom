@@ -80,7 +80,7 @@ public class CommandManager
 
 		// Vérifie qu'il y a le bon nombre d'arguments
 		if (main.getMinArgumentCount() > arguments.size()) {
-			sender.sendMessage(ChatColor.RED + Messages.CMD_ERROR_UNKNOWN_ARG + label + " " + main.getFullUsage());
+			sender.sendMessage(ChatColor.RED.toString() + Messages.CMD_ERROR_UNKNOWN_ARG + label + " " + main.getFullUsage());
 			return CommandResult.INVALID_ARGS;
 		}
 
