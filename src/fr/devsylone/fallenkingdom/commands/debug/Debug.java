@@ -24,7 +24,7 @@ public class Debug extends FkCommand
     {
         boolean send = args.size() > 0 && args.get(0).equalsIgnoreCase("send");
         boolean result = DebuggerUtils.debugGame(send, sender.getName());
-        sender.sendMessage(result ? Messages.CMD_DEBUG_SUCCES.getMessage() : Messages.CMD_DEBUG_ERROR.getMessage());
+        sender.sendMessage(result ? Messages.CMD_DEBUG_SUCCESS.getMessage() : Messages.CMD_DEBUG_ERROR.getMessage());
         plugin.getLogger().info("DEBUG DONE - send=" + send + " result=" + result + " username=" + sender.getName());
         return CommandResult.SUCCESS;
     }

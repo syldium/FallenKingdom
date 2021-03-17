@@ -12,6 +12,8 @@ import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
 
+import fr.devsylone.fallenkingdom.utils.Messages;
+
 import static fr.devsylone.fallenkingdom.version.Version.VersionType.V1_16;
 
 @SuppressWarnings("deprecation")
@@ -27,10 +29,10 @@ public final class XPotionData
 
 	public XPotionData(PotionType type, boolean extended, boolean upgraded)
 	{
-		Validate.notNull(type, "Potion Type must not be null");
-		Validate.isTrue(!(upgraded && type.getMaxLevel() == 1), "Potion Type is not upgradable");
-		Validate.isTrue(!(extended && type.isInstant()), "Potion Type is not extendable");
-		Validate.isTrue(!(upgraded && extended), "Potion cannot be both extended and upgraded");
+		Validate.notNull(type, Messages.CONSOLE_POTION_TYPE_MUST_NOT_BE_NULL.getMessage());
+		Validate.isTrue(!(upgraded && type.getMaxLevel() == 1), Messages.CONSOLE_POTION_TYPE_IS_NOT_UPGRADABLE.getMessage());
+		Validate.isTrue(!(extended && type.isInstant()), Messages.CONSOLE_POTION_TYPE_IS_NOT_EXTENDABLE.getMessage());
+		Validate.isTrue(!(upgraded && extended), Messages.CONSOLE_POTION_CANNOT_BE_UPGRADABLE_AND_EXTENDABLE.getMessage());
 		this.type = type;
 		this.extended = extended;
 		this.upgraded = upgraded;

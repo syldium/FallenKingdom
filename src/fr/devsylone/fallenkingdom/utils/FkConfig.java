@@ -31,16 +31,16 @@ public class FkConfig extends YamlConfiguration {
     public void load() {
         if (!configFile.getParentFile().exists()) {
             if (!configFile.getParentFile().mkdirs()) {
-                LOGGER.log(Level.SEVERE, "Unable to create the parent folder.");
+                LOGGER.log(Level.SEVERE, Messages.CONSOLE_UNABLE_TO_CREATE_PARENT_FOLDER.getMessage());
             }
         }
 
         try {
             super.load(configFile);
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Cannot load " + configFile, e);
+            LOGGER.log(Level.SEVERE, Messages.CONSOLE_CANNOT_LOAD.getMessage() + " " + configFile + ".", e);
         } catch (InvalidConfigurationException e) {
-            LOGGER.log(Level.SEVERE, "Cannot read " + configFile, e);
+            LOGGER.log(Level.SEVERE, Messages.CONSOLE_CANNOT_READ.getMessage() + " " + configFile + ".", e);
         }
     }
 
@@ -89,17 +89,17 @@ public class FkConfig extends YamlConfiguration {
                 try {
                     File parent = file.getCanonicalFile().getParentFile();
                     if (!parent.exists() && !parent.mkdirs()) {
-                        LOGGER.log(Level.SEVERE, "Unable to create the parent folder.");
+                        LOGGER.log(Level.SEVERE, Messages.CONSOLE_UNABLE_TO_CREATE_PARENT_FOLDER.getMessage());
                     }
 
                     if (!file.exists()) {
                         try {
                             if (!file.createNewFile()) {
-                                LOGGER.log(Level.SEVERE, "Failed to create the " + file + " file.");
+                                LOGGER.log(Level.SEVERE, Messages.CONSOLE_FAILED_TO_CREATE_FILE.getMessage() + " " + file);
                                 return;
                             }
                         } catch (IOException ex) {
-                            LOGGER.log(Level.SEVERE, "Failed to create the " + file + " file.", ex);
+                            LOGGER.log(Level.SEVERE, Messages.CONSOLE_FAILED_TO_CREATE_FILE.getMessage() + " " + file, ex);
                             return;
                         }
                     }

@@ -298,7 +298,7 @@ public enum FkSound
 			notResolved.remove(maxFSound);
 			maxFSound.setSound(maxSound);
 			if (Fk.isDebugMode())
-				Fk.getInstance().getLogger().warning("Sound " + maxFSound.post113sound + " not found, using " + maxSound.name());
+				Fk.getInstance().getLogger().warning(Messages.CONSOLE_SOUND_NOT_FOUND_1.getMessage() + " " + maxFSound.post113sound + " " + Messages.CONSOLE_SOUND_NOT_FOUND_2.getMessage() + " " + maxSound.name());
 		}
 	}
 

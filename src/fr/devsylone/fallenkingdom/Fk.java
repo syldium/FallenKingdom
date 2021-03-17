@@ -43,6 +43,7 @@ import fr.devsylone.fallenkingdom.updater.PluginUpdater;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fallenkingdom.utils.DebuggerUtils;
 import fr.devsylone.fallenkingdom.utils.FkSound;
+import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fallenkingdom.version.Version;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.rules.Rule;
@@ -133,7 +134,7 @@ public class Fk extends JavaPlugin
 		 * command /fk
 		 */
 
-		PluginCommand command = Objects.requireNonNull(getCommand("fk"), "Unable to register /fk command");
+		PluginCommand command = Objects.requireNonNull(getCommand("fk"), Messages.CONSOLE_UNABLE_TO_REGISTER_FK_COMMAND.getMessage());
 		if (Version.isAsyncTabCompleteSupported())
 			if (Version.isAsyncPlayerSendCommandsEventSupported())
 				this.commandManager = new FkAsyncRegisteredCommandExecutor(this, command);
@@ -258,9 +259,9 @@ public class Fk extends JavaPlugin
 		if(debugMode)
 		{
 			if(!Fk.getInstance().isEnabled())
-				Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), () -> Bukkit.broadcastMessage(ChatUtils.DEBUG + (message == null ? "null" : message.toString())));
+				Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), () -> Bukkit.broadcastMessage(ChatUtils.DEBUG + (message == null ? Messages.CONSOLE_NULL.getMessage() : message.toString())));
 			else
-				Bukkit.broadcastMessage(ChatUtils.DEBUG + (message == null ? "null" : message.toString()));
+				Bukkit.broadcastMessage(ChatUtils.DEBUG + (message == null ? Messages.CONSOLE_NULL.getMessage() : message.toString()));
 		}
 
 	}
@@ -328,13 +329,13 @@ public class Fk extends JavaPlugin
 		List<String> warns = new ArrayList<>();
 
 		if(getConfig().get("Charged_creepers") != null)
-			warns.add("L'option Charged_creepers dans le fichier de configuration n'est plus utilisée, il faut utiliser /fk rules ChargedCreepers");
+			warns.add(Messages.CONSOLE_CHARGED_CREEPERS_NOT_USE.getMessage());
 
 		if(!Version.hasSpigotApi())
-			addError("Le serveur n'est pas supporté par le plugin. Seuls les serveurs basés sur Spigot sont supportés.\nThe server is not supported by the plugin. Only Spigot based servers are supported.");
+			addError("Le serveur n'est pas supporté par le plugin. Seuls les serveurs basés sur Spigot sont supportés.\nThe server is not supported by the plugin. Only Spigot based servers are supported.\nDer Server wird vom Plugin nicht unterstützt. Es werden nur Spigot-basierte Server unterstützt.");
 
 		if(Version.isTooOldApi())
-			addError("La version du serveur n'est pas compatible avec le plugin,\nmerci d'utiliser au minimum la version §l§n1.8.3 de Spigot.\n\nThe server version isn't compatible with the plugin,\nplease use at least the §l§n1.8.3 version of Spigot.");
+			addError("§rLa version du serveur n'est pas compatible avec le plugin,\nmerci d'utiliser au minimum la version §l§n1.8.3 de Spigot.\n\n§rThe server version isn't compatible with the plugin,\nplease use at least the §l§n1.8.3 version of Spigot.\n\nDie Serverversion ist nicht mit dem Plugin kompatibel. Bitte verwenden Sie mindestens die Version §l§n1.8.3 von Spigot.");
 
 		for(String warn : warns)
 		{
@@ -360,7 +361,7 @@ public class Fk extends JavaPlugin
 			case V1_16:
 				return new PacketManager1_16();
 			default:
-				throw new RuntimeException("Could not get packet manager by version!");
+				throw new RuntimeException(Messages.CONSOLE_COULD_NOT_GET_PACKET_MANAGER.getMessage());
 		}
 	}
 

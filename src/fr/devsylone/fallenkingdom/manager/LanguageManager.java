@@ -42,7 +42,7 @@ public class LanguageManager
         langPrefix = plugin.getConfig().getString("lang", "unknown");
 
         // Copie des fichiers de langue par défaut pour permettre d'éditer
-        String[] locales = new String[] {"fr", "en"};
+    String[] locales = new String[] {"fr", "en"/*, "de"*/};
         for (String locale : locales) {
             String path = "locales" + File.separator + locale + ".properties";
             if (!new File(plugin.getDataFolder(), File.separator + path).exists())
@@ -52,18 +52,18 @@ public class LanguageManager
         // Demande de la langue
         boolean skipCustomLangLoad = false;
         if (langPrefix == null || langPrefix.equalsIgnoreCase("unknown")) {
-            File[] files = Objects.requireNonNull(new File(plugin.getDataFolder(), File.separator + "locales").listFiles(), "Unable to list files in the locales/ directory.");
+            File[] files = Objects.requireNonNull(new File(plugin.getDataFolder(), File.separator + "locales").listFiles(), Messages.CONSOLE_LANG_COULD_NOT_LIST_FILES.getMessage());
             locales = Arrays.stream(files)
                 .filter(File::isFile)
                 .map(file -> file.getName().substring(0, file.getName().lastIndexOf('.')))
                 .toArray(String[]::new);
-            String message = ChatColor.RED + "Veuillez sélectionner votre langue en cliquant dessus. / Please select your language by clicking on it.";
+            String message = ChatColor.RED + "Veuillez sélectionner votre langue en cliquant dessus.\n\u21AA Please select your language by clicking on it.\n\u21AA Bitte wählen Sie Ihre Sprache aus, indem Sie darauf klicken.";
             BaseComponent[] localeComponents = new BaseComponent[] {};
             for (String locale : locales) {
                 BaseComponent[] localeComponent = TextComponent.fromLegacyText(ChatColor.GRAY + "[" + ChatColor.UNDERLINE + ChatColor.DARK_AQUA + locale + ChatColor.GRAY + "] ");
                 for (BaseComponent component : localeComponent) {
-                    component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§1Utiliser ce §brépertoire\n§1Use this §blocale").create()));
-                    component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/fk lang set " + locale));
+                        component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§bUtiliser ce §erépertoire\n§bUse this §elocale\n§bVerwendung Się dièses §eGebietsschema").create()));
+                        component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/fk lang set " + locale));
                 }
                 localeComponent[1].setItalic(true);
                 localeComponent[2].setItalic(false);
@@ -99,8 +99,8 @@ public class LanguageManager
         try (InputStreamReader reader = new InputStreamReader(new FileInputStream(plugin.getDataFolder() + "/locales/" + langPrefix + ".properties"), StandardCharsets.UTF_8)) {
             locale.load(reader);
         } catch (IOException e) {
-            plugin.getLogger().warning("Unable to load language file " + langPrefix + ". Using default one (french)!");
-            plugin.getLogger().warning("Cause: " + e.getMessage());
+            plugin.getLogger().warning(Messages.CONSOLE_UNABLE_TO_LOAD_LANGUAGE_FILE_1.getMessage() + " " + langPrefix + ". " + Messages.CONSOLE_UNABLE_TO_LOAD_LANGUAGE_FILE_2.getMessage());
+            plugin.getLogger().warning(Messages.CONSOLE_CAUSE.getMessage() + " " + e.getMessage());
         }
     }
 
@@ -113,7 +113,7 @@ public class LanguageManager
     {
         String prop = locale.getProperty(path);
         if (prop == null && !strict) {
-            Fk.getInstance().getLogger().warning("Key " + path + " not translated in your language; using of default value");
+            Fk.getInstance().getLogger().warning("Key " + path + " not translated in your language; using of default value"); // À ne pas traduire !
             return defaultLocale.getProperty(path);
         }
         return prop;

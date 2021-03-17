@@ -19,7 +19,7 @@ public class UpdateUtils
 		}
 		new File(path).delete();
 		
-		Bukkit.getConsoleSender().sendMessage("[Updater] §4§lRestart du serveur");
+		Bukkit.getConsoleSender().sendMessage("[Updater] §4§l" + Messages.CONSOLE_SERVER_RESTART.getMessage());
 		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "restart");
 	}
 }

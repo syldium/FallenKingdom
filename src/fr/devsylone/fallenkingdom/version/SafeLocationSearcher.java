@@ -33,8 +33,8 @@ public class SafeLocationSearcher {
      * @param around À chercher autour
      */
     public SafeLocationSearcher(Location around) {
-        Objects.requireNonNull(around, "Destination not set.");
-        Objects.requireNonNull(around.getWorld(), "Destination world not set.");
+        Objects.requireNonNull(around, Messages.CONSOLE_DESTINATION_NOT_SET.getMessage());
+        Objects.requireNonNull(around.getWorld(), Messages.CONSOLE_DESTINATION_WORLD_NOT_SET.getMessage());
         this.around = around;
     }
 

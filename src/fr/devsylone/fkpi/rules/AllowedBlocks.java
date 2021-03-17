@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import fr.devsylone.fallenkingdom.Fk;
+import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fkpi.api.event.RuleChangeEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -61,7 +62,7 @@ public class AllowedBlocks implements RuleValue
 			}
 		}
 		if (allSigns) {
-			reducedList.add("SIGN (tous types)");
+			reducedList.add("SIGN (" + Messages.CMD_MAP_RULES_ALLOW_BLOCK_SIGN.getMessage() + ")");
 		}
 		return reducedList;
 	}
@@ -109,14 +110,14 @@ public class AllowedBlocks implements RuleValue
 			if (sep < 0) {
 				Material material = Material.matchMaterial(name);
 				if (material == null) {
-					Fk.getInstance().getLogger().warning("AllowedBlocks: Unknown material: " + name);
+					Fk.getInstance().getLogger().warning(Messages.CONSOLE_UNKNOWN_MATERIAL.getMessage() + " " + name);
 				} else {
 					allowed.put(material, Collections.emptySet());
 				}
 			} else {
 				Material material = Material.matchMaterial(name.substring(0, sep));
 				if (material == null) {
-					Fk.getInstance().getLogger().warning("AllowedBlocks: Unknown material: " + name);
+					Fk.getInstance().getLogger().warning(Messages.CONSOLE_UNKNOWN_MATERIAL.getMessage() + " " + name);
 				} else {
 					allowed.computeIfAbsent(material, s -> new HashSet<>()).add(Byte.parseByte(name.substring(sep + 1)));
 				}

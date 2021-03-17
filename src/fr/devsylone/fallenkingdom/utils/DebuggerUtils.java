@@ -134,7 +134,7 @@ public class DebuggerUtils
         else
             log("CraftBukkit version : " + Bukkit.getBukkitVersion() + " | " + Bukkit.getVersion());
         log("Plugin version : v" + Fk.getInstance().getDescription().getVersion());
-        log("---- Commandes depuis reload ----");
+        log("---- Commands since reload ----");
         for(Map.Entry<String, Boolean> cmd : FkCommandExecutor.logs.entrySet())
             log("  > " + cmd.getKey() + (cmd.getValue() ? "" : "  [Error occurred]"));
         log("---- Rules ----");
