@@ -202,9 +202,9 @@ public class AllowedBlocks implements RuleValue
 
 	static {
 		try {
-			Class.forName("org.bukkit.Tag");
+			Class.forName("org.bukkit.Tag").getField("SIGNS");
 			SIGNS.addAll(new HashSet<>(Tag.SIGNS.getValues()));
-		} catch (ClassNotFoundException e) {
+		} catch (ClassNotFoundException | NoSuchFieldException e) {
 			if (XMaterial.isNewVersion()) {
 				SIGNS.add(XMaterial.OAK_SIGN.parseMaterial());
 			} else {
