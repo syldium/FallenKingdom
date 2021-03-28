@@ -35,7 +35,7 @@ public class PauseInteractionListener implements Listener
         }
     }
 
-    public boolean isCancelledDueToPause(final Player player)
+    public static boolean isCancelledDueToPause(final Player player)
     {
         if (!Fk.getInstance().getWorldManager().isAffected(player.getWorld()))
             return false;

@@ -21,9 +21,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 import java.util.Random;
 
+import static fr.devsylone.fallenkingdom.listeners.entity.player.PauseInteractionListener.isCancelledDueToPause;
 import static fr.devsylone.fallenkingdom.version.Environment.getMinHeight;
 
 public class MoveListener implements Listener
@@ -150,9 +152,15 @@ public class MoveListener implements Listener
 
 	@EventHandler(ignoreCancelled = true)
 	public void onTeleport(PlayerTeleportEvent e) {
-		PlayerTeleportEvent.TeleportCause chorus = Version.VersionType.V1_9_V1_12.isHigherOrEqual() ? PlayerTeleportEvent.TeleportCause.CHORUS_FRUIT : null;
-		if (!e.getCause().equals(PlayerTeleportEvent.TeleportCause.ENDER_PEARL) && !e.getCause().equals(chorus))
+		TeleportCause cause = e.getCause();
+		TeleportCause chorus = Version.VersionType.V1_9_V1_12.isHigherOrEqual() ? TeleportCause.CHORUS_FRUIT : null;
+		if (cause != TeleportCause.ENDER_PEARL && cause != chorus)
 			return;
+
+		if (isCancelledDueToPause(e.getPlayer())) {
+			e.setCancelled(true);
+			return;
+		}
 
 		if (e.getTo() == null || e.getPlayer().getGameMode().equals(GameMode.CREATIVE) || FkPI.getInstance().getRulesManager().getRule(Rule.ENDERPEARL_ASSAULT))
 			return;
@@ -196,7 +204,7 @@ public class MoveListener implements Listener
 		if (!loc.getBlock().getType().isSolid() && !loc.clone().add(0, 1, 0).getBlock().getType().isSolid()) {
 			while (!loc.clone().add(0, -1, 0).getBlock().getType().isSolid() && loc.getY() > getMinHeight(world))
 				loc.add(0, -1, 0);
-			player.teleport(loc, PlayerTeleportEvent.TeleportCause.CHORUS_FRUIT);
+			player.teleport(loc, TeleportCause.CHORUS_FRUIT);
 			return true;
 		}
 		return false;
