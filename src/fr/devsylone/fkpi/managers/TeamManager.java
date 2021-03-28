@@ -82,7 +82,7 @@ public class TeamManager implements Saveable
 	public Team getTeam(String name)
 	{
 		for(Team t : teams)
-			if(t.getName().equalsIgnoreCase(name))
+			if(t.getName().equals(name))
 				return t;
 
 		return null;
@@ -141,9 +141,8 @@ public class TeamManager implements Saveable
 			return null;
 
 		for(Team t : teams)
-			for(String s : t.getPlayers())
-				if(s.equalsIgnoreCase(player))
-					return t;
+			if (t.getPlayers().contains(player))
+				return t;
 
 		return null;
 	}

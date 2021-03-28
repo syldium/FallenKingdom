@@ -113,7 +113,7 @@ class GameRunnable extends BukkitRunnable
             Fk.broadcast(event.getMessage(), FkSound.ENDERDRAGON_GROWL);
         }
 
-        for (LockedChest chest : Fk.getInstance().getFkPI().getLockedChestsManager().getChestList()) {
+        for (LockedChest chest : Fk.getInstance().getFkPI().getLockedChestsManager().getChests()) {
             if (chest.getUnlockDay() != game.day) {
                 continue;
             }

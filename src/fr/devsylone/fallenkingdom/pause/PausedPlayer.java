@@ -3,7 +3,6 @@ package fr.devsylone.fallenkingdom.pause;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -109,11 +108,18 @@ public class PausedPlayer implements Saveable
 	}
 
 	@Override
-	public boolean equals(Object obj)
-	{
-		return obj instanceof PausedPlayer && ((PausedPlayer) obj).getPlayer().equalsIgnoreCase(getPlayer());
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		PausedPlayer that = (PausedPlayer) o;
+		return player.equals(that.player);
 	}
-	
+
+	@Override
+	public int hashCode() {
+		return player.hashCode();
+	}
+
 	private ItemStack cloneIfNotNull(ItemStack item)
 	{
 		return item == null ? null : item.clone();

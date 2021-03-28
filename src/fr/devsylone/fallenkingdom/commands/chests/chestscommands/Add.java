@@ -36,7 +36,7 @@ public class Add extends FkPlayerCommand
 		if(!Fk.getInstance().getWorldManager().isAffected(sender.getWorld()))
 			throw new FkLightException(Messages.CMD_ERROR_NOT_AFFECTED_WORLD.getMessage());
 
-		String name = args.size() >= 3 ? args.get(2) : "" + Fk.getInstance().getFkPI().getLockedChestsManager().getChestList().size();
+		String name = args.size() >= 3 ? args.get(2) : String.valueOf(Fk.getInstance().getFkPI().getLockedChestsManager().getChestMap().size());
 
 		Fk.getInstance().getFkPI().getLockedChestsManager().addOrEdit(new LockedChest(target.getLocation(), time, day, name));
 

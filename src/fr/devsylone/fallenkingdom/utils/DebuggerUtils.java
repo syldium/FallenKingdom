@@ -149,7 +149,7 @@ public class DebuggerUtils
         log("  > End: " + Fk.getInstance().getGame().isEndEnabled());
         log("  > Assaults: " + Fk.getInstance().getGame().isAssaultsEnabled());
         log("---- Chests ---");
-        for(LockedChest chest : Fk.getInstance().getFkPI().getLockedChestsManager().getChestList())
+        for(LockedChest chest : Fk.getInstance().getFkPI().getLockedChestsManager().getChests())
             log("  > " + chest.toString());
         log("---- Plugins ---");
         log("  > " + Arrays.stream(Bukkit.getPluginManager().getPlugins()).map(Plugin::getName).collect(Collectors.joining(", ")));

@@ -154,8 +154,8 @@ public class ArgumentParser {
     }
 
     public static LockedChest getLockedChest(String name) throws ArgumentParseException {
-        for (LockedChest chest : FkPI.getInstance().getLockedChestsManager().getChestList()) {
-            if (chest.getName().equalsIgnoreCase(name)) {
+        for (LockedChest chest : FkPI.getInstance().getLockedChestsManager().getChests()) {
+            if (chest.getName().equals(name)) {
                 return chest;
             }
         }

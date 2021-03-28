@@ -23,11 +23,11 @@ public class ChestsList extends FkCommand
     @Override
     public CommandResult execute(Fk plugin, CommandSender sender, List<String> args, String label)
     {
-        if(Fk.getInstance().getFkPI().getLockedChestsManager().getChestList().size() == 0)
+        if(Fk.getInstance().getFkPI().getLockedChestsManager().getChestMap().isEmpty())
             throw new FkLightException(Messages.CMD_ERROR_EMPTY_CHESTS_LIST);
         List<String> builder = new ArrayList<>();
         builder.add(ChatColor.DARK_GREEN + "§m----------------- " + ChatColor.BLUE + Messages.CMD_TEAMS_AND_CHESTS_LIST + ChatColor.DARK_GREEN + " §m-----------------");
-        for(LockedChest chest : Fk.getInstance().getFkPI().getLockedChestsManager().getChestList())
+        for(LockedChest chest : Fk.getInstance().getFkPI().getLockedChestsManager().getChests())
         {
             builder.add(Messages.CMD_LOCKED_CHEST_LIST_INFO.getMessage()
                     .replace("%name%", chest.getName())

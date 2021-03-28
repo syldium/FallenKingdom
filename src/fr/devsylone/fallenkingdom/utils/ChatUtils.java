@@ -4,7 +4,7 @@ import fr.devsylone.fallenkingdom.Fk;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
-public class ChatUtils
+public final class ChatUtils
 {
 	public static final String DEVSYLONE = "§1§odevsylone";
 	public static final String PREFIX = "§7[§5Fk§7] ";
@@ -16,6 +16,10 @@ public class ChatUtils
 	public static final String ALERT = "§4§l[§c§lAlert§4§l] ";
 	public static final String DEBUG = "§7[§cDebug§7] ";
 	public static final String TIP = "§r[§2Tip§r] ";
+
+	private ChatUtils() throws IllegalAccessException {
+		throw new IllegalAccessException(this.getClass().getSimpleName() + " cannot be instantiated.");
+	}
 
 	public static String colorMessage(Messages message)
 	{

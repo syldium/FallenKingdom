@@ -17,7 +17,7 @@ public class AdvancementListener implements Listener {
 
     @EventHandler
     public void onSuccess(PlayerAdvancementDoneEvent event) {
-        for (LockedChest chest : FkPI.getInstance().getLockedChestsManager().getChestList()) {
+        for (LockedChest chest : FkPI.getInstance().getLockedChestsManager().getChests()) {
             if (chest.getRequiredAdvancement() == null || chest.getUnlockDay() > Fk.getInstance().getGame().getDay()) {
                 continue;
             }

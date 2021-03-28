@@ -4,45 +4,45 @@ import fr.devsylone.fkpi.lockedchests.LockedChest;
 import fr.devsylone.fkpi.util.Saveable;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class LockedChestsManager implements Saveable
 {
-	private List<LockedChest> chests;
+	private final Map<Location, LockedChest> chests = new HashMap<>();
 
-	public LockedChestsManager()
+	public void addOrEdit(@NotNull LockedChest chest)
 	{
-		chests = new ArrayList<LockedChest>();
+		chests.put(chest.getLocation(), chest);
 	}
 
-	public void addOrEdit(LockedChest chest)
+	public @Nullable LockedChest getChestAt(@NotNull Location loc)
 	{
-		if(getChestAt(chest.getLocation()) != null)
-			chests.remove(getChestAt(chest.getLocation()));
-
-		chests.add(chest);
+		return chests.get(loc);
 	}
 
-	public LockedChest getChestAt(Location loc)
+	public boolean remove(@NotNull Location loc)
 	{
-		for(LockedChest chest : chests)
-			if(chest.getLocation().equals(loc))
-				return chest;
-		return null;
+		return chests.remove(loc) != null;
 	}
 
-	public boolean remove(Location loc)
+	public @NotNull List<LockedChest> getChestList()
 	{
-		if(getChestAt(loc) == null)
-			return false;
-
-		chests.remove(getChestAt(loc));
-		return true;
+		return new ArrayList<>(chests.values());
 	}
 
-	public List<LockedChest> getChestList()
+	public @NotNull Collection<LockedChest> getChests()
+	{
+		return chests.values();
+	}
+
+	public @NotNull Map<Location, LockedChest> getChestMap()
 	{
 		return chests;
 	}
@@ -63,7 +63,7 @@ public class LockedChestsManager implements Saveable
 	@Override
 	public void save(ConfigurationSection config)
 	{
-		for(LockedChest chest : chests)
+		for(LockedChest chest : chests.values())
 		{
 			chest.save(config.createSection("LockedChests." + chest.getLocation().getBlockX() + "-" + chest.getLocation().getBlockY() + "-" + chest.getLocation().getBlockZ()));
 		}

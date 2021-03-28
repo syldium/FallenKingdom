@@ -158,7 +158,7 @@ public class Argument<T>
                 }
                 return suggestions;
             case "chest":
-                return plugin.getFkPI().getLockedChestsManager().getChestList().stream()
+                return plugin.getFkPI().getLockedChestsManager().getChests().stream()
                         .map(LockedChest::getName)
                         .filter(s -> startsWith(s, typed))
                         .collect(Collectors.toList());
