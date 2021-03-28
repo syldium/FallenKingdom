@@ -6,6 +6,7 @@ import fr.devsylone.fallenkingdom.utils.XBlock;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 
 import java.util.ArrayList;
@@ -15,6 +16,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+
+import static fr.devsylone.fallenkingdom.version.Environment.getMinHeight;
 
 /**
  * Cherche un endroit sûr pour téléporter.
@@ -76,10 +79,11 @@ public class SafeLocationSearcher {
             return;
         }
 
-        Environment.getChunkAtAsync(around.getWorld(), chunkPos.x, chunkPos.z).thenApply(chunk -> {
+        World world = around.getWorld();
+        Environment.getChunkAtAsync(world, chunkPos.x, chunkPos.z).thenApply(chunk -> {
             for (Block2DPos pos : positions) {
-                int upY = Math.min(base.getBlockY() + 3 + radius, 255);
-                int downY = Math.max(base.getBlockY() - 2 - radius, 0);
+                int upY = Math.min(base.getBlockY() + 3 + radius, world.getMaxHeight() - 1);
+                int downY = Math.max(base.getBlockY() - 2 - radius, getMinHeight(world));
                 Location loc = getSafeDestination(chunk, pos.x, pos.z, upY, downY);
                 if (loc != null) {
                     future.complete(loc);

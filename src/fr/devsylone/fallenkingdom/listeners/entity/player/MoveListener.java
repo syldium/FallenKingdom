@@ -15,6 +15,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -22,6 +23,8 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.Random;
+
+import static fr.devsylone.fallenkingdom.version.Environment.getMinHeight;
 
 public class MoveListener implements Listener
 {
@@ -186,11 +189,12 @@ public class MoveListener implements Listener
 
 	private boolean safeTp(Player player, Location loc)
 	{
-		if (loc.getWorld() == null || !loc.getChunk().isLoaded())
+		World world = loc.getWorld();
+		if (world == null || !loc.getChunk().isLoaded())
 			return false;
 
 		if (!loc.getBlock().getType().isSolid() && !loc.clone().add(0, 1, 0).getBlock().getType().isSolid()) {
-			while (!loc.clone().add(0, -1, 0).getBlock().getType().isSolid() && loc.getY() > 0)
+			while (!loc.clone().add(0, -1, 0).getBlock().getType().isSolid() && loc.getY() > getMinHeight(world))
 				loc.add(0, -1, 0);
 			player.teleport(loc, PlayerTeleportEvent.TeleportCause.CHORUS_FRUIT);
 			return true;

@@ -13,6 +13,8 @@ import fr.devsylone.fkpi.util.Saveable;
 
 import java.util.Objects;
 
+import static fr.devsylone.fallenkingdom.version.Environment.getMinHeight;
+
 /**
  * Cette classe Base reprèsente la base d'une Team.
  * @see Team
@@ -301,10 +303,11 @@ public class Base implements Saveable
 		if(loc == null)
 			return null;
 
-		if(loc.getWorld() == null)
+		World world = loc.getWorld();
+		if(world == null)
 			return loc;
 
-		while(XBlock.isReplaceable(loc.getBlock()) && loc.getY() > 1.0D)
+		while(XBlock.isReplaceable(loc.getBlock()) && loc.getBlockY() > getMinHeight(world) + 1)
 			loc.add(0, -1, 0);
 		
 		while(!XBlock.isReplaceable(loc.getBlock()))

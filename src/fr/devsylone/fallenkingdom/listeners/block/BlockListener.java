@@ -106,7 +106,7 @@ public class BlockListener implements Listener
 
 				int stones = 0;
 				if(!enemyBase && FkPI.getInstance().getRulesManager().getRule(Rule.PLACE_BLOCK_IN_CAVE).isActive())
-					for(int y = block.getBlockY() + 1; y < 256; y++)
+					for(int y = block.getBlockY() + 1; y < block.getWorld().getMaxHeight(); y++)
 						if(XBlock.isBlockInCave(block.getWorld().getBlockAt(block.getBlockX(), y, block.getBlockZ()).getType()))
 						{
 							if(++stones >= FkPI.getInstance().getRulesManager().getRule(Rule.PLACE_BLOCK_IN_CAVE).getMinimumBlocks())

@@ -20,6 +20,7 @@ public class Environment {
     private static final boolean HAS_UUID_BY_PLAYER_NAME;
     private static final boolean HAS_ASYNC_CHUNK_LOAD;
     private static final boolean HAS_ADVENTURE_API;
+    private static final boolean HAS_MIN_HEIGHT;
 
     static {
         boolean hasAsyncTeleport = false;
@@ -49,6 +50,13 @@ public class Environment {
             hasAdventureApi = true;
         } catch (ClassNotFoundException ignored) { }
         HAS_ADVENTURE_API = hasAdventureApi;
+
+        boolean hasMinHeight = false;
+        try {
+            World.class.getMethod("getMinHeight");
+            hasMinHeight = true;
+        } catch (NoSuchMethodException ignored) { }
+        HAS_MIN_HEIGHT = hasMinHeight;
     }
 
     public static CompletableFuture<Boolean> teleportAsync(Entity entity, Location location) {
@@ -89,5 +97,9 @@ public class Environment {
             deathMessage = deathMessage.replace(event.getEntity().getKiller().getName(), event.getEntity().getKiller().getDisplayName() + ChatColor.GRAY);
         }
         event.setDeathMessage(deathMessage);
+    }
+
+    public static int getMinHeight(World world) {
+        return HAS_MIN_HEIGHT ? world.getMinHeight() : 0;
     }
 }
