@@ -23,9 +23,13 @@ public class PlaceBlockInCave extends FkCommand
 
   @Override
   public CommandResult execute(Fk plugin, CommandSender sender, List<String> args, String label) {
-    fr.devsylone.fkpi.rules.PlaceBlockInCave rule = Fk.getInstance().getFkPI().getRulesManager().getRule(Rule.PLACE_BLOCK_IN_CAVE);
+    String action = args.get(0);
+    if (!action.equals("info") && !plugin.getCommandManager().hasPermission(sender, CommandPermission.ADMIN.get())) {
+      return CommandResult.NO_PERMISSION;
+    }
+    fr.devsylone.fkpi.rules.PlaceBlockInCave rule = plugin.getFkPI().getRulesManager().getRule(Rule.PLACE_BLOCK_IN_CAVE);
 
-    if (args.get(0).equalsIgnoreCase("info"))
+    if (action.equals("info"))
     {
       sender.sendMessage("§b§m-------");
       sender.sendMessage(Messages.CMD_RULES_BLOCK_CAVE_INFO.getMessage().replace("%blocks%", String.valueOf(rule.getMinimumBlocks())));
@@ -38,7 +42,7 @@ public class PlaceBlockInCave extends FkCommand
     }
     else
     {
-      if ((!args.get(0).equalsIgnoreCase("true")) && (!args.get(0).equalsIgnoreCase("false"))) {
+      if (!action.equals("true") && !action.equals("false")) {
         throw new FkLightException(Messages.CMD_ERROR_BOOL_FORMAT);
       }
 
