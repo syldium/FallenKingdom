@@ -50,7 +50,7 @@ class ArgumentTypeBuilder
         switch (arg.getType().getSimpleName()) {
             case "int":
                 if (!(arg instanceof IntegerArgument))
-                    throw new RuntimeException(arg.getName() + " " + Messages.CMD_ERROR_ARGUMENT_MUST_CONTAIN_INTEGER.getMessage());
+                    throw new RuntimeException(arg.getName() + " doit contenir un entier mais n'implémente pas l'IntegerArgument.");
                 IntegerArgument intArg = (IntegerArgument) arg;
                 return IntegerArgumentType.integer(intArg.getMinimum(), intArg.getMaximum());
             case "double":

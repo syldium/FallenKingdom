@@ -136,7 +136,7 @@ public class Fk extends JavaPlugin
 		 * command /fk
 		 */
 
-		PluginCommand command = Objects.requireNonNull(getCommand("fk"), Messages.CONSOLE_UNABLE_TO_REGISTER_FK_COMMAND.getMessage());
+		PluginCommand command = Objects.requireNonNull(getCommand("fk"), "Unable to register /fk command");
 		if (Version.isAsyncTabCompleteSupported())
 			if (Version.isAsyncPlayerSendCommandsEventSupported())
 				this.commandManager = new FkAsyncRegisteredCommandExecutor(this, command);
@@ -261,9 +261,9 @@ public class Fk extends JavaPlugin
 		if(debugMode)
 		{
 			if(!Fk.getInstance().isEnabled())
-				Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), () -> Bukkit.broadcastMessage(ChatUtils.DEBUG + (message == null ? Messages.CONSOLE_NULL.getMessage() : message.toString())));
+				Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), () -> Bukkit.broadcastMessage(ChatUtils.DEBUG + (message == null ? "null" : message.toString())));
 			else
-				Bukkit.broadcastMessage(ChatUtils.DEBUG + (message == null ? Messages.CONSOLE_NULL.getMessage() : message.toString()));
+				Bukkit.broadcastMessage(ChatUtils.DEBUG + (message == null ? "null" : message.toString()));
 		}
 
 	}
@@ -363,7 +363,7 @@ public class Fk extends JavaPlugin
 			case V1_16:
 				return new PacketManager1_16();
 			default:
-				throw new RuntimeException(Messages.CONSOLE_COULD_NOT_GET_PACKET_MANAGER.getMessage());
+				throw new RuntimeException("Could not get packet manager by version!");
 		}
 	}
 

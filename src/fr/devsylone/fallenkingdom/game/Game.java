@@ -68,7 +68,7 @@ public class Game implements Saveable
 	public void startTimer()
 	{
 		if(task != null)
-			throw new IllegalStateException(Messages.CONSOLE_MAIN_TIMER_ALREADY_RUNNING.getMessage());
+			throw new IllegalStateException("Main timer already running");
 
 		if(!state.equals(GameState.BEFORE_STARTING))
 			Fk.getInstance().getTipsManager().cancelBroadcasts();

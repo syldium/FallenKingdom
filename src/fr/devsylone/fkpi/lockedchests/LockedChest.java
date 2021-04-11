@@ -218,7 +218,7 @@ public class LockedChest implements Saveable
 		}
 		if (Version.VersionType.V1_13.isHigherOrEqual())
 			return Bukkit.getLootTable(parseKey(lootTable));
-		throw new NotImplementedException(Messages.CMD_ERROR_LOOT_TABLES_API.getMessage());
+		throw new NotImplementedException("Loot tables api don't exist in versions prior to 1.13.");
 	}
 
 	@Override

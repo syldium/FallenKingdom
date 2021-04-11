@@ -1,6 +1,5 @@
 package fr.devsylone.fkpi.managers;
 
-import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fkpi.api.event.RuleChangeEvent;
 import fr.devsylone.fkpi.rules.Rule;
 import fr.devsylone.fkpi.rules.RuleValue;
@@ -24,7 +23,7 @@ public class RulesManager implements Saveable
 	@SuppressWarnings("unchecked")
 	public <T> T getRule(Rule<T> rule)
 	{
-		return (T) Objects.requireNonNull(rules.get(rule), Messages.CONSOLE_RULE_DOES_NOT_LOADED.getMessage());
+		return (T) Objects.requireNonNull(rules.get(rule), "The rule doesn't seem to be loaded. Has the manager been initialized?");
 	}
 
 	public <T> void setRule(Rule<T> rule, T value)

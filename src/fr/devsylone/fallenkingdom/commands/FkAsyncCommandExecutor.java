@@ -23,7 +23,7 @@ public class FkAsyncCommandExecutor extends FkCommandExecutor implements Listene
     public FkAsyncCommandExecutor(Fk plugin, PluginCommand command) {
         super(plugin, command);
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
-        plugin.getLogger().info(Messages.CONSOLE_ENABLE_ASYNCHRONOUS_TAB_COMPLETION.getMessage());
+        plugin.getLogger().info("Enable asynchronous tab completion...");
     }
 
     @EventHandler(ignoreCancelled = true)

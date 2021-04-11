@@ -7,7 +7,7 @@ import static org.bukkit.NamespacedKey.MINECRAFT;
 public final class KeyHelper {
 
     private KeyHelper() throws IllegalAccessException {
-        throw new IllegalAccessException(this.getClass().getSimpleName() + " " + Messages.CONSOLE_CANNOT_BE_INSTANTIATED.getMessage());
+        throw new IllegalAccessException(this.getClass().getSimpleName() + " cannot be instantiated.");
     }
 
     @SuppressWarnings("deprecation")

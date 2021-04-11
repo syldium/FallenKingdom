@@ -118,7 +118,7 @@ public class XItemStack {
             return null;
         }
         if (!ITEM_STACK.isAssignableFrom(nmsItemStack.getClass())) {
-            throw new IllegalArgumentException(Messages.CONSOLE_CANNOT_CONVERT_TO_BUKKIT_ITEM_STACK_1.getMessage() + " " + nmsItemStack + " " + Messages.CONSOLE_CANNOT_CONVERT_TO_BUKKIT_ITEM_STACK_2.getMessage());
+            throw new IllegalArgumentException("Can't convert " + nmsItemStack + " to bukkit item stack.");
         }
 
         try {
@@ -136,6 +136,6 @@ public class XItemStack {
                 return ComponentSerializer.parse((String) CHAT_COMPONENT_TO_JSON.invoke(null, field.get(obj)));
             }
         }
-        throw new RuntimeException(Messages.CONSOLE_TEXT_COMPONENT_FIELD_NOT_FOUND.getMessage());
+        throw new RuntimeException("Text component field not found");
     }
 }

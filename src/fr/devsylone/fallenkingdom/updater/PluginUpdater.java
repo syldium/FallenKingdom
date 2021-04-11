@@ -36,7 +36,7 @@ public class PluginUpdater extends BukkitRunnable
 
     public PluginUpdater(Plugin plugin)
     {
-        Validate.notNull(plugin, Messages.CONSOLE_PLUGIN_CANNOT_BE_NULL.getMessage());
+        Validate.notNull(plugin, "Plugin cannot be null");
         this.plugin = plugin;
 
         boolean isRelease = VERSION_PATTERN.matcher(plugin.getDescription().getVersion().toUpperCase(Locale.ROOT)).find();

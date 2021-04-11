@@ -1,6 +1,5 @@
 package fr.devsylone.fallenkingdom.utils;
 
-import fr.devsylone.fallenkingdom.pause.PausedPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -20,7 +19,7 @@ public final class ConfigHelper {
     private final static Pattern SEPARATOR = Pattern.compile(":");
 
     private ConfigHelper() throws IllegalAccessException {
-        throw new IllegalAccessException(this.getClass().getSimpleName() + " " + Messages.CONSOLE_CANNOT_BE_INSTANTIATED.getMessage());
+        throw new IllegalAccessException(this.getClass().getSimpleName() + " cannot be instantiated.");
     }
 
     public static void loadSectionsWithIndex(

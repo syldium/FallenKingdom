@@ -58,7 +58,7 @@ public class XAdvancement {
     }
 
     public static Object[] getAchievements() {
-        return Objects.requireNonNull(ACHIEVEMENT, Messages.CONSOLE_UNABLE_TO_GET_ACHIEVEMENT.getMessage()).getEnumConstants();
+        return Objects.requireNonNull(ACHIEVEMENT, "Unable to get achievements since 1.12.").getEnumConstants();
     }
 
     /**
@@ -90,7 +90,7 @@ public class XAdvancement {
     public static boolean hasAdvancement(Player player, String name) {
         if (isAdvancement()) {
             Advancement advancement = Bukkit.getAdvancement(parseKey(name));
-            Objects.requireNonNull(advancement, Messages.CONSOLE_SUCCESS_DOES_NOT_EXIST_1.getMessage() + " " + name + " " + Messages.CONSOLE_SUCCESS_DOES_NOT_EXIST_2.getMessage());
+            Objects.requireNonNull(advancement, "The success " + name + " does not exist.");
             return player.getAdvancementProgress(advancement).isDone();
         }
         Object achievement = Enum.valueOf(ACHIEVEMENT, name.toUpperCase());

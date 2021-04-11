@@ -57,7 +57,7 @@ public class PauseRestorer implements Saveable
 				failed.add(p.getPlayer());
 
 		if(!failed.isEmpty())
-			Fk.broadcast(Messages.CMD_GAME_RESTORE_PLAYERS_DOESNOT_CONNECT + " §b" + String.join("§c, §b", failed));
+			Fk.broadcast(Messages.CMD_GAME_RESTORE_DISCONNECTED_PLAYERS + " §b" + String.join("§c, §b", failed));
 		return id;
 	}
 

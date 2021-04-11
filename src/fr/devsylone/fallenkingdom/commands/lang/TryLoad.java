@@ -5,7 +5,6 @@ import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
-import fr.devsylone.fallenkingdom.manager.LanguageManager;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -22,15 +21,15 @@ public class TryLoad extends FkCommand
 
     @Override
     public CommandResult execute(Fk plugin, CommandSender sender, List<String> args, String label) {
-        plugin.getLogger().info(Messages.CONSOLE_START_OF_LANG_REPORT.getMessage());
+        plugin.getLogger().info("Start of lang report");
         // Recherche des traductions en mode strict
         long missingTranslations = Arrays.stream(Messages.values()).filter(message -> {
             String msg = plugin.getLanguageManager().getLanguageMessage(message.getAccessor(), true);
             if (msg == null && message.getMessage() == null)
-                Fk.getInstance().getLogger().severe(Messages.CONSOLE_VALUE_NOT_SET_IN_ANY_FILE_1.getMessage() + " " + message.getAccessor() + " " + Messages.CONSOLE_VALUE_NOT_SET_IN_ANY_FILE_2.getMessage());
+                Fk.getInstance().getLogger().severe("Value of " + message.getAccessor() + " not set in any file!");
             return msg == null;
         }).count();
-        plugin.getLogger().info(Messages.CONSOLE_END_OF_LANG_REPORT.getMessage());
+        plugin.getLogger().info("End of lang report");
         sender.sendMessage(ChatUtils.PREFIX + Messages.CMD_LANG_TRY_LOAD);
         if (missingTranslations > 0)
             ChatUtils.sendMessage(sender, ChatColor.RED + Messages.CMD_LANG_TRY_LOAD_MISSING.getMessage().replace("%nb%", String.valueOf(missingTranslations)));

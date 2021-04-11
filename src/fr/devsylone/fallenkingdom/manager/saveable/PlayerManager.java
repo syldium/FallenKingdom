@@ -2,7 +2,6 @@ package fr.devsylone.fallenkingdom.manager.saveable;
 
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
-import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fkpi.util.Saveable;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -82,7 +81,7 @@ public class PlayerManager implements Saveable
 			return fkPlayer;
 		}
 
-		fkPlayer = getPlayer(requireNonNull(player.getName(), Messages.CONSOLE_PLAYER_NAME_NOT_SET.getMessage()));
+		fkPlayer = getPlayer(requireNonNull(player.getName(), "player name is not set"));
 		playersByUUID.put(player.getUniqueId(), fkPlayer);
 		return fkPlayer;
 	}

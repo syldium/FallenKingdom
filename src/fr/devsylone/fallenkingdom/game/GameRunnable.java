@@ -32,7 +32,7 @@ class GameRunnable extends BukkitRunnable
     {
         if(!game.state.equals(Game.GameState.STARTED))
         {
-            Bukkit.getLogger().warning(Messages.CONSOLE_GAME_NOT_RUNNING.getMessage());
+            Bukkit.getLogger().warning("Game is not running. Cancelling game task.");
             game.task = null;
             this.cancel();
             return;
