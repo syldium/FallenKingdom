@@ -30,19 +30,21 @@ public class TeamCommandTest extends CommandTest {
     public void remove() {
         FkPI.getInstance().getTeamManager().createTeam("DemoR");
         FkPI.getInstance().getTeamManager().getTeam("DemoR").addPlayer(MockUtils.getConstantPlayer().getName());
-        assertRun("team remove demor");
+        assertRun("team remove DemoR");
         assertRun("team remove unknown", CommandResult.STATE_ERROR);
+        assertRun("team remove DemoR", CommandResult.STATE_ERROR);
         assertRun("team remove demor", CommandResult.STATE_ERROR);
     }
 
     @Test
     public void addPlayer() {
         FkPI.getInstance().getTeamManager().createTeam("Demo");
-        assertRun(MockUtils.getConstantPlayer(), "team addPlayer " + MockUtils.getConstantPlayer().getName() + " DEmo");
+        assertRun(MockUtils.getConstantPlayer(), "team addPlayer " + MockUtils.getConstantPlayer().getName() + " Demo");
         if (!FkPI.getInstance().getTeamManager().getTeam("Demo").getPlayers().contains(MockUtils.getConstantPlayer().getName()))
             fail();
-        assertRun("team addPlayer " + MockUtils.getConstantPlayer().getName() + " demo", CommandResult.STATE_ERROR);
-        assertRun(MockUtils.getConstantPlayer(), "team addPlayer velo demo");
+        assertRun("team addPlayer " + MockUtils.getConstantPlayer().getName() + " Demo", CommandResult.STATE_ERROR);
+        assertRun(MockUtils.getConstantPlayer(), "team addPlayer velo demo", CommandResult.STATE_ERROR);
+        assertRun(MockUtils.getConstantPlayer(), "team addPlayer velo Demo");
         FkPI.getInstance().getTeamManager().removeTeam("Demo");
     }
 

@@ -82,7 +82,11 @@ public final class XBlock {
     );
 
     public static boolean isReplaceable(Block block) {
-        if (ISFLAT) return block.isPassable();
+        if (ISFLAT) {
+            try {
+                return block.isPassable();
+            } catch (RuntimeException ignored) { /* Unit tests */ }
+        }
         return REPLACEABLE.contains(block.getType());
     }
 
