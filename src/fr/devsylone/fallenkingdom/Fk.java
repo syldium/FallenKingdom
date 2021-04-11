@@ -7,6 +7,8 @@ import java.util.Objects;
 
 import fr.devsylone.fallenkingdom.utils.FkConfig;
 import org.bstats.bukkit.Metrics;
+import org.bstats.charts.SimplePie;
+import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.command.PluginCommand;
@@ -368,8 +370,8 @@ public class Fk extends JavaPlugin
 	private void metrics() throws NoClassDefFoundError // gson en 1.8.0
 	{
 		Metrics metrics = new Metrics(this, 6738);
-		metrics.addCustomChart(new Metrics.SingleLineChart("server_running_1-8_version", () -> Bukkit.getVersion().contains("1.8") ? 1 : 0));
-		metrics.addCustomChart(new Metrics.SimplePie("lang_used", languageManager::getLocalePrefix));
+		metrics.addCustomChart(new SingleLineChart("server_running_1-8_version", () -> Bukkit.getVersion().contains("1.8") ? 1 : 0));
+		metrics.addCustomChart(new SimplePie("lang_used", languageManager::getLocalePrefix));
 	}
 
 	public void addOnConnectWarning(String warning)
