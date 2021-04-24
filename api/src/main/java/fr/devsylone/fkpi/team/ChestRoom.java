@@ -1,13 +1,13 @@
 package fr.devsylone.fkpi.team;
 
-//import fr.devsylone.fkpi.region.BlockRegion;
+import fr.devsylone.fkpi.region.BlockRegion;
 import fr.devsylone.fkpi.util.BlockPos;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.Set;
 
-public interface ChestRoom/* extends BlockRegion */{
+public interface ChestRoom extends BlockRegion {
 
     @NotNull Base base();
 

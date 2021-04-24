@@ -133,6 +133,11 @@ public class FkTeamImpl implements FkTeam {
     }
 
     @Override
+    public void base(@Nullable Base base) {
+        this.base = base;
+    }
+
+    @Override
     public @NotNull TextColor color() {
         return this.color;
     }

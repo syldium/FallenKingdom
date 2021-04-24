@@ -7,6 +7,7 @@ import net.kyori.adventure.util.Buildable;
 import org.jetbrains.annotations.ApiStatus.NonExtendable;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -49,6 +50,13 @@ public interface FkTeam extends PlayerSet, ComponentLike, Buildable<FkTeam, FkTe
      * @return The base, if any
      */
     @NotNull Optional<@NotNull Base> base();
+
+    /**
+     * Changes the base of the team.
+     *
+     * @param base The base, if any
+     */
+    void base(@Nullable Base base);
 
     /**
      * Adds the specified player to this team.
