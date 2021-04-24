@@ -1,6 +1,10 @@
+import net.kyori.indra.sonatypeSnapshots
 import org.gradle.api.plugins.JavaPlugin.*
 
 plugins {
+    val indraVersion = "1.3.1"
+    id("net.kyori.indra") version indraVersion apply false
+    id("net.kyori.indra.checkstyle") version indraVersion apply false
     id("com.github.johnrengelman.shadow") version "6.1.0" apply false
     idea
 }
@@ -14,8 +18,11 @@ allprojects {
 plugins.apply("idea")
 
 subprojects {
+    plugins.apply("net.kyori.indra")
+
     repositories {
         mavenCentral()
+        sonatypeSnapshots()
 
         // <editor-fold desc="Repositories" defaultstate="collapsed">
         // {{{ Repositories
