@@ -48,6 +48,17 @@ public class TeamManagerImpl implements TeamManager, TeamListener {
     }
 
     @Override
+    public boolean unregister(@NotNull FkTeam team) {
+        FkTeam removed = this.teams.remove(team.name());
+        if (removed != null) {
+            ((FkTeamImpl) team).setListener(TeamListener.ALWAYS_TRUE);
+            team.playersUniqueIds().forEach(this.playerTeam::remove);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public @NotNull Collection<FkTeam> teams() {
         return Collections.unmodifiableCollection(this.teams.values());
     }

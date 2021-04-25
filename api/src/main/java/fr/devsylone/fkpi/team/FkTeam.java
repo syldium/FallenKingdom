@@ -8,6 +8,7 @@ import org.jetbrains.annotations.ApiStatus.NonExtendable;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -40,9 +41,39 @@ public interface FkTeam extends PlayerSet, ComponentLike, Buildable<FkTeam, FkTe
      *
      * @return The rgb value
      */
-    default int colorCode() {
+    default @Range(from = 0, to = 0xffffff) int colorCode() {
         return this.color().value();
     }
+
+    /**
+     * Sets the color of this team.
+     *
+     * @param color The team color
+     */
+    void setColor(@NotNull TextColor color);
+
+    /**
+     * Sets the color of this team.
+     *
+     * @param value The rgb value
+     */
+    default void setColorValue(@Range(from = 0, to = 0xffffff) int value) {
+        this.setColor(TextColor.color(value));
+    }
+
+    /**
+     * Gets the name displayed for this team.
+     *
+     * @return The display name for this team
+     */
+    @NotNull Component displayName();
+
+    /**
+     * Sets the name displayed for this team.
+     *
+     * @param displayName The component to use
+     */
+    void setDisplayName(@NotNull Component displayName);
 
     /**
      * Returns the team's base.
@@ -56,7 +87,7 @@ public interface FkTeam extends PlayerSet, ComponentLike, Buildable<FkTeam, FkTe
      *
      * @param base The base, if any
      */
-    void base(@Nullable Base base);
+    void setBase(@Nullable Base base);
 
     /**
      * Adds the specified player to this team.
@@ -89,6 +120,17 @@ public interface FkTeam extends PlayerSet, ComponentLike, Buildable<FkTeam, FkTe
      * @return Whether the player was in this team
      */
     boolean removePlayer(@NotNull UUID playerUniqueId);
+
+    /**
+     * Gets the name displayed to users for this team.
+     *
+     * @return The display name
+     * @see #displayName()
+     */
+    @Override
+    default @NotNull Component asComponent() {
+        return this.displayName();
+    }
 
     /**
      * Creates a new builder to build a team.

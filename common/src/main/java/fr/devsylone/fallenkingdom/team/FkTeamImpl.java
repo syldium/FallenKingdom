@@ -22,10 +22,10 @@ import static java.util.Objects.requireNonNull;
 
 public class FkTeamImpl implements FkTeam {
 
-    private final TextColor color;
     private final String name;
-    private final Component displayName;
     private final Map<UUID, String> players;
+    private TextColor color;
+    private Component displayName;
     private @Nullable Base base;
     private TeamListener listener;
 
@@ -133,13 +133,32 @@ public class FkTeamImpl implements FkTeam {
     }
 
     @Override
-    public void base(@Nullable Base base) {
+    public void setBase(@Nullable Base base) {
         this.base = base;
     }
 
     @Override
     public @NotNull TextColor color() {
         return this.color;
+    }
+
+    @Override
+    public void setColor(@NotNull TextColor color) {
+        final TextColor previous = this.color;
+        this.color = requireNonNull(color, "team color");
+        if (!previous.equals(color)) {
+            this.displayName = this.displayName.color(color);
+        }
+    }
+
+    @Override
+    public @NotNull Component displayName() {
+        return this.displayName;
+    }
+
+    @Override
+    public void setDisplayName(@NotNull Component displayName) {
+        this.displayName = requireNonNull(displayName, "display name");
     }
 
     @Override
@@ -154,11 +173,6 @@ public class FkTeamImpl implements FkTeam {
     }
 
     @Override
-    public @NotNull Component asComponent() {
-        return this.displayName;
-    }
-
-    @Override
     public @NotNull FkTeam.Builder toBuilder() {
         return new TeamBuilderImpl(this.color, this.name, this.displayName, this.players, this.uuidService);
     }
@@ -170,7 +184,8 @@ public class FkTeamImpl implements FkTeam {
     @Override
     public String toString() {
         return "FkTeam{" +
-                "color=" + this.color +
+                "name=" + this.name +
+                ", color=" + this.color +
                 ", players=" + this.players.values() +
                 ", base=" + (this.base != null) +
                 '}';

@@ -4,6 +4,7 @@ import fr.devsylone.fkpi.team.FkTeam;
 import fr.devsylone.fkpi.team.InTooManyTeamsException;
 import fr.devsylone.fkpi.team.TeamChangeResult;
 import fr.devsylone.fkpi.team.TeamManager;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
@@ -103,5 +104,29 @@ public class TeamManagerTest extends AbstractTeamTest {
         final UUID uuid = this.uuidService.playerUniqueId("Crab");
         assertEquals(TeamChangeResult.alreadyIn(), manager.changePlayerTeam(uuid, team));
         assertEquals(Optional.of(team), manager.playerTeam(uuid));
+    }
+
+    @Test
+    public void unregister() {
+        final FkTeam team = builder("cyan").color(NamedTextColor.AQUA).build();
+        final TeamManager manager = new TeamManagerImpl(this.uuidService);
+        manager.register(team);
+
+        final UUID uuid = this.uuidService.playerUniqueId("Drowned");
+        team.addPlayer(uuid);
+
+        assertTrue(manager.unregister(team));
+        assertEquals(Optional.empty(), manager.playerTeam(uuid));
+        assertEquals(Optional.empty(), manager.find("cyan"));
+
+        final FkTeam anotherCyan = builder("cyan").build();
+        assertTrue(manager.register(anotherCyan));
+
+        assertEquals(TeamChangeResult.success(), anotherCyan.addPlayer(uuid));
+        assertTrue(team.removePlayer(uuid));
+        assertEquals(Optional.of(anotherCyan), manager.playerTeam(uuid));
+
+        assertEquals(TeamChangeResult.success(), team.addPlayer(uuid));
+        assertEquals(Optional.of(anotherCyan), manager.playerTeam(uuid));
     }
 }

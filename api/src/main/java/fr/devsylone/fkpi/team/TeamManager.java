@@ -28,6 +28,14 @@ public interface TeamManager {
     boolean register(@NotNull FkTeam team);
 
     /**
+     * Unregisters a team.
+     *
+     * @param team The team to unregister
+     * @return Whether the team was registered
+     */
+    boolean unregister(@NotNull FkTeam team);
+
+    /**
      * Return the player's team, if any.
      *
      * @param playerUniqueId The player's unique identifier
