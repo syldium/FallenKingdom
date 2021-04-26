@@ -59,5 +59,6 @@ public class TeamTest extends AbstractTeamTest {
         final FkTeam team = builder().name("cyan").build();
         assertEquals(TeamChangeResult.success(), team.addPlayer("Sponge"));
         assertTrue(team.hasPlayer("Sponge"));
+        assertEquals(TeamChangeResult.alreadyIn(), team.addPlayer("Sponge"));
     }
 }

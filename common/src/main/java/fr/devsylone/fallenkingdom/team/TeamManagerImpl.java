@@ -15,7 +15,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
-public class TeamManagerImpl implements TeamManager, TeamListener {
+public class TeamManagerImpl implements TeamManager, TeamBridge {
 
     private final Map<String, FkTeam> teams = new ConcurrentHashMap<>();
     private final Map<UUID, FkTeam> playerTeam = new ConcurrentHashMap<>();
@@ -39,7 +39,7 @@ public class TeamManagerImpl implements TeamManager, TeamListener {
 
         final boolean registered = this.teams.putIfAbsent(team.name(), team) == null;
         if (registered) {
-            ((FkTeamImpl) team).setListener(this);
+            ((FkTeamImpl) team).setBridge(this);
             for (UUID uuid : team.playersUniqueIds()) {
                 this.playerTeam.put(uuid, team);
             }
@@ -51,7 +51,7 @@ public class TeamManagerImpl implements TeamManager, TeamListener {
     public boolean unregister(@NotNull FkTeam team) {
         FkTeam removed = this.teams.remove(team.name());
         if (removed != null) {
-            ((FkTeamImpl) team).setListener(TeamListener.ALWAYS_TRUE);
+            ((FkTeamImpl) team).setBridge(TeamBridge.ALWAYS_TRUE);
             team.playersUniqueIds().forEach(this.playerTeam::remove);
             return true;
         }
@@ -92,7 +92,8 @@ public class TeamManagerImpl implements TeamManager, TeamListener {
 
     @Override
     public @NotNull TeamChangeResult onPlayerAdd(@NotNull FkTeam team, @NotNull UUID playerUniqueId) {
-        if (this.playerTeam.containsKey(playerUniqueId)) {
+        final FkTeam actual = this.playerTeam.get(playerUniqueId);
+        if (actual != null && actual != team) {
             return TeamChangeResult.inTooManyTeams();
         }
         this.playerTeam.put(playerUniqueId, team);

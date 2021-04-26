@@ -6,9 +6,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
-interface TeamListener {
+interface TeamBridge {
 
-    TeamListener ALWAYS_TRUE = new TeamListener() {
+    TeamBridge ALWAYS_TRUE = new TeamBridge() {
         @Override
         public @NotNull TeamChangeResult onPlayerAdd(@NotNull FkTeam team, @NotNull UUID playerUniqueId) {
             return TeamChangeResult.success();

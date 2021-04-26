@@ -107,6 +107,17 @@ public class TeamManagerTest extends AbstractTeamTest {
     }
 
     @Test
+    public void addPlayer_alreadyIn() {
+        final FkTeam team = builder("purple").build();
+        final TeamManager manager = new TeamManagerImpl(this.uuidService);
+        assertTrue(manager.register(team));
+
+        final UUID uuid = UUID.randomUUID();
+        assertEquals(TeamChangeResult.success(), team.addPlayer(uuid));
+        assertEquals(TeamChangeResult.alreadyIn(), team.addPlayer(uuid));
+    }
+
+    @Test
     public void unregister() {
         final FkTeam team = builder("cyan").color(NamedTextColor.AQUA).build();
         final TeamManager manager = new TeamManagerImpl(this.uuidService);

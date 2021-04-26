@@ -27,7 +27,7 @@ public class FkTeamImpl implements FkTeam {
     private TextColor color;
     private Component displayName;
     private @Nullable Base base;
-    private TeamListener listener;
+    private TeamBridge bridge;
 
     private final UUIDService uuidService;
 
@@ -50,7 +50,7 @@ public class FkTeamImpl implements FkTeam {
         this.name = name;
         this.displayName = displayName;
         this.players = new ConcurrentHashMap<>();
-        this.listener = TeamListener.ALWAYS_TRUE;
+        this.bridge = TeamBridge.ALWAYS_TRUE;
         this.uuidService = uuidService;
     }
 
@@ -60,7 +60,7 @@ public class FkTeamImpl implements FkTeam {
         if (playerUniqueId == null) {
             return TeamChangeResult.missingPlayerId();
         }
-        TeamChangeResult result = this.listener.onPlayerAdd(this, playerUniqueId);
+        TeamChangeResult result = this.bridge.onPlayerAdd(this, playerUniqueId);
         if (result.isSuccess() && this.players.put(playerUniqueId, playerName) != null) {
             return TeamChangeResult.alreadyIn();
         }
@@ -73,7 +73,7 @@ public class FkTeamImpl implements FkTeam {
         if (playerName == null) {
             return TeamChangeResult.missingPlayerName();
         }
-        TeamChangeResult result = this.listener.onPlayerAdd(this, playerUniqueId);
+        TeamChangeResult result = this.bridge.onPlayerAdd(this, playerUniqueId);
         if (result.isSuccess() && this.players.put(playerUniqueId, playerName) != null) {
             return TeamChangeResult.alreadyIn();
         }
@@ -101,7 +101,7 @@ public class FkTeamImpl implements FkTeam {
 
     @Override
     public boolean removePlayer(@NotNull UUID playerUniqueId) {
-        if (this.listener.onPlayerRemove(this, playerUniqueId)) {
+        if (this.bridge.onPlayerRemove(this, playerUniqueId)) {
             return this.players.remove(playerUniqueId) != null;
         }
         return false;
@@ -177,8 +177,8 @@ public class FkTeamImpl implements FkTeam {
         return new TeamBuilderImpl(this.color, this.name, this.displayName, this.players, this.uuidService);
     }
 
-    void setListener(@NotNull TeamListener listener) {
-        this.listener = requireNonNull(listener, "listener");
+    void setBridge(@NotNull TeamBridge bridge) {
+        this.bridge = requireNonNull(bridge, "bridge");
     }
 
     @Override
