@@ -34,6 +34,6 @@ public class RuleRegistryTest {
     public void registerIfAbsent() {
         final RuleRegistry registry = new RuleRegistryImpl();
         assertEquals(Optional.empty(), registry.findValue(Rule.DEEP_PAUSE));
-        assertEquals(Rule.DEEP_PAUSE.defValue().get(), registry.value(Rule.DEEP_PAUSE));
+        assertEquals(Rule.DEEP_PAUSE.defValue(), registry.value(Rule.DEEP_PAUSE));
     }
 }

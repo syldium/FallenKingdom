@@ -59,8 +59,12 @@ public final class Rule<T> {
         return this.valueType;
     }
 
-    public @NotNull Supplier<@NotNull T> defValue() {
+    public @NotNull Supplier<@NotNull T> defValueSupplier() {
         return this.defValue;
+    }
+
+    public @NotNull T defValue() {
+        return this.defValue.get();
     }
 
     @Override
