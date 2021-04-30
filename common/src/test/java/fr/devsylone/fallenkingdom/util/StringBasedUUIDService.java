@@ -1,6 +1,8 @@
 package fr.devsylone.fallenkingdom.util;
 
 import fr.devsylone.fallenkingdom.UUIDService;
+import fr.devsylone.fkpi.team.FkTeam;
+import net.kyori.adventure.audience.Audience;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -34,6 +36,16 @@ public class StringBasedUUIDService implements UUIDService {
         playerUniqueId = this.generateUniqueId();
         this.store(playerName, playerUniqueId);
         return playerUniqueId;
+    }
+
+    @Override
+    public @NotNull Audience teamAudience(@NotNull FkTeam team) {
+        return Audience.empty();
+    }
+
+    @Override
+    public @NotNull Audience playerAudience(@NotNull UUID player) {
+        return Audience.empty();
     }
 
     private @NotNull UUID generateUniqueId() {

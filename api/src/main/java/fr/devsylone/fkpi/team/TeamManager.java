@@ -1,5 +1,6 @@
 package fr.devsylone.fkpi.team;
 
+import net.kyori.adventure.audience.ForwardingAudience;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
 
@@ -8,7 +9,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-public interface TeamManager {
+public interface TeamManager extends ForwardingAudience {
 
     /**
      * Gets the {@link FkTeam team} by name, if any.

@@ -4,6 +4,8 @@ import fr.devsylone.fallenkingdom.UUIDService;
 import fr.devsylone.fkpi.team.Base;
 import fr.devsylone.fkpi.team.FkTeam;
 import fr.devsylone.fkpi.team.TeamChangeResult;
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.audience.ForwardingAudience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.jetbrains.annotations.NotNull;
@@ -20,7 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static java.util.Objects.requireNonNull;
 
-public class FkTeamImpl implements FkTeam {
+public class FkTeamImpl implements FkTeam, ForwardingAudience.Single {
 
     private final String name;
     private final Map<UUID, String> players;
@@ -60,7 +62,7 @@ public class FkTeamImpl implements FkTeam {
         if (playerUniqueId == null) {
             return TeamChangeResult.missingPlayerId();
         }
-        TeamChangeResult result = this.bridge.onPlayerAdd(this, playerUniqueId);
+        TeamChangeResult result = this.bridge.onPlayerAdd(this, playerName, playerUniqueId);
         if (result.isSuccess() && this.players.put(playerUniqueId, playerName) != null) {
             return TeamChangeResult.alreadyIn();
         }
@@ -73,7 +75,7 @@ public class FkTeamImpl implements FkTeam {
         if (playerName == null) {
             return TeamChangeResult.missingPlayerName();
         }
-        TeamChangeResult result = this.bridge.onPlayerAdd(this, playerUniqueId);
+        TeamChangeResult result = this.bridge.onPlayerAdd(this, playerName, playerUniqueId);
         if (result.isSuccess() && this.players.put(playerUniqueId, playerName) != null) {
             return TeamChangeResult.alreadyIn();
         }
@@ -101,10 +103,8 @@ public class FkTeamImpl implements FkTeam {
 
     @Override
     public boolean removePlayer(@NotNull UUID playerUniqueId) {
-        if (this.bridge.onPlayerRemove(this, playerUniqueId)) {
-            return this.players.remove(playerUniqueId) != null;
-        }
-        return false;
+        final String playerName = this.players.remove(playerUniqueId);
+        return playerName != null && this.bridge.onPlayerRemove(this, playerName, playerUniqueId);
     }
 
     @Override
@@ -147,6 +147,7 @@ public class FkTeamImpl implements FkTeam {
         final TextColor previous = this.color;
         this.color = requireNonNull(color, "team color");
         if (!previous.equals(color)) {
+            this.bridge.onColorChange(this, previous, color);
             this.displayName = this.displayName.color(color);
         }
     }
@@ -175,6 +176,11 @@ public class FkTeamImpl implements FkTeam {
     @Override
     public @NotNull FkTeam.Builder toBuilder() {
         return new TeamBuilderImpl(this.color, this.name, this.displayName, this.players, this.uuidService);
+    }
+
+    @Override
+    public @NotNull Audience audience() {
+        return this.uuidService.teamAudience(this);
     }
 
     void setBridge(@NotNull TeamBridge bridge) {

@@ -1,5 +1,7 @@
 package fr.devsylone.fallenkingdom.team;
 
+import fr.devsylone.fallenkingdom.platform.TeamListener;
+import fr.devsylone.fallenkingdom.platform.TeamListenerMock;
 import fr.devsylone.fkpi.team.FkTeam;
 import fr.devsylone.fkpi.team.InTooManyTeamsException;
 import fr.devsylone.fkpi.team.TeamChangeResult;
@@ -17,12 +19,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TeamManagerTest extends AbstractTeamTest {
 
+    private final TeamListener listener = new TeamListenerMock();
+
     @Test
     public void registerTeamAndPlayer() {
         final FkTeam team = builder().name("red").build();
-        final TeamManager manager = new TeamManagerImpl(this.uuidService);
+        final TeamListenerMock listener = new TeamListenerMock();
+        final TeamManager manager = new TeamManagerImpl(listener, this.uuidService);
         assertTrue(manager.register(team));
         assertEquals(Optional.of(team), manager.find("red"), "The team should be registered.");
+        assertEquals(team, listener.poolLastRegister());
 
         final UUID uuid = UUID.randomUUID();
         assertEquals(TeamChangeResult.success(), team.addPlayer(uuid), "The player should be added to the team.");
@@ -34,7 +40,7 @@ public class TeamManagerTest extends AbstractTeamTest {
         final FkTeam team = builder("green")
                 .playerNames("Goldfish", "Creeper")
                 .build();
-        final TeamManager manager = new TeamManagerImpl(this.uuidService);
+        final TeamManager manager = new TeamManagerImpl(this.listener, this.uuidService);
         assertTrue(manager.register(team));
 
         final UUID player1 = this.uuidService.playerUniqueId("Goldfish");
@@ -51,7 +57,7 @@ public class TeamManagerTest extends AbstractTeamTest {
         final FkTeam blueTeam = builder("blue")
                 .playerNames("Sheep", "Pig")
                 .build();
-        final TeamManager manager = new TeamManagerImpl(this.uuidService);
+        final TeamManager manager = new TeamManagerImpl(this.listener, this.uuidService);
         assertTrue(manager.register(blueTeam));
 
         final FkTeam limeTeam = builder("lime").build();
@@ -67,7 +73,7 @@ public class TeamManagerTest extends AbstractTeamTest {
         final FkTeam orangeTeam = builder("orange")
                 .playerNames("Watermelon", "Pumpkin")
                 .build();
-        final TeamManager manager = new TeamManagerImpl(this.uuidService);
+        final TeamManager manager = new TeamManagerImpl(this.listener, this.uuidService);
         assertTrue(manager.register(orangeTeam));
 
         final FkTeam grayTeam = builder("gray")
@@ -80,7 +86,7 @@ public class TeamManagerTest extends AbstractTeamTest {
     @Test
     public void changePlayerTeam() {
         final FkTeam aquaTeam = builder("aqua").build();
-        final TeamManager manager = new TeamManagerImpl(this.uuidService);
+        final TeamManager manager = new TeamManagerImpl(this.listener, this.uuidService);
         assertTrue(manager.register(aquaTeam));
 
         final UUID uuid = this.uuidService.playerUniqueId("Husk");
@@ -98,7 +104,7 @@ public class TeamManagerTest extends AbstractTeamTest {
     @Test
     public void changePlayerTeam_alreadyIn() {
         final FkTeam team = builder("black").playerNames("Crab").build();
-        final TeamManager manager = new TeamManagerImpl(this.uuidService);
+        final TeamManager manager = new TeamManagerImpl(this.listener, this.uuidService);
         assertTrue(manager.register(team));
 
         final UUID uuid = this.uuidService.playerUniqueId("Crab");
@@ -109,7 +115,7 @@ public class TeamManagerTest extends AbstractTeamTest {
     @Test
     public void addPlayer_alreadyIn() {
         final FkTeam team = builder("purple").build();
-        final TeamManager manager = new TeamManagerImpl(this.uuidService);
+        final TeamManager manager = new TeamManagerImpl(this.listener, this.uuidService);
         assertTrue(manager.register(team));
 
         final UUID uuid = UUID.randomUUID();
@@ -120,7 +126,8 @@ public class TeamManagerTest extends AbstractTeamTest {
     @Test
     public void unregister() {
         final FkTeam team = builder("cyan").color(NamedTextColor.AQUA).build();
-        final TeamManager manager = new TeamManagerImpl(this.uuidService);
+        final TeamListenerMock listener = new TeamListenerMock();
+        final TeamManager manager = new TeamManagerImpl(listener, this.uuidService);
         manager.register(team);
 
         final UUID uuid = this.uuidService.playerUniqueId("Drowned");
@@ -129,6 +136,7 @@ public class TeamManagerTest extends AbstractTeamTest {
         assertTrue(manager.unregister(team));
         assertEquals(Optional.empty(), manager.playerTeam(uuid));
         assertEquals(Optional.empty(), manager.find("cyan"));
+        assertEquals(team, listener.poolLastUnregister());
 
         final FkTeam anotherCyan = builder("cyan").build();
         assertTrue(manager.register(anotherCyan));

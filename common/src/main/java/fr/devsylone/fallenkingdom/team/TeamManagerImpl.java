@@ -1,10 +1,12 @@
 package fr.devsylone.fallenkingdom.team;
 
 import fr.devsylone.fallenkingdom.UUIDService;
+import fr.devsylone.fallenkingdom.platform.TeamListener;
 import fr.devsylone.fkpi.team.FkTeam;
 import fr.devsylone.fkpi.team.InTooManyTeamsException;
 import fr.devsylone.fkpi.team.TeamChangeResult;
 import fr.devsylone.fkpi.team.TeamManager;
+import net.kyori.adventure.text.format.TextColor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -20,9 +22,11 @@ public class TeamManagerImpl implements TeamManager, TeamBridge {
     private final Map<String, FkTeam> teams = new ConcurrentHashMap<>();
     private final Map<UUID, FkTeam> playerTeam = new ConcurrentHashMap<>();
 
+    private final TeamListener listener;
     private final UUIDService uuidService;
 
-    public TeamManagerImpl(@NotNull UUIDService uuidService) {
+    public TeamManagerImpl(@NotNull TeamListener listener, @NotNull UUIDService uuidService) {
+        this.listener = listener;
         this.uuidService = uuidService;
     }
 
@@ -43,6 +47,7 @@ public class TeamManagerImpl implements TeamManager, TeamBridge {
             for (UUID uuid : team.playersUniqueIds()) {
                 this.playerTeam.put(uuid, team);
             }
+            this.listener.onRegister(team);
         }
         return registered;
     }
@@ -53,6 +58,7 @@ public class TeamManagerImpl implements TeamManager, TeamBridge {
         if (removed != null) {
             ((FkTeamImpl) team).setBridge(TeamBridge.ALWAYS_TRUE);
             team.playersUniqueIds().forEach(this.playerTeam::remove);
+            this.listener.onUnregister(team);
             return true;
         }
         return false;
@@ -91,19 +97,31 @@ public class TeamManagerImpl implements TeamManager, TeamBridge {
     }
 
     @Override
-    public @NotNull TeamChangeResult onPlayerAdd(@NotNull FkTeam team, @NotNull UUID playerUniqueId) {
+    public void onColorChange(@NotNull FkTeam team, @NotNull TextColor actual, @NotNull TextColor next) {
+        this.listener.onColorChange(team, actual, next);
+    }
+
+    @Override
+    public @NotNull TeamChangeResult onPlayerAdd(@NotNull FkTeam team, @NotNull String playerName, @NotNull UUID playerUniqueId) {
         final FkTeam actual = this.playerTeam.get(playerUniqueId);
         if (actual != null && actual != team) {
             return TeamChangeResult.inTooManyTeams();
         }
         this.playerTeam.put(playerUniqueId, team);
+        this.listener.onPlayerAdd(team, playerName, playerUniqueId);
         return TeamChangeResult.success();
     }
 
     @Override
-    public boolean onPlayerRemove(@NotNull FkTeam team, @NotNull UUID playerUniqueId) {
+    public boolean onPlayerRemove(@NotNull FkTeam team, @NotNull String playerName, @NotNull UUID playerUniqueId) {
         this.playerTeam.remove(playerUniqueId);
+        this.listener.onPlayerRemove(team, playerName, playerUniqueId);
         return true;
+    }
+
+    @Override
+    public @NotNull Iterable<FkTeam> audiences() {
+        return this.playerTeam.values();
     }
 
     private boolean someHasTeam(@NotNull Iterable<@NotNull UUID> iterable) {

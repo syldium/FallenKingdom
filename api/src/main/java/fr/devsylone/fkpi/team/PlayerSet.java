@@ -1,7 +1,7 @@
 package fr.devsylone.fkpi.team;
 
 import fr.devsylone.fkpi.util.ForwardingIterable;
-import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.audience.ForwardingAudience;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
 
@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.UUID;
 
-public interface PlayerSet extends Audience, Iterable<UUID> {
+public interface PlayerSet extends ForwardingAudience, Iterable<UUID> {
 
     boolean hasPlayer(@NotNull String playerName);
 
