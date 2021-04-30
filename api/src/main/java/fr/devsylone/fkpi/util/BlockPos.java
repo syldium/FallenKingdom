@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class BlockPos {
 
-    public static final Vec3d ZERO = new Vec3d(0, 0, 0);
+    public static final BlockPos ZERO = new BlockPos(0, 0, 0);
 
     public final int x, y, z;
 
