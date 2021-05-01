@@ -29,8 +29,6 @@ public class ScoreboardManager implements Saveable
 	private String name,
 			stringTrue,
 			stringFalse,
-			noTeam,
-			noBase,
 			noInfo = "§4?",
 			arrows;
 	private List<String> sidebar = new ArrayList<>();
@@ -42,6 +40,10 @@ public class ScoreboardManager implements Saveable
 		reset();
 	}
 
+	public String format(boolean value) {
+		return value ? stringTrue : stringFalse;
+	}
+
 	public Set<Integer> getLinesWith(PlaceHolder... placeHolders)
 	{
 		Set<Integer> lines = new HashSet<>();
@@ -49,19 +51,6 @@ public class ScoreboardManager implements Saveable
 			lines.addAll(this.placeHolders.get(placeHolder));
 		}
 		return lines;
-	}
-
-	public Map<String, String> getCustomStrings()
-	{
-		Map<String, String> hash = new HashMap<>();
-		hash.put("stringTrue", stringTrue);
-		hash.put("stringFalse", stringFalse);
-		hash.put("noTeam", noTeam);
-		hash.put("noBase", noBase);
-		hash.put("noInfo", noBase);
-		hash.put("arrows", arrows);
-
-		return hash;
 	}
 
 	public void setName(String name)
@@ -175,12 +164,12 @@ public class ScoreboardManager implements Saveable
 
 	public String getNoTeam()
 	{
-		return noTeam;
+		return Messages.CMD_SCOREBOARD_NO_TEAM.getMessage();
 	}
 
 	public String getNoBase()
 	{
-		return noBase;
+		return Messages.CMD_SCOREBOARD_NO_BASE.getMessage();
 	}
 
 	public String getNoInfo()
@@ -258,8 +247,6 @@ public class ScoreboardManager implements Saveable
 		name = ChatUtils.PREFIX;
 		stringTrue = "§2✔";
 		stringFalse = "§4✘";
-		noTeam = Messages.CMD_SCOREBOARD_NO_TEAM.getMessage();
-		noBase = Messages.CMD_SCOREBOARD_NO_BASE.getMessage();
 		noInfo = "§4?";
 		arrows = Version.VersionType.V1_13.isHigherOrEqual() ? "⇑⇗⇒⇘⇓⇙⇐⇖" : "↑↗→↘↓↙←↖";
 		sidebar.clear();
@@ -278,8 +265,6 @@ public class ScoreboardManager implements Saveable
 
 		stringTrue = config.getString("Boolean", "§2✔:§4✘").split(":")[0];
 		stringFalse = config.getString("Boolean", "§2✔:§4✘").split(":")[1];
-		noTeam = config.getString("NoTeam", noTeam);
-		noBase = config.getString("NoBase", noBase);
 		noInfo = config.getString("NoInfo", noInfo);
 	}
 
@@ -289,8 +274,6 @@ public class ScoreboardManager implements Saveable
 		config.set("Name", name);
 		config.set("Sidebar", sidebar);
 		config.set("Boolean", stringTrue + ":" + stringFalse);
-		config.set("NoTeam", noTeam);
-		config.set("NoBase", noBase);
 		config.set("NoInfo", noInfo);
 		config.set("Arrows", arrows);
 	}

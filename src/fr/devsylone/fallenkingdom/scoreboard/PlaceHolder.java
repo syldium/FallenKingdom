@@ -60,7 +60,7 @@ public enum PlaceHolder
 	{
 		Object replaceValue = callable.apply(player, iteration);
 		if(replaceValue instanceof Boolean)
-			replaceValue = String.valueOf((boolean) replaceValue ? Fk.getInstance().getScoreboardManager().getCustomStrings().get("stringTrue") : Fk.getInstance().getScoreboardManager().getCustomStrings().get("stringFalse"));
+			replaceValue = Fk.getInstance().getScoreboardManager().format((boolean) replaceValue);
 		for (String key : keys)
 			chainToProcess = chainToProcess.replace(key, String.valueOf(replaceValue));
 		return chainToProcess;
