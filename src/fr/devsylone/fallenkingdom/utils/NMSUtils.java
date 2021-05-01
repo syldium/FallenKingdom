@@ -65,7 +65,7 @@ public class NMSUtils
 			}
 		}
 
-		throw new ClassNotFoundException(Messages.CONSOLE_CANNOT_FOUND_CLASS_1.getMessage() + " " + givenName + "(" + Messages.CONSOLE_CANNOT_FOUND_CLASS_2.getMessage() + ")");
+		throw new ClassNotFoundException("Cannot found this class : " + givenName + "(Is it registered ?)");
 	}
 
 

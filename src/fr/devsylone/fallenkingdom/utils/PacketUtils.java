@@ -43,7 +43,7 @@ public class PacketUtils
 
 		if(o == null)
 		{
-			print(indent + Messages.CONSOLE_NULL.getMessage());
+			print(indent + "null");
 			return;
 		}
 		Class<?> c = o.getClass();
@@ -53,7 +53,7 @@ public class PacketUtils
 
 		if(o.getClass().isEnum())
 		{
-			print("§c" + Messages.CONSOLE_ENUM.getMessage() + indent + "...");
+			print(indent + "§cenum...");
 			return;
 		}
 
@@ -64,7 +64,7 @@ public class PacketUtils
 			f.setAccessible(true);
 
 			if(f.get(o) == null)
-				print(indent + "§c" + Messages.CONSOLE_NULL.getMessage());
+				print(indent + "§cnull");
 			else
 			{
 				Class<?> fType = f.get(o).getClass();
@@ -79,7 +79,7 @@ public class PacketUtils
 						{
 							Object current = Array.get(f.get(o), k);
 							if(current == null)
-								print("§a" + indent + f.getName() + "[" + k + "]=§c" + Messages.CONSOLE_NULL.getMessage());
+								print("§a" + indent + f.getName() + "[" + k + "]=§cnull");
 
 							else if(isPrimitive(current.getClass()))
 								print("§b" + indent + f.getName() + "[" + k + "]=" + current);
@@ -100,7 +100,7 @@ public class PacketUtils
 					for(Object it : (Iterable<?>) f.get(o))
 					{
 						if(it == null)
-							print("§a" + indent + f.getName() + "[" + i++ + "]=§c" + Messages.CONSOLE_NULL.getMessage());
+							print("§a" + indent + f.getName() + "[" + i++ + "]=§cnull");
 
 						else if(isPrimitive(it.getClass()))
 							print("§b" + indent + f.getName() + "[" + i++ + "]=" + it);
