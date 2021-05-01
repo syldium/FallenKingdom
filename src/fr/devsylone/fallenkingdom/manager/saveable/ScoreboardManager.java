@@ -16,8 +16,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -115,6 +115,12 @@ public class ScoreboardManager implements Saveable
 	public List<String> getSidebar()
 	{
 		return sidebar;
+	}
+
+	public void setSidebar(List<String> sidebar)
+	{
+		this.sidebar = new ArrayList<>(sidebar);
+		computePlaceHoldersIndexes();
 	}
 
 	public String getSidebarLine(int index, Player player)
@@ -250,7 +256,7 @@ public class ScoreboardManager implements Saveable
 		noInfo = "§4?";
 		arrows = Version.VersionType.V1_13.isHigherOrEqual() ? "⇑⇗⇒⇘⇓⇙⇐⇖" : "↑↗→↘↓↙←↖";
 		sidebar.clear();
-		sidebar.add(Messages.SCOREBOARD_DEFAULT.getMessage());
+		sidebar.addAll(Arrays.asList(Messages.SCOREBOARD_DEFAULT.getMessage().split("\n")));
 		computePlaceHoldersIndexes();
 	}
 
