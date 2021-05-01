@@ -84,8 +84,8 @@ public class LanguageManager
         }
 
         // Chargement de la langue par défaut
-        InputStream stream = Objects.requireNonNull(plugin.getResource("locales/fr.properties"), Messages.CONSOLE_CANNOT_LOAD_DEFAULT_LANGUAGE.getMessage());
-        try (InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8)) {
+        try (InputStream stream = Objects.requireNonNull(plugin.getResource("locales/fr.properties"), "Cannot load default language file in resources");
+             InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8)) {
             defaultLocale.load(reader);
         } catch (IOException e) {
             e.printStackTrace();

@@ -389,7 +389,6 @@ public enum Messages
     CONSOLE_AT("console.at"),
     CONSOLE_KICK_MESSAGE("console.kick.message"),
     CONSOLE_LIGHT_ERROR("console.light-error"),
-    CONSOLE_CANNOT_LOAD_DEFAULT_LANGUAGE("console.cannot-load-default-language"),
     CONSOLE_UNABLE_TO_MAKE_BACKUP("console.unable-to-make-backup"),
     CONSOLE_WORLD_NOT_FOUND_1("console.world.not-found.1"),
     CONSOLE_WORLD_NOT_FOUND_2("console.world.not-found.2"),
