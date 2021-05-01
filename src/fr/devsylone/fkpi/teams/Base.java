@@ -1,6 +1,7 @@
 package fr.devsylone.fkpi.teams;
 
 import com.cryptomorin.xseries.XMaterial;
+import fr.devsylone.fkpi.util.OutlineSquareIterator;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -11,6 +12,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import fr.devsylone.fallenkingdom.utils.XBlock;
 import fr.devsylone.fkpi.util.Saveable;
 
+import java.util.Iterator;
 import java.util.Objects;
 
 import static fr.devsylone.fallenkingdom.version.Environment.getMinHeight;
@@ -195,45 +197,28 @@ public class Base implements Saveable
 		return radius;
 	}
 
+	public void constructBorder() {
+		if (material == Material.AIR) {
+			return;
+		}
+
+		Iterator<Location> iterator = new OutlineSquareIterator(center.getBlockX() - radius, center.getBlockY(), center.getBlockZ() - radius, radius * 2, center.getWorld());
+		Location location;
+		while (iterator.hasNext()) {
+			location = iterator.next();
+			adjustLoc(location);
+			location.getBlock().setType(material);
+			XBlock.setData(location.getBlock(), data);
+		}
+	}
+
 	/**
 	 * Construit la base en jeu.
 	 */
 	public void construct()
 	{
 		adjustLoc(center);
-
-		Location loc = new Location(center.getWorld(), 0, center.getBlockY(), 0);
-
-		for(int i = 0; i < 2 * radius; i++)
-		{
-			loc.setX(center.getBlockX() + radius - i);
-			loc.setZ(center.getBlockZ() + radius);
-
-			adjustLoc(loc);
-			loc.getBlock().setType(material);
-			XBlock.setData(loc.getBlock(), data);
-
-			loc.setX(center.getBlockX() - radius + i);
-			loc.setZ(center.getBlockZ() - radius);
-
-			adjustLoc(loc);
-			loc.getBlock().setType(material);
-			XBlock.setData(loc.getBlock(), data);
-
-			loc.setX(center.getBlockX() - radius);
-			loc.setZ(center.getBlockZ() + radius - i);
-
-			adjustLoc(loc);
-			loc.getBlock().setType(material);
-			XBlock.setData(loc.getBlock(), data);
-
-			loc.setX(center.getBlockX() + radius);
-			loc.setZ(center.getBlockZ() - radius + i);
-
-			adjustLoc(loc);
-			loc.getBlock().setType(material);
-			XBlock.setData(loc.getBlock(), data);
-		}
+		constructBorder();
 
 		/*
 		 * Vus de face :
