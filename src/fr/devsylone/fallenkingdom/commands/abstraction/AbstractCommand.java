@@ -42,7 +42,7 @@ public abstract class AbstractCommand
 
     public String getFullUsage() {
         if (parent != null) {
-            return parent.getUsage() + " " + getUsage();
+            return parent.getFullUsage() + " " + getUsage();
         }
         return getUsage();
     }
