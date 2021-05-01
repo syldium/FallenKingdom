@@ -78,7 +78,7 @@ public final class XBlock {
             XMaterial.STONE, XMaterial.GRANITE, XMaterial.DIORITE, XMaterial.ANDESITE
     );
     public static final Set<Material> CONTAINERS = materialSet(
-            XMaterial.CHEST, XMaterial.BARREL
+            XMaterial.CHEST, XMaterial.TRAPPED_CHEST, XMaterial.BARREL
     );
 
     public static boolean isReplaceable(Block block) {
