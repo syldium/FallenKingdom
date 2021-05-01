@@ -29,8 +29,8 @@ public class Restore extends FkCommand
 			throw new FkLightException(Messages.CMD_ERROR_NOT_IN_PAUSE);
 
 		int id = -1;
-		if (args.size() > 0) {
-			id = ArgumentParser.parsePositiveInt(args.get(0), true, Messages.CMD_ERROR_PAUSE_ID);
+		if (!args.isEmpty()) {
+			id = ArgumentParser.parsePositiveInt(args.get(0), true, Messages.CMD_ERROR_PAUSE_ID, message -> message.getMessage().replace("%id%", args.get(0)));
 		}
 		id = Fk.getInstance().getPauseRestorer().restoreAll(id); // Si l'id était -1 ça remet le bon
 		Fk.broadcast(Messages.CMD_GAME_RESTORE.getMessage().replace("%id%", String.valueOf(id)), FkSound.NOTE_PLING);

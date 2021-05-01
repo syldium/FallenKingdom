@@ -17,6 +17,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static org.bukkit.Bukkit.getServer;
@@ -106,17 +107,25 @@ public class ArgumentParser {
     }
 
     public static int parseInt(String nb, Messages errorMessage) throws ArgumentParseException {
+        return parseInt(nb, errorMessage, Messages::getMessage);
+    }
+
+    public static int parseInt(String nb, Messages errorMessage, Function<Messages, String> messageToString) throws ArgumentParseException {
         try {
             return Integer.parseInt(nb);
         } catch (NumberFormatException e) {
-            throw new ArgumentParseException(errorMessage.getMessage());
+            throw new ArgumentParseException(messageToString.apply(errorMessage));
         }
     }
 
     public static int parsePositiveInt(String nb, boolean includeOrigin, Messages errorMessage) throws ArgumentParseException {
-        int integer = parseInt(nb, errorMessage);
+        return parsePositiveInt(nb, includeOrigin, errorMessage, Messages::getMessage);
+    }
+
+    public static int parsePositiveInt(String nb, boolean includeOrigin, Messages errorMessage, Function<Messages, String> messageToString) throws ArgumentParseException {
+        int integer = parseInt(nb, errorMessage, messageToString);
         if (integer <= 0 && !includeOrigin || integer < 0) {
-            throw new ArgumentParseException(errorMessage.getMessage());
+            throw new ArgumentParseException(messageToString.apply(errorMessage));
         }
         return integer;
     }
