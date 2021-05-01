@@ -1,9 +1,13 @@
 package fr.devsylone.fallenkingdom.commands.teams.teamscommands;
 
 import fr.devsylone.fallenkingdom.commands.ArgumentParser;
-import fr.devsylone.fallenkingdom.commands.abstraction.*;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
+import fr.devsylone.fallenkingdom.commands.abstraction.FkPlayerCommand;
 import fr.devsylone.fallenkingdom.exception.ArgumentParseException;
 import fr.devsylone.fallenkingdom.utils.Messages;
+import fr.devsylone.fkpi.teams.Team;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import fr.devsylone.fallenkingdom.Fk;
@@ -25,7 +29,8 @@ public class SetBase extends FkPlayerCommand
 		int radius = ArgumentParser.parseInt(args.get(1), Messages.CMD_ERROR_RADIUS_FORMAT);
 		ArgumentParser.MaterialWithData block = ArgumentParser.parseBlock(2, args, sender, false, true);
 
-		if(!plugin.getFkPI().getTeamManager().getTeamNames().contains(args.get(0)))
+		Team team = plugin.getFkPI().getTeamManager().getTeam(args.get(0));
+		if(team == null)
 			throw new FkLightException(Messages.CMD_ERROR_UNKNOWN_TEAM.getMessage().replace("%team%", args.get(0)));
 
 		if(!Fk.getInstance().getWorldManager().isAffected(sender.getWorld()))
@@ -34,11 +39,19 @@ public class SetBase extends FkPlayerCommand
 		if(radius < 4)
 			throw new ArgumentParseException(Messages.CMD_ERROR_RADIUS_FORMAT.getMessage());
 
-		Base base = new Base(plugin.getFkPI().getTeamManager().getTeam(args.get(0)), sender.getLocation(), radius, block.getMaterial(), block.getData());
+		Base base = new Base(team, sender.getLocation(), radius, block.getMaterial(), block.getData());
 		plugin.getFkPI().getTeamManager().getTeam(args.get(0)).setBase(base);
-		base.construct();
+
+		if (block.getMaterial() != Material.AIR) {
+			if (base.isLoaded()) {
+				base.construct();
+			} else {
+				fkp.sendMessage(Messages.CMD_BASE_UNLOADED);
+			}
+		}
+
 		broadcast(Messages.CMD_TEAM_SET_BASE.getMessage()
-				.replace("%team%", args.get(0))
+				.replace("%team%", team.toString())
 				.replace("%x%", String.valueOf(base.getCenter().getBlockX()))
 				.replace("%z%", String.valueOf(base.getCenter().getBlockZ())),
 		4, args);

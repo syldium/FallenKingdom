@@ -202,7 +202,7 @@ public class Base implements Saveable
 			return;
 		}
 
-		Iterator<Location> iterator = new OutlineSquareIterator(center.getBlockX() - radius, center.getBlockY(), center.getBlockZ() - radius, radius * 2, center.getWorld());
+		Iterator<Location> iterator = outlineIterator();
 		Location location;
 		while (iterator.hasNext()) {
 			location = iterator.next();
@@ -210,6 +210,27 @@ public class Base implements Saveable
 			location.getBlock().setType(material);
 			XBlock.setData(location.getBlock(), data);
 		}
+	}
+
+	public OutlineSquareIterator outlineIterator() {
+		return new OutlineSquareIterator(center.getBlockX() - radius, center.getBlockY(), center.getBlockZ() - radius, radius * 2, center.getWorld());
+	}
+
+	public boolean isLoaded() {
+		World world = center.getWorld();
+		if (world == null) {
+			return false;
+		}
+
+		for (int x = center.getBlockX() - radius; x < center.getBlockX() + radius; x += 16) {
+			for (int z = center.getBlockZ() - radius; z < center.getBlockZ() + radius; z += 16) {
+				if (!world.isChunkLoaded(x >> 4, z >> 4)) {
+					return false;
+				}
+			}
+		}
+
+		return true;
 	}
 
 	/**

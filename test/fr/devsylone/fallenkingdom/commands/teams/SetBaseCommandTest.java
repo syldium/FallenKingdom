@@ -3,6 +3,7 @@ package fr.devsylone.fallenkingdom.commands.teams;
 import fr.devsylone.fallenkingdom.MockUtils;
 import fr.devsylone.fallenkingdom.commands.CommandTest;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -11,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class SetBaseCommandTest extends CommandTest {
 
+    @Disabled // Unimplemented
     @Test
     public void setBase() {
         assertNull(MockUtils.getBlueTeam().getBase());

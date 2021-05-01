@@ -34,6 +34,8 @@ public enum Messages
     CHAT_QUIT("chat.quit"),
     CHAT_TEAM("chat.team"),
 
+    CMD_BASE_UNLOADED("cmd.base.unloaded"),
+
     CMD_ERROR("cmd.error.unknown"),
     CMD_ERROR_UNKNOWN("cmd.error.unknown-cmd"),
     CMD_ERROR_UNKNOWN_ARG("cmd.error.unknown-arg"),
