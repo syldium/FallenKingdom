@@ -5,6 +5,9 @@ import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.TranslatableComponent;
 import org.bukkit.command.CommandSender;
 
@@ -32,16 +35,9 @@ public class SetColor extends FkCommand
 
 		try {
 			team.setColor(Color.of(args.get(1)));
-		} catch (NumberFormatException e) {
+		} catch (NumberFormatException ex) {
 			// Seulement lors des lectures des couleurs hex
-			TranslatableComponent component = new TranslatableComponent("argument.color.invalid");
-			component.addWith(args.get(1));
-			component.setColor(ChatColor.RED);
-			if (sender instanceof Player) {
-				((Player) sender).spigot().sendMessage(component);
-			} else {
-				sender.sendMessage(component.toLegacyText());
-			}
+			invalidColor(sender, args.get(1), ex);
 			return CommandResult.INVALID_ARGS;
 		}
 
@@ -51,5 +47,22 @@ public class SetColor extends FkCommand
 		);
 		plugin.getScoreboardManager().recreateAllScoreboards();
 		return CommandResult.SUCCESS;
+	}
+
+	public static BaseComponent invalidColor(String value, NumberFormatException ex) {
+		TranslatableComponent component = new TranslatableComponent("argument.color.invalid");
+		component.addWith(value);
+		component.setColor(ChatColor.RED);
+
+		component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new BaseComponent[]{new TextComponent(ex.getMessage())}));
+		return component;
+	}
+
+	public static void invalidColor(CommandSender sender, String value, NumberFormatException ex) {
+		if (sender instanceof Player) {
+			((Player) sender).spigot().sendMessage(invalidColor(value, ex));
+		} else {
+			sender.sendMessage(invalidColor(value, ex).toLegacyText());
+		}
 	}
 }

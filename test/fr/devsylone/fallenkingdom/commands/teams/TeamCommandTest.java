@@ -65,6 +65,6 @@ public class TeamCommandTest extends CommandTest {
         assertEquals(Color.VERT, FkPI.getInstance().getTeamManager().getTeam("FallenKingdom").getColor());
         assertRun("team setColor unknown green", CommandResult.STATE_ERROR);
         assertRun("team setColor FallenKingdom idontknow");
-        assertEquals(Color.NO_COLOR, FkPI.getInstance().getTeamManager().getTeam("FallenKingdom").getColor());
+        assertEquals(Color.BLANC, FkPI.getInstance().getTeamManager().getTeam("FallenKingdom").getColor());
     }
 }

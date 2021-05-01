@@ -139,9 +139,9 @@ public class Argument<T>
             case "color":
             case "newteam":
                 return Arrays.stream(Color.values())
-                        .filter(color -> startsWith(color.getGenredName(1), typed))
-                        .filter(color -> !color.getGenredName(1).contains(" "))
-                        .map(color -> color.getGenredName(1))
+                        .filter(color -> startsWith(color.getGenredName(Color.GENRE_M), typed))
+                        .filter(color -> !color.getGenredName(Color.GENRE_M).contains(" "))
+                        .map(color -> color.getGenredName(Color.GENRE_M))
                         .collect(Collectors.toList());
             case "advancement":
                 List<String> suggestions = new ArrayList<>();

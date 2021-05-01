@@ -3,9 +3,10 @@ package fr.devsylone.fkpi.util;
 import fr.devsylone.fallenkingdom.Fk;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
+import org.intellij.lang.annotations.MagicConstant;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 public class Color
@@ -25,14 +26,13 @@ public class Color
 	public static final Color BLANC = new Color("blanc", "blanche", ChatColor.WHITE, DyeColor.WHITE, 0xffffff);
 	public static final Color NOIR = new Color("noir", "noire", ChatColor.BLACK, DyeColor.BLACK, 0x000000);
 	public static final Color GRIS = new Color("gris", "grise", ChatColor.GRAY, DyeColor.GRAY, 0xaaaaaa);
-	public static final Color NO_COLOR = new Color("no color", "no color", ChatColor.WHITE, DyeColor.WHITE, 0xffffff);
 
 	private final String maleColor;
 	private final String femColor;
 	private final java.awt.Color value;
 
 	private final ChatColor bukkitChatColor;
-	private net.md_5.bungee.api.ChatColor bungeeChatColor;
+	private final net.md_5.bungee.api.ChatColor bungeeChatColor;
 	private final DyeColor dyeColor;
 	
 	public static final int GENRE_F = 0;
@@ -60,7 +60,7 @@ public class Color
 		this.dyeColor = base.dyeColor;
 	}
 
-	public static Color of(String name)
+	public static @NotNull Color of(String name)
 	{
 		if(name.startsWith("#") && name.length() == 7)
 		{
@@ -71,13 +71,17 @@ public class Color
 
 		// Lorsqu'un nom de couleur est donné ou que l'on charge une ancienne save
 		for(Color c : LEGACY_VALUES)
-			if(name.equalsIgnoreCase(c.maleColor) || name.equalsIgnoreCase(c.femColor) || c.dyeColor.name().equalsIgnoreCase(name))
+			if(c.isSame(name))
 				return c;
 
-		return Color.NO_COLOR;
+		return Color.BLANC;
 	}
 
-	public String getGenredName(int genre)
+	public boolean isSame(String name) {
+		return maleColor.equalsIgnoreCase(name) || femColor.equalsIgnoreCase(name) || dyeColor.name().equalsIgnoreCase(name);
+	}
+
+	public String getGenredName(@MagicConstant(intValues = {GENRE_F, GENRE_M}) int genre)
 	{
 		if(Fk.getInstance().getLanguageManager().getLocalePrefix().equalsIgnoreCase("fr"))
 			return genre == GENRE_M ? maleColor : femColor;
@@ -141,18 +145,16 @@ public class Color
 	}
 
 	@Override
-	public boolean equals(Object other)
-	{
-		if(!(other instanceof Color)) return false;
-		Color color1 = (Color) other;
-		return maleColor.equals(color1.maleColor) &&
-				femColor.equals(color1.femColor) &&
-				value == color1.value;
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Color color = (Color) o;
+		return value.equals(color.value);
 	}
 
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(maleColor, femColor, value);
+		return value.hashCode();
 	}
 }

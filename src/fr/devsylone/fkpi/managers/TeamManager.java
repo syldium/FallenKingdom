@@ -9,7 +9,6 @@ import fr.devsylone.fkpi.api.event.PlayerTeamChangeEvent;
 import fr.devsylone.fkpi.api.event.TeamUpdateEvent;
 import fr.devsylone.fkpi.teams.Base;
 import fr.devsylone.fkpi.teams.Team;
-import fr.devsylone.fkpi.util.Color;
 import fr.devsylone.fkpi.util.Saveable;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -53,7 +52,7 @@ public class TeamManager implements Saveable
 		Bukkit.getPluginManager().callEvent(new TeamUpdateEvent(team, TeamUpdateEvent.TeamUpdate.CREATION)); // EVENT
 		teams.add(team);
 
-		return !team.getColor().equals(Color.NO_COLOR);
+		return team.getColor().isSame(name);
 	}
 
 	public Scoreboard getScoreboard()
