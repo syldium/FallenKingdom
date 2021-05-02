@@ -272,7 +272,13 @@ public class ScoreboardManager implements Saveable
 		stringTrue = "§2✔";
 		stringFalse = "§4✘";
 		noInfo = "§4?";
-		arrows = Version.VersionType.V1_13.isHigherOrEqual() ? "⇑⇗⇒⇘⇓⇙⇐⇖" : "↑↗→↘↓↙←↖";
+		if (Version.VersionType.V1_16.isHigherOrEqual()) {
+			arrows = "⇑⇗⇛⇙⇓⇘⇐⇖"; // Workaround https://bugs.mojang.com/browse/MC-179867
+		} else if (Version.VersionType.V1_13.isHigherOrEqual()) {
+			arrows = "⇑⇗⇒⇘⇓⇙⇐⇖";
+		} else {
+			arrows = "↑↗→↘↓↙←↖";
+		}
 		sidebar.clear();
 		sidebar.addAll(Arrays.asList(Messages.SCOREBOARD_DEFAULT.getMessage().split("\n")));
 		sidebar.add(ChatUtils.DEVSYLONE);
