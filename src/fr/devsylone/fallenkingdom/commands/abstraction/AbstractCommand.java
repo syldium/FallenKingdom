@@ -11,7 +11,9 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Décrit une commande, peu importe son niveau
@@ -106,6 +108,10 @@ public abstract class AbstractCommand
 
     public @NotNull String getPermission() {
         return permission;
+    }
+
+    public @NotNull Map<String, CommandRole> getPermissions() {
+        return Collections.singletonMap(this.permission, this.role);
     }
 
     public void setParent(FkParentCommand parent) {

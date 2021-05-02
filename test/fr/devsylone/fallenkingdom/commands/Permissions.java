@@ -5,63 +5,69 @@ import fr.devsylone.fallenkingdom.commands.abstraction.CommandRole;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkParentCommand;
 import fr.devsylone.fallenkingdom.manager.CommandManager;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.permissions.PermissionDefault;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayDeque;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
 public class Permissions {
 
-    public static void main(String[] args) throws IOException {
-        final Map<String, Boolean> admin = new HashMap<>();
-        final Map<String, Boolean> player = new HashMap<>();
+    public static void main(String[] args) throws IOException, InvalidConfigurationException {
+        final Map<String, Boolean> admin = new LinkedHashMap<>();
+        final Map<String, Boolean> player = new LinkedHashMap<>();
         buildPermissionTree(new CommandManager(true).getMainCommands(), admin, player);
 
         final Path pluginDescriptionPath = FileSystems.getDefault().getPath("resources/plugin.yml");
 
-        final FileConfiguration config;
+        final FileConfiguration config = new YamlConfiguration();
+        config.options().pathSeparator(',');
         if (Files.exists(pluginDescriptionPath)) {
-            config = YamlConfiguration.loadConfiguration(pluginDescriptionPath.toFile());
-        } else {
-            config = new YamlConfiguration();
+            config.load(pluginDescriptionPath.toFile());
         }
-        config.getRoot().options().pathSeparator(',');
 
-        final ConfigurationSection section = config.createSection("permissions");
-        buildPermissionConfig(section.createSection("fallenkingdom.admin"), PermissionDefault.OP, admin);
-        buildPermissionConfig(section.createSection("fallenkingdom.player"), PermissionDefault.TRUE, player);
+        ConfigurationSection section = config.getConfigurationSection("permissions");
+        if (section == null) {
+            section = config.createSection("permissions");
+        }
+        buildPermissionConfig(section, "fallenkingdom.admin", PermissionDefault.OP, admin);
+        buildPermissionConfig(section,"fallenkingdom.player", PermissionDefault.TRUE, player);
 
         System.out.println(config.saveToString());
     }
 
     static void buildPermissionTree(List<? extends AbstractCommand> commands, Map<String, Boolean> admin, Map<String, Boolean> player) {
-        Queue<AbstractCommand> queue = new ArrayDeque<>(commands);
+        final Queue<AbstractCommand> queue = new ArrayDeque<>(commands);
         while (!queue.isEmpty()) {
-            AbstractCommand command = queue.poll();
+            final AbstractCommand command = queue.poll();
             if (command instanceof FkParentCommand) {
                 queue.addAll(((FkParentCommand) command).getChildren());
             }
-            if (command.getRole() == CommandRole.ADMIN) {
-                admin.put(command.getPermission(), true);
-            } else {
-                player.put(command.getPermission(), true);
+            for (Map.Entry<String, CommandRole> entry : command.getPermissions().entrySet()) {
+                if (entry.getValue() == CommandRole.ADMIN) {
+                    admin.put(entry.getKey(), true);
+                } else {
+                    player.put(entry.getKey(), true);
+                }
             }
         }
     }
 
-    static void buildPermissionConfig(@NotNull ConfigurationSection section, @NotNull PermissionDefault permissionDefault, @NotNull Map<String, Boolean> children) {
+    static void buildPermissionConfig(@NotNull ConfigurationSection parentSection, @NotNull String path, @NotNull PermissionDefault permissionDefault, @NotNull Map<String, Boolean> children) {
+        ConfigurationSection section = parentSection.getConfigurationSection(path);
+        if (section == null) {
+            section = parentSection.createSection(path);
+        }
         section.set("default", permissionDefault.toString());
         section.set("children", children);
     }

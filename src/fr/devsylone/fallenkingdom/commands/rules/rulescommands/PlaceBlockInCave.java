@@ -11,11 +11,16 @@ import org.bukkit.command.CommandSender;
 
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PlaceBlockInCave extends FkCommand
 {
+  private static final String SET_PERMISSION = "fallenkingdom.commands.rules.placeBlockInCave.set";
+
   public PlaceBlockInCave()
   {
     super("placeBlockInCave", "<true|false|info> [i1:blocks]", Messages.CMD_MAP_RULES_PLACE_BLOCK_IN_CAVE, CommandRole.PLAYER);
@@ -24,7 +29,7 @@ public class PlaceBlockInCave extends FkCommand
   @Override
   public CommandResult execute(Fk plugin, CommandSender sender, List<String> args, String label) {
     String action = args.get(0);
-    if (!action.equals("info") && !plugin.getCommandManager().hasPermission(sender, CommandRole.ADMIN.get())) {
+    if (!action.equals("info") && !plugin.getCommandManager().hasPermission(sender, SET_PERMISSION)) {
       return CommandResult.NO_PERMISSION;
     }
     fr.devsylone.fkpi.rules.PlaceBlockInCave rule = plugin.getFkPI().getRulesManager().getRule(Rule.PLACE_BLOCK_IN_CAVE);
@@ -60,5 +65,13 @@ public class PlaceBlockInCave extends FkCommand
       broadcast(Messages.CMD_RULES_BLOCK_CAVE_MORE_INFO.getMessage());
     }
     return CommandResult.SUCCESS;
+  }
+
+  @Override
+  public @NotNull Map<String, CommandRole> getPermissions() {
+    Map<String, CommandRole> permissions = new HashMap<>();
+    permissions.put(this.permission, this.role);
+    permissions.put(SET_PERMISSION, CommandRole.ADMIN);
+    return permissions;
   }
 }

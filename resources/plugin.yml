@@ -5,7 +5,7 @@ authors: [Etrenak, fabulacraft, Blendman974, syldium]
 main: fr.devsylone.fallenkingdom.Fk
 api-version: 1.13
 prefix: FK
-softdepend: ['Multiverse-Core', PlaceholderAPI] #Si vous ne possedez pas Multiverse-Core le plugin marchera exactement de la meme facon.
+softdepend: ['Multiverse-Core', PlaceholderAPI] #Si vous ne possédez pas Multiverse-Core le plugin marchera exactement de la même facon.
 
 commands:
  fk:
@@ -17,73 +17,76 @@ permissions:
   description: Permet d'éditer les paramètres du Fallen Kingdom
   default: op
   children:
-   fallenkingdom.commands.team.create: true
-   fallenkingdom.commands.rules.captureRate: true
-   fallenkingdom.commands.rules.globalChatPrefix: true
-   fallenkingdom.commands.scoreboard.setName: true
-   fallenkingdom.commands.chestsRoom.offset: true
-   fallenkingdom.commands.chestsRoom.captureTime: true
    fallenkingdom.commands.debug: true
-   fallenkingdom.commands.rules.chestLimit: true
-   fallenkingdom.commands.chests.unlock: true
-   fallenkingdom.commands.rules.chargedCreepers: true
-   fallenkingdom.commands.rules.deathLimit: true
-   fallenkingdom.commands.rules.healthBelowName: true
-   fallenkingdom.commands.team.setBase: true
-   fallenkingdom.commands.rules.dayDuration: true
-   fallenkingdom.commands.game.stop: true
-   fallenkingdom.commands.rules.respawnAtHome: true
-   fallenkingdom.commands.team.remove: true
-   fallenkingdom.commands.rules.eternalDay: true
-   fallenkingdom.commands.game.reset: true
-   fallenkingdom.commands.team.addPlayer: true
-   fallenkingdom.commands.team.setColor: true
-   fallenkingdom.commands.rules.endCap: true
-   fallenkingdom.commands.lang.tryload: true
-   fallenkingdom.commands.scoreboard.leaveEdit: true
-   fallenkingdom.commands.game.pause: true
-   fallenkingdom.commands.team.random: true
-   fallenkingdom.commands.scoreboard.undo: true
-   fallenkingdom.commands.chests.lock: true
-   fallenkingdom.commands.rules.doPauseAfterDay: true
-   fallenkingdom.commands.rules.pvpCap: true
-   fallenkingdom.commands.scoreboard.removeLine: true
-   fallenkingdom.commands.rules.tntCap: true
-   fallenkingdom.commands.team.tp: true
-   fallenkingdom.commands.rules.denyBlock: true
-   fallenkingdom.commands.team.removePlayer: true
-   fallenkingdom.commands.game.resume: true
-   fallenkingdom.commands.rules.friendlyFire: true
-   fallenkingdom.commands.rules.netherCap: true
-   fallenkingdom.commands.game.restore: true
-   fallenkingdom.commands.scoreboard.edit: true
-   fallenkingdom.commands.rules.disabledPotions: true
-   fallenkingdom.commands.lang.set: true
-   fallenkingdom.commands.chests.add: true
-   fallenkingdom.commands.rules.tntJump: true
-   fallenkingdom.commands.game.start: true
-   fallenkingdom.commands.rules.deepPause: true
-   fallenkingdom.commands.rules.enderpearlAssault: true
    fallenkingdom.commands.lang: true
+   fallenkingdom.commands.chests.add: true
+   fallenkingdom.commands.chests.lock: true
+   fallenkingdom.commands.chests.unlock: true
+   fallenkingdom.commands.chests.remove: true
+   fallenkingdom.commands.game.pause: true
+   fallenkingdom.commands.game.reset: true
+   fallenkingdom.commands.game.restore: true
+   fallenkingdom.commands.game.resume: true
+   fallenkingdom.commands.game.start: true
+   fallenkingdom.commands.game.starterInv.set: true
+   fallenkingdom.commands.game.stop: true
+   fallenkingdom.commands.lang.set: true
+   fallenkingdom.commands.lang.tryload: true
+   fallenkingdom.commands.rules.allowBlock: true
+   fallenkingdom.commands.rules.captureRate: true
+   fallenkingdom.commands.rules.chargedCreepers: true
+   fallenkingdom.commands.rules.chestLimit: true
+   fallenkingdom.commands.rules.dayDuration: true
+   fallenkingdom.commands.rules.deathLimit: true
+   fallenkingdom.commands.rules.deepPause: true
+   fallenkingdom.commands.rules.denyBlock: true
+   fallenkingdom.commands.rules.disabledPotions: true
+   fallenkingdom.commands.rules.doPauseAfterDay: true
+   fallenkingdom.commands.rules.endCap: true
+   fallenkingdom.commands.rules.enderpearlAssault: true
+   fallenkingdom.commands.rules.eternalDay: true
+   fallenkingdom.commands.rules.friendlyFire: true
+   fallenkingdom.commands.rules.globalChatPrefix: true
+   fallenkingdom.commands.rules.healthBelowName: true
+   fallenkingdom.commands.rules.netherCap: true
+   fallenkingdom.commands.rules.placeBlockInCave.set: true
+   fallenkingdom.commands.rules.pvpCap: true
+   fallenkingdom.commands.rules.respawnAtHome: true
+   fallenkingdom.commands.rules.tntCap: true
+   fallenkingdom.commands.rules.tntJump: true
+   fallenkingdom.commands.scoreboard.edit: true
+   fallenkingdom.commands.scoreboard.leaveEdit: true
+   fallenkingdom.commands.scoreboard.removeLine: true
    fallenkingdom.commands.scoreboard.reset: true
    fallenkingdom.commands.scoreboard.setLine: true
-   fallenkingdom.commands.chests.remove: true
-   fallenkingdom.commands.rules.allowBlock: true
+   fallenkingdom.commands.scoreboard.setName: true
+   fallenkingdom.commands.scoreboard.undo: true
+   fallenkingdom.commands.team.addPlayer: true
+   fallenkingdom.commands.team.chestsRoom.book: true
+   fallenkingdom.commands.team.create: true
+   fallenkingdom.commands.team.random: true
+   fallenkingdom.commands.team.remove: true
+   fallenkingdom.commands.team.removePlayer: true
+   fallenkingdom.commands.team.tp: true
+   fallenkingdom.commands.team.setBase: true
+   fallenkingdom.commands.team.setColor: true
+   fallenkingdom.commands.chestsRoom.captureTime: true
    fallenkingdom.commands.chestsRoom.enabled: true
+   fallenkingdom.commands.chestsRoom.offset: true
  fallenkingdom.player:
   description: Permet d'afficher les règles et les équipes
   default: true
   children:
-   fallenkingdom.commands.chestsRoom.show: true
-   fallenkingdom.commands.chests.list: true
-   fallenkingdom.commands.team: true
-   fallenkingdom.commands.rules.list: true
-   fallenkingdom.commands.team.list: true
+   fallenkingdom.commands.bug: true
+   fallenkingdom.commands.chests: true
    fallenkingdom.commands.game: true
    fallenkingdom.commands.rules: true
    fallenkingdom.commands.scoreboard: true
-   fallenkingdom.commands.rules.placeBlockInCave: true
+   fallenkingdom.commands.team: true
+   fallenkingdom.commands.chests.list: true
    fallenkingdom.commands.game.starterInv: true
-   fallenkingdom.commands.bug: true
-   fallenkingdom.commands.chests: true
+   fallenkingdom.commands.rules.list: true
+   fallenkingdom.commands.rules.placeBlockInCave: true
    fallenkingdom.commands.team.chestsRoom: true
+   fallenkingdom.commands.team.list: true
+   fallenkingdom.commands.chestsRoom.show: true
