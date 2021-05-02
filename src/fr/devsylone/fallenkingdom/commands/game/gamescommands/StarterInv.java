@@ -42,6 +42,7 @@ public class StarterInv extends FkPlayerCommand
 		else if(args.get(0).equalsIgnoreCase("save"))
 		{
 			plugin.getStarterInventoryManager().setStarterInv(sender.getInventory());
+			fkp.sendMessage(Messages.CMD_GAME_STARTER_INV_SAVED);
 
 			TextComponent message = new TextComponent(Messages.CMD_GAME_STARTER_INV_CANCEL.getMessage());
 			message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/fk game starterInv undo"));

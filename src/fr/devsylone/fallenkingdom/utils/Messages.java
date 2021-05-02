@@ -99,6 +99,7 @@ public enum Messages
     CMD_GAME_RESTORE_DISCONNECTED_PLAYERS("cmd.game.restore.disconnected-players"),
     CMD_GAME_RESUME("cmd.game.resume"),
     CMD_GAME_STARTER_INV_CANCEL("cmd.game.starterInv.cancel"),
+    CMD_GAME_STARTER_INV_SAVED("cmd.game.starterInv.saved"),
     CMD_GAME_STARTER_INV_UNDO("cmd.game.starterInv.undo"),
     CMD_GAME_STOP("cmd.game.stop"),
 

@@ -5,6 +5,7 @@ import fr.devsylone.fallenkingdom.commands.abstraction.Argument;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandRole;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
+import fr.devsylone.fallenkingdom.commands.abstraction.IntegerArgument;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import org.bukkit.command.CommandSender;
 
@@ -19,7 +20,7 @@ public class Restore extends FkCommand
 {
 	public Restore()
 	{
-		super("restore", Argument.list(Argument.create("pause_id", false, "(Par défaut restaure à la dernière pause)")), Messages.CMD_MAP_GAME_RESTORE, CommandRole.ADMIN);
+		super("restore", Argument.list(new IntegerArgument("pause_id", false, "(Par défaut restaure à la dernière pause)", 0)), Messages.CMD_MAP_GAME_RESTORE, CommandRole.ADMIN);
 	}
 
 	@Override

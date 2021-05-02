@@ -70,7 +70,10 @@ public class TeamManager implements Saveable
 		Bukkit.getPluginManager().callEvent(new TeamUpdateEvent(team, TeamUpdateEvent.TeamUpdate.DELETION)); // EVENT
 
 		for (String player : team.getPlayers()) {
-			teamByPlayerUUID.remove(Environment.getPlayerUniqueId(player));
+			UUID uuid = Environment.getPlayerUniqueId(player);
+			if (uuid != null) {
+				teamByPlayerUUID.remove(uuid);
+			}
 		}
 		team.getPlayers().clear();
 
@@ -180,7 +183,10 @@ public class TeamManager implements Saveable
 
 		Bukkit.getPluginManager().callEvent(new PlayerTeamChangeEvent(player, team, null)); // EVENT
 		team.removePlayer(player);
-		teamByPlayerUUID.remove(Environment.getPlayerUniqueId(player));
+		UUID uuid = Environment.getPlayerUniqueId(player);
+		if (uuid != null) {
+			teamByPlayerUUID.remove(uuid);
+		}
 	}
 
 	public void random(List<String> players)
