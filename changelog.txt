@@ -413,3 +413,25 @@ RETRAIT      = [-]
 [*] Fix de la commande /fk scoreboard leaveEdit (1.11.2-)
 [*] Description ajoutée pour globalChatPrefix et correction de celle de team tp
 [*] Mise à jour de bStats : décalage des premiers envois de données
+
+      >> 2.21.0
+Il est conseillé de réinitialiser les fichiers de langue.
+[+] Davantage de clés de traductions sont disponibles
+[+] Chaque commande a une permission dédiée qui hérite soit de la permission joueur, soit de admin
+[+] Le scoreboard peut être changé lors du changement de langue s'il n'a pas été modifié
+[+] Des contextes pour le plugin LuckPerms permettent de renseigner sur l'équipe et le statut de la partie
+[+] Les téléportations sont empêchées en deep pause
+[+] Les coffres piégés peuvent faire partie d'une salle des coffres
+[*] Toutes les commandes sont désormais sensibles à la casse
+[*] Les permissions de la règle placeBlockInCave ont été corrigées
+[*] La construction des contours de la base est évitée lorsqu'il s'agit de tronçons déchargés
+[*] L'aide n'affichait pas la commande complète lorsqu'il y avait plusieurs parents
+[*] Certains placeholders n'étaient pas remplacés
+[*] La syntaxe des couleurs rgb est aussi vérifiée à la création de l'équipe
+[*] Le serveur s'assure deux fois que la configuration est écrite complètement
+[*] Les données sont maintenant sérialisées sur le thread principal
+[*] Les flèches par défaut sont différentes en 1.16 pour contourner le bug MC-179867
+[*] Les messages de morts sont correctement affichés en PvE ou sans équipe (1.16.5 avec adventure)
+[*] Corrige une erreur avec la règle AllowedBlocks (1.13)
+[*] Corrige une erreur lorsqu'une flèche est tirée (1.9-1.13.2)
+[-] Les valeurs noTeam et noBase dans le scoreboard.yml ne sont plus utilisées, car dans les fichiers de traduction
