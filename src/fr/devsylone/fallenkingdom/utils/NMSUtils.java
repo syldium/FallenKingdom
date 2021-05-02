@@ -1,7 +1,6 @@
 package fr.devsylone.fallenkingdom.utils;
 
 import java.util.HashSet;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 
@@ -104,9 +103,8 @@ public class NMSUtils
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	public static <E extends Enum<E>> E enumValueOf(Class<?> enumClass, String enumName) {
-		return Enum.valueOf((Class<E>) enumClass, enumName.toUpperCase(Locale.ROOT));
+	public static Object enumValueOf(Class<?> enumClass, String enumName) {
+		return Enum.valueOf(enumClass.asSubclass(Enum.class), enumName);
 	}
 
 	public static String getVersion()
