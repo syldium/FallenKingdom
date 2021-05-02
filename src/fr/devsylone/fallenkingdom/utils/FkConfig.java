@@ -34,6 +34,15 @@ public class FkConfig extends YamlConfiguration {
                 LOGGER.log(Level.SEVERE, Messages.CONSOLE_UNABLE_TO_CREATE_PARENT_FOLDER.getMessage());
             }
         }
+        if (!configFile.exists()) {
+            try {
+                if (!configFile.createNewFile()) {
+                    LOGGER.log(Level.SEVERE, Messages.CONSOLE_CANNOT_WRITE.getMessage() + " " + configFile + ".");
+                }
+            } catch (IOException e) {
+                LOGGER.log(Level.SEVERE, Messages.CONSOLE_CANNOT_WRITE.getMessage() + " " + configFile + ".", e);
+            }
+        }
 
         try {
             super.load(configFile);

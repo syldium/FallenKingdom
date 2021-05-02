@@ -409,6 +409,7 @@ public enum Messages
     CONSOLE_UNABLE_TO_CREATE_PARENT_FOLDER("console.unable.to-create.parent-folder"),
     CONSOLE_CANNOT_LOAD("console.cannot.load"),
     CONSOLE_CANNOT_READ("console.cannot.read"),
+    CONSOLE_CANNOT_WRITE("console.cannot.write"),
     CONSOLE_FAILED_TO_CREATE_FILE("console.failed.to-create.file"),
     CONSOLE_SERVER_RESTART("console.server.restart"),
     CONSOLE_CHARGED_CREEPERS_NOT_USE("console.charged-creepers.not-use"),

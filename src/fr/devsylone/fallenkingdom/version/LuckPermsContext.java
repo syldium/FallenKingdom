@@ -3,6 +3,7 @@ package fr.devsylone.fallenkingdom.version;
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.game.Game;
 import fr.devsylone.fkpi.teams.Team;
+import net.luckperms.api.LuckPerms;
 import net.luckperms.api.context.ContextCalculator;
 import net.luckperms.api.context.ContextConsumer;
 import net.luckperms.api.context.ContextSet;
@@ -11,6 +12,8 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
+
+import static java.util.Objects.requireNonNull;
 
 public class LuckPermsContext implements ContextCalculator<Player> {
 
@@ -22,6 +25,7 @@ public class LuckPermsContext implements ContextCalculator<Player> {
 
     public LuckPermsContext(@NotNull Fk plugin) {
         this.plugin = plugin;
+        requireNonNull(plugin.getServer().getServicesManager().load(LuckPerms.class), "LuckPerms service").getContextManager().registerCalculator(this);
     }
 
     @Override

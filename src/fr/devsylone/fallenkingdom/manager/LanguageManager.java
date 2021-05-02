@@ -7,8 +7,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
@@ -31,6 +33,7 @@ public class LanguageManager
 
     private final Properties defaultLocale = new Properties();
     private final Properties locale = new Properties();
+    private final Set<String> untranslatedKeys = new HashSet<>(0);
 
     private int taskId = -1;
 
@@ -62,7 +65,7 @@ public class LanguageManager
             for (String locale : locales) {
                 BaseComponent[] localeComponent = TextComponent.fromLegacyText(ChatColor.GRAY + "[" + ChatColor.UNDERLINE + ChatColor.DARK_AQUA + locale + ChatColor.GRAY + "] ");
                 for (BaseComponent component : localeComponent) {
-                        component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§bUtiliser ce §erépertoire\n§bUse this §elocale\n§bVerwendung Się dièses §eGebietsschema").create()));
+                        component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(ChatColor.BLUE + "Use this locale").create()));
                         component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/fk lang set " + locale));
                 }
                 localeComponent[1].setItalic(true);
@@ -113,7 +116,9 @@ public class LanguageManager
     {
         String prop = locale.getProperty(path);
         if (prop == null && !strict) {
-            Fk.getInstance().getLogger().warning("Key " + path + " not translated in your language; using of default value"); // À ne pas traduire !
+            if (untranslatedKeys.add(path)) {
+                Fk.getInstance().getLogger().warning("Key " + path + " not translated in your language; using of default value"); // À ne pas traduire !
+            }
             return defaultLocale.getProperty(path);
         }
         return prop;

@@ -222,8 +222,8 @@ public class Base implements Saveable
 			return false;
 		}
 
-		for (int x = center.getBlockX() - radius; x < center.getBlockX() + radius; x += 16) {
-			for (int z = center.getBlockZ() - radius; z < center.getBlockZ() + radius; z += 16) {
+		for (int x = center.getBlockX() - radius; x <= center.getBlockX() + radius; x += 16) {
+			for (int z = center.getBlockZ() - radius; z <= center.getBlockZ() + radius; z += 16) {
 				if (!world.isChunkLoaded(x >> 4, z >> 4)) {
 					return false;
 				}

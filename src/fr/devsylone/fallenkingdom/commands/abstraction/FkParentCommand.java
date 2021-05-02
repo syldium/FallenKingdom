@@ -28,7 +28,7 @@ public abstract class FkParentCommand extends AbstractCommand
 	public CommandResult execute(Fk plugin, CommandSender sender, List<String> args, String label) {
 		// Autre commande inconnue
 		if (!args.isEmpty() && !args.get(0).equalsIgnoreCase("help")) {
-			throw new FkLightException(Messages.CMD_ERROR_UNKNOWN);
+			throw new FkLightException(Messages.CMD_ERROR_UNKNOWN.getMessage().replace("%help%", '/' + label + getFullUsage()));
 		}
 		// Affiche la description
 		children.stream()

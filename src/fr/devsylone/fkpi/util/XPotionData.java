@@ -58,6 +58,7 @@ public final class XPotionData
 		return this.extended;
 	}
 
+	@Override
 	public int hashCode()
 	{
 		int hash = 7;
@@ -73,6 +74,7 @@ public final class XPotionData
 		return "XPotionData [type=" + type + ", extended=" + extended + ", upgraded=" + upgraded + "]";
 	}
 
+	@Override
 	public boolean equals(Object obj)
 	{
 		if(this == obj)

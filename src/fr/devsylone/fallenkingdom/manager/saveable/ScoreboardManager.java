@@ -117,10 +117,28 @@ public class ScoreboardManager implements Saveable
 		return sidebar;
 	}
 
-	public void setSidebar(List<String> sidebar)
+	public void setSidebar(List<String> sidebar, boolean addDevsyloneText)
 	{
 		this.sidebar = new ArrayList<>(sidebar);
+		if (addDevsyloneText) {
+			this.sidebar.add(ChatUtils.DEVSYLONE);
+		}
 		computePlaceHoldersIndexes();
+	}
+
+	public boolean isDefaultSidebar()
+	{
+		String[] def = Messages.SCOREBOARD_DEFAULT.getMessage().split("\n");
+		if (def.length != sidebar.size() && def.length != sidebar.size() - 1) {
+			return false;
+		}
+
+		for (int i = 0; i < def.length; i++) {
+			if (!def[i].equals(sidebar.get(i))) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public String getSidebarLine(int index, Player player)
@@ -257,6 +275,7 @@ public class ScoreboardManager implements Saveable
 		arrows = Version.VersionType.V1_13.isHigherOrEqual() ? "⇑⇗⇒⇘⇓⇙⇐⇖" : "↑↗→↘↓↙←↖";
 		sidebar.clear();
 		sidebar.addAll(Arrays.asList(Messages.SCOREBOARD_DEFAULT.getMessage().split("\n")));
+		sidebar.add(ChatUtils.DEVSYLONE);
 		computePlaceHoldersIndexes();
 	}
 
