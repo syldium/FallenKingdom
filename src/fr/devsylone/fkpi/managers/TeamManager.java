@@ -18,15 +18,16 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
@@ -34,7 +35,7 @@ import static java.util.Objects.requireNonNull;
 public class TeamManager implements Saveable
 {
 	private final List<Team> teams = Collections.synchronizedList(new ArrayList<>());
-	private final Map<UUID, Team> teamByPlayerUUID = new HashMap<>();
+	private final Map<UUID, Team> teamByPlayerUUID = new ConcurrentHashMap<>();
 	private final Scoreboard board = Bukkit.getScoreboardManager().getNewScoreboard();
 
 	public boolean createTeam(String name)
@@ -134,7 +135,7 @@ public class TeamManager implements Saveable
 		return teams.stream().map(Team::getName).collect(Collectors.toList());
 	}
 
-	public Team getPlayerTeam(String player)
+	public @Nullable Team getPlayerTeam(String player)
 	{
 		if(player == null)
 			return null;
@@ -146,7 +147,7 @@ public class TeamManager implements Saveable
 		return null;
 	}
 
-	public Team getPlayerTeam(Player player)
+	public @Nullable Team getPlayerTeam(Player player)
 	{
 		if (player == null) {
 			return null;

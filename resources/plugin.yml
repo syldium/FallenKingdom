@@ -5,7 +5,7 @@ authors: [Etrenak, fabulacraft, Blendman974, syldium]
 main: fr.devsylone.fallenkingdom.Fk
 api-version: 1.13
 prefix: FK
-softdepend: ['Multiverse-Core', PlaceholderAPI] #Si vous ne possédez pas Multiverse-Core le plugin marchera exactement de la même facon.
+softdepend: [LuckPerms, 'Multiverse-Core', PlaceholderAPI] #Si vous ne possédez pas Multiverse-Core le plugin marchera exactement de la même facon.
 
 commands:
  fk:

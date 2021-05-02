@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Objects;
 
 import fr.devsylone.fallenkingdom.utils.FkConfig;
+import fr.devsylone.fallenkingdom.version.LuckPermsContext;
+import net.luckperms.api.LuckPerms;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
 import org.bstats.charts.SingleLineChart;
@@ -13,6 +15,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
 
@@ -181,6 +184,16 @@ public class Fk extends JavaPlugin
 
 		if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null)
 			new PlaceHolderExpansion().register();
+
+		try {
+			RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
+			if (provider != null) {
+				LuckPerms api = provider.getProvider();
+				api.getContextManager().registerCalculator(new LuckPermsContext(this));
+			}
+		} catch (Throwable ignored) {
+			// Dependency error...
+		}
 
 		/*
 		 * IF EternalDay

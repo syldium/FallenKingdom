@@ -16,6 +16,8 @@ import fr.devsylone.fkpi.rules.Rule;
 import fr.devsylone.fkpi.util.Saveable;
 import lombok.Getter;
 
+import java.util.Locale;
+
 import static fr.devsylone.fallenkingdom.utils.ConfigHelper.enumValueOf;
 
 public class Game implements Saveable
@@ -39,7 +41,17 @@ public class Game implements Saveable
 		BEFORE_STARTING,
 		STARTING,
 		STARTED,
-		PAUSE
+		PAUSE;
+
+		private final String name;
+
+		GameState() {
+			this.name = this.name().toLowerCase(Locale.ROOT);
+		}
+
+		public String asString() {
+			return this.name;
+		}
 	}
 
 	public boolean setState(GameState state)
