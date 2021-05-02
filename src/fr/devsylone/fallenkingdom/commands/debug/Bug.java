@@ -1,7 +1,7 @@
 package fr.devsylone.fallenkingdom.commands.debug;
 
 import fr.devsylone.fallenkingdom.Fk;
-import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandRole;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
@@ -14,7 +14,7 @@ public class Bug extends FkCommand
 {
 	public Bug()
 	{
-		super("bug", Messages.CMD_MAP_BUG, CommandPermission.PLAYER);
+		super("bug", Messages.CMD_MAP_BUG, CommandRole.PLAYER);
 	}
 
 	@Override

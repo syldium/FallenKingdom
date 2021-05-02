@@ -2,7 +2,7 @@ package fr.devsylone.fallenkingdom.commands.rules.rulescommands;
 
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.commands.ArgumentParser;
-import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandRole;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
 import fr.devsylone.fallenkingdom.exception.ArgumentParseException;
@@ -15,7 +15,7 @@ import java.util.List;
 public class CaptureRate extends FkCommand {
 
     public CaptureRate() {
-        super("captureRate", "<rate>", Messages.CMD_MAP_RULES_CAPTURE_RATE, CommandPermission.ADMIN);
+        super("captureRate", "<rate>", Messages.CMD_MAP_RULES_CAPTURE_RATE, CommandRole.ADMIN);
     }
 
     @Override

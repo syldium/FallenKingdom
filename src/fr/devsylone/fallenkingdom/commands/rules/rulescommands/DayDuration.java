@@ -6,7 +6,7 @@ import org.bukkit.command.CommandSender;
 
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.commands.ArgumentParser;
-import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandRole;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
 import fr.devsylone.fallenkingdom.utils.Messages;
@@ -17,7 +17,7 @@ public class DayDuration extends FkCommand
 {
     public DayDuration()
     {
-        super("dayDuration", "<i1:mins>", Messages.CMD_MAP_RULES_DAY_DURATION, CommandPermission.ADMIN);
+        super("dayDuration", "<i1:mins>", Messages.CMD_MAP_RULES_DAY_DURATION, CommandRole.ADMIN);
     }
 
     @Override

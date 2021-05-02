@@ -7,7 +7,11 @@ import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fallenkingdom.utils.UpdateUtils;
 import org.bukkit.ChatColor;
-import org.bukkit.command.*;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.command.PluginCommand;
+import org.bukkit.command.TabExecutor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,6 +27,7 @@ public class FkCommandExecutor extends CommandManager implements TabExecutor
     private int i = 0;
 
     public FkCommandExecutor(Fk plugin, PluginCommand command) {
+        super(plugin.getConfig().getBoolean("enable-permissions", false));
         this.plugin = plugin;
         this.pluginCommand = command;
         command.setExecutor(this);

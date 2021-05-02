@@ -16,7 +16,6 @@ import fr.devsylone.fallenkingdom.commands.teams.FkTeamCommand;
 import fr.devsylone.fallenkingdom.exception.ArgumentParseException;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
 import fr.devsylone.fallenkingdom.game.Game;
-import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -32,9 +31,9 @@ import java.util.stream.Collectors;
 public class CommandManager
 {
 	private final List<? extends AbstractCommand> mainCommands;
-	private final boolean permissions = Fk.getInstance().getConfig().getBoolean("enable-permissions", false);
+	private final boolean permissions;
 
-	public CommandManager() {
+	public CommandManager(boolean permissions) {
 		this.mainCommands = ImmutableList.<AbstractCommand>builder()
 				.add(new Bug())
 				.add(new FkChestsCommand())
@@ -45,17 +44,18 @@ public class CommandManager
 				.add(new FkScoreboardCommand())
 				.add(new FkTeamCommand())
 				.build();
+		this.permissions = permissions;
 	}
 
 	public CommandResult executeCommand(Fk plugin, CommandSender sender, String label, List<String> arguments) {
 		// Si aide principale
-		if (arguments.size() > 0 && arguments.get(0).equalsIgnoreCase("help")) {
+		if (!arguments.isEmpty() && arguments.get(0).equalsIgnoreCase("help")) {
 			sendMainHelp(sender, label);
 			return CommandResult.SUCCESS;
 		}
 
 		// Recherche de la commande principale utilisée
-		String token = arguments.size() > 0 ? arguments.get(0) : "";
+		String token = !arguments.isEmpty() ? arguments.get(0) : "";
 		AbstractCommand main = mainCommands.stream()
 				.filter(cmd -> cmd.getName().equals(token))
 				.findFirst()
@@ -153,7 +153,7 @@ public class CommandManager
 
 	private void sendMainHelp(CommandSender sender, String label) {
 		mainCommands.stream()
-				.filter(c -> c.hasPermission(sender))
+				.filter(c -> !permissions || c.hasPermission(sender))
 				.filter(AbstractCommand::shouldDisplay)
 				.forEach(c -> sender.sendMessage(ChatColor.GREEN + "/" + label + " " + c.getFullUsage() + " " + ChatColor.GRAY + c.getDescription()));
 	}

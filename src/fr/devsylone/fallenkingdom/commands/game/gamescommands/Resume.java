@@ -1,6 +1,6 @@
 package fr.devsylone.fallenkingdom.commands.game.gamescommands;
 
-import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandRole;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
 import fr.devsylone.fallenkingdom.utils.Messages;
@@ -20,7 +20,7 @@ public class Resume extends FkCommand
 {
 	public Resume()
 	{
-		super("resume", Messages.CMD_MAP_GAME_RESUME, CommandPermission.ADMIN);
+		super("resume", Messages.CMD_MAP_GAME_RESUME, CommandRole.ADMIN);
 	}
 
 	@Override

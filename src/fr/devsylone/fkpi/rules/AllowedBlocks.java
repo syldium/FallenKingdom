@@ -204,6 +204,8 @@ public class AllowedBlocks implements RuleValue
 		try {
 			Class.forName("org.bukkit.Tag").getField("SIGNS");
 			SIGNS.addAll(new HashSet<>(Tag.SIGNS.getValues()));
+		} catch (ExceptionInInitializerError ignored) {
+			// test env
 		} catch (ClassNotFoundException | NoSuchFieldException e) {
 			if (XMaterial.isNewVersion()) {
 				SIGNS.add(XMaterial.OAK_SIGN.parseMaterial());

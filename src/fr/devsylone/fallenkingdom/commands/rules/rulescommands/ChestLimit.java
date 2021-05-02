@@ -14,7 +14,7 @@ public class ChestLimit extends FkCommand
 {
 	public ChestLimit()
 	{
-		super("chestLimit", Argument.list(new IntegerArgument("limit", true, "mettre a 0 pour ne pas en avoir",0)), Messages.CMD_MAP_RULES_CHEST_LIMIT, CommandPermission.ADMIN);
+		super("chestLimit", Argument.list(new IntegerArgument("limit", true, "mettre a 0 pour ne pas en avoir",0)), Messages.CMD_MAP_RULES_CHEST_LIMIT, CommandRole.ADMIN);
 	}
 
 	@Override

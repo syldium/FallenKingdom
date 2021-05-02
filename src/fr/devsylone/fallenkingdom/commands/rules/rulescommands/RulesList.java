@@ -1,7 +1,7 @@
 package fr.devsylone.fallenkingdom.commands.rules.rulescommands;
 
 import fr.devsylone.fallenkingdom.Fk;
-import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandRole;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
@@ -14,7 +14,7 @@ public class RulesList extends FkCommand
 {
 	public RulesList()
 	{
-		super("list", Messages.CMD_MAP_RULES_LIST, CommandPermission.PLAYER);
+		super("list", Messages.CMD_MAP_RULES_LIST, CommandRole.PLAYER);
 	}
 
 	@Override

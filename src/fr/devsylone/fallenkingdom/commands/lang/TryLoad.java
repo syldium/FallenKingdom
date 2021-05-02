@@ -1,7 +1,7 @@
 package fr.devsylone.fallenkingdom.commands.lang;
 
 import fr.devsylone.fallenkingdom.Fk;
-import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandRole;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
@@ -16,7 +16,7 @@ public class TryLoad extends FkCommand
 {
     public TryLoad()
     {
-        super("tryload", Messages.CMD_MAP_LANG_TRY_LOAD, CommandPermission.ADMIN);
+        super("tryload", Messages.CMD_MAP_LANG_TRY_LOAD, CommandRole.ADMIN);
     }
 
     @Override

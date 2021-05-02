@@ -14,20 +14,20 @@ public abstract class FkParentCommand extends AbstractCommand
 {
 	private final List<? extends AbstractCommand> children;
 
-	public FkParentCommand(String name, List<? extends AbstractCommand> children, Messages description, CommandPermission permission) {
+	public FkParentCommand(String name, List<? extends AbstractCommand> children, Messages description, CommandRole permission) {
 		super(name, description, permission);
 		this.children = children;
 		children.forEach(c -> c.setParent(this));
 	}
 
 	public FkParentCommand(String name, List<? extends AbstractCommand> children, Messages description) {
-		this(name, children, description, CommandPermission.PLAYER);
+		this(name, children, description, CommandRole.PLAYER);
 	}
 
 	@Override
 	public CommandResult execute(Fk plugin, CommandSender sender, List<String> args, String label) {
 		// Autre commande inconnue
-		if (args.size() > 0 && !args.get(0).equalsIgnoreCase("help")) {
+		if (!args.isEmpty() && !args.get(0).equalsIgnoreCase("help")) {
 			throw new FkLightException(Messages.CMD_ERROR_UNKNOWN);
 		}
 		// Affiche la description
@@ -44,7 +44,7 @@ public abstract class FkParentCommand extends AbstractCommand
 		}
 		List<String> complete = children.stream()
 				.filter(s -> s.getName().toLowerCase().startsWith(args.get(0).toLowerCase()))
-				.filter(s -> plugin.getCommandManager().hasPermission(sender, s.permission.get()))
+				.filter(s -> plugin.getCommandManager().hasPermission(sender, s.permission))
 				.map(AbstractCommand::getName)
 				.collect(Collectors.toList());
 
@@ -62,7 +62,7 @@ public abstract class FkParentCommand extends AbstractCommand
 
 	@Override
 	public AbstractCommand get(List<String> args) {
-		if (args.size() == 0) {
+		if (args.isEmpty()) {
 			return this;
 		}
 		List<AbstractCommand> sub = children.stream()

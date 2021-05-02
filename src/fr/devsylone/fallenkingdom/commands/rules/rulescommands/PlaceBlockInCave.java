@@ -1,7 +1,7 @@
 package fr.devsylone.fallenkingdom.commands.rules.rulescommands;
 
 import fr.devsylone.fallenkingdom.commands.ArgumentParser;
-import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandRole;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
 import fr.devsylone.fallenkingdom.utils.Messages;
@@ -18,13 +18,13 @@ public class PlaceBlockInCave extends FkCommand
 {
   public PlaceBlockInCave()
   {
-    super("placeBlockInCave", "<true|false|info> [i1:blocks]", Messages.CMD_MAP_RULES_PLACE_BLOCK_IN_CAVE, CommandPermission.PLAYER);
+    super("placeBlockInCave", "<true|false|info> [i1:blocks]", Messages.CMD_MAP_RULES_PLACE_BLOCK_IN_CAVE, CommandRole.PLAYER);
   }
 
   @Override
   public CommandResult execute(Fk plugin, CommandSender sender, List<String> args, String label) {
     String action = args.get(0);
-    if (!action.equals("info") && !plugin.getCommandManager().hasPermission(sender, CommandPermission.ADMIN.get())) {
+    if (!action.equals("info") && !plugin.getCommandManager().hasPermission(sender, CommandRole.ADMIN.get())) {
       return CommandResult.NO_PERMISSION;
     }
     fr.devsylone.fkpi.rules.PlaceBlockInCave rule = plugin.getFkPI().getRulesManager().getRule(Rule.PLACE_BLOCK_IN_CAVE);

@@ -1,13 +1,13 @@
 package fr.devsylone.fallenkingdom.commands.abstraction;
 
-public enum CommandPermission
+public enum CommandRole
 {
     PLAYER("fallenkingdom.player"),
     ADMIN("fallenkingdom.admin");
 
     private final String permission;
 
-    CommandPermission(String permission) {
+    CommandRole(String permission) {
         this.permission = permission;
     }
 

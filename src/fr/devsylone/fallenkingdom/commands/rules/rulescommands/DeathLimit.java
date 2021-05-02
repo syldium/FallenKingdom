@@ -1,7 +1,7 @@
 package fr.devsylone.fallenkingdom.commands.rules.rulescommands;
 
 import fr.devsylone.fallenkingdom.commands.ArgumentParser;
-import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandRole;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
 import fr.devsylone.fallenkingdom.utils.Messages;
@@ -18,7 +18,7 @@ public class DeathLimit extends FkCommand
 {
 	public DeathLimit()
 	{
-		super("deathLimit", "<i:limit>", Messages.CMD_MAP_RULES_DEATH_LIMIT, CommandPermission.ADMIN);
+		super("deathLimit", "<i:limit>", Messages.CMD_MAP_RULES_DEATH_LIMIT, CommandRole.ADMIN);
 	}
 
 	@Override

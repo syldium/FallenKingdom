@@ -2,7 +2,7 @@ package fr.devsylone.fallenkingdom.commands.rules;
 
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.commands.ArgumentParser;
-import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandRole;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
@@ -19,7 +19,7 @@ public abstract class FkBooleanRuleCommand extends FkCommand
 
 	public FkBooleanRuleCommand(String path, Messages description, Rule<Boolean> booleanRule)
 	{
-		super(path, "<b:true|false>", description, CommandPermission.ADMIN);
+		super(path, "<b:true|false>", description, CommandRole.ADMIN);
 		this.booleanRule = booleanRule;
 	}
 

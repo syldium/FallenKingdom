@@ -1,6 +1,6 @@
 package fr.devsylone.fallenkingdom.commands.scoreboard.scoreboardcommands;
 
-import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandRole;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.Confirmable;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
@@ -15,7 +15,7 @@ public class Reset extends FkCommand implements Confirmable
 {
 	public Reset()
 	{
-		super("reset", Messages.CMD_MAP_SCOREBOARD_RESET, CommandPermission.ADMIN);
+		super("reset", Messages.CMD_MAP_SCOREBOARD_RESET, CommandRole.ADMIN);
 	}
 
 	@Override

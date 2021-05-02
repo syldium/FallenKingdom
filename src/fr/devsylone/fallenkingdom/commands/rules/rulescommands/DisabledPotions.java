@@ -3,7 +3,7 @@ package fr.devsylone.fallenkingdom.commands.rules.rulescommands;
 import java.util.Collections;
 import java.util.List;
 
-import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandRole;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkPlayerCommand;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
@@ -44,7 +44,7 @@ public class DisabledPotions extends FkPlayerCommand implements Listener
 
 	public DisabledPotions()
 	{
-		super("disabledPotions", Messages.CMD_MAP_RULES_DISABLED_POTIONS, CommandPermission.ADMIN);
+		super("disabledPotions", Messages.CMD_MAP_RULES_DISABLED_POTIONS, CommandRole.ADMIN);
 		Bukkit.getPluginManager().registerEvents(this, Fk.getInstance());
 	}
 

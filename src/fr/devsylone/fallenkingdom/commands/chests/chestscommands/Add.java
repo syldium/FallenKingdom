@@ -2,7 +2,7 @@ package fr.devsylone.fallenkingdom.commands.chests.chestscommands;
 
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.commands.ArgumentParser;
-import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandRole;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkPlayerCommand;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
@@ -19,7 +19,7 @@ public class Add extends FkPlayerCommand
 {
 	public Add()
 	{
-		super("add", "<i1:day> <i:time> [name]", Messages.CMD_MAP_CHEST_ADD, CommandPermission.ADMIN);
+		super("add", "<i1:day> <i:time> [name]", Messages.CMD_MAP_CHEST_ADD, CommandRole.ADMIN);
 	}
 
 	@Override

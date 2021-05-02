@@ -1,7 +1,7 @@
 package fr.devsylone.fallenkingdom.commands.scoreboard.scoreboardcommands;
 
 import fr.devsylone.fallenkingdom.Fk;
-import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandRole;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkPlayerCommand;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
@@ -14,7 +14,7 @@ public class LeaveEdit extends FkPlayerCommand
 {
 	public LeaveEdit()
 	{
-		super("leaveEdit", Messages.CMD_MAP_SCOREBOARD_LEAVE_EDIT, CommandPermission.ADMIN);
+		super("leaveEdit", Messages.CMD_MAP_SCOREBOARD_LEAVE_EDIT, CommandRole.ADMIN);
 	}
 
 	@Override

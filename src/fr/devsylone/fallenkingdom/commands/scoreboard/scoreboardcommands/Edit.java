@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandRole;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkPlayerCommand;
 import fr.devsylone.fallenkingdom.utils.Messages;
@@ -21,7 +21,7 @@ public class Edit extends FkPlayerCommand
 
 	public Edit()
 	{
-		super("edit", Messages.CMD_MAP_SCOREBOARD_EDIT, CommandPermission.ADMIN);
+		super("edit", Messages.CMD_MAP_SCOREBOARD_EDIT, CommandRole.ADMIN);
 	}
 
 	@Override

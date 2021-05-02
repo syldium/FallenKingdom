@@ -1,7 +1,7 @@
 package fr.devsylone.fallenkingdom.commands.teams.teamscommands;
 
 import fr.devsylone.fallenkingdom.commands.ArgumentParser;
-import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandRole;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkPlayerCommand;
 import fr.devsylone.fallenkingdom.exception.ArgumentParseException;
@@ -21,7 +21,7 @@ public class SetBase extends FkPlayerCommand
 {
 	public SetBase()
 	{
-		super("setBase", "<team> <i4:radius> [block]", Messages.CMD_MAP_TEAM_SET_BASE, CommandPermission.ADMIN);
+		super("setBase", "<team> <i4:radius> [block]", Messages.CMD_MAP_TEAM_SET_BASE, CommandRole.ADMIN);
 	}
 
 	@Override

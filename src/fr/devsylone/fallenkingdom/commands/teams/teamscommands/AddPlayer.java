@@ -1,7 +1,7 @@
 package fr.devsylone.fallenkingdom.commands.teams.teamscommands;
 
 import fr.devsylone.fallenkingdom.commands.ArgumentParser;
-import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandRole;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
 import fr.devsylone.fallenkingdom.utils.Messages;
@@ -19,7 +19,7 @@ public class AddPlayer extends FkCommand
 {
 	public AddPlayer()
 	{
-		super("addPlayer", "<player> <team>", Messages.CMD_MAP_TEAM_ADD_PLAYER, CommandPermission.ADMIN);
+		super("addPlayer", "<player> <team>", Messages.CMD_MAP_TEAM_ADD_PLAYER, CommandRole.ADMIN);
 	}
 
 	@Override

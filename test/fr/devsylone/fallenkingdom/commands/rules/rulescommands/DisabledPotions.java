@@ -1,7 +1,7 @@
 package fr.devsylone.fallenkingdom.commands.rules.rulescommands;
 
 import fr.devsylone.fallenkingdom.Fk;
-import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandRole;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkPlayerCommand;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
@@ -14,7 +14,7 @@ import java.util.List;
 public class DisabledPotions extends FkPlayerCommand {
 
     public DisabledPotions() {
-        super("disabledPotions", Messages.CMD_MAP_RULES_DISABLED_POTIONS, CommandPermission.ADMIN);
+        super("disabledPotions", Messages.CMD_MAP_RULES_DISABLED_POTIONS, CommandRole.ADMIN);
     }
 
     @Override

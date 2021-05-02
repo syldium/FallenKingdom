@@ -2,7 +2,7 @@ package fr.devsylone.fallenkingdom.commands.teams.teamscommands.chestsroom;
 
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.commands.ArgumentParser;
-import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandRole;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkPlayerCommand;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
@@ -15,7 +15,7 @@ import java.util.List;
 
 public class ChestRoomShow extends FkPlayerCommand {
     public ChestRoomShow() {
-        super("show", "<i:sec>", Messages.CMD_MAP_CHEST_ROOM_SHOW, CommandPermission.PLAYER);
+        super("show", "<i:sec>", Messages.CMD_MAP_CHEST_ROOM_SHOW, CommandRole.PLAYER);
     }
 
     @Override

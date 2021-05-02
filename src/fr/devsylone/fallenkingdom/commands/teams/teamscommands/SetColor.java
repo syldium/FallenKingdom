@@ -1,6 +1,6 @@
 package fr.devsylone.fallenkingdom.commands.teams.teamscommands;
 
-import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandRole;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
 import fr.devsylone.fallenkingdom.utils.Messages;
@@ -23,7 +23,7 @@ public class SetColor extends FkCommand
 {
 	public SetColor()
 	{
-		super("setColor", "<team> <color>", Messages.CMD_MAP_TEAM_SET_COLOR, CommandPermission.ADMIN);
+		super("setColor", "<team> <color>", Messages.CMD_MAP_TEAM_SET_COLOR, CommandRole.ADMIN);
 	}
 
 	@Override

@@ -1,7 +1,7 @@
 package fr.devsylone.fallenkingdom.commands.chests.chestscommands;
 
 import fr.devsylone.fallenkingdom.Fk;
-import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandRole;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
@@ -17,7 +17,7 @@ public class ChestsList extends FkCommand
 {
     public ChestsList()
     {
-        super("list", Messages.CMD_MAP_CHEST_LIST, CommandPermission.PLAYER);
+        super("list", Messages.CMD_MAP_CHEST_LIST, CommandRole.PLAYER);
     }
 
     @Override

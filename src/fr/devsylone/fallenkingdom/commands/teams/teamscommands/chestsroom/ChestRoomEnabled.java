@@ -2,7 +2,7 @@ package fr.devsylone.fallenkingdom.commands.teams.teamscommands.chestsroom;
 
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.commands.ArgumentParser;
-import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandRole;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
@@ -14,7 +14,7 @@ import java.util.List;
 
 public class ChestRoomEnabled extends FkCommand {
     public ChestRoomEnabled() {
-        super("enabled", "<b:true|false>", Messages.CMD_MAP_CHEST_ROOM_ENABLED, CommandPermission.ADMIN);
+        super("enabled", "<b:true|false>", Messages.CMD_MAP_CHEST_ROOM_ENABLED, CommandRole.ADMIN);
     }
 
     @Override

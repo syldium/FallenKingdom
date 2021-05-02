@@ -2,7 +2,7 @@ package fr.devsylone.fallenkingdom.commands.scoreboard.scoreboardcommands;
 
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.commands.ArgumentParser;
-import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandRole;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
@@ -15,7 +15,7 @@ public class RemoveLine extends FkCommand
 {
     public RemoveLine()
     {
-        super("removeLine", "<i0;14:number>", Messages.CMD_MAP_SCOREBOARD_REMOVE_LINE, CommandPermission.ADMIN);
+        super("removeLine", "<i0;14:number>", Messages.CMD_MAP_SCOREBOARD_REMOVE_LINE, CommandRole.ADMIN);
     }
 
     @Override

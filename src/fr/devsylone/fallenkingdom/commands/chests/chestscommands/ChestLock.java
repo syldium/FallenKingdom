@@ -3,7 +3,7 @@ package fr.devsylone.fallenkingdom.commands.chests.chestscommands;
 import com.google.common.collect.Sets;
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.commands.ArgumentParser;
-import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandRole;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkPlayerCommand;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
@@ -43,8 +43,11 @@ public class ChestLock extends FkPlayerCommand implements Listener {
     private final Map<AdvancementRoot, List<ItemStack>> representations = new HashMap<>();
 
     public ChestLock() {
-        super("lock", "[advancement] [chest]", Messages.CMD_MAP_CHEST_LOCK, CommandPermission.ADMIN);
-        Bukkit.getPluginManager().registerEvents(this, Fk.getInstance());
+        super("lock", "[advancement] [chest]", Messages.CMD_MAP_CHEST_LOCK, CommandRole.ADMIN);
+        // noinspection ConstantConditions -> test env
+        if (Bukkit.getServer() != null) {
+            Bukkit.getPluginManager().registerEvents(this, Fk.getInstance());
+        }
     }
 
     @Override

@@ -10,19 +10,19 @@ import java.util.List;
 
 public abstract class FkPlayerCommand extends FkCommand {
 
-    public FkPlayerCommand(String name, String usage, Messages description, CommandPermission permission) {
+    public FkPlayerCommand(String name, String usage, Messages description, CommandRole permission) {
         super(name, usage, description, permission);
     }
 
-    public FkPlayerCommand(String name, List<Argument<?>> arguments, Messages description, CommandPermission permission) {
+    public FkPlayerCommand(String name, List<Argument<?>> arguments, Messages description, CommandRole permission) {
         super(name, arguments, description, permission);
     }
 
-    public FkPlayerCommand(String name, Messages description, CommandPermission permission) {
+    public FkPlayerCommand(String name, Messages description, CommandRole permission) {
         super(name, description, permission);
     }
 
-    public FkPlayerCommand(String name, String usage, int argumentListMinSize, List<Argument<?>> arguments, Messages description, CommandPermission permission) {
+    public FkPlayerCommand(String name, String usage, int argumentListMinSize, List<Argument<?>> arguments, Messages description, CommandRole permission) {
         super(name, usage, argumentListMinSize, arguments, description, permission);
     }
 

@@ -1,6 +1,6 @@
 package fr.devsylone.fallenkingdom.commands.scoreboard.scoreboardcommands;
 
-import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandRole;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
 import fr.devsylone.fallenkingdom.utils.Messages;
@@ -15,7 +15,7 @@ public class SetName extends FkCommand
 {
 	public SetName()
 	{
-		super("setName", "<text>", Messages.CMD_MAP_SCOREBOARD_SET_NAME, CommandPermission.ADMIN);
+		super("setName", "<text>", Messages.CMD_MAP_SCOREBOARD_SET_NAME, CommandRole.ADMIN);
 	}
 
 	@Override

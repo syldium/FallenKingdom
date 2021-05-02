@@ -2,7 +2,7 @@ package fr.devsylone.fallenkingdom.commands.teams.teamscommands;
 
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.commands.ArgumentParser;
-import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandRole;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
@@ -21,7 +21,7 @@ import java.util.List;
 public class TeamTeleport extends FkCommand {
 
     public TeamTeleport() {
-        super("tp", "[team] [entity]", Messages.CMD_MAP_TEAM_TP, CommandPermission.ADMIN);
+        super("tp", "[team] [entity]", Messages.CMD_MAP_TEAM_TP, CommandRole.ADMIN);
     }
 
     @Override

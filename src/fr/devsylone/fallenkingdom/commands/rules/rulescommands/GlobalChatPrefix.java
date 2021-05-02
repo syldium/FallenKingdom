@@ -1,7 +1,7 @@
 package fr.devsylone.fallenkingdom.commands.rules.rulescommands;
 
 import fr.devsylone.fallenkingdom.Fk;
-import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandRole;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
 import fr.devsylone.fallenkingdom.exception.ArgumentParseException;
@@ -16,7 +16,7 @@ import java.util.List;
 public class GlobalChatPrefix extends FkCommand {
 
     public GlobalChatPrefix() {
-        super("globalChatPrefix", "[char]", Messages.CMD_MAP_RULES_GLOBAL_CHAT_PREFIX, CommandPermission.ADMIN);
+        super("globalChatPrefix", "[char]", Messages.CMD_MAP_RULES_GLOBAL_CHAT_PREFIX, CommandRole.ADMIN);
     }
 
     @Override

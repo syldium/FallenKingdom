@@ -1,6 +1,6 @@
 package fr.devsylone.fallenkingdom.commands.game.gamescommands;
 
-import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandRole;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.Confirmable;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
@@ -17,7 +17,7 @@ public class Stop extends FkCommand implements Confirmable
 {
 	public Stop()
 	{
-		super("stop", Messages.CMD_MAP_GAME_STOP, CommandPermission.ADMIN);
+		super("stop", Messages.CMD_MAP_GAME_STOP, CommandRole.ADMIN);
 	}
 
 	@Override

@@ -14,22 +14,22 @@ public abstract class FkCommand extends AbstractCommand
     protected final int minArgumentCount;
     protected final List<Argument<?>> arguments;
 
-    public FkCommand(String name, String usage, Messages description, CommandPermission permission) {
+    public FkCommand(String name, String usage, Messages description, CommandRole permission) {
         super(name, description, permission);
         this.arguments = Argument.create(usage);
         this.usage = arguments.stream().map(Argument::getForUsage).collect(Collectors.joining(" "));
         this.minArgumentCount = (int) arguments.stream().filter(Argument::isRequired).count();
     }
 
-    public FkCommand(String name, List<Argument<?>> arguments, Messages description, CommandPermission permission) {
+    public FkCommand(String name, List<Argument<?>> arguments, Messages description, CommandRole permission) {
         this(name, arguments.stream().map(Argument::getForUsage).collect(Collectors.joining(" ")), (int) arguments.stream().filter(Argument::isRequired).count(), arguments, description, permission);
     }
 
-    public FkCommand(String name, Messages description, CommandPermission permission) {
+    public FkCommand(String name, Messages description, CommandRole permission) {
         this(name, "", 0, Collections.emptyList(), description, permission);
     }
 
-    public FkCommand(String name, String usage, int minArgumentCount, List<Argument<?>> arguments, Messages description, CommandPermission permission) {
+    public FkCommand(String name, String usage, int minArgumentCount, List<Argument<?>> arguments, Messages description, CommandRole permission) {
         super(name, description, permission);
         this.usage = usage;
         this.minArgumentCount = minArgumentCount;
@@ -65,7 +65,7 @@ public abstract class FkCommand extends AbstractCommand
 
     @Override
     public List<String> tabComplete(Fk plugin, CommandSender sender, List<java.lang.String> args) {
-        if (args.size() < 1 || !plugin.getCommandManager().hasPermission(sender, permission.get())) {
+        if (args.isEmpty() || !plugin.getCommandManager().hasPermission(sender, permission)) {
             return Collections.emptyList();
         }
         if (args.size() <= arguments.size()) {
@@ -76,6 +76,6 @@ public abstract class FkCommand extends AbstractCommand
 
     @Override
     public boolean hasPermission(CommandSender sender) {
-        return sender.hasPermission(permission.get());
+        return sender.hasPermission(permission);
     }
 }

@@ -5,7 +5,7 @@ import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.commands.ArgumentParser;
 import fr.devsylone.fallenkingdom.commands.ArgumentParser.MaterialWithData;
 import fr.devsylone.fallenkingdom.commands.abstraction.Argument;
-import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandRole;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
 import fr.devsylone.fallenkingdom.utils.Messages;
@@ -24,7 +24,7 @@ public class AllowBlock extends FkCommand
 {
 	public AllowBlock()
 	{
-		super("allowBlock", Argument.list(Argument.create("block", false, "sinon prendra le bloc tenu en main")), Messages.CMD_MAP_RULES_ALLOW_BLOCK, CommandPermission.ADMIN);
+		super("allowBlock", Argument.list(Argument.create("block", false, "sinon prendra le bloc tenu en main")), Messages.CMD_MAP_RULES_ALLOW_BLOCK, CommandRole.ADMIN);
 	}
 
 	@Override

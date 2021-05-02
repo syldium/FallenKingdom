@@ -8,3 +8,6 @@
 fallenkingdom.iml
 /target/
 /src/META-INF/
+build/
+run/
+.gradle/

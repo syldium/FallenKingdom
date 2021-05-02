@@ -2,7 +2,7 @@ package fr.devsylone.fallenkingdom.commands.game.gamescommands;
 
 import fr.devsylone.fallenkingdom.commands.ArgumentParser;
 import fr.devsylone.fallenkingdom.commands.abstraction.Argument;
-import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandRole;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
 import fr.devsylone.fallenkingdom.utils.Messages;
@@ -19,7 +19,7 @@ public class Restore extends FkCommand
 {
 	public Restore()
 	{
-		super("restore", Argument.list(Argument.create("pause_id", false, "(Par défaut restaure à la dernière pause)")), Messages.CMD_MAP_GAME_RESTORE, CommandPermission.ADMIN);
+		super("restore", Argument.list(Argument.create("pause_id", false, "(Par défaut restaure à la dernière pause)")), Messages.CMD_MAP_GAME_RESTORE, CommandRole.ADMIN);
 	}
 
 	@Override

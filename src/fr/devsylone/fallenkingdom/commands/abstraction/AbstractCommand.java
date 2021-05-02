@@ -8,6 +8,8 @@ import fr.devsylone.fallenkingdom.utils.Messages;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -18,14 +20,16 @@ public abstract class AbstractCommand
 {
     protected final String name;
     protected final Messages description;
-    protected final CommandPermission permission;
+    protected final CommandRole role;
+    protected String permission;
 
-    protected FkParentCommand parent;
+    protected @Nullable FkParentCommand parent;
 
-    AbstractCommand(String name, Messages description, CommandPermission permission) {
+    AbstractCommand(String name, Messages description, CommandRole role) {
         this.name = name;
         this.description = description;
-        this.permission = permission;
+        this.role = role;
+        this.permission = "fallenkingdom.commands." + name;
     }
 
     public abstract CommandResult execute(Fk plugin, CommandSender sender, List<String> args, String label) throws FkLightException, IllegalArgumentException;
@@ -60,7 +64,7 @@ public abstract class AbstractCommand
      * @return Si l'exécution peut continuer
      */
     public boolean hasPermission(CommandSender sender) {
-        return sender.hasPermission(permission.get());
+        return sender.hasPermission(permission);
     }
 
     /**
@@ -92,12 +96,21 @@ public abstract class AbstractCommand
      * Récupère la commande parente. Peut être null
      * @return Commande parente ou null
      */
-    public FkParentCommand getParent() {
+    public @Nullable FkParentCommand getParent() {
         return parent;
+    }
+
+    public @NotNull CommandRole getRole() {
+        return role;
+    }
+
+    public @NotNull String getPermission() {
+        return permission;
     }
 
     public void setParent(FkParentCommand parent) {
         this.parent = parent;
+        this.permission = parent.permission + '.' + name;
     }
 
     protected void broadcast(String message) {

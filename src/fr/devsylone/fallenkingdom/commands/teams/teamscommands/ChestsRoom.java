@@ -25,7 +25,7 @@ public class ChestsRoom extends FkParentCommand
 				.add(new ChestRoomOffset())
 				.add(new ChestRoomShow())
 				.build()
-		, Messages.CMD_MAP_CHEST_ROOM, CommandPermission.PLAYER);
+		, Messages.CMD_MAP_CHEST_ROOM, CommandRole.PLAYER);
 	}
 
 	@Override

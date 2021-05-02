@@ -1,6 +1,6 @@
 package fr.devsylone.fallenkingdom.commands.game.gamescommands;
 
-import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandRole;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkPlayerCommand;
 import fr.devsylone.fallenkingdom.utils.Messages;
@@ -18,13 +18,13 @@ public class StarterInv extends FkPlayerCommand
 {
 	public StarterInv()
 	{
-		super("starterInv", "<save|undo|show>", Messages.CMD_MAP_GAME_STARTER_INV, CommandPermission.PLAYER);
+		super("starterInv", "<save|undo|show>", Messages.CMD_MAP_GAME_STARTER_INV, CommandRole.PLAYER);
 	}
 
 	@Override
 	public CommandResult execute(Fk plugin, Player sender, FkPlayer fkp, List<String> args, String label)
 	{
-		if(!args.get(0).equalsIgnoreCase("show") && !plugin.getCommandManager().hasPermission(sender, CommandPermission.ADMIN.get()))
+		if(!args.get(0).equalsIgnoreCase("show") && !plugin.getCommandManager().hasPermission(sender, CommandRole.ADMIN.get()))
 			return CommandResult.NO_PERMISSION;
 
 		if(args.get(0).equalsIgnoreCase("undo"))

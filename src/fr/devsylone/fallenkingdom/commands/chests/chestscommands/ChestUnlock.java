@@ -3,7 +3,7 @@ package fr.devsylone.fallenkingdom.commands.chests.chestscommands;
 import com.google.common.collect.Sets;
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.commands.ArgumentParser;
-import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandRole;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkPlayerCommand;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
@@ -20,7 +20,7 @@ import java.util.List;
 public class ChestUnlock extends FkPlayerCommand {
 
     public ChestUnlock() {
-        super("unlock", "[chest]", Messages.CMD_MAP_CHEST_UNLOCK, CommandPermission.ADMIN);
+        super("unlock", "[chest]", Messages.CMD_MAP_CHEST_UNLOCK, CommandRole.ADMIN);
     }
 
     @Override

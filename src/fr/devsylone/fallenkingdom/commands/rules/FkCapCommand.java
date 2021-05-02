@@ -6,7 +6,7 @@ import org.bukkit.command.CommandSender;
 
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.commands.ArgumentParser;
-import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandRole;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
@@ -21,7 +21,7 @@ public class FkCapCommand extends FkCommand
 
 	public FkCapCommand(String path, Messages description, Rule<Integer> cap, Messages successMsg)
 	{
-		super(path, "<i1:day>", description, CommandPermission.ADMIN);
+		super(path, "<i1:day>", description, CommandRole.ADMIN);
 		this.cap = cap;
 		this.successMsg = successMsg;
 	}

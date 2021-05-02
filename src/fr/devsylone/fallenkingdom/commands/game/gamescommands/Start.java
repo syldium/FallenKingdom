@@ -1,6 +1,6 @@
 package fr.devsylone.fallenkingdom.commands.game.gamescommands;
 
-import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandRole;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
 import fr.devsylone.fallenkingdom.utils.Messages;
@@ -14,7 +14,7 @@ public class Start extends FkCommand
 {
 	public Start()
 	{
-		super("start", Messages.CMD_MAP_GAME_START, CommandPermission.ADMIN);
+		super("start", Messages.CMD_MAP_GAME_START, CommandRole.ADMIN);
 	}
 
 	@Override

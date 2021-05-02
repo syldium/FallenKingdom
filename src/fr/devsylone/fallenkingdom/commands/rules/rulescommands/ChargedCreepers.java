@@ -2,7 +2,7 @@ package fr.devsylone.fallenkingdom.commands.rules.rulescommands;
 
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.commands.ArgumentParser;
-import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandRole;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
 import fr.devsylone.fallenkingdom.utils.Messages;
@@ -17,7 +17,7 @@ public class ChargedCreepers extends FkCommand
 	public ChargedCreepers()
 	{
 		super("chargedCreepers", "<i0;100:taux de spawn> <i0;100:chance de drop> <i0;100:nombre de tnts>",
-				Messages.CMD_MAP_RULES_CHARGED_CREEPERS, CommandPermission.ADMIN);
+				Messages.CMD_MAP_RULES_CHARGED_CREEPERS, CommandRole.ADMIN);
 	}
 
 	@Override

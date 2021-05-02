@@ -1,7 +1,7 @@
 package fr.devsylone.fallenkingdom.commands.scoreboard.scoreboardcommands;
 
 import fr.devsylone.fallenkingdom.Fk;
-import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandRole;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
@@ -14,7 +14,7 @@ public class Undo extends FkCommand
 {
     public Undo()
     {
-        super("undo", Messages.CMD_MAP_SCOREBOARD_UNDO, CommandPermission.ADMIN);
+        super("undo", Messages.CMD_MAP_SCOREBOARD_UNDO, CommandRole.ADMIN);
     }
 
     @Override

@@ -1,7 +1,7 @@
 package fr.devsylone.fallenkingdom.commands.game.gamescommands;
 
 import fr.devsylone.fallenkingdom.Fk;
-import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandRole;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
@@ -21,7 +21,7 @@ public class Pause extends FkCommand
 {
 	public Pause()
 	{
-		super("pause", Messages.CMD_MAP_GAME_PAUSE, CommandPermission.ADMIN);
+		super("pause", Messages.CMD_MAP_GAME_PAUSE, CommandRole.ADMIN);
 	}
 
 	@Override

@@ -1,7 +1,7 @@
 package fr.devsylone.fallenkingdom.commands.lang;
 
 import fr.devsylone.fallenkingdom.Fk;
-import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandRole;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
@@ -22,7 +22,7 @@ import java.util.stream.Stream;
 public class SetLang extends FkCommand
 {
     public SetLang() {
-        super("set", "<lang>", Messages.CMD_MAP_LANG_SET, CommandPermission.ADMIN);
+        super("set", "<lang>", Messages.CMD_MAP_LANG_SET, CommandRole.ADMIN);
     }
 
     @Override

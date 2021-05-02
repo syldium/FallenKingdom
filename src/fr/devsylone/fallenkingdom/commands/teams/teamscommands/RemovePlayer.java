@@ -1,7 +1,7 @@
 package fr.devsylone.fallenkingdom.commands.teams.teamscommands;
 
 import fr.devsylone.fallenkingdom.commands.ArgumentParser;
-import fr.devsylone.fallenkingdom.commands.abstraction.CommandPermission;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandRole;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
 import fr.devsylone.fallenkingdom.utils.Messages;
@@ -17,7 +17,7 @@ public class RemovePlayer extends FkCommand
 {
 	public RemovePlayer()
 	{
-		super("removePlayer", "<player>", Messages.CMD_MAP_TEAM_REMOVE_PLAYER, CommandPermission.ADMIN);
+		super("removePlayer", "<player>", Messages.CMD_MAP_TEAM_REMOVE_PLAYER, CommandRole.ADMIN);
 	}
 
 	@Override
