@@ -57,6 +57,7 @@ public class TipsManager
 		newTip(null, Messages.TIP_TAB_COMPLETION);
 		newTip(null, Messages.TIP_DISCORD);
 		newTip(null, Messages.TIP_WATER_NEXT_TO_BASE);
+		newTip(null, Messages.TIP_FK_ADVERTISEMENTS);
 
 		tipsSize = tips.size();
 	}

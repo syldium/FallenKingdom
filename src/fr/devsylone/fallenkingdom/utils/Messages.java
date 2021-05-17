@@ -347,6 +347,7 @@ public enum Messages
     TIP_TNT_JUMP("tip.tntJump"),
     TIP_WATER_NEXT_TO_BASE("tip.waterNextToBase"),
     TIP_CHEST_LOCK("tip.chestLock"),
+    TIP_FK_ADVERTISEMENTS("tip.fkAdvertisements"),
 
     CORRUPT_CONFIG_FILES("corrupt.config-files"),
 
