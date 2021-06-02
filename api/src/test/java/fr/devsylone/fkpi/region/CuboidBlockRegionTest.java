@@ -1,6 +1,6 @@
 package fr.devsylone.fkpi.region;
 
-import fr.devsylone.fkpi.util.BlockPos;
+import fr.devsylone.fkpi.pos.BlockPos;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNotSame;

@@ -1,7 +1,7 @@
 package fr.devsylone.fkpi.team;
 
 import fr.devsylone.fkpi.region.BlockRegion;
-import fr.devsylone.fkpi.util.BlockPos;
+import fr.devsylone.fkpi.pos.BlockPos;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
 

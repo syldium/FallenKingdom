@@ -1,14 +1,16 @@
 package fr.devsylone.fallenkingdom.team;
 
+import fr.devsylone.fkpi.pos.MutableBlockPos;
 import fr.devsylone.fkpi.region.CuboidBlockRegion;
 import fr.devsylone.fkpi.team.Base;
 import fr.devsylone.fkpi.team.ChestRoom;
 import fr.devsylone.fkpi.team.FkTeam;
-import fr.devsylone.fkpi.util.BlockPos;
+import fr.devsylone.fkpi.pos.BlockPos;
 import fr.devsylone.fkpi.region.BlockRegion;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
+import java.util.Iterator;
 
 public class BaseImpl implements Base {
 
@@ -56,6 +58,11 @@ public class BaseImpl implements Base {
     @Override
     public boolean contains(int x, int y, int z, int offset) {
         return this.region.contains(x, y, z, offset);
+    }
+
+    @Override
+    public @NotNull Iterator<@NotNull MutableBlockPos> iterateOutwards(int y, int offsetX, int offsetZ) {
+        return this.region.iterateOutwards(y, offsetX, offsetZ);
     }
 
     @Override

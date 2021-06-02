@@ -1,9 +1,10 @@
 package fr.devsylone.fallenkingdom.team;
 
+import fr.devsylone.fkpi.pos.MutableBlockPos;
 import fr.devsylone.fkpi.region.ExpandableBlockRegion;
 import fr.devsylone.fkpi.team.Base;
 import fr.devsylone.fkpi.team.ChestRoom;
-import fr.devsylone.fkpi.util.BlockPos;
+import fr.devsylone.fkpi.pos.BlockPos;
 import fr.devsylone.fkpi.region.BlockRegion;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.TestOnly;
@@ -11,6 +12,7 @@ import org.jetbrains.annotations.TestOnly;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 public class ChestRoomImpl implements ChestRoom {
@@ -37,7 +39,7 @@ public class ChestRoomImpl implements ChestRoom {
         if (!this.chests.add(chestPos)) {
             return false;
         }
-        this.region = this.region.expand(chestPos.x, chestPos.y, chestPos.z);
+        this.region = this.region.expand(chestPos.x(), chestPos.y(), chestPos.z());
         return true;
     }
 
@@ -68,6 +70,11 @@ public class ChestRoomImpl implements ChestRoom {
     @Override
     public boolean contains(int x, int y, int z, int offset) {
         return this.region.contains(x, y, z, offset);
+    }
+
+    @Override
+    public @NotNull Iterator<@NotNull MutableBlockPos> iterateOutwards(int y, int offsetX, int offsetZ) {
+        return this.region.iterateOutwards(y, offsetX, offsetZ);
     }
 
     @Override

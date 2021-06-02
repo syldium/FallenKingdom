@@ -1,14 +1,15 @@
 package fr.devsylone.fkpi.region;
 
-import fr.devsylone.fkpi.util.BlockPos;
+import fr.devsylone.fkpi.pos.MutableBlockPos;
+import fr.devsylone.fkpi.pos.Vector3i;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
+import java.util.Iterator;
 
 /**
  * A region of blocks.
  */
-@FunctionalInterface
 public interface BlockRegion {
 
     /**
@@ -39,15 +40,29 @@ public interface BlockRegion {
         return this.contains(x, y, z, 0);
     }
 
-    default boolean contains(@NotNull BlockPos pos, int offset) {
-        return this.contains(pos.x, pos.y, pos.z, offset);
+    default boolean contains(@NotNull Vector3i pos, int offset) {
+        return this.contains(pos.x(), pos.y(), pos.z(), offset);
     }
 
-    default boolean contains(@NotNull BlockPos pos) {
+    default boolean contains(@NotNull Vector3i pos) {
         return this.contains(pos, 0);
     }
 
-    static @NotNull ExpandableBlockRegion fromPositions(@NotNull Collection<BlockPos> positions) {
+    /**
+     * Create an iterator of positions around the region on a horizontal plane.
+     *
+     * @param y The height to turn from. The Y coordinate will not be changed later.
+     * @param offsetX If applicable, the offset on the X axis. If less than 0, the size will be smaller.
+     * @param offsetZ If applicable, the offset on the Z axis. If less than 0, the size will be smaller.
+     * @return An iterator. Note that it is always the same instance of {@link MutableBlockPos}.
+     */
+    @NotNull Iterator<@NotNull MutableBlockPos> iterateOutwards(int y, int offsetX, int offsetZ);
+
+    default @NotNull Iterator<@NotNull MutableBlockPos> iterateOutwards(int y) {
+        return this.iterateOutwards(y, 0, 0);
+    }
+
+    static @NotNull ExpandableBlockRegion fromPositions(@NotNull Collection<? extends Vector3i> positions) {
         return positions.isEmpty() ? EMPTY : new CuboidBlockRegion(positions);
     }
 }

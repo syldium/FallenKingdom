@@ -1,16 +1,18 @@
 package fr.devsylone.fkpi.region;
 
-import fr.devsylone.fkpi.util.BlockPos;
+import fr.devsylone.fkpi.pos.MutableBlockPos;
+import fr.devsylone.fkpi.pos.Vector3i;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class CuboidBlockRegion implements ExpandableBlockRegion {
 
     private final int minX, minY, minZ, maxX, maxY, maxZ;
 
-    public CuboidBlockRegion(final BlockPos pos, final int radius) {
-        this(pos.x, pos.y, pos.z, radius);
+    public CuboidBlockRegion(final Vector3i pos, final int radius) {
+        this(pos.x(), pos.y(), pos.z(), radius);
     }
 
     public CuboidBlockRegion(final int centerX, final int centerY, final int centerZ, final int radius) {
@@ -31,22 +33,22 @@ public class CuboidBlockRegion implements ExpandableBlockRegion {
         this.maxZ = maxZ;
     }
 
-    protected CuboidBlockRegion(final @NotNull Iterable<@NotNull BlockPos> positions) {
-        final Iterator<BlockPos> iterator = positions.iterator();
-        final BlockPos first = iterator.next();
+    protected CuboidBlockRegion(final @NotNull Iterable<@NotNull ? extends Vector3i> positions) {
+        final Iterator<? extends Vector3i> iterator = positions.iterator();
+        final Vector3i first = iterator.next();
         int minX, minY, minZ, maxX, maxY, maxZ;
-        minX = maxX = first.x;
-        minY = maxY = first.y;
-        minZ = maxZ = first.z;
+        minX = maxX = first.x();
+        minY = maxY = first.y();
+        minZ = maxZ = first.z();
 
         while (iterator.hasNext()) {
-            BlockPos pos = iterator.next();
-            minX = Math.min(minX, pos.x);
-            minY = Math.min(minY, pos.y);
-            minZ = Math.min(minZ, pos.z);
-            maxX = Math.max(maxX, pos.x);
-            maxY = Math.max(maxY, pos.y);
-            maxZ = Math.max(maxZ, pos.z);
+            Vector3i pos = iterator.next();
+            minX = Math.min(minX, pos.x());
+            minY = Math.min(minY, pos.y());
+            minZ = Math.min(minZ, pos.z());
+            maxX = Math.max(maxX, pos.x());
+            maxY = Math.max(maxY, pos.y());
+            maxZ = Math.max(maxZ, pos.z());
         }
 
         this.minX = minX;
@@ -62,6 +64,11 @@ public class CuboidBlockRegion implements ExpandableBlockRegion {
         return x >= this.minX - offset && x <= this.maxX + offset
                 && y >= this.minY - offset && y <= this.maxY + offset
                 && z >= this.minZ - offset && z <= this.maxZ + offset;
+    }
+
+    @Override
+    public @NotNull Iterator<@NotNull MutableBlockPos> iterateOutwards(int y, int offsetX, int offsetZ) {
+        return new OutlineIterator(this, y, offsetX, offsetZ);
     }
 
     @Override
@@ -97,5 +104,47 @@ public class CuboidBlockRegion implements ExpandableBlockRegion {
     @Override
     public String toString() {
         return "CuboidBlockRegion{(" + this.minX + ", " + this.minY + ", " + this.minZ + ")-(" + this.maxX + ", " + this.maxY + ", " + this.maxZ + ")}";
+    }
+
+    private static class OutlineIterator implements Iterator<MutableBlockPos> {
+
+        private int index;
+        private int side;
+        private int dx = 1;
+        private int dz;
+        private final int lengthX;
+        private final int lengthZ;
+        private final MutableBlockPos pos;
+
+        OutlineIterator(@NotNull CuboidBlockRegion region, int y, int offsetX, int offsetZ) {
+            this.lengthX = region.maxX - region.minX + (offsetX << 1);
+            this.lengthZ = region.maxZ - region.minZ + (offsetZ << 1);
+            this.pos = new MutableBlockPos(region.minX, y, region.minZ);
+        }
+
+        @Override
+        public boolean hasNext() {
+            return this.side < 4;
+        }
+
+        @Override
+        public MutableBlockPos next() {
+            if (this.side > 3) {
+                throw new NoSuchElementException();
+            }
+            this.pos.setX(this.pos.x() + this.dx);
+            this.pos.setZ(this.pos.z() + this.dz);
+
+            final int length = (this.side & 1) == 0 ? this.lengthX : this.lengthZ;
+            if (++this.index >= length) {
+                this.side++;
+                final int temp = this.dx;
+                this.dx = -this.dz;
+                this.dz = temp;
+                this.index = 0;
+            }
+
+            return this.pos;
+        }
     }
 }
