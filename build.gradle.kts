@@ -1,11 +1,11 @@
-import net.kyori.indra.sonatypeSnapshots
+import net.kyori.indra.repository.sonatypeSnapshots
 import org.gradle.api.plugins.JavaPlugin.*
 
 plugins {
-    val indraVersion = "1.3.1"
+    val indraVersion = "2.0.5"
     id("net.kyori.indra") version indraVersion apply false
     id("net.kyori.indra.checkstyle") version indraVersion apply false
-    id("com.github.johnrengelman.shadow") version "6.1.0" apply false
+    id("com.github.johnrengelman.shadow") version "7.0.0" apply false
     idea
 }
 
