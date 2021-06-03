@@ -1,11 +1,9 @@
 package fr.devsylone.fallenkingdom.manager.packets;
 
-import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+import fr.devsylone.fallenkingdom.version.tracker.DataTracker;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -112,24 +110,12 @@ public class PacketManager1_9 extends PacketManager
 			Object metadata = NMSUtils.getClass("PacketPlayOutEntityMetadata").getDeclaredConstructor().newInstance();
 
 			PacketUtils.setField("a", id, metadata);
-			List<Object> datas = new ArrayList<>();
-
-			Constructor<?> itemConstructor = NMSUtils.getClass("DataWatcher$Item").getDeclaredConstructor(NMSUtils.getClass("DataWatcherObject"), Object.class);
-			Constructor<?> dwoConstructor = NMSUtils.getClass("DataWatcherObject").getDeclaredConstructor(int.class, NMSUtils.getClass("DataWatcherSerializer"));
-
-			if(!visible)
-				datas.add(itemConstructor.newInstance(dwoConstructor.newInstance(0, NMSUtils.getClass("DataWatcherRegistry").getDeclaredField("a").get(null)), (byte) 32));
-			if(customName != null && !customName.isEmpty())
-			{
-				datas.add(itemConstructor.newInstance(dwoConstructor.newInstance(2, NMSUtils.getClass("DataWatcherRegistry").getDeclaredField("d").get(null)), customName));
-				datas.add(itemConstructor.newInstance(dwoConstructor.newInstance(3, NMSUtils.getClass("DataWatcherRegistry").getDeclaredField("h").get(null)), true));
-			}
-
-			for(Object item : datas)
-				NMSUtils.getClass("DataWatcher$Item").getMethod("a", boolean.class).invoke(item, false);
-
-			PacketUtils.setField("b", datas, metadata);
-
+			PacketUtils.setField("b", new DataTracker()
+							.invisible()
+							.customName(customName)
+							.customNameVisible(true)
+							.trackedValues(),
+					metadata);
 			PacketUtils.sendPacket(getPlayer(id), metadata);
 		}catch(ReflectiveOperationException ex)
 		{
