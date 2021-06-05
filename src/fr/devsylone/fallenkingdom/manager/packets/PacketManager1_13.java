@@ -11,12 +11,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.lang.reflect.Array;
-import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 public class PacketManager1_13 extends PacketManager1_9 {
 
     public PacketManager1_13()
@@ -56,40 +50,6 @@ public class PacketManager1_13 extends PacketManager1_9 {
             e.printStackTrace();
         }
 
-    }
-
-    @Override
-    protected void sendMetadata(int id, boolean visible, String customName)
-    {
-        try {
-
-            Object metadata = NMSUtils.getClass("PacketPlayOutEntityMetadata").getDeclaredConstructor().newInstance();
-
-            PacketUtils.setField("a", id, metadata);
-            List<Object> datas = new ArrayList<>();
-
-            Constructor<?> itemConstructor = NMSUtils.getClass("DataWatcher$Item").getDeclaredConstructor(NMSUtils.getClass("DataWatcherObject"), Object.class);
-            Constructor<?> dwoConstructor = NMSUtils.getClass("DataWatcherObject").getDeclaredConstructor(int.class, NMSUtils.getClass("DataWatcherSerializer"));
-
-            if (!visible)
-                datas.add(itemConstructor.newInstance(dwoConstructor.newInstance(0, NMSUtils.getClass("DataWatcherRegistry").getDeclaredField("a").get(null)), (byte) 32));
-
-            if(customName != null && !customName.isEmpty())
-            {
-                datas.add(itemConstructor.newInstance(dwoConstructor.newInstance(2, NMSUtils.getClass("DataWatcherRegistry").getDeclaredField("f").get(null)), Optional.of(Array.get(NMSUtils.obcClass("util.CraftChatMessage").getDeclaredMethod("fromString", String.class).invoke(null, customName), 0))));
-                datas.add(itemConstructor.newInstance(dwoConstructor.newInstance(3, NMSUtils.getClass("DataWatcherRegistry").getDeclaredField("i").get(null)), true));
-            }
-
-            for(Object item : datas)
-                NMSUtils.getClass("DataWatcher$Item").getMethod("a", boolean.class).invoke(item, false);
-
-            PacketUtils.setField("b", datas, metadata);
-
-            PacketUtils.sendPacket(getPlayer(id), metadata);
-        }catch(ReflectiveOperationException ex)
-        {
-            ex.printStackTrace();
-        }
     }
 
     @Override
