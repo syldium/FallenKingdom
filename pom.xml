@@ -117,13 +117,13 @@
         <dependency> <!-- Units tests - seems like it needs to be before paper-api -->
             <groupId>com.github.seeseemelk</groupId>
             <artifactId>MockBukkit-v1.16</artifactId>
-            <version>0.34.2</version>
+            <version>1.1.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
-            <version>20.1.0</version>
+            <version>21.0.1</version>
             <scope>provided</scope>
         </dependency>
         <!-- Used to check the structure of NMS packets -->
@@ -168,7 +168,7 @@
         <dependency>
             <groupId>com.github.cryptomorin</groupId>
             <artifactId>XSeries</artifactId>
-            <version>7.9.1.1</version>
+            <version>8.0.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -207,13 +207,13 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>5.7.1</version>
+            <version>5.7.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>3.9.0</version>
+            <version>3.11.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

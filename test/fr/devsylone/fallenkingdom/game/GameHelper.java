@@ -4,6 +4,7 @@ import fr.devsylone.fallenkingdom.MockUtils;
 import org.junit.Assert;
 
 import static org.hamcrest.Matchers.instanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 public class GameHelper {
 
@@ -28,6 +29,6 @@ public class GameHelper {
     public static void assertGameRunnableStopped() {
         Game game = MockUtils.getPluginMockSafe().getGame();
         Assert.assertNull("Game shouldn't have a known runnable.", game.task);
-        Assert.assertNotEquals("Game state shouldn't be started.", Game.GameState.STARTED, game.state);
+        assertNotEquals(Game.GameState.STARTED, game.state, "Game state shouldn't be started.");
     }
 }
