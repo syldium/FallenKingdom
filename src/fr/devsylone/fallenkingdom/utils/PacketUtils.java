@@ -38,13 +38,13 @@ public class PacketUtils
 			CRAFT_PLAYER = NMSUtils.obcClass("entity.CraftPlayer");
 			final Method getPlayerHandle = CRAFT_PLAYER.getMethod("getHandle");
 			GET_PLAYER_HANDLE = lookup.unreflect(getPlayerHandle);
-			final Class<?> playerConnection = NMSUtils.nmsClass("PlayerConnection", "server.network");
+			final Class<?> playerConnection = NMSUtils.nmsClass("server.network", "PlayerConnection");
 			final Field playerConnectionField = Arrays.stream(getPlayerHandle.getReturnType().getFields())
 					.filter(field -> field.getType().isAssignableFrom(playerConnection))
 					.findFirst().orElseThrow(RuntimeException::new);
 			GET_PLAYER_CONNECTION_CRAFT_PLAYER = lookup.unreflectGetter(playerConnectionField);
 
-			final Class<?> packet = NMSUtils.nmsClass("Packet", "network.protocol");
+			final Class<?> packet = NMSUtils.nmsClass("network.protocol", "Packet");
 			SEND_PACKET = lookup.unreflect(playerConnection.getMethod("sendPacket", packet));
 
 			CRAFT_WORLD = NMSUtils.obcClass("CraftWorld");

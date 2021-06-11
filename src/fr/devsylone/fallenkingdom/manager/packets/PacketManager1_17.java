@@ -18,7 +18,7 @@ public class PacketManager1_17 extends PacketManager {
 
     static {
         try {
-            PACKET_CHUNK = Arrays.stream(NMSUtils.nmsClass("PacketPlayOutMapChunk", "network.protocol.game").getConstructors())
+            PACKET_CHUNK = Arrays.stream(NMSUtils.nmsClass("network.protocol.game", "PacketPlayOutMapChunk").getConstructors())
                     .filter(constructor -> constructor.getParameterCount() > 0 && constructor.getParameterTypes()[0].isAssignableFrom(MINECRAFT_CHUNK))
                     .findAny().orElseThrow(RuntimeException::new);
         } catch (ReflectiveOperationException e) {

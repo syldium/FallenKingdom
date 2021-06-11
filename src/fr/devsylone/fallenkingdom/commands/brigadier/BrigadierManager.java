@@ -27,7 +27,7 @@ public class BrigadierManager<S>
 
     static {
         try {
-            Class<?> commandListenerWrapper = NMSUtils.nmsClass("CommandListenerWrapper", "commands");
+            Class<?> commandListenerWrapper = NMSUtils.nmsClass("commands", "CommandListenerWrapper");
             GET_BUKKIT_SENDER_METHOD = commandListenerWrapper.getDeclaredMethod("getBukkitSender");
             GET_BUKKIT_SENDER_METHOD.setAccessible(true);
         } catch (ReflectiveOperationException e) {

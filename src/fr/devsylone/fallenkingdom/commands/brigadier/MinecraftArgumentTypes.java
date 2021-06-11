@@ -53,11 +53,11 @@ public final class MinecraftArgumentTypes {
 
     static {
         try {
-            Class<?> minecraftKey = NMSUtils.nmsClass("MinecraftKey", "resources");
+            Class<?> minecraftKey = NMSUtils.nmsClass("resources", "MinecraftKey");
             MINECRAFT_KEY_CONSTRUCTOR = minecraftKey.getConstructor(String.class, String.class);
             MINECRAFT_KEY_CONSTRUCTOR.setAccessible(true);
 
-            Class<?> argumentRegistry = NMSUtils.nmsClass("ArgumentRegistry", "commands.synchronization");
+            Class<?> argumentRegistry = NMSUtils.nmsClass("commands.synchronization", "ArgumentRegistry");
             ARGUMENT_REGISTRY_GET_BY_KEY_METHOD = Arrays.stream(argumentRegistry.getDeclaredMethods())
                     .filter(method -> method.getParameterCount() == 1)
                     .filter(method -> minecraftKey.equals(method.getParameterTypes()[0]))

@@ -28,7 +28,7 @@ public class XItemStack {
 
     static {
         try {
-            Class<?> chatSerializer = NMSUtils.nmsClass("IChatBaseComponent$ChatSerializer", "network.chat");
+            Class<?> chatSerializer = NMSUtils.nmsClass("network.chat", "IChatBaseComponent$ChatSerializer");
 
             CHAT_COMPONENT_FROM_JSON = Arrays.stream(chatSerializer.getDeclaredMethods())
                     .filter(m -> CHAT_BASE_COMPONENT.isAssignableFrom(m.getReturnType()))
@@ -40,7 +40,7 @@ public class XItemStack {
                     .filter(m -> Arrays.equals(m.getParameterTypes(), new Class[]{CHAT_BASE_COMPONENT}))
                     .findAny().orElseThrow(RuntimeException::new);
 
-            ITEM_STACK = NMSUtils.nmsClass("ItemStack", "world.item");
+            ITEM_STACK = NMSUtils.nmsClass("world.item", "ItemStack");
             AS_NMS_COPY = NMSUtils.obcClass("inventory.CraftItemStack")
                     .getDeclaredMethod("asNMSCopy", ItemStack.class);
             AS_CRAFT_MIRROR = NMSUtils.obcClass("inventory.CraftItemStack")

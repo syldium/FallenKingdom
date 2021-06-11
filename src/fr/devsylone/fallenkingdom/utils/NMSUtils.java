@@ -76,11 +76,11 @@ public class NMSUtils
 	public static String nmsClassName(String className) {
 		return NMS_PACKAGE + '.' + version + '.' + className;
 	}
-	public static String nmsClassName(String className, String post1_17package) {
+	public static String nmsClassName(String post1_17package, String className) {
 		if (VersionType.V1_17.isHigherOrEqual()) {
 			return NM_PACKAGE + '.' + post1_17package + '.' + className;
 		}
-		return NMS_PACKAGE + '.' + version + '.' + className;
+		return nmsClassName(className);
 	}
 
 	@Deprecated
@@ -88,8 +88,8 @@ public class NMSUtils
 		return Class.forName(nmsClassName(className));
 	}
 
-	public static Class<?> nmsClass(String className, String post1_17package) throws ClassNotFoundException {
-		return Class.forName(nmsClassName(className, post1_17package));
+	public static Class<?> nmsClass(String post1_17package, String className) throws ClassNotFoundException {
+		return Class.forName(nmsClassName(post1_17package, className));
 	}
 
 	public static Optional<Class<?>> nmsOptionalClass(String className) {

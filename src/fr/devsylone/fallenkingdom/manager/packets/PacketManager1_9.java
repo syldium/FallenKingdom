@@ -24,7 +24,7 @@ public class PacketManager1_9 extends PacketManager
 
 	static {
 		try {
-			ITEM_SLOT = NMSUtils.nmsClass("EnumItemSlot", "world.entity");
+			ITEM_SLOT = NMSUtils.nmsClass("world.entity", "EnumItemSlot");
 		} catch (ReflectiveOperationException e) {
 			throw new ExceptionInInitializerError(e);
 		}

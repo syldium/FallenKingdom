@@ -44,9 +44,9 @@ public class DeepPauseManager implements Saveable
 	{
 		try {
             if (VERSION1_8) {
-				Class<?> entity = NMSUtils.nmsClass("Entity", "world.entity");
+				Class<?> entity = NMSUtils.nmsClass("world.entity", "Entity");
                 NMS_ENTITY_GETNBTTAG = entity.getDeclaredMethod("getNBTTag");
-                Class<?> nbtTagCompound = NMSUtils.nmsClass("NBTTagCompound", "nbt");
+                Class<?> nbtTagCompound = NMSUtils.nmsClass("nbt", "NBTTagCompound");
                 NMS_NBTTAG = nbtTagCompound.getConstructor();
                 NMS_ENTITY_C = entity.getDeclaredMethod("c", nbtTagCompound);
                 NMS_NBTTAG_INT = nbtTagCompound.getDeclaredMethod("setInt", String.class, int.class);
