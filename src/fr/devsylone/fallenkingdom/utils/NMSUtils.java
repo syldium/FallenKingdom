@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
+import fr.devsylone.fallenkingdom.version.Version.VersionType;
 import org.bukkit.Bukkit;
 
 public class NMSUtils
@@ -70,12 +71,25 @@ public class NMSUtils
 
 	public static final String OBC_PACKAGE = "org.bukkit.craftbukkit";
 	public static final String NMS_PACKAGE = "net.minecraft.server";
+	public static final String NM_PACKAGE = "net.minecraft";
+
 	public static String nmsClassName(String className) {
 		return NMS_PACKAGE + '.' + version + '.' + className;
 	}
+	public static String nmsClassName(String className, String post1_17package) {
+		if (VersionType.V1_17.isHigherOrEqual()) {
+			return NM_PACKAGE + '.' + post1_17package + '.' + className;
+		}
+		return NMS_PACKAGE + '.' + version + '.' + className;
+	}
 
+	@Deprecated
 	public static Class<?> nmsClass(String className) throws ClassNotFoundException {
 		return Class.forName(nmsClassName(className));
+	}
+
+	public static Class<?> nmsClass(String className, String post1_17package) throws ClassNotFoundException {
+		return Class.forName(nmsClassName(className, post1_17package));
 	}
 
 	public static Optional<Class<?>> nmsOptionalClass(String className) {

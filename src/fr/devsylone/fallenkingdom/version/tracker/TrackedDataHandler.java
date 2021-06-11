@@ -18,8 +18,9 @@ class TrackedDataHandler<T> {
 
     static {
         try {
-            HANDLER_TYPE = NMSUtils.nmsClass("DataWatcherSerializer");
-            HANDLERS = NMSUtils.nmsClass("DataWatcherRegistry").getFields();
+            String package1_17 = "network.syncher";
+            HANDLER_TYPE = NMSUtils.nmsClass("DataWatcherSerializer", package1_17);
+            HANDLERS = NMSUtils.nmsClass("DataWatcherRegistry", package1_17).getFields();
         } catch (ClassNotFoundException ex) {
             throw new ExceptionInInitializerError(ex);
         }
@@ -38,7 +39,7 @@ class TrackedDataHandler<T> {
         this.mapper = mapper;
     }
 
-    static <T, U> @NotNull TrackedDataHandler<T> need(Class<T> type) {
+    static <T> @NotNull TrackedDataHandler<T> need(Class<T> type) {
         return need(type, Function.identity());
     }
 

@@ -24,9 +24,10 @@ public class DataTracker {
 
     static {
         try {
-            TRACKED_DATA_TYPE = NMSUtils.nmsClass("DataWatcherObject");
+            String package1_17 = "network.syncher";
+            TRACKED_DATA_TYPE = NMSUtils.nmsClass("DataWatcherObject", package1_17);
             TRACKED_DATA = TRACKED_DATA_TYPE.getConstructor(int.class, TrackedDataHandler.HANDLER_TYPE);
-            TRACKED_ENTRY_TYPE = NMSUtils.nmsClass("DataWatcher$Item");
+            TRACKED_ENTRY_TYPE = NMSUtils.nmsClass("DataWatcher$Item", package1_17);
             TRACKED_ENTRY = TRACKED_ENTRY_TYPE.getConstructor(TRACKED_DATA_TYPE, Object.class);
         } catch (ReflectiveOperationException ex) {
             throw new ExceptionInInitializerError(ex);

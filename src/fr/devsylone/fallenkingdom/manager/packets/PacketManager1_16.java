@@ -26,7 +26,7 @@ public class PacketManager1_16 extends PacketManager1_14
 
     static {
         try {
-            PACKET_CHUNK = Arrays.stream(NMSUtils.nmsClass("PacketPlayOutMapChunk").getConstructors())
+            PACKET_CHUNK = Arrays.stream(NMSUtils.nmsClass("PacketPlayOutMapChunk", "network.protocol.game").getConstructors())
                     .filter(constructor -> constructor.getParameterCount() > 1)
                     .findAny().orElseThrow(RuntimeException::new);
             PAIR_OF = Class.forName("com.mojang.datafixers.util.Pair").getMethod("of", Object.class, Object.class);

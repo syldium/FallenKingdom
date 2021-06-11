@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import fr.devsylone.fallenkingdom.manager.packets.PacketManager1_17;
 import fr.devsylone.fallenkingdom.utils.FkConfig;
 import fr.devsylone.fallenkingdom.version.LuckPermsContext;
 import org.bstats.bukkit.Metrics;
@@ -372,6 +373,8 @@ public class Fk extends JavaPlugin
 				return new PacketManager1_14();
 			case V1_16:
 				return new PacketManager1_16();
+			case V1_17:
+				return new PacketManager1_17();
 			default:
 				throw new RuntimeException("Could not get packet manager by version!");
 		}

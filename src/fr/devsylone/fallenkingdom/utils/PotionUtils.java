@@ -24,12 +24,12 @@ public class PotionUtils
 				TILE_BREWING_STAND_SET_ITEM = null;
 				TILE_BREWING_STAND_GET_ITEM = null;
 
-				POTION_BREW = Arrays.stream(NMSUtils.nmsClass("PotionBrewer").getDeclaredMethods())
+				POTION_BREW = Arrays.stream(NMSUtils.nmsClass("PotionBrewer", "world.item.alchemy").getDeclaredMethods())
 						.filter(m -> m.getReturnType().equals(XItemStack.ITEM_STACK))
 						.filter(m -> Arrays.equals(m.getParameterTypes(), new Class[]{XItemStack.ITEM_STACK, XItemStack.ITEM_STACK}))
 						.findAny().orElseThrow(RuntimeException::new);
 			} else {
-				Class<?> tileEntityBrewingStand = NMSUtils.nmsClass("TileEntityBrewingStand");
+				Class<?> tileEntityBrewingStand = NMSUtils.nmsClass("TileEntityBrewingStand", "world.level.block.entity");
 				TILE_BREWING_STAND = tileEntityBrewingStand.getConstructor();
 				TILE_BREWING_STAND_SET_ITEM = tileEntityBrewingStand
 						.getMethod("setItem", int.class, XItemStack.ITEM_STACK);

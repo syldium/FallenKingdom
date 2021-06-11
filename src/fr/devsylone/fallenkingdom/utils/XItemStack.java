@@ -13,9 +13,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static fr.devsylone.fallenkingdom.version.tracker.ChatMessage.CHAT_BASE_COMPONENT;
+
 public class XItemStack {
 
-    private final static Class<?> CHAT_COMPONENT;
     private final static Method CHAT_COMPONENT_FROM_JSON;
     private final static Method CHAT_COMPONENT_TO_JSON;
 
@@ -27,20 +28,19 @@ public class XItemStack {
 
     static {
         try {
-            CHAT_COMPONENT = NMSUtils.nmsClass("IChatBaseComponent");
-            Class<?> chatSerializer = NMSUtils.nmsClass("IChatBaseComponent$ChatSerializer");
+            Class<?> chatSerializer = NMSUtils.nmsClass("IChatBaseComponent$ChatSerializer", "network.chat");
 
             CHAT_COMPONENT_FROM_JSON = Arrays.stream(chatSerializer.getDeclaredMethods())
-                    .filter(m -> CHAT_COMPONENT.isAssignableFrom(m.getReturnType()))
+                    .filter(m -> CHAT_BASE_COMPONENT.isAssignableFrom(m.getReturnType()))
                     .filter(m -> Arrays.equals(m.getParameterTypes(), new Class[]{String.class}))
                     .findFirst().orElseThrow(RuntimeException::new);
 
             CHAT_COMPONENT_TO_JSON = Arrays.stream(chatSerializer.getDeclaredMethods())
                     .filter(m -> m.getReturnType().equals(String.class))
-                    .filter(m -> Arrays.equals(m.getParameterTypes(), new Class[]{CHAT_COMPONENT}))
+                    .filter(m -> Arrays.equals(m.getParameterTypes(), new Class[]{CHAT_BASE_COMPONENT}))
                     .findAny().orElseThrow(RuntimeException::new);
 
-            ITEM_STACK = NMSUtils.nmsClass("ItemStack");
+            ITEM_STACK = NMSUtils.nmsClass("ItemStack", "world.item");
             AS_NMS_COPY = NMSUtils.obcClass("inventory.CraftItemStack")
                     .getDeclaredMethod("asNMSCopy", ItemStack.class);
             AS_CRAFT_MIRROR = NMSUtils.obcClass("inventory.CraftItemStack")
@@ -68,7 +68,7 @@ public class XItemStack {
         }
 
         for (Field field : meta.getClass().getDeclaredFields()) {
-            if (field.getType().equals(CHAT_COMPONENT)) {
+            if (field.getType().equals(CHAT_BASE_COMPONENT)) {
                 field.setAccessible(true);
                 field.set(meta, CHAT_COMPONENT_FROM_JSON.invoke(null, ComponentSerializer.toString(components)));
                 itemStack.setItemMeta(meta);
@@ -95,7 +95,7 @@ public class XItemStack {
             }
         }
         for (Field field : meta.getClass().getDeclaredFields()) {
-            if (field.getType().equals(List.class) && ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0].equals(CHAT_COMPONENT)) {
+            if (field.getType().equals(List.class) && ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0].equals(CHAT_BASE_COMPONENT)) {
                 field.setAccessible(true);
                 field.set(meta, chatBaseComponents);
                 itemStack.setItemMeta(meta);
@@ -131,7 +131,7 @@ public class XItemStack {
     static BaseComponent[] getTextComponent(Object obj, int count) throws ReflectiveOperationException {
         int i = 0;
         for (Field field : obj.getClass().getDeclaredFields()) {
-            if (field.getType().equals(CHAT_COMPONENT) && i++ == count) {
+            if (field.getType().equals(CHAT_BASE_COMPONENT) && i++ == count) {
                 field.setAccessible(true);
                 return ComponentSerializer.parse((String) CHAT_COMPONENT_TO_JSON.invoke(null, field.get(obj)));
             }
