@@ -34,7 +34,7 @@ public class Version {
     }
 
     public static boolean isTooOldApi() {
-        return !NMSUtils.nmsOptionalClass("IScoreboardCriteria$EnumScoreboardHealthDisplay").isPresent();
+        return !NMSUtils.nmsOptionalClass("IScoreboardCriteria$EnumScoreboardHealthDisplay").isPresent() && !VersionType.V1_9_V1_12.isHigherOrEqual();
     }
 
     public static boolean isBrigadierSupported() {
