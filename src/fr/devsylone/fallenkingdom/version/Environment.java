@@ -10,7 +10,9 @@ import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -21,6 +23,7 @@ public class Environment {
     private static final boolean HAS_ASYNC_CHUNK_LOAD;
     private static final boolean HAS_ADVENTURE_API;
     private static final boolean HAS_MIN_HEIGHT;
+    private static final boolean HAS_SPIGOT_BOOK_PAGES;
 
     static {
         boolean hasAsyncTeleport = false;
@@ -57,6 +60,13 @@ public class Environment {
             hasMinHeight = true;
         } catch (NoSuchMethodException ignored) { }
         HAS_MIN_HEIGHT = hasMinHeight;
+
+        boolean spigotPages = false;
+        try {
+            Class.forName(ItemMeta.class.getName() + "$Spigot").getMethod("setPages", List.class);
+            spigotPages = true;
+        } catch (ReflectiveOperationException ignored) { }
+        HAS_SPIGOT_BOOK_PAGES = spigotPages;
     }
 
     public static CompletableFuture<Boolean> teleportAsync(Entity entity, Location location) {
@@ -101,5 +111,9 @@ public class Environment {
 
     public static int getMinHeight(World world) {
         return HAS_MIN_HEIGHT ? world.getMinHeight() : 0;
+    }
+
+    public static boolean hasSpigotBookPages() {
+        return HAS_SPIGOT_BOOK_PAGES;
     }
 }

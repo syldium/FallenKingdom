@@ -19,6 +19,14 @@ public interface FkComponent {
         return Components.text(content, colors);
     }
 
+    default @NotNull FkComponent changePage(int page) {
+        if (Components.isChangePageSupported()) {
+            return this.interact(new ClickEvent(ClickEvent.Action.CHANGE_PAGE, String.valueOf(page)));
+        } else {
+            return this.interact(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/change_page " + page));
+        }
+    }
+
     default @NotNull FkComponent command(@NotNull String command) {
         return this.interact(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command));
     }

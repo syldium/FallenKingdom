@@ -4,6 +4,7 @@ import com.mojang.datafixers.util.Pair;
 import fr.devsylone.fallenkingdom.utils.NMSUtils;
 import fr.devsylone.fallenkingdom.utils.PacketUtils;
 import fr.devsylone.fallenkingdom.utils.XItemStack;
+import fr.devsylone.fallenkingdom.version.component.FkComponent;
 import fr.devsylone.fallenkingdom.version.tracker.DataTracker;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -71,7 +72,7 @@ public class PacketManager1_17 extends PacketManager {
 
         try {
             Object packet = PACKET_SPAWN_ENTITY.newInstance(
-                    id,                                 // Entity id
+                    id,                         // Entity id
                     UUID.randomUUID(),
                     loc.getX(), loc.getY(), loc.getZ(), // Position
                     loc.getPitch(), loc.getYaw(),       // Rotation
@@ -111,7 +112,6 @@ public class PacketManager1_17 extends PacketManager {
             PacketUtils.setField("b", newLoc.getX(), packet);
             PacketUtils.setField("c", newLoc.getY(), packet);
             PacketUtils.setField("d", newLoc.getZ(), packet);
-            PacketUtils.setField("g", true, packet);
             PacketUtils.sendPacket(getPlayer(id), packet);
         } catch (ReflectiveOperationException e) {
             e.printStackTrace();
@@ -168,7 +168,7 @@ public class PacketManager1_17 extends PacketManager {
     }
 
     @Override
-    public void openBook(Player p, String nbtTags) {
-        // TODO
+    public void openBook(Player p, ItemStack book, FkComponent title, FkComponent author, FkComponent... pages) {
+        p.openBook(book);
     }
 }

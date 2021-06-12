@@ -1,11 +1,9 @@
 package fr.devsylone.fallenkingdom.manager.packets;
 
-import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.utils.NMSUtils;
 import fr.devsylone.fallenkingdom.utils.PacketUtils;
-import org.bukkit.Bukkit;
+import fr.devsylone.fallenkingdom.version.component.FkComponent;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -86,26 +84,8 @@ public class PacketManager1_14 extends PacketManager1_13 {
     }
 
     @Override
-    public void openBook(final Player p, String nbtTags)
+    public void openBook(final Player p, ItemStack book, FkComponent title, FkComponent author, FkComponent... pages)
     {
-        final int slot = p.getInventory().getHeldItemSlot();
-        final ItemStack original = p.getInventory().getItem(slot);
-
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "replaceitem entity " + p.getName() + " container." + slot + " minecraft:written_book" + nbtTags);
-
-        Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), () -> {
-            try
-            {
-                if(original != null && original.getType() != Material.AIR)
-                    p.getWorld().dropItem(p.getLocation(), original).setPickupDelay(0);
-
-                p.getInventory().setHeldItemSlot(slot);
-                Object packet = NMSUtils.getClass("PacketPlayOutOpenBook").getDeclaredConstructor(NMSUtils.getClass("EnumHand")).newInstance(NMSUtils.enumValueOf(NMSUtils.getClass("EnumHand"), "MAIN_HAND"));
-                PacketUtils.sendPacket(p, packet);
-            }catch(Exception ex)
-            {
-                ex.printStackTrace();
-            }
-        }, 5L);
+        p.openBook(book);
     }
 }

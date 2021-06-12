@@ -3,6 +3,9 @@ package fr.devsylone.fallenkingdom.manager.packets;
 import java.util.Objects;
 import java.util.UUID;
 
+import fr.devsylone.fallenkingdom.version.Environment;
+import fr.devsylone.fallenkingdom.version.component.Components;
+import fr.devsylone.fallenkingdom.version.component.FkComponent;
 import fr.devsylone.fallenkingdom.version.tracker.DataTracker;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -234,12 +237,16 @@ public class PacketManager1_9 extends PacketManager
 	}
 
 	@Override
-	public void openBook(final Player p, String nbtTags)
+	public void openBook(final Player p, ItemStack book, FkComponent title, FkComponent author, FkComponent... pages)
 	{
 		final int slot = p.getInventory().getHeldItemSlot();
-		final ItemStack original = p.getInventory().getItem(slot);
+		ItemStack original = p.getInventory().getItem(slot);
 
-		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "replaceitem entity " + p.getName() + " slot.hotbar." + slot + " minecraft:written_book 1 0 " + nbtTags);
+		if (Environment.hasSpigotBookPages()) {
+			p.getInventory().setItemInMainHand(book);
+		} else {
+			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "replaceitem entity " + p.getName() + " slot.hotbar." + slot + " minecraft:written_book 1 0 " + Components.stringifyBook(title, author, pages));
+		}
 
 		Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), () -> {
 			try

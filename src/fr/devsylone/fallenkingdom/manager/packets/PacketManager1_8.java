@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import fr.devsylone.fallenkingdom.version.component.Components;
+import fr.devsylone.fallenkingdom.version.component.FkComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -220,12 +222,12 @@ public class PacketManager1_8 extends PacketManager
 	}
 
 	@Override
-	public void openBook(final Player p, String nbtTags)
+	public void openBook(final Player p, ItemStack book, FkComponent title, FkComponent author, FkComponent... pages)
 	{
 		final int slot = p.getInventory().getHeldItemSlot();
 		final ItemStack original = p.getInventory().getItem(slot);
 
-		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "replaceitem entity " + p.getName() + " slot.hotbar." + slot + " minecraft:written_book 1 0 " + nbtTags);
+		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "replaceitem entity " + p.getName() + " slot.hotbar." + slot + " minecraft:written_book 1 0 " + Components.stringifyBook(title, author, pages));
 
 		Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), () -> {
 			try

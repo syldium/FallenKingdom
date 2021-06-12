@@ -35,6 +35,9 @@ public class ChestsRoom extends FkParentCommand
 	private static final String BOOK_PERMISSION = "fallenkingdom.commands.team.chestsRoom.book";
 
 	private ItemStack book;
+	private FkComponent title;
+	private FkComponent author;
+	private FkComponent[] pages;
 
 	public ChestsRoom()
 	{
@@ -56,22 +59,22 @@ public class ChestsRoom extends FkParentCommand
 				this.book = new ItemStack(Material.WRITTEN_BOOK);
 				this.book.setItemMeta(this.book((BookMeta) this.book.getItemMeta()));
 			}
-			((Player) sender).openBook(this.book); // TODO 1.8
+			plugin.getPacketManager().openBook((Player) sender, this.book, this.title, this.author, this.pages);
 		}
 		return CommandResult.SUCCESS;
 	}
 
 	public @NotNull BookMeta book(BookMeta meta) {
-		FkComponent title = text("ChestsRoom - Help", ChatColor.GREEN);
-		FkComponent author = text("Devsylone", ChatColor.DARK_BLUE);
-		FkComponent[] pages = new FkComponent[]{
+		this.title = text("ChestsRoom - Help", ChatColor.GREEN);
+		this.author = text("Devsylone", ChatColor.DARK_BLUE);
+		this.pages = new FkComponent[]{
 				FkComponent.join(
 						text(" Reconnaissance auto\n     de la salle des\n         coffres\n\n ", ChatColor.DARK_BLUE),
 						text("[Activer]", ChatColor.DARK_GREEN).command("/fk team chestsRoom enabled true").hover("Clique pour activer"),
 						space(),
 						text("[Désactiver]", ChatColor.DARK_RED).command("/fk team chestsRoom enabled false").hover("Clique pour désactiver"),
 						text("\n\n   "),
-						text("> En savoir plus <", ChatColor.UNDERLINE).interact(new ClickEvent(ClickEvent.Action.CHANGE_PAGE, String.valueOf(5))).hover("Clique pour plus d'infos")
+						text("> En savoir plus <", ChatColor.UNDERLINE).changePage(5).hover("Clique pour plus d'infos")
 				),
 				FkComponent.join(
 						text(" Temps de la capture\n     de la salle des\n         coffres\n\n", ChatColor.DARK_BLUE),
@@ -98,7 +101,7 @@ public class ChestsRoom extends FkParentCommand
 						text("\n"),
 						text("> 5 blocs", ChatColor.GREEN).command("/fk team chestsRoom offset 5"),
 						text("\n\n   "),
-						text("> En savoir plus <", ChatColor.UNDERLINE).interact(new ClickEvent(ClickEvent.Action.CHANGE_PAGE, String.valueOf(7))).hover("Clique pour plus d'infos")
+						text("> En savoir plus <", ChatColor.UNDERLINE).changePage(7).hover("Clique pour plus d'infos")
 				),
 				text("Explications\npages suivantes"),
 				text("↪ La reconnaissance automatique des salles des coffres permet d'automatiser l'élimination d'une équipe lorsque le plugin détecte qu'une équipe est restée le temps choisi dans la salle des coffres.\n\n↪ Le plugin calcule les dimensions de la salle --->"),
@@ -133,7 +136,7 @@ public class ChestsRoom extends FkParentCommand
 
 	@Override
 	public @NotNull Map<String, CommandRole> getPermissions() {
-		Map<String, CommandRole> permissions = new HashMap<>();
+		Map<String, CommandRole> permissions = new HashMap<>(2);
 		permissions.put(this.permission, this.role);
 		permissions.put(BOOK_PERMISSION, CommandRole.ADMIN);
 		return permissions;
