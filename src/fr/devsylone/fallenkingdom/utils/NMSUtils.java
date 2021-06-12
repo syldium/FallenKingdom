@@ -1,8 +1,12 @@
 package fr.devsylone.fallenkingdom.utils;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import fr.devsylone.fallenkingdom.version.Version.VersionType;
 import org.bukkit.Bukkit;
@@ -119,6 +123,24 @@ public class NMSUtils
 
 	public static Object enumValueOf(Class<?> enumClass, String enumName) {
 		return Enum.valueOf(enumClass.asSubclass(Enum.class), enumName);
+	}
+
+	public static Field getField(Class<?> holder, Class<?> fieldType, Predicate<Field> fieldPredicate) throws NoSuchFieldException {
+		for (Field field : holder.getFields()) {
+			if (field.getType().isAssignableFrom(fieldType) && fieldPredicate.test(field)) {
+				return field;
+			}
+		}
+		throw new NoSuchFieldException("On " + holder.getCanonicalName());
+	}
+
+	public static Method getMethod(Class<?> holder, Class<?> returnType, Class<?>... parametersTypes) throws NoSuchMethodException {
+		for (Method method : holder.getMethods()) {
+			if (Arrays.equals(method.getParameterTypes(), parametersTypes) && method.getReturnType().isAssignableFrom(returnType)) {
+				return method;
+			}
+		}
+		throw new NoSuchMethodException("On " + holder.getCanonicalName());
 	}
 
 	public static String getVersion()

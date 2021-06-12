@@ -58,7 +58,7 @@
                                 </relocation>
                                 <relocation>
                                     <pattern>fr.mrmicky.fastboard</pattern>
-                                    <shadedPattern>fr.devsylone.fallenkingdom.scoreboard</shadedPattern>
+                                    <shadedPattern>fr.devsylone.fallenkingdom.fastboard</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>org.bstats</pattern>
@@ -151,6 +151,11 @@
             <artifactId>brigadier</artifactId>
             <version>1.0.17</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.mojang</groupId>
+            <artifactId>datafixerupper</artifactId>
+            <version>1.0.20</version>
         </dependency>
         <!-- Structure of 1.8 NMS packets -->
 <!--          <dependency> -->

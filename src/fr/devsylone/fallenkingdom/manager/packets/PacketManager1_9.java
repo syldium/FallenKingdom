@@ -262,7 +262,7 @@ public class PacketManager1_9 extends PacketManager
 		}, 5L);
 	}
 
-	protected Object getEnumItemSlot(ItemSlot slot) {
+	protected static Object getEnumItemSlot(ItemSlot slot) {
 		return NMSUtils.enumValueOf(ITEM_SLOT, slot.name());
 	}
 }
