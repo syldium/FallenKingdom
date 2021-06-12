@@ -2,6 +2,7 @@ package fr.devsylone.fallenkingdom.version.component;
 
 import com.google.common.collect.Sets;
 import net.kyori.adventure.inventory.Book;
+import net.kyori.adventure.text.Component;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.inventory.meta.BookMeta;
@@ -26,14 +27,14 @@ public final class Components {
         ADVENTURE = adventure;
     }
 
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings({"deprecation", "ResultOfMethodCallIgnored"})
     public static @NotNull BookMeta setBook(BookMeta meta, FkComponent title, FkComponent author, FkComponent... pages) {
         if (ADVENTURE) {
-            BookMeta.BookMetaBuilder builder = meta.toBuilder();
-            builder.title(((AdventureImpl) title).component);
-            builder.author(((AdventureImpl) author).component);
-            builder.pages(Arrays.stream(pages).map(component -> ((AdventureImpl) component).component).collect(Collectors.toList()));
-            return builder.build();
+            // Utiliser un builder reviendrait à obtenir une instance de CraftMetaBook plutôt que de CraftMetaBookSigned, qui utilise la représentation legacy plutôt que json.
+            meta.title(((AdventureImpl) title).component);
+            meta.author(((AdventureImpl) author).component);
+            meta.addPages(Arrays.stream(pages).map(component -> ((AdventureImpl) component).component).toArray(Component[]::new));
+            return meta;
         }
         meta.setTitle(((BungeeImpl) title).component.toLegacyText());
         meta.setAuthor(((BungeeImpl) author).component.toLegacyText());
