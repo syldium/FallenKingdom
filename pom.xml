@@ -156,6 +156,7 @@
             <groupId>com.mojang</groupId>
             <artifactId>datafixerupper</artifactId>
             <version>1.0.20</version>
+            <scope>provided</scope>
         </dependency>
         <!-- Structure of 1.8 NMS packets -->
 <!--          <dependency> -->
