@@ -10,7 +10,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.BookMeta;
 
 import java.util.List;
 import java.util.UUID;
@@ -63,7 +63,7 @@ public class Environment {
 
         boolean spigotPages = false;
         try {
-            Class.forName(ItemMeta.class.getName() + "$Spigot").getMethod("setPages", List.class);
+            Class.forName(BookMeta.class.getName() + "$Spigot").getMethod("setPages", List.class);
             spigotPages = true;
         } catch (ReflectiveOperationException ignored) { }
         HAS_SPIGOT_BOOK_PAGES = spigotPages;
