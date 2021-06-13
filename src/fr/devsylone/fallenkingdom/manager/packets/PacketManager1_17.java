@@ -4,7 +4,7 @@ import com.mojang.datafixers.util.Pair;
 import fr.devsylone.fallenkingdom.utils.NMSUtils;
 import fr.devsylone.fallenkingdom.utils.PacketUtils;
 import fr.devsylone.fallenkingdom.utils.XItemStack;
-import fr.devsylone.fallenkingdom.version.component.FkComponent;
+import fr.devsylone.fallenkingdom.version.component.FkBook;
 import fr.devsylone.fallenkingdom.version.tracker.DataTracker;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -168,7 +168,7 @@ public class PacketManager1_17 extends PacketManager {
     }
 
     @Override
-    public void openBook(Player p, ItemStack book, FkComponent title, FkComponent author, FkComponent... pages) {
-        p.openBook(book);
+    public void openBook(Player p, FkBook book) {
+        book.open(p);
     }
 }

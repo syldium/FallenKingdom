@@ -3,7 +3,7 @@ package fr.devsylone.fallenkingdom.manager.packets;
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.utils.NMSUtils;
 import fr.devsylone.fallenkingdom.utils.PacketUtils;
-import fr.devsylone.fallenkingdom.version.component.FkComponent;
+import fr.devsylone.fallenkingdom.version.component.FkBook;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import org.bukkit.Bukkit;
@@ -60,12 +60,12 @@ public class PacketManager1_13 extends PacketManager1_9 {
     }
 
     @Override
-    public void openBook(final Player p, ItemStack book, FkComponent title, FkComponent author, FkComponent... pages)
+    public void openBook(final Player p, FkBook book)
     {
         final int slot = p.getInventory().getHeldItemSlot();
         final ItemStack original = p.getInventory().getItem(slot);
 
-        p.getInventory().setItemInMainHand(book);
+        p.getInventory().setItemInMainHand(book.asItemStack());
 
         Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), () -> {
             try

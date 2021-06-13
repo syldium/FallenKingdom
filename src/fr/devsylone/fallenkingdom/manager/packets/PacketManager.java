@@ -6,13 +6,12 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
-import fr.devsylone.fallenkingdom.version.component.FkComponent;
+import fr.devsylone.fallenkingdom.version.component.FkBook;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 public abstract class PacketManager
 {
@@ -52,7 +51,7 @@ public abstract class PacketManager
 
 	protected abstract void sendTitlePacket(Player p, TitleType type, String text, int fadeIn, int stay, int fadeOut);
 
-	public abstract void openBook(final Player p, ItemStack book, FkComponent title, FkComponent author, FkComponent... pages);
+	public abstract void openBook(final Player p, FkBook book);
 
 	public int createFloatingText(String text, Player p, Location loc)
 	{

@@ -1,6 +1,8 @@
 package fr.devsylone.fallenkingdom.version.component;
 
+import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.ClickEvent.Action;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -8,17 +10,21 @@ import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.ClickEvent;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static fr.devsylone.fallenkingdom.version.component.Components.TEXT_DECORATIONS;
+import static net.kyori.adventure.text.serializer.gson.GsonComponentSerializer.gson;
+import static net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer.legacySection;
 
 class AdventureImpl implements FkComponent {
-
-    static final AdventureImpl SPACE = new AdventureImpl(Component.space());
 
     Component component;
 
@@ -31,18 +37,32 @@ class AdventureImpl implements FkComponent {
     }
 
     AdventureImpl(FkComponent... components) {
-        this(Component.join(Component.empty(), Arrays.stream(components).map(component -> ((AdventureImpl) component).component).collect(Collectors.toList())));
+        this(Component.join(Component.empty(), asAdventure(components)));
+    }
+
+    static @NotNull FkComponent newline() {
+        return new AdventureImpl(Component.newline());
+    }
+
+    static @NotNull FkComponent space() {
+        return new AdventureImpl(Component.space());
     }
 
     @Override
-    public @NotNull FkComponent command(@NotNull String command) {
-        this.component = this.component.clickEvent(net.kyori.adventure.text.event.ClickEvent.runCommand(command));
+    public @NotNull FkComponent changePage(int page) {
+        this.component = this.component.clickEvent(ClickEvent.changePage(page));
         return this;
     }
 
     @Override
-    public @NotNull FkComponent interact(@NotNull ClickEvent event) {
-        this.component = this.component.clickEvent(net.kyori.adventure.text.event.ClickEvent.clickEvent(asAdventure(event.getAction()), event.getValue()));
+    public @NotNull FkComponent command(@NotNull String command) {
+        this.component = this.component.clickEvent(ClickEvent.runCommand(command));
+        return this;
+    }
+
+    @Override
+    public @NotNull FkComponent interact(@NotNull net.md_5.bungee.api.chat.ClickEvent event) {
+        this.component = this.component.clickEvent(ClickEvent.clickEvent(asAdventure(event.getAction()), event.getValue()));
         return this;
     }
 
@@ -58,7 +78,12 @@ class AdventureImpl implements FkComponent {
         return this;
     }
 
-    private static @NotNull Action asAdventure(ClickEvent.Action eventAction) {
+    @Override
+    public @NotNull String toLegacyText() {
+        return legacySection().serialize(this.component);
+    }
+
+    private static @NotNull Action asAdventure(net.md_5.bungee.api.chat.ClickEvent.Action eventAction) {
         switch (eventAction) {
             case OPEN_URL: return Action.OPEN_URL;
             case OPEN_FILE: return Action.OPEN_FILE;
@@ -102,5 +127,72 @@ class AdventureImpl implements FkComponent {
         if (color == ChatColor.LIGHT_PURPLE) return NamedTextColor.LIGHT_PURPLE;
         if (color == ChatColor.WHITE) return NamedTextColor.WHITE;
         return TextColor.color(color.getColor().getRGB());
+    }
+
+    static @NotNull Component asAdventure(FkComponent component) {
+        return ((AdventureImpl) component).component;
+    }
+
+    static @NotNull Component[] asAdventure(FkComponent... components) {
+        return Arrays.stream(components).map(AdventureImpl::asAdventure).toArray(Component[]::new);
+    }
+
+    static class BookImpl implements FkBook {
+
+        private final Book book;
+        private final FkComponent title;
+        private final FkComponent author;
+        private final List<FkComponent> pages;
+        private ItemStack itemStack;
+
+        BookImpl(FkComponent title, FkComponent author, FkComponent... pages) {
+            // Le titre est limité à 32 caractères, ce qui est facilement dépassable puisque le titre sera ici converti en json.
+            // Comme il ne sera au final pas affiché, il est défini vide.
+            // Note: avec BookMeta, le titre est converti en chaîne legacy.
+            this.book = Book.book(Component.empty(), asAdventure(author), asAdventure(pages));
+            this.title = title;
+            this.author = author;
+            this.pages = Arrays.asList(pages);
+        }
+
+        @Override
+        public @NotNull FkComponent title() {
+            return this.title;
+        }
+
+        @Override
+        public @NotNull FkComponent author() {
+            return this.author;
+        }
+
+        @Override
+        public @NotNull List<FkComponent> pages() {
+            return this.pages;
+        }
+
+        @Override
+        public @NotNull String jsonPages() {
+            return gson().serializer().toJson(
+                    this.book.pages().stream().map(page -> gson().serialize(page)).collect(Collectors.toList())
+            );
+        }
+
+        @Override
+        public @NotNull ItemStack asItemStack() {
+            if (this.itemStack == null) {
+                this.itemStack = new ItemStack(Material.WRITTEN_BOOK);
+                final BookMeta meta = (BookMeta) this.itemStack.getItemMeta();
+                meta.title(this.book.title());
+                meta.author(this.book.author());
+                meta.addPages(this.book.pages().toArray(new Component[0]));
+                this.itemStack.setItemMeta(meta);
+            }
+            return this.itemStack;
+        }
+
+        @Override
+        public void open(@NotNull Player player) {
+            player.openBook(this.book);
+        }
     }
 }

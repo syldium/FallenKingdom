@@ -7,6 +7,10 @@ import org.jetbrains.annotations.NotNull;
 
 public interface FkComponent {
 
+    static @NotNull FkComponent newline() {
+        return Components.newline();
+    }
+
     static @NotNull FkComponent space() {
         return Components.space();
     }
@@ -20,7 +24,7 @@ public interface FkComponent {
     }
 
     default @NotNull FkComponent changePage(int page) {
-        if (Components.isChangePageSupported()) {
+        if (BukkitImpl.BookImpl.CHANGE_PAGE_FIX == null) {
             return this.interact(new ClickEvent(ClickEvent.Action.CHANGE_PAGE, String.valueOf(page)));
         } else {
             return this.interact(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/change_page " + page));
@@ -41,4 +45,6 @@ public interface FkComponent {
 
     @Contract("_ -> this")
     @NotNull FkComponent hover(@NotNull FkComponent component);
+
+    @NotNull String toLegacyText();
 }
