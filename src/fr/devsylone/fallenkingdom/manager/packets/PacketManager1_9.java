@@ -77,7 +77,7 @@ public class PacketManager1_9 extends PacketManager
 		if(loc == null)
 			loc = p.getLocation();
 
-		int id = entityIdSupplier.get();
+		int id = entityIdSupplier.getAsInt();
 		playerById.put(id, p.getUniqueId());
 		try
 		{

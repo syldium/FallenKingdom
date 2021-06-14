@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Supplier;
+import java.util.function.IntSupplier;
 
 import fr.devsylone.fallenkingdom.version.component.FkBook;
 import org.bukkit.Bukkit;
@@ -16,11 +16,11 @@ import org.bukkit.entity.Player;
 public abstract class PacketManager
 {
 	protected final Map<Integer, UUID> playerById = new HashMap<>();
-	protected final Supplier<Integer> entityIdSupplier;
+	protected final IntSupplier entityIdSupplier;
 
 	@SuppressWarnings("deprecation")
 	public PacketManager() {
-		Supplier<Integer> supplier;
+		IntSupplier supplier;
 		try {
 			Bukkit.getUnsafe().getClass().getDeclaredMethod("nextEntityId");
 			supplier = Bukkit.getUnsafe()::nextEntityId;

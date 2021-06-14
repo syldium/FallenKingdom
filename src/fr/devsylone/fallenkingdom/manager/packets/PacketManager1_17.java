@@ -67,7 +67,7 @@ public class PacketManager1_17 extends PacketManager {
 
     @Override
     protected int sendSpawn(Player p, Location loc) {
-        int id = entityIdSupplier.get();
+        int id = entityIdSupplier.getAsInt();
         playerById.put(id, p.getUniqueId());
 
         try {
