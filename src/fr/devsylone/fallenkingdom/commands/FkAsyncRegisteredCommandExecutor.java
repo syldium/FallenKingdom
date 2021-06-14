@@ -8,12 +8,12 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.event.EventHandler;
 
 /**
- * Paper (avec les tout derniers patchs) seulement.
+ * Paper seulement.
  * Remplace le nœud créé par Bukkit.
  */
 public class FkAsyncRegisteredCommandExecutor extends FkAsyncCommandExecutor {
 
-    private final BrigadierManager<BukkitBrigadierCommandSource> builder = new BrigadierManager<>();
+    private final BrigadierManager<BukkitBrigadierCommandSource> builder = new BrigadierManager<>(BukkitBrigadierCommandSource::getBukkitSender);
 
     public FkAsyncRegisteredCommandExecutor(Fk plugin, PluginCommand command) {
         super(plugin, command);

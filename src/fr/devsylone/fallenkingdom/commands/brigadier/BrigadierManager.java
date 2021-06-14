@@ -9,10 +9,9 @@ import fr.devsylone.fallenkingdom.commands.abstraction.AbstractCommand;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkParentCommand;
 import fr.devsylone.fallenkingdom.manager.CommandManager;
-import fr.devsylone.fallenkingdom.utils.NMSUtils;
 import org.bukkit.command.CommandSender;
 
-import java.lang.reflect.Method;
+import java.util.function.Function;
 
 /**
  * Gère la liaison entre les commandes Bukkit et Brigadier.
@@ -23,16 +22,10 @@ import java.lang.reflect.Method;
  */
 public class BrigadierManager<S>
 {
-    private static final Method GET_BUKKIT_SENDER_METHOD;
+    private final Function<S, CommandSender> bukkitSender;
 
-    static {
-        try {
-            Class<?> commandListenerWrapper = NMSUtils.nmsClass("commands", "CommandListenerWrapper");
-            GET_BUKKIT_SENDER_METHOD = commandListenerWrapper.getDeclaredMethod("getBukkitSender");
-            GET_BUKKIT_SENDER_METHOD.setAccessible(true);
-        } catch (ReflectiveOperationException e) {
-            throw new ExceptionInInitializerError(e);
-        }
+    public BrigadierManager(Function<S, CommandSender> bukkitSender) {
+        this.bukkitSender = bukkitSender;
     }
 
     /**
@@ -75,7 +68,7 @@ public class BrigadierManager<S>
      */
     CommandNode<S> buildCommandNode(AbstractCommand command, SuggestionProvider<S> suggestionProvider, boolean withPermissions) {
         LiteralArgumentBuilder<S> builder = LiteralArgumentBuilder.<S>literal(command.getName())
-                .requires(sender -> !withPermissions || command.hasPermission(getBukkitSender(sender)));
+                .requires(sender -> !withPermissions || command.hasPermission(this.bukkitSender.apply(sender)));
         if (command instanceof FkParentCommand) {
             builder.then(LiteralArgumentBuilder.literal("help"));
             for (AbstractCommand subCommand : ((FkParentCommand) command).getChildren()) {
@@ -100,13 +93,5 @@ public class BrigadierManager<S>
             prevNode.addChild(prevNode = arg.build());
         }
         return node;
-    }
-
-    public static CommandSender getBukkitSender(Object commandWrapperListener) {
-        try {
-            return (CommandSender) GET_BUKKIT_SENDER_METHOD.invoke(commandWrapperListener);
-        } catch (ReflectiveOperationException e) {
-            throw new RuntimeException(e);
-        }
     }
 }

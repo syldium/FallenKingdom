@@ -9,6 +9,7 @@ import fr.devsylone.fallenkingdom.manager.CommandManager;
 import fr.devsylone.fallenkingdom.utils.NMSUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -34,6 +35,7 @@ public class BrigadierSpigotManager<S> extends BrigadierManager<S> implements Li
     private static final Field CONSOLE_FIELD;
     private static final Method GET_COMMAND_DISPATCHER_METHOD;
     private static final Method GET_BRIGADIER_DISPATCHER_METHOD;
+    private static final Method GET_BUKKIT_SENDER_METHOD;
     private static final Constructor<?> COMMAND_WRAPPER_CONSTRUCTOR;
     private static final Field[] CHILDREN_FIELDS;
 
@@ -54,6 +56,10 @@ public class BrigadierSpigotManager<S> extends BrigadierManager<S> implements Li
                     .findFirst().orElseThrow(NoSuchMethodException::new);
             GET_BRIGADIER_DISPATCHER_METHOD.setAccessible(true);
 
+            Class<?> commandListenerWrapper = NMSUtils.nmsClass("commands", "CommandListenerWrapper");
+            GET_BUKKIT_SENDER_METHOD = commandListenerWrapper.getDeclaredMethod("getBukkitSender");
+            GET_BUKKIT_SENDER_METHOD.setAccessible(true);
+
             Class<?> bukkitCommandWrapper = NMSUtils.obcClass("command.BukkitCommandWrapper");
             COMMAND_WRAPPER_CONSTRUCTOR = bukkitCommandWrapper.getConstructor(craftServer, Command.class);
 
@@ -70,6 +76,7 @@ public class BrigadierSpigotManager<S> extends BrigadierManager<S> implements Li
     }
 
     public BrigadierSpigotManager(Plugin plugin) {
+        super(BrigadierSpigotManager::getBukkitSender);
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
@@ -105,6 +112,14 @@ public class BrigadierSpigotManager<S> extends BrigadierManager<S> implements Li
                 Map<String, CommandNode<S>> children = (Map<String, CommandNode<S>>) field.get(root);
                 children.remove(name);
             }
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static CommandSender getBukkitSender(Object commandWrapperListener) {
+        try {
+            return (CommandSender) GET_BUKKIT_SENDER_METHOD.invoke(commandWrapperListener);
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException(e);
         }
