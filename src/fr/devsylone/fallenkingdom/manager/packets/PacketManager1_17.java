@@ -3,6 +3,7 @@ package fr.devsylone.fallenkingdom.manager.packets;
 import com.mojang.datafixers.util.Pair;
 import fr.devsylone.fallenkingdom.utils.NMSUtils;
 import fr.devsylone.fallenkingdom.utils.PacketUtils;
+import fr.devsylone.fallenkingdom.utils.Unsafety;
 import fr.devsylone.fallenkingdom.utils.XItemStack;
 import fr.devsylone.fallenkingdom.version.component.FkBook;
 import fr.devsylone.fallenkingdom.version.tracker.DataTracker;
@@ -11,10 +12,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import sun.misc.Unsafe;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.List;
@@ -25,8 +24,6 @@ import static fr.devsylone.fallenkingdom.manager.packets.PacketManager1_9.getEnu
 import static fr.devsylone.fallenkingdom.utils.PacketUtils.MINECRAFT_CHUNK;
 
 public class PacketManager1_17 extends PacketManager {
-
-    private static final Unsafe UNSAFE;
 
     private static final Object ARMOR_STAND;
     private static final Object ZERO_VEC3D;
@@ -40,10 +37,6 @@ public class PacketManager1_17 extends PacketManager {
 
     static {
         try {
-            final Field theUnsafe = Unsafe.class.getDeclaredField("theUnsafe");
-            theUnsafe.setAccessible(true);
-            UNSAFE = (Unsafe) theUnsafe.get(null);
-
             final Class<?> entityTypesClass = NMSUtils.nmsClass("world.entity", "EntityTypes");
             final Class<?> vec3dClass = NMSUtils.nmsClass("world.phys", "Vec3D");
             ARMOR_STAND = ((Optional<?>) NMSUtils.getMethod(entityTypesClass, Optional.class, String.class).invoke(null, "armor_stand")).get();
@@ -90,7 +83,7 @@ public class PacketManager1_17 extends PacketManager {
     @Override
     protected void sendMetadata(int id, boolean visible, String customName) {
         try {
-            Object packet = UNSAFE.allocateInstance(PACKET_ENTITY_METADATA);
+            Object packet = Unsafety.allocateInstance(PACKET_ENTITY_METADATA);
             PacketUtils.setField("a", id, packet);
             PacketUtils.setField("b", new DataTracker()
                             .invisible()
@@ -107,7 +100,7 @@ public class PacketManager1_17 extends PacketManager {
     @Override
     protected void sendTeleport(int id, Location newLoc) {
         try {
-            Object packet = UNSAFE.allocateInstance(PACKET_ENTITY_POSITION);
+            Object packet = Unsafety.allocateInstance(PACKET_ENTITY_POSITION);
             PacketUtils.setField("a", id, packet);
             PacketUtils.setField("b", newLoc.getX(), packet);
             PacketUtils.setField("c", newLoc.getY(), packet);

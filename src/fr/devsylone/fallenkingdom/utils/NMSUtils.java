@@ -8,7 +8,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 
-import fr.devsylone.fallenkingdom.version.Version.VersionType;
 import org.bukkit.Bukkit;
 
 public class NMSUtils
@@ -77,12 +76,19 @@ public class NMSUtils
 	public static final String NMS_PACKAGE = "net.minecraft.server";
 	public static final String NM_PACKAGE = "net.minecraft";
 
+	private static final boolean NMS_REPACKAGED = optionalClass(NM_PACKAGE + ".network.protocol.Packet").isPresent();
+
+	public static boolean isRepackaged() {
+		return NMS_REPACKAGED;
+	}
+
 	public static String nmsClassName(String className) {
 		return NMS_PACKAGE + '.' + version + '.' + className;
 	}
 	public static String nmsClassName(String post1_17package, String className) {
-		if (VersionType.V1_17.isHigherOrEqual()) {
-			return NM_PACKAGE + '.' + post1_17package + '.' + className;
+		if (NMS_REPACKAGED) {
+			String classPackage = post1_17package == null ? NM_PACKAGE : NM_PACKAGE + '.' + post1_17package;
+			return classPackage + '.' + className;
 		}
 		return nmsClassName(className);
 	}
@@ -123,6 +129,18 @@ public class NMSUtils
 
 	public static Object enumValueOf(Class<?> enumClass, String enumName) {
 		return Enum.valueOf(enumClass.asSubclass(Enum.class), enumName);
+	}
+
+	public static Object enumValueOf(Class<?> enumClass, String enumName, int enumFallbackOrdinal) {
+		try {
+			return enumValueOf(enumClass, enumName);
+		} catch (IllegalArgumentException e) {
+			Object[] constants = enumClass.getEnumConstants();
+			if (constants.length > enumFallbackOrdinal) {
+				return constants[enumFallbackOrdinal];
+			}
+			throw e;
+		}
 	}
 
 	public static Field getField(Class<?> holder, Class<?> fieldType, Predicate<Field> fieldPredicate) throws NoSuchFieldException {
