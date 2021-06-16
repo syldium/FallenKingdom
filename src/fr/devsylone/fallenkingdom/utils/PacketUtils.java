@@ -51,9 +51,17 @@ public class PacketUtils
 			final Method getWorldHandle = CRAFT_WORLD.getMethod("getHandle");
 			GET_WORLD_HANDLE = lookup.unreflect(getWorldHandle);
 			MINECRAFT_WORLD = getWorldHandle.getReturnType();
-			final Method getChunkAt = MINECRAFT_WORLD.getMethod("getChunkAt", int.class, int.class);
+			MINECRAFT_CHUNK = NMSUtils.nmsClass("world.level.chunk", "Chunk");
+			Method getChunkAt;
+			try {
+				getChunkAt = MINECRAFT_WORLD.getMethod("getChunkAt", int.class, int.class);
+				if (!getChunkAt.getReturnType().isAssignableFrom(MINECRAFT_CHUNK)) {
+					throw new NoSuchMethodException("Wrong getChunkAt method.");
+				}
+			} catch (NoSuchMethodException remapException) {
+				getChunkAt = MINECRAFT_WORLD.getMethod("getChunk", int.class, int.class);
+			}
 			GET_CHUNK_HANDLE_AT = lookup.unreflect(getChunkAt);
-			MINECRAFT_CHUNK = getChunkAt.getReturnType();
 		}catch(ReflectiveOperationException e)
 		{
 			throw new ExceptionInInitializerError(e);
