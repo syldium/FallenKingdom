@@ -42,9 +42,10 @@ public class SetBase extends FkPlayerCommand
 		Base base = new Base(team, sender.getLocation(), radius, block.getMaterial(), block.getData());
 		plugin.getFkPI().getTeamManager().getTeam(args.get(0)).setBase(base);
 
+		base.constructFlag();
 		if (block.getMaterial() != Material.AIR) {
 			if (base.isLoaded()) {
-				base.construct();
+				base.constructBorder();
 			} else {
 				fkp.sendMessage(Messages.CMD_BASE_UNLOADED);
 			}

@@ -238,8 +238,12 @@ public class Base implements Saveable
 	 */
 	public void construct()
 	{
-		adjustLoc(center);
+		constructFlag();
 		constructBorder();
+	}
+
+	public void constructFlag() {
+		adjustLoc(center);
 
 		/*
 		 * Vus de face :
