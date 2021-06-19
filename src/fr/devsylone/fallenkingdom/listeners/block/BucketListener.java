@@ -47,7 +47,7 @@ public class BucketListener implements Listener
 
 		for(Team team : Fk.getInstance().getFkPI().getTeamManager().getTeams())
 			if(!playerTeam.equals(team))
-				if(team.getBase() != null && team.getBase().contains(block, 2))
+				if(team.getBase() != null && team.getBase().contains(block, 3))
 				{
 					ChatUtils.sendMessage(p, Messages.PLAYER_PLACE_WATER_NEXT);
 					e.setCancelled(true);

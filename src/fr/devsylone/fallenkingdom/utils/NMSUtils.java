@@ -106,6 +106,10 @@ public class NMSUtils
 		return optionalClass(nmsClassName(className));
 	}
 
+	public static Optional<Class<?>> nmsOptionalClass(String post1_17package, String className) {
+		return optionalClass(nmsClassName(post1_17package, className));
+	}
+
 	public static String obcClassName(String className) {
 		return OBC_PACKAGE + '.' + version + '.' + className;
 	}

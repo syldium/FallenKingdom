@@ -413,6 +413,7 @@ RETRAIT      = [-]
 [*] Fix de la commande /fk scoreboard leaveEdit (1.11.2-)
 [*] Description ajoutée pour globalChatPrefix et correction de celle de team tp
 [*] Mise à jour de bStats : décalage des premiers envois de données
+--------
 
       >> 2.21.0
 Il est conseillé de réinitialiser les fichiers de langue.
@@ -435,3 +436,10 @@ Il est conseillé de réinitialiser les fichiers de langue.
 [*] Corrige une erreur avec la règle AllowedBlocks (1.13)
 [*] Corrige une erreur lorsqu'une flèche est tirée (1.9-1.13.2)
 [-] Les valeurs noTeam et noBase dans le scoreboard.yml ne sont plus utilisées, car dans les fichiers de traduction
+
+      >> 2.21.1
+[+] Support des serveurs en 1.17
+[+] La règle verticalLimit définit la hauteur minimale et maximale depuis le centre de la base
+[+] La règle bucketAssault permet d'autoriser au non les assauts avec un seau d'eau ou de lave
+[*] Le livre de la commande chestsRoom n'est plus ajouté dans l'inventaire à partir de la 1.14
+[*] Placer une base avec comme contour de l'air ne plaçait pas le drapeau
