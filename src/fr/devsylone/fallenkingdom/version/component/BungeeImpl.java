@@ -9,7 +9,6 @@ import net.md_5.bungee.chat.ComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Stream;
 
 @SuppressWarnings("deprecation")
@@ -66,6 +65,24 @@ class BungeeImpl implements FkComponent {
     @Override
     public @NotNull String toLegacyText() {
         return this.component.toLegacyText();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BungeeImpl bungee = (BungeeImpl) o;
+        return this.component.equals(bungee.component);
+    }
+
+    @Override
+    public int hashCode() {
+        return this.component.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return this.component.toString();
     }
 
     static @NotNull BaseComponent[] asBungee(Stream<FkComponent> components) {

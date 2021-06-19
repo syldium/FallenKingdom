@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -84,6 +85,29 @@ class BukkitImpl {
                 this.nbt = FkBook.super.nbt();
             }
             return this.nbt;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            BookImpl book = (BookImpl) o;
+            return this.title.equals(book.title) &&
+                    this.author.equals(book.author) &&
+                    this.pages.equals(book.pages);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(this.title, this.author, this.pages);
+        }
+
+        @Override
+        public String toString() {
+            return "BukkitBook{" +
+                    "title=" + this.title +
+                    ", author=" + this.author +
+                    '}';
         }
 
         @SuppressWarnings("deprecation")

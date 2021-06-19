@@ -83,6 +83,24 @@ class AdventureImpl implements FkComponent {
         return legacySection().serialize(this.component);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AdventureImpl adventure = (AdventureImpl) o;
+        return this.component.equals(adventure.component);
+    }
+
+    @Override
+    public int hashCode() {
+        return this.component.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return this.component.toString();
+    }
+
     private static @NotNull Action asAdventure(net.md_5.bungee.api.chat.ClickEvent.Action eventAction) {
         switch (eventAction) {
             case OPEN_URL: return Action.OPEN_URL;
@@ -193,6 +211,24 @@ class AdventureImpl implements FkComponent {
         @Override
         public void open(@NotNull Player player) {
             player.openBook(this.book);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            BookImpl book1 = (BookImpl) o;
+            return this.book.equals(book1.book);
+        }
+
+        @Override
+        public int hashCode() {
+            return this.book.hashCode();
+        }
+
+        @Override
+        public String toString() {
+            return this.book.toString();
         }
     }
 }
