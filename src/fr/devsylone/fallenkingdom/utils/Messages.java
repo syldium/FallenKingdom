@@ -141,6 +141,7 @@ public enum Messages
     CMD_MAP_RULES("cmd.map.rules"),
     CMD_MAP_RULES_ALLOW_BLOCK("cmd.map.rules.allowBlock"),
     CMD_MAP_RULES_ALLOW_BLOCK_SIGN("cmd.map.rules.allow-block.allowed.all-types.sign"),
+    CMD_MAP_RULES_BUCKET_ASSAULT("cmd.map.rules.bucketAssault"),
     CMD_MAP_RULES_CAPTURE_RATE("cmd.map.rules.captureRate"),
     CMD_MAP_RULES_CHARGED_CREEPERS("cmd.map.rules.chargedCreepers"),
     CMD_MAP_RULES_CHEST_LIMIT("cmd.map.rules.chestLimit"),
@@ -162,6 +163,7 @@ public enum Messages
     CMD_MAP_RULES_RESPAWN_AT_HOME("cmd.map.rules.respawnAtHome"),
     CMD_MAP_RULES_TNT_CAP("cmd.map.rules.tntCap"),
     CMD_MAP_RULES_TNT_JUMP("cmd.map.rules.tntJump"),
+    CMD_MAP_RULES_VERTICAL_LIMIT("cmd.map.rules.verticalLimit"),
     CMD_MAP_RULES_GLOBAL_CHAT_PREFIX("cmd.map.rules.globalChatPrefix"),
 
     CMD_MAP_SCOREBOARD("cmd.map.scoreboard"),
@@ -249,6 +251,7 @@ public enum Messages
     CMD_RULES_TNT_JUMP("cmd.rules.tnt-jump"),
     CMD_RULES_VERTICAL_LIMIT_REMOVED("cmd.rules.vertical-limit.removed"),
     CMD_RULES_VERTICAL_LIMIT_FIXED("cmd.rules.vertical-limit.fixed"),
+    CMD_RULES_BUCKET_ASSAULT("cmd.rules.bucket-assault"),
 
     CMD_SCOREBOARD_RESET("cmd.scoreboard.reset"),
     CMD_TEAM_ADD_PLAYER("cmd.team.addPlayer"),

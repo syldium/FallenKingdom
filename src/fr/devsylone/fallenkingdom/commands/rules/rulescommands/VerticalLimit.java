@@ -16,7 +16,7 @@ import java.util.List;
 public class VerticalLimit extends FkCommand {
 
     public VerticalLimit() {
-        super("verticalLimit", Argument.list(new IntegerArgument("limit", true, "mettre a 0 pour ne pas en avoir", 0)), Messages.CMD_MAP_RULES_CHEST_LIMIT, CommandRole.ADMIN);
+        super("verticalLimit", Argument.list(new IntegerArgument("limit", true, "mettre a 0 pour ne pas en avoir", 0)), Messages.CMD_MAP_RULES_VERTICAL_LIMIT, CommandRole.ADMIN);
     }
 
     @Override
