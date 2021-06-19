@@ -8,6 +8,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,7 +27,8 @@ import static fr.devsylone.fallenkingdom.version.Environment.getMinHeight;
 public class SafeLocationSearcher {
 
     private static final Set<Material> DAMAGING_TYPES = XBlock.materialSet(
-            XMaterial.CACTUS, XMaterial.CAMPFIRE, XMaterial.FIRE, XMaterial.MAGMA_BLOCK, XMaterial.SOUL_CAMPFIRE, XMaterial.SOUL_FIRE, XMaterial.SWEET_BERRY_BUSH, XMaterial.WITHER_ROSE
+            XMaterial.CACTUS, XMaterial.CAMPFIRE, XMaterial.FIRE, XMaterial.MAGMA_BLOCK, XMaterial.SOUL_CAMPFIRE, XMaterial.SOUL_FIRE,
+            XMaterial.SWEET_BERRY_BUSH, XMaterial.WITHER_ROSE, XMaterial.POINTED_DRIPSTONE, XMaterial.POWDER_SNOW, XMaterial.LAVA_CAULDRON
     );
 
     private final Location around;
@@ -35,7 +38,7 @@ public class SafeLocationSearcher {
      *
      * @param around À chercher autour
      */
-    public SafeLocationSearcher(Location around) {
+    public SafeLocationSearcher(@NotNull Location around) {
         Objects.requireNonNull(around, "Destination not set.");
         Objects.requireNonNull(around.getWorld(), "Destination world not set.");
         this.around = around;
@@ -51,36 +54,36 @@ public class SafeLocationSearcher {
      * @return Une {@link Location} bientôt résolue
      * @throws LocationNotFound Si aucun endroit ne convient
      */
-    public CompletableFuture<Location> find(int radius) {
+    public @NotNull CompletableFuture<@NotNull Location> find(int radius) {
         // Liste des chunks à possiblement vérifier
-        Map<Block2DPos, List<Block2DPos>> chunks = new HashMap<>();
-        for (int dx = -radius; dx < radius; dx++) {
-            for (int dz = -radius; dz < radius; dz++) {
+        Map<Long, List<Block2DPos>> chunks = new HashMap<>();
+        for (int dx = -radius; dx <= radius; dx++) {
+            for (int dz = -radius; dz <= radius; dz++) {
                 int x = around.getBlockX() + dx;
                 int z = around.getBlockZ() + dz;
 
-                Block2DPos chunk = new Block2DPos(x >> 4, z >> 4);
-                Block2DPos pos = new Block2DPos(x & 0xF, z & 0xF);
-                chunks.computeIfAbsent(chunk, s -> new ArrayList<>()).add(pos);
+                long chunkKey = chunkKey(x >> 4, z >> 4);
+                Block2DPos pos = new Block2DPos(x & 16, z & 16);
+                chunks.computeIfAbsent(chunkKey, s -> new ArrayList<>()).add(pos);
             }
         }
 
         // Plus qu'à chercher par chunk
         CompletableFuture<Location> future = new CompletableFuture<>();
-        for (Block2DPos chunkPos : chunks.keySet()) {
-            check(around, chunkPos, chunks.get(chunkPos), future, radius);
+        for (Map.Entry<Long, List<Block2DPos>> entry : chunks.entrySet()) {
+            check(around, entry.getKey(), entry.getValue(), future, radius);
         }
         future.completeExceptionally(new LocationNotFound());
         return future;
     }
 
-    private void check(Location base, Block2DPos chunkPos, List<Block2DPos> positions, CompletableFuture<Location> future, int radius) {
+    private void check(Location base, long chunkKey, List<Block2DPos> positions, CompletableFuture<Location> future, int radius) {
         if (future.isCancelled() || future.isDone() || future.isCompletedExceptionally()) {
             return;
         }
 
         World world = around.getWorld();
-        Environment.getChunkAtAsync(world, chunkPos.x, chunkPos.z).thenApply(chunk -> {
+        Environment.getChunkAtAsync(world, (int) chunkKey, (int) (chunkKey >> 32)).thenApply(chunk -> {
             for (Block2DPos pos : positions) {
                 int upY = Math.min(base.getBlockY() + 3 + radius, world.getMaxHeight() - 1);
                 int downY = Math.max(base.getBlockY() - 2 - radius, getMinHeight(world));
@@ -94,7 +97,7 @@ public class SafeLocationSearcher {
         }).exceptionally(future::completeExceptionally);
     }
 
-    private Location getSafeDestination(Chunk chunk, int x, int z, int upY, int downY) {
+    private @Nullable Location getSafeDestination(Chunk chunk, int x, int z, int upY, int downY) {
         int y = upY;
         Block block = chunk.getBlock(x, y, z);
         Material type;
@@ -111,6 +114,10 @@ public class SafeLocationSearcher {
             }
         }
         return null;
+    }
+
+    private static long chunkKey(int chunkX, int chunkZ) {
+        return (long) chunkX & 0xffffffffL | ((long) chunkZ & 0xffffffffL) << 32;
     }
 
     static class Block2DPos {
@@ -131,7 +138,7 @@ public class SafeLocationSearcher {
 
         @Override
         public int hashCode() {
-            return x & 0xffff | (z & 0xffff) << 16;
+            return x & 16 | (z & 16) << 4;
         }
     }
 
