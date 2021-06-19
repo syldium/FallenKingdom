@@ -31,8 +31,12 @@ public class TntJumpTest {
         player = MockUtils.getDefaultPlayer();
         TeamManager teamManager = MockUtils.getPluginMockSafe().getFkPI().getTeamManager();
         teamManager.getTeams().clear();
+
+        Location aBaseCenter = new Location(world, 0, 70, 0);
+        world.getBlockAt(aBaseCenter.getBlockX(), 67, aBaseCenter.getBlockZ()).setType(Material.GRASS_BLOCK);
+
         Team a = new Team("a");
-        a.setBase(new Base(a, new Location(world, 0, 70, 0), 20, Material.COBBLESTONE, (byte) 0));
+        a.setBase(new Base(a, aBaseCenter, 20, Material.COBBLESTONE, (byte) 0));
         teamManager.getTeams().add(a);
         Team b = new Team("b");
         b.setBase(new Base(b, new Location(world, 100, 70, 100), 20, Material.COBBLESTONE, (byte) 0));

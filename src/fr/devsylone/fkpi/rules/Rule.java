@@ -28,6 +28,7 @@ public class Rule<T>
 	// Limites
 	public static final Rule<Integer> DEATH_LIMIT = new Rule<>("DeathLimit", 0);
 	public static final Rule<Integer> CHEST_LIMIT = new Rule<>("ChestLimit", 20);
+	public static final Rule<Integer> VERTICAL_LIMIT = new Rule<>("VerticalLimit", 40);
 
 	// Entiers
 	public static final Rule<Integer> DAY_DURATION = new Rule<>("DayDuration", 24000);

@@ -247,6 +247,8 @@ public enum Messages
     CMD_RULES_RESPAWN_BASE("cmd.rules.respawn.base"),
     CMD_RULES_RESPAWN_VANILLA("cmd.rules.respawn.vanilla"),
     CMD_RULES_TNT_JUMP("cmd.rules.tnt-jump"),
+    CMD_RULES_VERTICAL_LIMIT_REMOVED("cmd.rules.vertical-limit.removed"),
+    CMD_RULES_VERTICAL_LIMIT_FIXED("cmd.rules.vertical-limit.fixed"),
 
     CMD_SCOREBOARD_RESET("cmd.scoreboard.reset"),
     CMD_TEAM_ADD_PLAYER("cmd.team.addPlayer"),

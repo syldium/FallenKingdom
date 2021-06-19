@@ -1,6 +1,8 @@
 package fr.devsylone.fkpi.teams;
 
 import com.cryptomorin.xseries.XMaterial;
+import fr.devsylone.fkpi.FkPI;
+import fr.devsylone.fkpi.rules.Rule;
 import fr.devsylone.fkpi.util.OutlineSquareIterator;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -102,17 +104,19 @@ public class Base implements Saveable
 	/**
 	 * Teste si le point avec ces coordonnées se trouve dans la base.
 	 *
-	 * <p>L'axe Y n'a pas d'incidence, mais il pourrait être utilisé dans le futur.</p>
-	 *
 	 * @param world Le monde où ce point est situé.
 	 * @param x La coordonnée X.
-	 * @param y La coordonnée Y, actuellement inutilisée.
+	 * @param y La coordonnée Y.
 	 * @param z La coordonnée Z.
 	 * @param lag Le nombre à ajouter au rayon de la base.
 	 * @return {@code true} Si le point est à l'intérieur de la base, {@code false} sinon.
 	 */
 	public boolean contains(World world, int x, int y, int z, int lag)
 	{
+		int verticalLimit = FkPI.getInstance().getRulesManager().getRule(Rule.VERTICAL_LIMIT);
+		if (verticalLimit > 0 && Math.abs(y - center.getBlockY()) > verticalLimit) {
+			return false;
+		}
 		return x >= minX - lag && x <= maxX + lag
 				&& z >= minZ - lag && z <= maxZ + lag
 				&& Objects.equals(world, center.getWorld());

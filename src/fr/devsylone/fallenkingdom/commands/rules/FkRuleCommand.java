@@ -39,6 +39,7 @@ public class FkRuleCommand extends FkParentCommand
 				.add(new RespawnAtHome())
 				.add(new TntCap())
 				.add(new TntJump())
+				.add(new VerticalLimit())
 				.build()
 		, Messages.CMD_MAP_RULES);
 	}
