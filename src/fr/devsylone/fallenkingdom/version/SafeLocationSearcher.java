@@ -63,7 +63,7 @@ public class SafeLocationSearcher {
                 int z = around.getBlockZ() + dz;
 
                 long chunkKey = chunkKey(x >> 4, z >> 4);
-                Block2DPos pos = new Block2DPos(x & 16, z & 16);
+                Block2DPos pos = new Block2DPos(x & 15, z & 15);
                 chunks.computeIfAbsent(chunkKey, s -> new ArrayList<>()).add(pos);
             }
         }
@@ -138,7 +138,7 @@ public class SafeLocationSearcher {
 
         @Override
         public int hashCode() {
-            return x & 16 | (z & 16) << 4;
+            return x & 15 | (z & 15) << 4;
         }
     }
 
