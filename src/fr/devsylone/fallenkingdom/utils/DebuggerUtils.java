@@ -14,7 +14,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import fr.devsylone.fkpi.FkPI;
+import fr.devsylone.fkpi.teams.Team;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.plugin.Plugin;
 
 import fr.devsylone.fallenkingdom.Fk;
@@ -143,11 +146,17 @@ public class DebuggerUtils
         log("---- Game ---");
         log("  > State: " + Fk.getInstance().getGame().getState());
         log("  > Day: " + Fk.getInstance().getGame().getDay());
-        log("  > Time: " + Fk.getInstance().getGame().getFormattedTime());
+        log("  > Time: " + Fk.getInstance().getGame().getTime());
         log("  > Nether: " + Fk.getInstance().getGame().isNetherEnabled());
         log("  > PvP: " + Fk.getInstance().getGame().isPvpEnabled());
         log("  > End: " + Fk.getInstance().getGame().isEndEnabled());
         log("  > Assaults: " + Fk.getInstance().getGame().isAssaultsEnabled());
+        log("---- Teams ---");
+        for(Team team : FkPI.getInstance().getTeamManager().getTeams())
+        {
+            Location loc = team.getBase() == null ? null : team.getBase().getCenter();
+            log("  > " + team.getName() + ": " + (loc == null ? '/' : "(" + loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ() + ") - " + team.getBase().getRadius()));
+        }
         log("---- Chests ---");
         for(LockedChest chest : Fk.getInstance().getFkPI().getLockedChestsManager().getChests())
             log("  > " + chest.toString());

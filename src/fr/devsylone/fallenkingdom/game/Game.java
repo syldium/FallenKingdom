@@ -262,4 +262,9 @@ public class Game implements Saveable
 		int minutes = (gameTime % 1000) * 60 / 1000;
 		return String.format("%02d", minutes);
 	}
+
+	public int getTime()
+	{
+		return time;
+	}
 }
