@@ -57,7 +57,7 @@ public class StarterInv extends FkPlayerCommand
 
 	@Override
 	public @NotNull Map<String, CommandRole> getPermissions() {
-		Map<String, CommandRole> permissions = new HashMap<>();
+		Map<String, CommandRole> permissions = new HashMap<>(2);
 		permissions.put(this.permission, this.role);
 		permissions.put(SET_PERMISSION, CommandRole.ADMIN);
 		return permissions;

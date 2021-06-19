@@ -12,7 +12,6 @@ import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.lang.NotImplementedException;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.NamespacedKey;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;

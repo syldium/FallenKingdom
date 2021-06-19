@@ -12,8 +12,6 @@ import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
 
-import fr.devsylone.fallenkingdom.utils.Messages;
-
 import static fr.devsylone.fallenkingdom.version.Version.VersionType.V1_16;
 
 @SuppressWarnings("deprecation")

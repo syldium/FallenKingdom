@@ -2,7 +2,11 @@ package fr.devsylone.fallenkingdom.commands.rules.rulescommands;
 
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.commands.ArgumentParser;
-import fr.devsylone.fallenkingdom.commands.abstraction.*;
+import fr.devsylone.fallenkingdom.commands.abstraction.Argument;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
+import fr.devsylone.fallenkingdom.commands.abstraction.CommandRole;
+import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
+import fr.devsylone.fallenkingdom.commands.abstraction.IntegerArgument;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.rules.Rule;
@@ -14,7 +18,7 @@ public class ChestLimit extends FkCommand
 {
 	public ChestLimit()
 	{
-		super("chestLimit", Argument.list(new IntegerArgument("limit", true, "mettre a 0 pour ne pas en avoir",0)), Messages.CMD_MAP_RULES_CHEST_LIMIT, CommandRole.ADMIN);
+		super("chestLimit", Argument.list(new IntegerArgument("limit", true, "mettre a 0 pour ne pas en avoir", 0)), Messages.CMD_MAP_RULES_CHEST_LIMIT, CommandRole.ADMIN);
 	}
 
 	@Override

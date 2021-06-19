@@ -2,7 +2,6 @@ package fr.devsylone.fallenkingdom.commands;
 
 import com.destroystokyo.paper.event.server.AsyncTabCompleteEvent;
 import fr.devsylone.fallenkingdom.Fk;
-import fr.devsylone.fallenkingdom.utils.Messages;
 
 import org.bukkit.command.PluginCommand;
 import org.bukkit.event.EventHandler;

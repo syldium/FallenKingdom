@@ -26,7 +26,7 @@ import fr.devsylone.fallenkingdom.version.Version;
 
 public class ListenersManager
 {
-	public static final void registerListeners(Fk plugin)
+	public static void registerListeners(Fk plugin)
 	{
 		plugin.getServer().getPluginManager().registerEvents(new BlockListener(plugin), plugin);
 		plugin.getServer().getPluginManager().registerEvents(new BucketListener(plugin), plugin);

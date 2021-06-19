@@ -1,10 +1,13 @@
 package fr.devsylone.fallenkingdom.commands.brigadier;
 
-import com.mojang.brigadier.arguments.*;
+import com.mojang.brigadier.arguments.ArgumentType;
+import com.mojang.brigadier.arguments.BoolArgumentType;
+import com.mojang.brigadier.arguments.DoubleArgumentType;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import fr.devsylone.fallenkingdom.commands.abstraction.Argument;
 import fr.devsylone.fallenkingdom.commands.abstraction.IntegerArgument;
-import fr.devsylone.fallenkingdom.utils.Messages;
 
 import org.bukkit.NamespacedKey;
 

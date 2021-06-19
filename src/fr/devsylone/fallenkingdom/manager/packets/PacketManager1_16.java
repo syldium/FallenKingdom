@@ -9,7 +9,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -20,14 +19,12 @@ public class PacketManager1_16 extends PacketManager1_14
     private static final boolean VERSION_1_16_2;
 
     private static final Constructor<?> PACKET_CHUNK;
-    private static final Method PAIR_OF;
 
     static {
         try {
             PACKET_CHUNK = Arrays.stream(NMSUtils.nmsClass("network.protocol.game", "PacketPlayOutMapChunk").getConstructors())
                     .filter(constructor -> constructor.getParameterCount() > 1)
                     .findAny().orElseThrow(RuntimeException::new);
-            PAIR_OF = Class.forName("com.mojang.datafixers.util.Pair").getMethod("of", Object.class, Object.class);
 
             VERSION_1_16_2 = PACKET_CHUNK.getParameterCount() < 3;
         } catch (ReflectiveOperationException e) {
