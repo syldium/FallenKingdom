@@ -35,6 +35,8 @@ public class PacketManager1_17 extends PacketManager {
     private static final Class<?> PACKET_ENTITY_METADATA;
     private static final Class<?> PACKET_ENTITY_POSITION;
 
+    private static final boolean PACKET_DESTROY_ENTITY_LIST;
+
     static {
         try {
             final Class<?> entityTypesClass = NMSUtils.nmsClass("world.entity", "EntityTypes");
@@ -47,9 +49,18 @@ public class PacketManager1_17 extends PacketManager {
             final Class<?> packetSpawnEntityClass = NMSUtils.nmsClass(packetsPackage, "PacketPlayOutSpawnEntity");
             final Class<?> packetDestroyEntityClass = NMSUtils.nmsClass(packetsPackage, "PacketPlayOutEntityDestroy");
             final Class<?> packetEntityEquipment = NMSUtils.nmsClass(packetsPackage, "PacketPlayOutEntityEquipment");
+
+            Constructor<?> entityDestroy;
+            try {
+                entityDestroy = packetDestroyEntityClass.getConstructor(int.class);
+            } catch (NoSuchMethodException e) { // 1.17.1
+                entityDestroy = packetDestroyEntityClass.getConstructor(int[].class);
+            }
+            PACKET_DESTROY_ENTITY_LIST = entityDestroy.getParameterTypes()[0].equals(int[].class);
+
             PACKET_CHUNK = packetChunkClass.getConstructor(MINECRAFT_CHUNK);
             PACKET_SPAWN_ENTITY = packetSpawnEntityClass.getConstructor(int.class, UUID.class, double.class, double.class, double.class, float.class, float.class, entityTypesClass, int.class, vec3dClass);
-            PACKET_DESTROY_ENTITY = packetDestroyEntityClass.getConstructor(int.class);
+            PACKET_DESTROY_ENTITY = entityDestroy;
             PACKET_ENTITY_EQUIPMENT = packetEntityEquipment.getConstructor(int.class, List.class);
             PACKET_ENTITY_POSITION = NMSUtils.nmsClass(packetsPackage, "PacketPlayOutEntityTeleport");
             PACKET_ENTITY_METADATA = NMSUtils.nmsClass(packetsPackage, "PacketPlayOutEntityMetadata");
@@ -114,7 +125,8 @@ public class PacketManager1_17 extends PacketManager {
     @Override
     protected void sendDestroy(int id) {
         try {
-            PacketUtils.sendPacket(getPlayer(id), PACKET_DESTROY_ENTITY.newInstance(id));
+            final Object packet = PACKET_DESTROY_ENTITY_LIST ? PACKET_DESTROY_ENTITY.newInstance(new int[]{id}) : PACKET_DESTROY_ENTITY.newInstance(id);
+            PacketUtils.sendPacket(getPlayer(id), packet);
         } catch (ReflectiveOperationException e) {
             e.printStackTrace();
         }
