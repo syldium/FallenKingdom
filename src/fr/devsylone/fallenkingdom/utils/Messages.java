@@ -196,6 +196,7 @@ public enum Messages
     CMD_MAP_TEAM_RANDOM("cmd.map.team.random"),
     CMD_MAP_TEAM_REMOVE("cmd.map.team.remove"),
     CMD_MAP_TEAM_REMOVE_PLAYER("cmd.map.team.removePlayer"),
+    CMD_MAP_TEAM_RENAME("cmd.map.team.rename"),
     CMD_MAP_TEAM_SET_BASE("cmd.map.team.setBase"),
     CMD_MAP_TEAM_SET_COLOR("cmd.map.team.setColor"),
     CMD_MAP_TEAM_TP("cmd.map.team.tp"),
@@ -266,6 +267,7 @@ public enum Messages
     CMD_TEAM_RANDOM("cmd.team.random"),
     CMD_TEAM_REMOVE("cmd.team.remove"),
     CMD_TEAM_REMOVE_PLAYER("cmd.team.removePlayer"),
+    CMD_TEAM_RENAME("cmd.team.rename"),
     CMD_TEAM_SET_BASE("cmd.team.setBase"),
     CMD_TEAM_SET_COLOR("cmd.team.setColor"),
 

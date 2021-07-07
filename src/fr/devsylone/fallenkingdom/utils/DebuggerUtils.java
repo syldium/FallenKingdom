@@ -155,7 +155,7 @@ public class DebuggerUtils
         for(Team team : FkPI.getInstance().getTeamManager().getTeams())
         {
             Location loc = team.getBase() == null ? null : team.getBase().getCenter();
-            log("  > " + team.getName() + ": " + (loc == null ? '/' : "(" + loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ() + ") - " + team.getBase().getRadius()));
+            log("  > " + team.getName() + ": " + (loc == null ? '/' : "(" + loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ() + ") - " + team.getBase().getRadius()) + " - " + team.getPlayers());
         }
         log("---- Chests ---");
         for(LockedChest chest : Fk.getInstance().getFkPI().getLockedChestsManager().getChests())

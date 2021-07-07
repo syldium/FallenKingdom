@@ -14,6 +14,8 @@ public class FoodListener implements Listener
 	{
 		if (!Fk.getInstance().getWorldManager().isAffected(e.getEntity().getWorld()))
 			return;
-		e.setCancelled(!Fk.getInstance().getGame().getState().equals(GameState.STARTED));
+		final GameState state = Fk.getInstance().getGame().getState();
+		if (state == GameState.STARTING || state == GameState.PAUSE)
+			e.setCancelled(true);
 	}
 }

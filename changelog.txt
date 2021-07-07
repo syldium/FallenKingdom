@@ -443,3 +443,10 @@ Il est conseillé de réinitialiser les fichiers de langue.
 [+] La règle bucketAssault permet d'autoriser au non les assauts avec un seau d'eau ou de lave
 [*] Le livre de la commande chestsRoom n'est plus ajouté dans l'inventaire à partir de la 1.14
 [*] Placer une base avec comme contour de l'air ne plaçait pas le drapeau
+
+      >> 2.21.2
+[+] La commande /fk team rename permet de renommer une équipe
+[*] Les données des équipes avec un nom autre qu'une couleur n'étaient pas restaurées
+[*] La permission de base de la commande /fk n'avait pas de valeur par défaut
+[*] Les changements de nourriture ne sont plus annulés avant une partie
+[*] Un changement de nourriture annulé par un autre plugin pouvait être rétabli par le Fk

@@ -33,6 +33,7 @@ permissions:
    fallenkingdom.commands.lang.set: true
    fallenkingdom.commands.lang.tryload: true
    fallenkingdom.commands.rules.allowBlock: true
+   fallenkingdom.commands.rules.bucketAssault: true
    fallenkingdom.commands.rules.captureRate: true
    fallenkingdom.commands.rules.chargedCreepers: true
    fallenkingdom.commands.rules.chestLimit: true
@@ -54,6 +55,7 @@ permissions:
    fallenkingdom.commands.rules.respawnAtHome: true
    fallenkingdom.commands.rules.tntCap: true
    fallenkingdom.commands.rules.tntJump: true
+   fallenkingdom.commands.rules.verticalLimit: true
    fallenkingdom.commands.scoreboard.edit: true
    fallenkingdom.commands.scoreboard.leaveEdit: true
    fallenkingdom.commands.scoreboard.removeLine: true
@@ -90,3 +92,4 @@ permissions:
    fallenkingdom.commands.team.chestsRoom: true
    fallenkingdom.commands.team.list: true
    fallenkingdom.commands.chestsRoom.show: true
+   fallenkingdom.commands: true

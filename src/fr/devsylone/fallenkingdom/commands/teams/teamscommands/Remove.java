@@ -22,9 +22,7 @@ public class Remove extends FkCommand
 	@Override
 	public CommandResult execute(Fk plugin, CommandSender sender, List<String> args, String label)
 	{
-		Team team = plugin.getFkPI().getTeamManager().getTeam(args.get(0));
-		if(team == null)
-			throw new FkLightException(Messages.CMD_ERROR_UNKNOWN_TEAM.getMessage().replace("%team%", args.get(0)));
+		Team team = plugin.getFkPI().getTeamManager().getTeamOrThrow(args.get(0));
 
 		plugin.getFkPI().getTeamManager().removeTeam(args.get(0));
 		broadcast(Messages.CMD_TEAM_REMOVE.getMessage().replace("%team%", team.toString()),1, args);

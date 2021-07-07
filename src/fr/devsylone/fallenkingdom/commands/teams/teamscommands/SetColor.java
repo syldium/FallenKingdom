@@ -12,7 +12,6 @@ import net.md_5.bungee.api.chat.TranslatableComponent;
 import org.bukkit.command.CommandSender;
 
 import fr.devsylone.fallenkingdom.Fk;
-import fr.devsylone.fallenkingdom.exception.FkLightException;
 import fr.devsylone.fkpi.teams.Team;
 import fr.devsylone.fkpi.util.Color;
 import org.bukkit.entity.Player;
@@ -29,9 +28,7 @@ public class SetColor extends FkCommand
 	@Override
 	public CommandResult execute(Fk plugin, CommandSender sender, List<String> args, String label)
 	{
-		Team team;
-		if((team = plugin.getFkPI().getTeamManager().getTeam(args.get(0))) == null)
-			throw new FkLightException(Messages.CMD_ERROR_UNKNOWN_TEAM.getMessage().replace("%team%", args.get(0)));
+		Team team = plugin.getFkPI().getTeamManager().getTeamOrThrow(args.get(0));
 
 		try {
 			team.setColor(Color.of(args.get(1)));

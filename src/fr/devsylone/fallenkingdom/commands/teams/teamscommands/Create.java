@@ -23,7 +23,7 @@ public class Create extends FkCommand
 	public CommandResult execute(Fk plugin, CommandSender sender, List<String> args, String label)
 	{
 		try {
-			if(!plugin.getFkPI().getTeamManager().createTeam(args.get(0)))
+			if(!plugin.getFkPI().getTeamManager().createTeam(args.get(0)).getColor().isSame(args.get(0)))
 				sender.sendMessage(Messages.WARNING_UNKNOWN_COLOR.getMessage());
 		} catch (NumberFormatException ex) {
 			// Seulement lors des lectures des couleurs hex

@@ -38,7 +38,7 @@ public class TeamManager implements Saveable
 	private final Map<UUID, Team> teamByPlayerUUID = new ConcurrentHashMap<>();
 	private final Scoreboard board = Bukkit.getScoreboardManager().getNewScoreboard();
 
-	public boolean createTeam(String name)
+	public @NotNull Team createTeam(String name)
 	{
 		if(getTeam(name) != null)
 			throw new FkLightException(Messages.CMD_ERROR_TEAM_ALREADY_EXIST);
@@ -53,7 +53,7 @@ public class TeamManager implements Saveable
 		Bukkit.getPluginManager().callEvent(new TeamUpdateEvent(team, TeamUpdateEvent.TeamUpdate.CREATION)); // EVENT
 		teams.add(team);
 
-		return team.getColor().isSame(name);
+		return team;
 	}
 
 	public Scoreboard getScoreboard()
@@ -82,13 +82,21 @@ public class TeamManager implements Saveable
 		Fk.getInstance().getWorldManager().invalidateBaseWorldsCache(this);
 	}
 
-	public Team getTeam(String name)
+	public @Nullable Team getTeam(String name)
 	{
 		for(Team t : teams)
 			if(t.getName().equals(name))
 				return t;
 
 		return null;
+	}
+
+	public @NotNull Team getTeamOrThrow(String name)
+	{
+		final Team team = getTeam(name);
+		if(team == null)
+			throw new FkLightException(Messages.CMD_ERROR_UNKNOWN_TEAM.getMessage().replace("%team%", name));
+		return team;
 	}
 
 	public @NotNull Optional<@NotNull Base> getBase(@NotNull Location location, int lag) {
@@ -225,11 +233,15 @@ public class TeamManager implements Saveable
 	public void load(ConfigurationSection config)
 	{
 		for (Map.Entry<String, Object> entry : config.getValues(false).entrySet()) {
-			if (!createTeam(entry.getKey())) {
+			Team team;
+			try {
+				team = createTeam(entry.getKey());
+			} catch (FkLightException e) {
+				e.printStackTrace();
 				continue;
 			}
 			if (entry.getValue() instanceof ConfigurationSection) {
-				getTeam(entry.getKey()).load((ConfigurationSection) entry.getValue());
+				team.load((ConfigurationSection) entry.getValue());
 			}
 		}
 

@@ -27,6 +27,7 @@ public class Permissions {
         final Map<String, Boolean> admin = new LinkedHashMap<>();
         final Map<String, Boolean> player = new LinkedHashMap<>();
         buildPermissionTree(new CommandManager(true).getMainCommands(), admin, player);
+        player.put("fallenkingdom.commands", true);
 
         final Path pluginDescriptionPath = FileSystems.getDefault().getPath("resources/plugin.yml");
 

@@ -29,9 +29,7 @@ public class SetBase extends FkPlayerCommand
 		int radius = ArgumentParser.parseInt(args.get(1), Messages.CMD_ERROR_RADIUS_FORMAT);
 		ArgumentParser.MaterialWithData block = ArgumentParser.parseBlock(2, args, sender, false, true);
 
-		Team team = plugin.getFkPI().getTeamManager().getTeam(args.get(0));
-		if(team == null)
-			throw new FkLightException(Messages.CMD_ERROR_UNKNOWN_TEAM.getMessage().replace("%team%", args.get(0)));
+		Team team = plugin.getFkPI().getTeamManager().getTeamOrThrow(args.get(0));
 
 		if(!Fk.getInstance().getWorldManager().isAffected(sender.getWorld()))
 			throw new FkLightException(Messages.CMD_ERROR_NOT_AFFECTED_WORLD.getMessage());

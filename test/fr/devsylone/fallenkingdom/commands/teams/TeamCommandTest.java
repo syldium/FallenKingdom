@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public class TeamCommandTest extends CommandTest {
@@ -66,5 +67,18 @@ public class TeamCommandTest extends CommandTest {
         assertRun("team setColor unknown green", CommandResult.STATE_ERROR);
         assertRun("team setColor FallenKingdom idontknow");
         assertEquals(Color.BLANC, FkPI.getInstance().getTeamManager().getTeam("FallenKingdom").getColor());
+    }
+
+    @Test
+    public void rename() {
+        Team team = FkPI.getInstance().getTeamManager().createTeam("RenameMe");
+        assertRun("team rename RenameMe Renamed");
+        assertNull(FkPI.getInstance().getTeamManager().getTeam("RenameMe"));
+        assertEquals(team, FkPI.getInstance().getTeamManager().getTeam("Renamed"));
+
+        Team team2 = FkPI.getInstance().getTeamManager().createTeam("typo");
+        assertRun("team rename typo Renamed", CommandResult.STATE_ERROR);
+        assertEquals(team, FkPI.getInstance().getTeamManager().getTeam("Renamed"));
+        assertEquals(team2, FkPI.getInstance().getTeamManager().getTeam("typo"));
     }
 }
