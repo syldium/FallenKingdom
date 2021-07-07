@@ -450,3 +450,6 @@ Il est conseillé de réinitialiser les fichiers de langue.
 [*] La permission de base de la commande /fk n'avait pas de valeur par défaut
 [*] Les changements de nourriture ne sont plus annulés avant une partie
 [*] Un changement de nourriture annulé par un autre plugin pouvait être rétabli par le Fk
+
+      >> 2.21.3
+[+] Support des serveurs en 1.17.1
