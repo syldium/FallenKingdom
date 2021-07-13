@@ -148,7 +148,7 @@ public class NMSUtils
 	}
 
 	public static Field getField(Class<?> holder, Class<?> fieldType, Predicate<Field> fieldPredicate) throws NoSuchFieldException {
-		for (Field field : holder.getFields()) {
+		for (Field field : holder.getDeclaredFields()) {
 			if (field.getType().isAssignableFrom(fieldType) && fieldPredicate.test(field)) {
 				return field;
 			}
@@ -157,7 +157,7 @@ public class NMSUtils
 	}
 
 	public static Method getMethod(Class<?> holder, Class<?> returnType, Class<?>... parametersTypes) throws NoSuchMethodException {
-		for (Method method : holder.getMethods()) {
+		for (Method method : holder.getDeclaredMethods()) {
 			if (Arrays.equals(method.getParameterTypes(), parametersTypes) && method.getReturnType().isAssignableFrom(returnType)) {
 				return method;
 			}

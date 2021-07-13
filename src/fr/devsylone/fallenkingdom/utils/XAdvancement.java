@@ -17,6 +17,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -121,7 +122,7 @@ public class XAdvancement {
         ItemStack itemStack = new ItemStack(Material.STONE);
         try {
             Object nmsAdvancement = advancement.getClass().getMethod("getHandle").invoke(advancement);
-            Field displayField = nmsAdvancement.getClass().getDeclaredField("display");
+            Field displayField = NMSUtils.getField(nmsAdvancement.getClass(), NMSUtils.nmsClass("advancements", "AdvancementDisplay"), field -> !Modifier.isStatic(field.getModifiers()));
             displayField.setAccessible(true);
             Object display = displayField.get(nmsAdvancement);
             if (display != null) {
@@ -158,6 +159,9 @@ public class XAdvancement {
             }
         } catch (ReflectiveOperationException e) {
             e.printStackTrace();
+            ItemMeta meta = itemStack.getItemMeta();
+            meta.setDisplayName(advancement.getKey().toString());
+            itemStack.setItemMeta(meta);
         }
         return itemStack;
     }
