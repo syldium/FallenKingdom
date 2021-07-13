@@ -33,6 +33,7 @@ public class TeamRename extends FkCommand {
                         .replace("%team%", initialName)
                         .replace("%name%", team.toString()),
                 3, args);
+        plugin.getScoreboardManager().recreateAllScoreboards();
         return CommandResult.SUCCESS;
     }
 }
