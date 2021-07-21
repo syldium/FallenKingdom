@@ -77,7 +77,7 @@ class GameRunnable extends BukkitRunnable
         Bukkit.getPluginManager().callEvent(dayEvent);
         Fk.broadcast(dayEvent.getMessage());
         if (Fk.getInstance().getConfig().getBoolean("enable-mcfunction-support", false)) {
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "function fallenkingdom:newday");
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "function fk:fallenkingdom/newday");
         }
 
         if (FkPI.getInstance().getRulesManager().getRule(Rule.DO_PAUSE_AFTER_DAY) && game.day > 1) {

@@ -67,7 +67,7 @@ public class ChestRoomRunnable extends BukkitRunnable {
             }
 
             if (Fk.getInstance().getConfig().getBoolean("enable-mcfunction-support", false))
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "function fallenkingdom:win");
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "function fk:fallenkingdom/win");
 
             for (Player p : Bukkit.getOnlinePlayers()) {
                 if (!Fk.getInstance().getWorldManager().isAffected(p.getWorld())) {
