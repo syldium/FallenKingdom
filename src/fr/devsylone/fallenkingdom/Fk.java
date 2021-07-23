@@ -148,7 +148,7 @@ public class Fk extends JavaPlugin
 			this.commandManager = new FkCommandExecutor(this, command);
 
 		if (Version.isBrigadierSupported() && !Version.isAsyncPlayerSendCommandsEventSupported())
-			new BrigadierSpigotManager<>(this).register(this.commandManager, command);
+			new BrigadierSpigotManager<>(this, this.commandManager, command);
 
 		/*
 		 * MANAGER

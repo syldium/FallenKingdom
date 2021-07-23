@@ -24,12 +24,16 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * Implémentation Spigot pour Brigadier.
  * @param <S>
  */
 public class BrigadierSpigotManager<S> extends BrigadierManager<S> implements Listener {
 
+    private final CommandManager commandManager;
+    private final PluginCommand pluginCommand;
     private final List<LiteralCommandNode<S>> registeredNodes = new ArrayList<>();
 
     private static final Field CONSOLE_FIELD;
@@ -75,13 +79,16 @@ public class BrigadierSpigotManager<S> extends BrigadierManager<S> implements Li
         }
     }
 
-    public BrigadierSpigotManager(Plugin plugin) {
+    public BrigadierSpigotManager(Plugin plugin, CommandManager commandManager, PluginCommand pluginCommand) {
         super(BrigadierSpigotManager::getBukkitSender);
+        this.commandManager = commandManager;
+        this.pluginCommand = pluginCommand;
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
-    public void register(CommandManager commandManager, PluginCommand pluginCommand) {
-        LiteralCommandNode<S> node = register(commandManager, pluginCommand.getLabel(), getSuggestionProvider(pluginCommand));
+    private void register(CommandDispatcher<S> dispatcher) {
+        CommandNode<S> root = requireNonNull(dispatcher.getRoot().getChild("fk"), "plugin root command");
+        LiteralCommandNode<S> node = register(commandManager, pluginCommand.getLabel(), root.getCommand(), getSuggestionProvider(pluginCommand));
         registeredNodes.add(node);
     }
 
@@ -128,6 +135,9 @@ public class BrigadierSpigotManager<S> extends BrigadierManager<S> implements Li
     @EventHandler
     public void onLoad(ServerLoadEvent event) {
         CommandDispatcher<S> dispatcher = getDispatcher();
+        if (registeredNodes.isEmpty()) {
+            this.register(dispatcher);
+        }
         for (LiteralCommandNode<S> node : registeredNodes) {
             removeChild(dispatcher.getRoot(), node.getName());
             dispatcher.getRoot().addChild(node);
