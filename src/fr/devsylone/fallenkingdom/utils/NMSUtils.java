@@ -150,6 +150,7 @@ public class NMSUtils
 	public static Field getField(Class<?> holder, Class<?> fieldType, Predicate<Field> fieldPredicate) throws NoSuchFieldException {
 		for (Field field : holder.getDeclaredFields()) {
 			if (field.getType().isAssignableFrom(fieldType) && fieldPredicate.test(field)) {
+				field.setAccessible(true);
 				return field;
 			}
 		}

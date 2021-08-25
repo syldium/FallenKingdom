@@ -3,6 +3,7 @@ package fr.devsylone.fallenkingdom.manager.saveable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -39,6 +40,7 @@ public class DeepPauseManager implements Saveable
 	private static Method NMS_ENTITY_F;
 
 	private static Field FIELD_ITEM;
+	private static Field FIELD_AGE;
 
 	protected static void init()
 	{
@@ -55,6 +57,9 @@ public class DeepPauseManager implements Saveable
 			Class<?> craftItem = NMSUtils.obcClass("entity.CraftItem");
             FIELD_ITEM = craftItem.getDeclaredField("item");
             FIELD_ITEM.setAccessible(true);
+
+            Class<?> nmsItem = FIELD_ITEM.getType();
+            FIELD_AGE = NMSUtils.getField(nmsItem, Integer.TYPE, field -> !Modifier.isStatic(field.getModifiers()));
 		} catch (ReflectiveOperationException e) {
 		    throw new ExceptionInInitializerError(e);
 		}
@@ -85,7 +90,7 @@ public class DeepPauseManager implements Saveable
 				world.getEntities().stream()
 					.filter(entity -> entity.getType().equals(EntityType.DROPPED_ITEM))
 					.forEach(item -> {
-						setItemAge((Item) item, -32768);
+						setItemAge((Item) item, Short.MIN_VALUE);
 						unDespawnable.add(item);
 					});
 			}
@@ -192,7 +197,7 @@ public class DeepPauseManager implements Saveable
 	{
 		try {
 			Object entityItem = FIELD_ITEM.get(item);
-			PacketUtils.setField("age", age, entityItem);
+			FIELD_AGE.set(entityItem, age);
 		} catch(ReflectiveOperationException e) {
 			e.printStackTrace();
 		}
