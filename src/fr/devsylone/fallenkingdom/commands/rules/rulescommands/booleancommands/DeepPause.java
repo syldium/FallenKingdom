@@ -10,7 +10,7 @@ public class DeepPause extends FkBooleanRuleCommand
 {
 	public DeepPause()
 	{
-		super("deepPause", Messages.CMD_MAP_RULES_DEEP_PAUSE, Rule.DO_PAUSE_AFTER_DAY);
+		super("deepPause", Messages.CMD_MAP_RULES_DEEP_PAUSE, Rule.DEEP_PAUSE);
 	}
 
 	@Override
