@@ -22,7 +22,7 @@ public class VerticalLimit extends FkCommand {
     @Override
     public CommandResult execute(Fk plugin, CommandSender sender, List<String> args, String label) {
         int limit = ArgumentParser.parsePositiveInt(args.get(0), true, Messages.CMD_ERROR_NAN);
-        plugin.getFkPI().getRulesManager().setRule(Rule.CHEST_LIMIT, limit);
+        plugin.getFkPI().getRulesManager().setRule(Rule.VERTICAL_LIMIT, limit);
         if(limit == 0)
             broadcast(Messages.CMD_RULES_VERTICAL_LIMIT_REMOVED.getMessage());
         else
