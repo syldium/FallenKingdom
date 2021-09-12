@@ -22,7 +22,7 @@ public class RemoveLine extends FkCommand
     public CommandResult execute(Fk plugin, CommandSender sender, List<String> args, String label)
     {
         int line = ArgumentParser.parseScoreboardLine(args.get(0), Messages.CMD_ERROR_SCOREBOARD_INVALID_LINE);
-        if(!Fk.getInstance().getScoreboardManager().removeLine(line))
+        if(!plugin.getDisplayService().setScoreboardLine(line, null))
             throw new FkLightException(Messages.CMD_ERROR_SCOREBOARD_INVALID_LINE);
         return CommandResult.SUCCESS;
     }

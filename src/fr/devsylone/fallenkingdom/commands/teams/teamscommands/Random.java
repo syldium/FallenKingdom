@@ -29,7 +29,7 @@ public class Random extends FkCommand
 		plugin.getFkPI().getTeamManager().random(players);
 
 		broadcast(Messages.CMD_TEAM_RANDOM.getMessage());
-		plugin.getScoreboardManager().refreshAllScoreboards();
+		plugin.getDisplayService().updateAll();
 		return CommandResult.SUCCESS;
 	}
 }

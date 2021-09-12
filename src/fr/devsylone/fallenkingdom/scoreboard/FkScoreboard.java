@@ -1,7 +1,9 @@
 package fr.devsylone.fallenkingdom.scoreboard;
 
 import fr.devsylone.fallenkingdom.Fk;
+import fr.devsylone.fallenkingdom.display.GlobalDisplayService;
 import fr.devsylone.fallenkingdom.game.Game.GameState;
+import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fallenkingdom.players.FkPlayer.PlayerState;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fallenkingdom.utils.RulesFormatter;
@@ -12,9 +14,11 @@ import fr.mrmicky.fastboard.FastBoard;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,24 +26,38 @@ public class FkScoreboard
 {
 	private boolean formatted = true;
 
+	private final GlobalDisplayService displayService;
 	private final Scoreboard bukkitBoard;
 	private final FastBoard sidebarBoard;
 
+	private final FkPlayer fkPlayer;
 	private final WeakReference<Player> player;
 
-	public FkScoreboard(Player player)
+	public FkScoreboard(@NotNull FkPlayer fkPlayer, @NotNull Player player)
 	{
+		this.fkPlayer = fkPlayer;
 		this.player = new WeakReference<>(player);
 		this.bukkitBoard = FkPI.getInstance().getTeamManager().getScoreboard();
+		this.displayService = fkPlayer.getDisplayService();
 
-		sidebarBoard = new FastBoard(player);
-		sidebarBoard.updateTitle(Fk.getInstance().getScoreboardManager().getName());
+		this.sidebarBoard = new FastBoard(player);
+		this.sidebarBoard.updateTitle(Fk.getInstance().getDisplayService().scoreboard().title());
 
 		if(FkPI.getInstance().getRulesManager().getRule(Rule.HEALTH_BELOW_NAME) && bukkitBoard.getObjective("§c❤") == null)
-			bukkitBoard.registerNewObjective("§c❤", "health").setDisplaySlot(DisplaySlot.BELOW_NAME);
+			this.bukkitBoard.registerNewObjective("§c❤", "health").setDisplaySlot(DisplaySlot.BELOW_NAME);
 
-		player.setScoreboard(bukkitBoard);
+		player.setScoreboard(this.bukkitBoard);
 		refreshAll();
+	}
+
+	public void updateLines(@NotNull Collection<@NotNull String> lines)
+	{
+		this.sidebarBoard.updateLines(lines);
+	}
+
+	public void updateLine(int line, @NotNull String text)
+	{
+		this.sidebarBoard.updateLine(line, text);
 	}
 
 	public void refreshAll()
@@ -68,8 +86,7 @@ public class FkScoreboard
 		}
 		else
 		{
-			for(int i = 0; i < Fk.getInstance().getScoreboardManager().getSidebar().size(); i++)
-				refreshLine(i);
+			this.sidebarBoard.updateLines(displayService.scoreboard().renderLines(player));
 		}
 		Fk.getInstance().getScoreboardManager().refreshNicks();
 
@@ -93,38 +110,16 @@ public class FkScoreboard
 			refreshAll();
 			return;
 		}
-		if(Fk.getInstance().getGame().getState() == GameState.BEFORE_STARTING && !Fk.getInstance().getPlayerManager().getPlayer(player).getState().equals(PlayerState.EDITING_SCOREBOARD))
+		if(Fk.getInstance().getGame().getState() == GameState.BEFORE_STARTING && this.fkPlayer.getState() != PlayerState.EDITING_SCOREBOARD)
 			return;
 
-		for(int line : Fk.getInstance().getScoreboardManager().getLinesWith(placeHolders))
-			refreshLine(line);
+		this.displayService.update(player, this.fkPlayer, placeHolders);
 	}
 
 	public void setFormatted(boolean bool)
 	{
-		formatted = bool;
-
-		for(int i = 0; i < Fk.getInstance().getScoreboardManager().getSidebar().size(); i++)
-			refreshLine(i);
-	}
-
-	private void refreshLine(int i)
-	{
-		Player player = this.player.get();
-		if(player == null || !Fk.getInstance().getWorldManager().isAffected(player.getWorld()))
-			return;
-
-		if(Fk.getInstance().getGame().getState() == GameState.BEFORE_STARTING && !Fk.getInstance().getPlayerManager().getPlayer(player).getState().equals(PlayerState.EDITING_SCOREBOARD))
-			return;
-
-		String line = Fk.getInstance().getScoreboardManager().getSidebarLine(i, formatted ? player : null);
-
-		if(i >= sidebarBoard.getLines().size() || !sidebarBoard.getLine(i).equals(line))
-		{
-			if(!Version.VersionType.V1_13.isHigherOrEqual())
-				line = line.substring(0, Math.min(30, line.length()));
-			sidebarBoard.updateLine(i, line);
-		}
+		this.formatted = bool;
+		this.sidebarBoard.updateLines(this.displayService.scoreboard().lines());
 	}
 
 	public void remove()

@@ -14,7 +14,7 @@ public class PlaceHolderExpansion extends PlaceholderExpansion
 
     @Override
     public String getVersion() {
-        return "1.0.0";
+        return "2.0.0";
     }
 
     @Override
@@ -31,7 +31,7 @@ public class PlaceHolderExpansion extends PlaceholderExpansion
         if (!player.isOnline())
             return "";
         for (PlaceHolder placeHolder : PlaceHolder.values()) {
-            if (placeHolder.getShortestKey().equalsIgnoreCase(identifier)) {
+            if (placeHolder.getKey().equalsIgnoreCase(identifier)) {
                 return String.valueOf(placeHolder.getFunction().apply((Player) player,0));
             }
         }

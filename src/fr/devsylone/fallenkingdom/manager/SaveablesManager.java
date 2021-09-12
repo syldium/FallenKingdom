@@ -52,7 +52,7 @@ public class SaveablesManager {
 
 		registerSaveable(fk.getPauseRestorer(), "pause_restorer.yml");
 
-		registerSaveable(fk.getScoreboardManager(), "scoreboard.yml");
+		registerSaveable(fk.getDisplayService(), "display.yml");
 
 		registerSaveable(fk.getDeepPauseManager(), "deep_pause.yml");
 
@@ -117,7 +117,7 @@ public class SaveablesManager {
 			}
 		}
 
-		plugin.getScoreboardManager().recreateAllScoreboards();
+		plugin.getDisplayService().updateAll();
 	}
 
 	private void registerSaveable(Saveable o, String file) {

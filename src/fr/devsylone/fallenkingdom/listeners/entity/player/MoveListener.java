@@ -41,7 +41,7 @@ public class MoveListener implements Listener
 		 */
 
 		FkPlayer fkp = Fk.getInstance().getPlayerManager().getPlayer(e.getPlayer());
-		fkp.getScoreboard().refresh(PlaceHolder.BASE_DIRECTION, PlaceHolder.BASE_DISTANCE, PlaceHolder.NEAREST_TEAM_BASE, PlaceHolder.NEAREST_BASE_DIRECTION);
+		fkp.updateDisplay(e.getPlayer(), PlaceHolder.BASE_DIRECTION, PlaceHolder.BASE_DISTANCE, PlaceHolder.NEAREST_TEAM_BASE, PlaceHolder.NEAREST_BASE_DIRECTION);
 
 		if(e.getFrom().getBlockX() == e.getTo().getBlockX() && e.getFrom().getBlockZ() == e.getTo().getBlockZ() && e.getFrom().getBlockY() == e.getTo().getBlockY())
 			return;

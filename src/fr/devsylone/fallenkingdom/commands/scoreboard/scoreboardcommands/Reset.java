@@ -23,8 +23,8 @@ public class Reset extends FkCommand implements Confirmable
 	{
 		if (isConfirmed(sender)) {
 			sender.sendMessage(Messages.CMD_SCOREBOARD_RESET.getMessage());
-			plugin.getScoreboardManager().reset();
-			plugin.getScoreboardManager().recreateAllScoreboards();
+			//plugin.getScoreboardManager().reset(); // TODO
+			plugin.getDisplayService().updateAll();
 			return CommandResult.SUCCESS;
 		}
 

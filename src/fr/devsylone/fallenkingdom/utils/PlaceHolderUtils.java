@@ -6,21 +6,24 @@ import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.teams.Team;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Comparator;
 import java.util.Optional;
 import java.util.function.Supplier;
+
+import static java.util.Objects.requireNonNull;
 
 public class PlaceHolderUtils
 {
     public static final Supplier<Game> GAME_SUPPLIER = Fk.getInstance()::getGame;
 	private static final double ANGLE_OFFSET = ((double) 360 / 16) * 13;
 
-	private static Location getPointingLocation(Player player)
+	private static @Nullable Location getPointingLocation(Player player)
 	{
 		// Vers la base
 		Team pTeam = FkPI.getInstance().getTeamManager().getPlayerTeam(player);
-		if (pTeam != null && pTeam.getBase().getCenter() != null && player.getWorld().equals(pTeam.getBase().getCenter().getWorld()))
+		if (pTeam != null && requireNonNull(pTeam.getBase(), "player base").getCenter() != null && player.getWorld().equals(pTeam.getBase().getCenter().getWorld()))
 			return pTeam.getBase().getCenter().clone();
 
 		// Vers le portail
@@ -33,7 +36,7 @@ public class PlaceHolderUtils
 
 	private static Optional<Team> getNearestTeam(Player player, int iteration)
 	{
-		return Fk.getInstance().getFkPI().getTeamManager().getTeams().stream()
+		return FkPI.getInstance().getTeamManager().getTeams().stream()
 				.filter(team -> team.getBase() != null && !team.getPlayers().contains(player.getName()))
 				.filter(team -> team.getBase().getCenter().getWorld().equals(player.getWorld()))
 				.sorted(Comparator.comparingDouble(team -> team.getBase().getCenter().distanceSquared(player.getLocation())))
@@ -46,58 +49,58 @@ public class PlaceHolderUtils
 		Location pLoc = player.getLocation();
 		Team pTeam = FkPI.getInstance().getTeamManager().getPlayerTeam(player);
 		if (pTeam == null)
-			return Fk.getInstance().getScoreboardManager().getNoTeam();
+			return noTeam();
 		if (pTeam.getBase() == null)
-			return Fk.getInstance().getScoreboardManager().getNoBase();
+			return noBase();
 
 		Location point = getPointingLocation(player);
 		if (point != null)
 			return String.valueOf((int) pLoc.distance(point));
 
-		return Fk.getInstance().getScoreboardManager().getNoInfo(); // ?
+		return Fk.getInstance().getDisplayService().text().noInfo(); // ?
 	}
 
 	public static String getBaseDirection(Player player)
 	{
 		Team pTeam = FkPI.getInstance().getTeamManager().getPlayerTeam(player);
 		if (pTeam == null)
-			return Fk.getInstance().getScoreboardManager().getNoTeam();
+			return noTeam();
 		if (pTeam.getBase() == null)
-			return Fk.getInstance().getScoreboardManager().getNoBase();
+			return noBase();
 
 		Location point = getPointingLocation(player);
 		if (point != null)
 			return getDirectionOf(player.getLocation(), point);
 
-		return Fk.getInstance().getScoreboardManager().getNoInfo(); // ?
+		return Fk.getInstance().getDisplayService().text().noInfo(); // ?
 	}
 
 	public static String getNearestTeamBase(Player player, int iteration)
 	{
-		if(Fk.getInstance().getFkPI().getTeamManager().getTeams().size() < 1)
-			return Fk.getInstance().getScoreboardManager().getNoTeam();
+		if(FkPI.getInstance().getTeamManager().getTeams().size() < 1)
+			return noTeam();
 
 		Optional<Team> nearestTeam = getNearestTeam(player, iteration);
 		return nearestTeam
 				.map(team -> team.getChatColor() + team.getName())
-				.orElse(Fk.getInstance().getScoreboardManager().getNoInfo());
+				.orElse(Fk.getInstance().getDisplayService().text().noInfo());
 	}
 
 	public static String getNearestBaseDirection(Player player, int iteration)
 	{
-		if(Fk.getInstance().getFkPI().getTeamManager().getTeams().size() < 1)
-			return Fk.getInstance().getScoreboardManager().getNoTeam();
+		if(FkPI.getInstance().getTeamManager().getTeams().size() < 1)
+			return noTeam();
 
 		Optional<Team> nearestTeam = getNearestTeam(player, iteration);
 		return nearestTeam
-				.map(team -> getDirectionOf(player.getLocation(), team.getBase().getCenter()))
-				.orElse(Fk.getInstance().getScoreboardManager().getNoInfo());
+				.map(team -> getDirectionOf(player.getLocation(), requireNonNull(team.getBase(), "team base").getCenter()))
+				.orElse(Fk.getInstance().getDisplayService().text().noInfo());
 	}
 
 	public static String getTeamOf(Player p)
 	{
-		Team t = Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(p);
-		return t == null ? Fk.getInstance().getScoreboardManager().getNoTeam() : t.toString();
+		Team t = FkPI.getInstance().getTeamManager().getPlayerTeam(p);
+		return t == null ? noTeam() : t.toString();
 	}
 
 	private static String getDirectionOf(Location location, Location target)
@@ -108,7 +111,7 @@ public class PlaceHolderUtils
 
 		double theta = Math.toDegrees(Math.atan2(z, x));
 		int angle = Math.floorMod((int) (ANGLE_OFFSET + theta - yaw), 360);
-		return String.valueOf(Fk.getInstance().getScoreboardManager().getArrows().charAt(angle / 45));
+		return String.valueOf(Fk.getInstance().getDisplayService().text().arrowAt(angle));
 	}
 	
 	public static String getBaseOrPortal(Player player)
@@ -130,5 +133,15 @@ public class PlaceHolderUtils
 	public static int getKills(Player p)
 	{
 		return Fk.getInstance().getPlayerManager().getPlayer(p).getKills();
+	}
+
+	private static String noTeam()
+	{
+		return Messages.CMD_SCOREBOARD_NO_TEAM.getMessage();
+	}
+
+	private static String noBase()
+	{
+		return Messages.CMD_SCOREBOARD_NO_BASE.getMessage();
 	}
 }

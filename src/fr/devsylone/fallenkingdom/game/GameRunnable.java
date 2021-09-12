@@ -45,7 +45,7 @@ class GameRunnable extends BukkitRunnable
             incrementDay();
 
         if(game.time % game.scoreboardUpdate == 0)
-            Fk.getInstance().getScoreboardManager().refreshAllScoreboards(PlaceHolder.DAY, PlaceHolder.HOUR, PlaceHolder.MINUTE);
+            Fk.getInstance().getDisplayService().updateAll(PlaceHolder.DAY, PlaceHolder.HOUR, PlaceHolder.MINUTE);
     }
 
     protected void updateWorldTime()
@@ -130,6 +130,6 @@ class GameRunnable extends BukkitRunnable
                 player.playSound(player.getLocation(), FkSound.ENDERMAN_TELEPORT.bukkitSound(), 1.0F, 1.0F);
             }
         }
-        Fk.getInstance().getScoreboardManager().recreateAllScoreboards();
+        Fk.getInstance().getDisplayService().updateAll();
     }
 }

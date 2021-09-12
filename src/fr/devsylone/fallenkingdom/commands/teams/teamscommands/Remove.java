@@ -26,7 +26,7 @@ public class Remove extends FkCommand
 
 		plugin.getFkPI().getTeamManager().removeTeam(args.get(0));
 		broadcast(Messages.CMD_TEAM_REMOVE.getMessage().replace("%team%", team.toString()),1, args);
-		plugin.getScoreboardManager().refreshAllScoreboards();
+		plugin.getDisplayService().updateAll();
 		return CommandResult.SUCCESS;
 	}
 }

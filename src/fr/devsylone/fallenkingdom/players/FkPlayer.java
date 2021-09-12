@@ -1,5 +1,7 @@
 package fr.devsylone.fallenkingdom.players;
 
+import fr.devsylone.fallenkingdom.display.GlobalDisplayService;
+import fr.devsylone.fallenkingdom.scoreboard.PlaceHolder;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fkpi.util.Saveable;
 import org.bukkit.Bukkit;
@@ -12,6 +14,8 @@ import fr.devsylone.fallenkingdom.scoreboard.FkScoreboard;
 import fr.devsylone.fallenkingdom.scoreboard.ScoreboardDisplayer;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fallenkingdom.utils.FkSound;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.regex.Pattern;
 
@@ -19,14 +23,16 @@ public class FkPlayer implements Saveable
 {
 	private static final Pattern NEW_LINE_PATTERN = Pattern.compile("\\n(?=(§.)*?[^(§.)\\n])");
 
+	private final GlobalDisplayService displayService;
+	private final String name;
+
 	private boolean knowsSbEdit = false;
 	private PlayerState state = PlayerState.INGAME;
-	private final String name;
 	private FkScoreboard board;
 	private ScoreboardDisplayer sbDisplayer;
 	private Location portal;
 
-	public enum PlayerState
+    public enum PlayerState
 	{
 		INGAME,
 		EDITING_SCOREBOARD
@@ -35,9 +41,9 @@ public class FkPlayer implements Saveable
 	private int kills = 0;
 	private int deaths = 0;
 
-	public FkPlayer(String name)
-	{
+	public FkPlayer(@NotNull String name, @NotNull GlobalDisplayService displayService) {
 		this.name = name;
+		this.displayService = displayService;
 	}
 
 	public String getName()
@@ -119,6 +125,11 @@ public class FkPlayer implements Saveable
 		}
 	}
 
+	public void updateDisplay(@NotNull Player player, @NotNull PlaceHolder... placeHolders)
+	{
+		this.displayService.update(player, this, placeHolders);
+	}
+
 	public void exitSbDisplayer()
 	{
 		if(sbDisplayer == null)
@@ -151,7 +162,12 @@ public class FkPlayer implements Saveable
 	public FkScoreboard getScoreboard()
 	{
 		if(board == null)
-			board = new FkScoreboard(Bukkit.getPlayerExact(name));
+			board = new FkScoreboard(this, Bukkit.getPlayerExact(name));
+		return board;
+	}
+
+	public @Nullable FkScoreboard getScoreboardIfExists()
+	{
 		return board;
 	}
 
@@ -160,13 +176,18 @@ public class FkPlayer implements Saveable
 		if(board != null)
 			board.remove();
 
-		board = new FkScoreboard(Bukkit.getPlayerExact(name));
+		board = new FkScoreboard(this, Bukkit.getPlayerExact(name));
 	}
 
 	public void removeScoreboard()
 	{
 		if(board != null)
 			board.remove();
+	}
+
+	public @NotNull GlobalDisplayService getDisplayService()
+	{
+		return this.displayService;
 	}
 
 	public Location getPortal()

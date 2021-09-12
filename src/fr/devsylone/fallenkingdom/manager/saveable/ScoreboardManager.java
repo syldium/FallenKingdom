@@ -24,6 +24,10 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
+/**
+ * @deprecated {@link fr.devsylone.fallenkingdom.display.GlobalDisplayService}
+ */
+@Deprecated
 public class ScoreboardManager implements Saveable
 {
 	private String name,
@@ -214,15 +218,7 @@ public class ScoreboardManager implements Saveable
 
 	public void refreshAllScoreboards(PlaceHolder... placeHolders)
 	{
-		for(FkPlayer player : Fk.getInstance().getPlayerManager().getConnectedPlayers())
-			try
-			{
-				player.getScoreboard().refresh(placeHolders);
-			}catch(NullPointerException npe)
-			{
-				Fk.getInstance().getLogger().warning("Scoreboard null, recreated");
-				player.recreateScoreboard();
-			}
+		Fk.getInstance().getDisplayService().updateAll(placeHolders);
 		refreshNicks();
 	}
 

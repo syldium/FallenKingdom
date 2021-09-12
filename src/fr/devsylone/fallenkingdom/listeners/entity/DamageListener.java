@@ -118,7 +118,7 @@ public class DamageListener implements Listener
 		if(fkP.getState() == PlayerState.EDITING_SCOREBOARD)
 			fkP.getSbDisplayer().exit();
 
-		Fk.getInstance().getScoreboardManager().refreshAllScoreboards(PlaceHolder.DEATHS);
-		Fk.getInstance().getScoreboardManager().refreshAllScoreboards(PlaceHolder.KILLS);
+		Fk.getInstance().getDisplayService().updateAll(PlaceHolder.DEATHS);
+		Fk.getInstance().getDisplayService().updateAll(PlaceHolder.KILLS);
 	}
 }

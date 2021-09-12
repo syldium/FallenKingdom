@@ -32,7 +32,7 @@ public class Create extends FkCommand
 		}
 
 		broadcast(Messages.CMD_TEAM_CREATE.getMessage().replace("%team%", plugin.getFkPI().getTeamManager().getTeam(args.get(0)).toString()), 1, args);
-		plugin.getScoreboardManager().refreshAllScoreboards();
+		plugin.getDisplayService().updateAll();
 		return CommandResult.SUCCESS;
 	}
 }

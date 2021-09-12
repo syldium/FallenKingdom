@@ -20,7 +20,7 @@ public class Undo extends FkCommand
     @Override
     public CommandResult execute(Fk plugin, CommandSender sender, List<String> args, String label)
     {
-        if (!Fk.getInstance().getScoreboardManager().undo())
+        if (!plugin.getDisplayService().undo())
             throw new FkLightException(Messages.CMD_ERROR_SCOREBOARD_CANNOT_UNDO);
         return CommandResult.SUCCESS;
     }

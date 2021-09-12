@@ -21,7 +21,7 @@ public class Start extends FkCommand
 	public CommandResult execute(Fk plugin, CommandSender sender, List<String> args, String label)
 	{
 		plugin.getGame().start();
-		plugin.getScoreboardManager().recreateAllScoreboards();
+		plugin.getDisplayService().updateAll();
 		return CommandResult.SUCCESS;
 	}
 }

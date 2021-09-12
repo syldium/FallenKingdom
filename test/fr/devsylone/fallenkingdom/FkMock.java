@@ -1,6 +1,7 @@
 package fr.devsylone.fallenkingdom;
 
 import fr.devsylone.fallenkingdom.commands.FkCommandExecutor;
+import fr.devsylone.fallenkingdom.display.GlobalDisplayService;
 import fr.devsylone.fallenkingdom.game.Game;
 import fr.devsylone.fallenkingdom.manager.LanguageManager;
 import fr.devsylone.fallenkingdom.manager.ListenersManager;
@@ -46,7 +47,8 @@ public class FkMock extends Fk {
 
         commandManager = new FkCommandExecutor(this, Objects.requireNonNull(getCommand("fk"), "Unable to register /fk command"));
 
-        playerManager = new PlayerManagerMock();
+        displayService = new GlobalDisplayService();
+        playerManager = new PlayerManagerMock(displayService);
         pauseRestorer = mock(PauseRestorer.class);
         starterInventoryManager = new StarterInventoryManager();
         scoreboardManager = new ScoreboardManager();
