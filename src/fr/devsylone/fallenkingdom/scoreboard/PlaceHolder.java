@@ -64,6 +64,25 @@ public enum PlaceHolder
 			replaceValue = Fk.getInstance().getDisplayService().text().format((boolean) replaceValue);
 		return chainToProcess.replace(key, String.valueOf(replaceValue));
 	}
+
+	public String replaceMultiple(String chainToProcess, Player player)
+	{
+		final StringBuilder builder = new StringBuilder();
+		int startIndex = 0;
+		int count = 0;
+		int keyIndex;
+		while ((keyIndex = chainToProcess.indexOf(this.key, startIndex)) != -1) {
+			if (startIndex != keyIndex) {
+				builder.append(chainToProcess, startIndex, keyIndex);
+			}
+			startIndex = keyIndex + this.key.length();
+			builder.append(this.callable.apply(player, count++));
+		}
+		if (startIndex != chainToProcess.length()) {
+			builder.append(chainToProcess, startIndex, chainToProcess.length());
+		}
+		return builder.toString();
+	}
 	
 	public String getDescription()
 	{

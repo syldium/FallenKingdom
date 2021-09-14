@@ -60,7 +60,7 @@ public class SimpleDisplayService implements DisplayService {
 
         String replaced = this.value;
         for (PlaceHolder placeHolder : this.placeHolders) {
-            replaced = placeHolder.replace(replaced, player, 0);
+            replaced = placeHolder.replaceMultiple(replaced, player);
         }
         player.sendActionBar(replaced);
     }
