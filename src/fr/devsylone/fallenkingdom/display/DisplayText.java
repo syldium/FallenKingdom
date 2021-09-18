@@ -31,19 +31,23 @@ public class DisplayText implements Saveable {
         return this.arrows.charAt(angle / 45);
     }
 
+    private static final String ARROWS = "arrows";
+    private static final String BOOLS = "bools";
+    private static final String NO_INFO = "no-info";
+
     @Override
     public void load(ConfigurationSection config) {
-        String[] booleans = config.getString("Boolean", "§2✔:§4✘").split(":");
+        String[] booleans = config.getString(BOOLS, String.join(":", DEF_BOOLEANS)).split(":");
         if (booleans.length == 1) {
             booleans = DEF_BOOLEANS;
         }
         this.stringTrue = booleans[0];
         this.stringFalse = booleans[1];
 
-        this.noInfo = config.getString("NoInfo", "§4?");
+        this.noInfo = config.getString(NO_INFO, this.noInfo);
 
         final String defaultArrows = this.defaultArrows();
-        String arrows = config.getString("Arrows", defaultArrows);
+        String arrows = config.getString(ARROWS, defaultArrows);
         if (arrows.length() < defaultArrows.length()) {
             arrows = defaultArrows;
         }
@@ -52,9 +56,9 @@ public class DisplayText implements Saveable {
 
     @Override
     public void save(ConfigurationSection config) {
-        config.set("Boolean", this.stringTrue + ':' + this.stringFalse);
-        config.set("NoInfo", this.noInfo);
-        config.set("Arrows", this.arrows);
+        config.set(BOOLS, this.stringTrue + ':' + this.stringFalse);
+        config.set(NO_INFO, this.noInfo);
+        config.set(ARROWS, this.arrows);
     }
 
     private @NotNull String defaultArrows() {

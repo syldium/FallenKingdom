@@ -170,6 +170,7 @@ public class Fk extends JavaPlugin
 		game = new Game();
 
 		saveableManager = new SaveablesManager(this);
+		saveableManager.update();
 
 		/*
 		 * Update & load

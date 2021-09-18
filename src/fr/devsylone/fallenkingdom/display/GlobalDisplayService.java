@@ -101,6 +101,7 @@ public class GlobalDisplayService implements DisplayService, Saveable {
         return this.text;
     }
 
+    public static final String FILENAME = "display.yml";
     private static final String TITLE = "title";
     private static final String SIDEBAR = "sidebar";
 

@@ -9,7 +9,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
+import fr.devsylone.fallenkingdom.display.GlobalDisplayService;
+import fr.devsylone.fallenkingdom.manager.saveable.ScoreboardManager;
+import fr.devsylone.fallenkingdom.scoreboard.PlaceHolder;
+import fr.devsylone.fallenkingdom.utils.FkConfig;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -32,6 +37,7 @@ public class FilesUpdater
         lastv = lastVersion;
     }
 
+    @SuppressWarnings("deprecation")
     public void update()
     {
         if(isGrowing(lastv, "2.6.0"))
@@ -201,6 +207,28 @@ public class FilesUpdater
                 Fk.getInstance().getLanguageManager().init(Fk.getInstance());
             }
         }
+
+        if(isGrowing(lastv, "2.22.0"))
+        {
+            final FkConfig displayConfig = Fk.getInstance().getSaveableManager().getFileConfiguration(GlobalDisplayService.FILENAME);
+            final FkConfig scoreboardConfig = Fk.getInstance().getSaveableManager().getFileConfiguration("scoreboard.yml");
+            if (!displayConfig.fileExists() && scoreboardConfig.fileExists()) {
+                scoreboardConfig.load();
+                final String oldClass = ScoreboardManager.class.getSimpleName();
+                final String newClass = GlobalDisplayService.class.getSimpleName();
+                displayConfig.set(newClass + ".scoreboard.title", scoreboardConfig.get(oldClass + ".Name"));
+                displayConfig.set(
+                        newClass + ".scoreboard.sidebar",
+                        scoreboardConfig.getStringList(oldClass + ".Sidebar").stream()
+                                .map(PlaceHolder::removeLegacyKeys)
+                                .collect(Collectors.toList())
+                );
+                displayConfig.set(newClass + ".bools", scoreboardConfig.get(oldClass + ".Boolean"));
+                displayConfig.set(newClass + ".no-info", scoreboardConfig.get(oldClass + ".NoInfo"));
+                displayConfig.saveSync();
+                // Les flèches n'étaient pas prises en compte au chargement
+            }
+        }
     }
 
     public boolean isSection(String path)
@@ -228,14 +256,14 @@ public class FilesUpdater
         if(v1.equals(v2))
             return false;
 
-        String[] parsedv1 = v1.replaceAll("-beta\\d*$", "").split("\\.");
-        String[] parsedv2 = v2.replaceAll("-beta\\d*$", "").split("\\.");
+        String[] parsedv1 = v1.replaceAll("-[a-zA-Z]+\\d*$", "").split("\\.");
+        String[] parsedv2 = v2.replaceAll("-[a-zA-Z]+\\d*$", "").split("\\.");
 
         for(int i = 0; i < Math.min(parsedv1.length, parsedv2.length); i++)
             if(!parsedv1[i].equals(parsedv2[i]))
                 return Integer.parseInt(parsedv1[i]) < Integer.parseInt(parsedv2[i]);
 
-        if(v1.matches(Pattern.quote(v2) + "-beta\\d*"))
+        if(v1.matches(Pattern.quote(v2) + "-[a-zA-Z]+\\d*"))
             return true;
 
         return parsedv1.length < parsedv2.length;

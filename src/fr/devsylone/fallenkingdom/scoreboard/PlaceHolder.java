@@ -69,10 +69,7 @@ public enum PlaceHolder
 
 	public String replace(String chainToProcess, Player player, int iteration)
 	{
-		Object replaceValue = callable.apply(player, iteration);
-		if(replaceValue instanceof Boolean)
-			replaceValue = Fk.getInstance().getDisplayService().text().format((boolean) replaceValue);
-		return chainToProcess.replace(key, String.valueOf(replaceValue));
+		return chainToProcess.replace(this.key, this.resolve(player, iteration));
 	}
 
 	public @NotNull String replaceMultiple(@NotNull String chainToProcess, @NotNull Player player)
@@ -117,13 +114,18 @@ public enum PlaceHolder
 		return s.contains(key);
 	}
 
-    public String getKey()
+	public @NotNull String getKey()
 	{
-    	return key;
-    }
+		return this.key;
+	}
 
-	public String[] getLegacyKeys()
+	public static @NotNull String removeLegacyKeys(@NotNull String message)
 	{
-		return legacyKeys;
+		for (PlaceHolder placeHolder : PlaceHolder.values()) {
+			for (String legacyKey : placeHolder.legacyKeys) {
+				message = message.replace(PLACEHOLDER_START + legacyKey + PLACEHOLDER_END, placeHolder.getKey());
+			}
+		}
+		return message;
 	}
 }

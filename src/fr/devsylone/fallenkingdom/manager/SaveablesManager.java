@@ -1,6 +1,7 @@
 package fr.devsylone.fallenkingdom.manager;
 
 import fr.devsylone.fallenkingdom.Fk;
+import fr.devsylone.fallenkingdom.display.GlobalDisplayService;
 import fr.devsylone.fallenkingdom.updater.FilesUpdater;
 import fr.devsylone.fallenkingdom.utils.FkConfig;
 import fr.devsylone.fallenkingdom.utils.Messages;
@@ -38,6 +39,7 @@ public class SaveablesManager {
 	private final Fk plugin;
 	private final Map<String, FkConfig> files = new HashMap<>();
 	private final Map<Saveable, FkConfig> saveables = new IdentityHashMap<>();
+	private FilesUpdater filesUpdater;
 	private long lastSave = 0;
 
 	public SaveablesManager(@NotNull Fk fk) {
@@ -52,14 +54,19 @@ public class SaveablesManager {
 
 		registerSaveable(fk.getPauseRestorer(), "pause_restorer.yml");
 
-		registerSaveable(fk.getDisplayService(), "display.yml");
+		registerSaveable(fk.getDisplayService(), GlobalDisplayService.FILENAME);
 
 		registerSaveable(fk.getDeepPauseManager(), "deep_pause.yml");
 
 		registerSaveable(fk.getPortalsManager(), "portals.yml");
 
-		new FilesUpdater(fk.getDescription().getVersion()).update();
+		this.filesUpdater = new FilesUpdater(fk.getDescription().getVersion());
 		mainConfig.set("last_version", fk.getDescription().getVersion());
+	}
+
+	public void update() {
+		this.filesUpdater.update();
+		this.filesUpdater = null;
 	}
 
 	/**

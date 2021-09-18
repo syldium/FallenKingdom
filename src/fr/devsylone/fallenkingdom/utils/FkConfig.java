@@ -24,7 +24,6 @@ public class FkConfig extends YamlConfiguration {
     private final File configFile;
 
     public FkConfig(@NotNull File configFile) {
-        super();
         this.configFile = configFile;
     }
 
@@ -63,6 +62,18 @@ public class FkConfig extends YamlConfiguration {
             pendingDiskWrites.incrementAndGet();
             EXECUTOR_SERVICE.submit(new FileWrite(configFile, data, pendingDiskWrites));
         }
+    }
+
+    public void saveSync() {
+        try {
+            this.save(this.configFile);
+        } catch (IOException ex) {
+            LOGGER.log(Level.SEVERE, "Unable to write the configuration file.", ex);
+        }
+    }
+
+    public boolean fileExists() {
+        return this.configFile.isFile();
     }
 
     public static synchronized void awaitSaveEnd() {
