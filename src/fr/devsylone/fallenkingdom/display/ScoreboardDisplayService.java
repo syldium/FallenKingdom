@@ -99,6 +99,11 @@ public class ScoreboardDisplayService implements DisplayService {
         }
     }
 
+    @Override
+    public void hide(@NotNull Player player, @NotNull FkPlayer fkPlayer) {
+        fkPlayer.removeScoreboard();
+    }
+
     public @NotNull String updateLine(@NotNull Player player, int line) {
         String replaced = this.lines.get(line);
         for (PlaceHolder placeHolder : this.indexes.get(line)) {

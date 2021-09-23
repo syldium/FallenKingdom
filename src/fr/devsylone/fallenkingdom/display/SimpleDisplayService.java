@@ -12,7 +12,7 @@ import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
 
-public class SimpleDisplayService implements DisplayService {
+public abstract class SimpleDisplayService implements DisplayService {
 
     private final DisplayType type;
     private final String value;
@@ -62,17 +62,17 @@ public class SimpleDisplayService implements DisplayService {
         for (PlaceHolder placeHolder : this.placeHolders) {
             replaced = placeHolder.replaceMultiple(replaced, player);
         }
-        player.sendActionBar(replaced);
+        this.show(player, replaced);
     }
+
+    public abstract void show(@NotNull Player player, @NotNull String message);
 
     public @NotNull String value() {
         return this.value;
     }
 
     @Contract("_ -> new")
-    public @NotNull SimpleDisplayService withValue(@NotNull String next) {
-        return new SimpleDisplayService(this.type, next);
-    }
+    public abstract @NotNull SimpleDisplayService withValue(@NotNull String next);
 
     public @NotNull DisplayType type() {
         return this.type;

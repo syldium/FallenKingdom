@@ -15,6 +15,7 @@ import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
@@ -231,19 +232,20 @@ public class Fk extends JavaPlugin
 	@Override
 	public void onDisable()
 	{
-		saveableManager.delayedSaveAll();
+		for (Player player : this.getServer().getOnlinePlayers()) {
+			final FkPlayer fkPlayer = this.playerManager.getPlayerIfExist(player);
+			if (fkPlayer != null) {
+				this.displayService.hide(player, fkPlayer);
+			}
+		}
+
+		this.saveableManager.delayedSaveAll();
 		FkConfig.awaitSaveEnd();
 
-		if(game.getState().equals(Game.GameState.PAUSE))
-		{
+		if (this.game.getState() == Game.GameState.PAUSE) {
 			getDeepPauseManager().unprotectItems();
 			getDeepPauseManager().resetAIs();
 		}
-
-		//scoreboardManager.removeAllScoreboards();
-
-		for(FkPlayer p : getPlayerManager().getConnectedPlayers())
-			p.getScoreboard().remove();
 	}
 
 	public static void broadcast(String message, String prefix, FkSound sound)

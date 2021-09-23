@@ -3,10 +3,14 @@ package fr.devsylone.fallenkingdom.display;
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.display.change.DisplayChange;
 import fr.devsylone.fallenkingdom.display.change.SetScoreboardLineChange;
+import fr.devsylone.fallenkingdom.display.change.SetScoreboardTitleChange;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fallenkingdom.scoreboard.PlaceHolder;
+import fr.devsylone.fallenkingdom.utils.ConfigHelper;
 import fr.devsylone.fkpi.util.Saveable;
 import org.bukkit.Bukkit;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -19,6 +23,7 @@ import java.util.Map;
 import java.util.Stack;
 
 import static fr.devsylone.fallenkingdom.display.DisplayType.ACTIONBAR;
+import static fr.devsylone.fallenkingdom.display.DisplayType.BOSSBAR;
 import static fr.devsylone.fallenkingdom.display.DisplayType.SCOREBOARD;
 import static java.util.Objects.requireNonNull;
 
@@ -61,6 +66,13 @@ public class GlobalDisplayService implements DisplayService, Saveable {
         }
     }
 
+    @Override
+    public void hide(@NotNull Player player, @NotNull FkPlayer fkPlayer) {
+        for (DisplayService service : this.services.values()) {
+            service.hide(player, fkPlayer);
+        }
+    }
+
     public void updateAll(PlaceHolder... placeHolders) {
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (!Fk.getInstance().getWorldManager().isAffected(player.getWorld())) {
@@ -94,7 +106,9 @@ public class GlobalDisplayService implements DisplayService, Saveable {
     }
 
     public void setScoreboardTitle(@NotNull String title) {
-        this.setScoreboard(this.scoreboard.withTitle(title));
+        final SetScoreboardTitleChange change = new SetScoreboardTitleChange(this.scoreboard, title);
+        this.revisions.push(change);
+        this.setScoreboard(change.apply(this.scoreboard));
     }
 
     public @NotNull DisplayText text() {
@@ -102,14 +116,24 @@ public class GlobalDisplayService implements DisplayService, Saveable {
     }
 
     public static final String FILENAME = "display.yml";
-    private static final String TITLE = "title";
+    private static final String COLOR = "color";
     private static final String SIDEBAR = "sidebar";
+    private static final String STYLE = "style";
+    private static final String TITLE = "title";
 
     @Override
     public void load(ConfigurationSection config) {
         final Map<DisplayType, DisplayService> services = new EnumMap<>(DisplayType.class);
         if (config.contains(ACTIONBAR.asString())) {
-            services.put(ACTIONBAR, new SimpleDisplayService(ACTIONBAR, config.getString(ACTIONBAR.asString(), "")));
+            services.put(ACTIONBAR, new ActionBarDisplayService(config.getString(ACTIONBAR.asString(), "")));
+        }
+        if (config.contains(BOSSBAR.asString())) {
+            final ConfigurationSection section = requireNonNull(config.getConfigurationSection(BOSSBAR.asString()), "bossbar config has no section");
+            services.put(BOSSBAR, new MultipleBossBarDisplayService(
+                    section.getString(TITLE, ""),
+                    ConfigHelper.enumValueOf(BarColor.class, section.getString(COLOR), BarColor.WHITE),
+                    ConfigHelper.enumValueOf(BarStyle.class, section.getString(STYLE), BarStyle.SOLID)
+            ));
         }
         if (config.contains(SCOREBOARD.asString())) {
             final ConfigurationSection section = requireNonNull(config.getConfigurationSection(SCOREBOARD.asString()), "scoreboard config has no section");
@@ -132,7 +156,15 @@ public class GlobalDisplayService implements DisplayService, Saveable {
                 section.set(TITLE, ((ScoreboardDisplayService) service).title());
                 section.set(SIDEBAR, ((ScoreboardDisplayService) service).lines());
             } else {
-                config.set(key, ((SimpleDisplayService) service).value());
+                final String value = ((SimpleDisplayService) service).value();
+                if (service instanceof BossBarDisplayService) {
+                    final ConfigurationSection section = config.createSection(key);
+                    section.set(COLOR, ((BossBarDisplayService) service).color().name());
+                    section.set(STYLE, ((BossBarDisplayService) service).style().name());
+                    section.set(TITLE, value);
+                } else {
+                    config.set(key, value);
+                }
             }
         }
         this.text.save(config);
