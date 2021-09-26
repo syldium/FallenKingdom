@@ -52,7 +52,15 @@ public class FkScoreboard
 
 	public void updateLines(@NotNull Collection<@NotNull String> lines)
 	{
-		this.sidebarBoard.updateLines(lines);
+		if (Version.VersionType.V1_13.isHigherOrEqual()) {
+			this.sidebarBoard.updateLines(lines);
+		} else {
+			final List<String> truncated = new ArrayList<>(lines.size());
+			for (String line : lines) {
+				truncated.add(line.substring(0, Math.min(30, line.length())));
+			}
+			this.sidebarBoard.updateLines(truncated);
+		}
 	}
 
 	public void updateLine(int line, @NotNull String text)
@@ -116,10 +124,19 @@ public class FkScoreboard
 		this.displayService.update(player, this.fkPlayer, placeHolders);
 	}
 
-	public void setFormatted(boolean bool)
+	public void setFormatted(boolean formatted)
 	{
-		this.formatted = bool;
-		this.sidebarBoard.updateLines(this.displayService.scoreboard().lines());
+		this.formatted = formatted;
+		final Player player = this.player.get();
+		if (player == null) {
+			return;
+		}
+
+		if (formatted) {
+			this.updateLines(this.displayService.scoreboard().renderLines(player));
+		} else {
+			this.updateLines(this.displayService.scoreboard().lines());
+		}
 	}
 
 	public void remove()

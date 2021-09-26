@@ -7,6 +7,7 @@ import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.boss.KeyedBossBar;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -15,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import static fr.devsylone.fallenkingdom.utils.ConfigHelper.enumValueOf;
 import static java.util.Objects.requireNonNull;
 
 public class MultipleBossBarDisplayService extends BossBarDisplayService {
@@ -22,6 +24,18 @@ public class MultipleBossBarDisplayService extends BossBarDisplayService {
     private final Map<UUID, KeyedBossBar> bars;
     private BarColor color;
     private BarStyle style;
+
+    private static final String COLOR = "color";
+    private static final String STYLE = "style";
+    private static final String TITLE = "title";
+
+    public MultipleBossBarDisplayService(@NotNull ConfigurationSection section) {
+        this(
+                section.getString(TITLE, ""),
+                enumValueOf(BarColor.class, section.getString(COLOR), BarColor.WHITE),
+                enumValueOf(BarStyle.class, section.getString(STYLE), BarStyle.SOLID)
+        );
+    }
 
     public MultipleBossBarDisplayService(@NotNull String value, @NotNull BarColor color, @NotNull BarStyle style) {
         this(value, color, style, new HashMap<>());
@@ -86,6 +100,12 @@ public class MultipleBossBarDisplayService extends BossBarDisplayService {
     @Override
     public @NotNull MultipleBossBarDisplayService withValue(@NotNull String next) {
         return new MultipleBossBarDisplayService(next, this.color, this.style, this.bars);
+    }
+
+    public void save(@NotNull ConfigurationSection section) {
+        section.set(COLOR, this.color.name());
+        section.set(STYLE, this.style.name());
+        section.set(TITLE, this.value());
     }
 
     private @Nullable BossBar existingBar(@NotNull Player player) {

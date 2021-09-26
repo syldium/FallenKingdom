@@ -6,11 +6,8 @@ import fr.devsylone.fallenkingdom.display.change.SetScoreboardLineChange;
 import fr.devsylone.fallenkingdom.display.change.SetScoreboardTitleChange;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fallenkingdom.scoreboard.PlaceHolder;
-import fr.devsylone.fallenkingdom.utils.ConfigHelper;
 import fr.devsylone.fkpi.util.Saveable;
 import org.bukkit.Bukkit;
-import org.bukkit.boss.BarColor;
-import org.bukkit.boss.BarStyle;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -116,9 +113,7 @@ public class GlobalDisplayService implements DisplayService, Saveable {
     }
 
     public static final String FILENAME = "display.yml";
-    private static final String COLOR = "color";
     private static final String SIDEBAR = "sidebar";
-    private static final String STYLE = "style";
     private static final String TITLE = "title";
 
     @Override
@@ -129,11 +124,7 @@ public class GlobalDisplayService implements DisplayService, Saveable {
         }
         if (config.contains(BOSSBAR.asString())) {
             final ConfigurationSection section = requireNonNull(config.getConfigurationSection(BOSSBAR.asString()), "bossbar config has no section");
-            services.put(BOSSBAR, new MultipleBossBarDisplayService(
-                    section.getString(TITLE, ""),
-                    ConfigHelper.enumValueOf(BarColor.class, section.getString(COLOR), BarColor.WHITE),
-                    ConfigHelper.enumValueOf(BarStyle.class, section.getString(STYLE), BarStyle.SOLID)
-            ));
+            services.put(BOSSBAR, new MultipleBossBarDisplayService(section));
         }
         if (config.contains(SCOREBOARD.asString())) {
             final ConfigurationSection section = requireNonNull(config.getConfigurationSection(SCOREBOARD.asString()), "scoreboard config has no section");
@@ -158,10 +149,7 @@ public class GlobalDisplayService implements DisplayService, Saveable {
             } else {
                 final String value = ((SimpleDisplayService) service).value();
                 if (service instanceof BossBarDisplayService) {
-                    final ConfigurationSection section = config.createSection(key);
-                    section.set(COLOR, ((BossBarDisplayService) service).color().name());
-                    section.set(STYLE, ((BossBarDisplayService) service).style().name());
-                    section.set(TITLE, value);
+                    ((MultipleBossBarDisplayService) service).save(config.createSection(key));
                 } else {
                     config.set(key, value);
                 }
