@@ -2,7 +2,11 @@ package fr.devsylone.fallenkingdom.players;
 
 import fr.devsylone.fallenkingdom.display.GlobalDisplayService;
 import fr.devsylone.fallenkingdom.scoreboard.PlaceHolder;
+import fr.devsylone.fallenkingdom.utils.DistanceTree;
 import fr.devsylone.fallenkingdom.utils.Messages;
+import fr.devsylone.fkpi.FkPI;
+import fr.devsylone.fkpi.teams.Base;
+import fr.devsylone.fkpi.teams.Team;
 import fr.devsylone.fkpi.util.Saveable;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -18,6 +22,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.regex.Pattern;
+
+import static java.util.Objects.requireNonNull;
 
 public class FkPlayer implements Saveable
 {
@@ -208,6 +214,33 @@ public class FkPlayer implements Saveable
 	public void knowNowSbEdit()
 	{
 		knowsSbEdit = true;
+	}
+
+	public @NotNull DistanceTree<Base> getNearBases(@NotNull Player player)
+	{
+		final DistanceTree<Base> nearBases = new DistanceTree<>(requireNonNull(player, "player is offline").getLocation());
+		final Team playerTeam = FkPI.getInstance().getTeamManager().getPlayerTeam(player);
+		for (Team team : FkPI.getInstance().getTeamManager().getTeams()) {
+			final Base base = team.getBase();
+			if (base == null || !player.getWorld().equals(base.getCenter().getWorld()) || team == playerTeam) {
+				continue;
+			}
+			nearBases.add(base.getCenter(), base);
+		}
+		return nearBases;
+	}
+
+	public @NotNull DistanceTree<Player> getNearAllies(@NotNull Player player)
+	{
+		final DistanceTree<Player> nearAllies = new DistanceTree<>(requireNonNull(player, "player is offline").getLocation());
+		final Team playerTeam = FkPI.getInstance().getTeamManager().getPlayerTeam(player);
+		for (Player worldPlayer : player.getWorld().getPlayers()) {
+			if (player == worldPlayer || playerTeam != null && FkPI.getInstance().getTeamManager().getPlayerTeam(worldPlayer) != playerTeam) {
+				continue;
+			}
+			nearAllies.add(worldPlayer.getLocation(), worldPlayer);
+		}
+		return nearAllies;
 	}
 
 	public void load(ConfigurationSection config)

@@ -4,12 +4,12 @@ import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.game.Game;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fkpi.FkPI;
+import fr.devsylone.fkpi.teams.Base;
 import fr.devsylone.fkpi.teams.Team;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Comparator;
 import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
@@ -36,30 +36,14 @@ public class PlaceHolderUtils
 		return null;
 	}
 
-	private static Optional<Team> getNearestTeam(Player player, int iteration)
+	private static Optional<Base> getNearestBase(Player player, int iteration)
 	{
-		return FkPI.getInstance().getTeamManager().getTeams().stream()
-				.filter(team -> team.getBase() != null && !team.getPlayers().contains(player.getName()))
-				.filter(team -> team.getBase().getCenter().getWorld().equals(player.getWorld()))
-				.sorted(Comparator.comparingDouble(team -> team.getBase().getCenter().distanceSquared(player.getLocation())))
-				.skip(iteration)
-				.findFirst();
+		return Fk.getInstance().getPlayerManager().getPlayer(player).getNearBases(player).find(iteration);
 	}
 
 	private static Optional<Player> getNearestAlly(Player player, int iteration)
 	{
-		final Team playerTeam = FkPI.getInstance().getTeamManager().getPlayerTeam(player);
-		if (playerTeam == null) {
-			return player.getWorld().getPlayers().stream()
-					.sorted(Comparator.comparingDouble(otherPlayer -> otherPlayer.getLocation().distanceSquared(player.getLocation())))
-					.skip(iteration + 1)
-					.findFirst();
-		}
-		return player.getWorld().getPlayers().stream()
-				.filter(otherPlayer -> playerTeam.equals(FkPI.getInstance().getTeamManager().getPlayerTeam(otherPlayer)))
-				.sorted(Comparator.comparingDouble(otherPlayer -> otherPlayer.getLocation().distanceSquared(player.getLocation())))
-				.skip(iteration + 1)
-				.findFirst();
+		return Fk.getInstance().getPlayerManager().getPlayer(player).getNearAllies(player).find(iteration);
 	}
 
 	public static String getBaseDistance(Player player)
@@ -98,9 +82,9 @@ public class PlaceHolderUtils
 		if(FkPI.getInstance().getTeamManager().getTeams().size() < 1)
 			return noTeam();
 
-		Optional<Team> nearestTeam = getNearestTeam(player, iteration);
-		return nearestTeam
-				.map(team -> team.getChatColor() + team.getName())
+		Optional<Base> nearestBase = getNearestBase(player, iteration);
+		return nearestBase
+				.map(base -> base.getTeam().getChatColor() + base.getTeam().getName())
 				.orElse(Fk.getInstance().getDisplayService().text().noInfo());
 	}
 
@@ -109,9 +93,9 @@ public class PlaceHolderUtils
 		if(FkPI.getInstance().getTeamManager().getTeams().size() < 1)
 			return noTeam();
 
-		Optional<Team> nearestTeam = getNearestTeam(player, iteration);
-		return nearestTeam
-				.map(team -> getDirectionOf(player.getLocation(), requireNonNull(team.getBase(), "team base").getCenter()))
+		Optional<Base> nearestBase = getNearestBase(player, iteration);
+		return nearestBase
+				.map(base -> getDirectionOf(player.getLocation(), base.getCenter()))
 				.orElse(Fk.getInstance().getDisplayService().text().noInfo());
 	}
 
