@@ -128,7 +128,7 @@ public class XItemStack {
         }
     }
 
-    static BaseComponent[] getTextComponent(Object obj, int count) throws ReflectiveOperationException {
+    public static BaseComponent[] getTextComponent(Object obj, int count) throws ReflectiveOperationException {
         int i = 0;
         for (Field field : obj.getClass().getDeclaredFields()) {
             if (field.getType().equals(CHAT_BASE_COMPONENT) && i++ == count) {

@@ -113,60 +113,6 @@ public class XAdvancement {
     }
 
     /**
-     * Créé un ItemStack représentant le succès donné
-     *
-     * @param advancement Succès
-     * @return Représentation du succès
-     */
-    public static ItemStack getAdvancementIcon(Advancement advancement) {
-        ItemStack itemStack = new ItemStack(Material.STONE);
-        try {
-            Object nmsAdvancement = advancement.getClass().getMethod("getHandle").invoke(advancement);
-            Field displayField = NMSUtils.getField(nmsAdvancement.getClass(), NMSUtils.nmsClass("advancements", "AdvancementDisplay"), field -> !Modifier.isStatic(field.getModifiers()));
-            displayField.setAccessible(true);
-            Object display = displayField.get(nmsAdvancement);
-            if (display != null) {
-                BaseComponent[] name = XItemStack.getTextComponent(display, 0);
-                for (BaseComponent component : name) {
-                    component.setItalic(false);
-                    component.setColor(ChatColor.RESET);
-                }
-                List<BaseComponent[]> description = new ArrayList<>();
-                TextComponent namespacedKey = new TextComponent(advancement.getKey().toString());
-                namespacedKey.setItalic(false);
-                namespacedKey.setColor(ChatColor.GRAY);
-                description.add(new BaseComponent[]{namespacedKey});
-
-                BaseComponent[] desc = XItemStack.getTextComponent(display, 1);
-                if (new TextComponent(desc).toPlainText().length() < 32) {
-                    description.add(desc);
-                    for (BaseComponent component : description.get(1)) {
-                        component.setItalic(false);
-                        component.setColor(ChatColor.GREEN);
-                    }
-                }
-
-                Class<?> craftItemStack = NMSUtils.obcClass("inventory.CraftItemStack");
-                Class<?> nmsItemStackClass = craftItemStack.getMethod("asNMSCopy", ItemStack.class).getReturnType();
-                Field nmsItemStackField = Arrays.stream(display.getClass().getDeclaredFields())
-                        .filter(f -> f.getType().equals(nmsItemStackClass))
-                        .findAny().orElseThrow(RuntimeException::new);
-                nmsItemStackField.setAccessible(true);
-                Object nmsItemStack = nmsItemStackField.get(display);
-                itemStack = (ItemStack) craftItemStack.getMethod("asBukkitCopy", nmsItemStackClass).invoke(null, nmsItemStack);
-                XItemStack.setDisplayNameComponents(name, itemStack);
-                XItemStack.setLoreComponents(description, itemStack);
-            }
-        } catch (ReflectiveOperationException e) {
-            e.printStackTrace();
-            ItemMeta meta = itemStack.getItemMeta();
-            meta.setDisplayName(advancement.getKey().toString());
-            itemStack.setItemMeta(meta);
-        }
-        return itemStack;
-    }
-
-    /**
      * Créé un ItemStack représentant le trophée donné (plus ou moins)
      *
      * @param achievement Trophée

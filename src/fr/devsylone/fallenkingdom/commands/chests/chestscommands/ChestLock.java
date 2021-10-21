@@ -10,13 +10,14 @@ import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fallenkingdom.utils.XAdvancement;
+import fr.devsylone.fallenkingdom.version.advancement.BukkitAdvancement;
+import fr.devsylone.fallenkingdom.version.advancement.PaperAdvancement;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.lockedchests.LockedChest;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.TranslatableComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.advancement.Advancement;
 import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -31,16 +32,17 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+
+import static fr.devsylone.fallenkingdom.version.Version.classExists;
 
 public class ChestLock extends FkPlayerCommand implements Listener {
 
     private final String INVENTORY_NAME = ChatColor.YELLOW + "Advancements";
 
-    private final Map<AdvancementRoot, List<ItemStack>> representations = new HashMap<>();
+    private final List<ItemStack> categories = new ArrayList<>();
+    private final Map<String, List<ItemStack>> representations = new HashMap<>();
 
     public ChestLock() {
         super("lock", "[advancement] [chest]", Messages.CMD_MAP_CHEST_LOCK, CommandRole.ADMIN);
@@ -62,11 +64,7 @@ public class ChestLock extends FkPlayerCommand implements Listener {
                     }
                 }
                 Inventory inventory = Bukkit.createInventory(sender, 9 * 3, INVENTORY_NAME);
-                for (AdvancementRoot root : representations.keySet()) {
-                    ItemStack item = root.itemStack;
-                    if (item != null)
-                        inventory.addItem(item);
-                }
+                inventory.addItem(categories.toArray(new ItemStack[0]));
                 if (sender != null && sender.isOnline()) {
                     plugin.getServer().getScheduler().runTask(plugin, () -> sender.openInventory(inventory));
                 }
@@ -91,50 +89,23 @@ public class ChestLock extends FkPlayerCommand implements Listener {
 
     private void buildAchievementRepresentation() {
         // Simple listing des achievements
-        AdvancementRoot root = new AdvancementRoot("Achievements");
         ItemStack itemStack = new ItemStack(Material.GRASS);
         ItemMeta meta = itemStack.getItemMeta();
         meta.setDisplayName(ChatColor.RESET.toString() + ChatColor.YELLOW + "Minecraft");
         meta.setLore(Collections.singletonList(ChatColor.RESET.toString() + ChatColor.GRAY + "Achievements"));
         itemStack.setItemMeta(meta);
-        root.setItemStack(itemStack);
-        representations.put(root, new ArrayList<>());
+        categories.add(itemStack);
+        representations.put("Achievements", new ArrayList<>());
         for (Object achievement : XAdvancement.getAchievements()) {
-            representations.get(root).add(XAdvancement.getAchievementIcon(achievement));
+            representations.get("Achievements").add(XAdvancement.getAchievementIcon(achievement));
         }
     }
 
     private void buildAdvancementsRepresentation() {
-        // Listing par catégorie des advancements
-        Iterator<Advancement> iterator = Bukkit.getServer().advancementIterator();
-        while (iterator.hasNext()) {
-            Advancement advancement = iterator.next();
-
-            // Récupération de la catégorie
-            int index = advancement.getKey().toString().lastIndexOf("/");
-            if (index < 0) {
-                index = advancement.getKey().toString().length();
-            }
-            String root = advancement.getKey().toString().substring(0, index);
-
-            if (root.startsWith("minecraft:recipes")) {
-                continue;
-            }
-
-            AdvancementRoot advancementRoot = null;
-            for (AdvancementRoot r : representations.keySet()) {
-                if (r.name.equals(root)) {
-                    advancementRoot = r;
-                }
-            }
-            if (advancementRoot == null) {
-                advancementRoot = new AdvancementRoot(root);
-            }
-            List<ItemStack> group = representations.computeIfAbsent(advancementRoot, l -> new ArrayList<>());
-            if (advancement.getKey().toString().contains("root")){
-                advancementRoot.setItemStack(XAdvancement.getAdvancementIcon(advancement));
-            }
-            group.add(XAdvancement.getAdvancementIcon(advancement));
+        if (classExists("io.papermc.paper.advancement.AdvancementDisplay")) {
+            PaperAdvancement.buildAdvancements(this.categories, this.representations);
+        } else {
+            BukkitAdvancement.buildAdvancements(this.categories, this.representations);
         }
     }
 
@@ -150,15 +121,11 @@ public class ChestLock extends FkPlayerCommand implements Listener {
             return;
         }
         String root = ChatColor.stripColor(lore.get(0));
-        List<ItemStack> representations = null;
+        List<ItemStack> representations;
         if (root.equals("Achievements")) { // Pseudo catégorie
             representations = this.representations.values().iterator().next();
         } else {
-            for (AdvancementRoot r : this.representations.keySet()) {
-                if (root.equals(r.name + "/root")) {
-                    representations = this.representations.get(r);
-                }
-            }
+            representations = this.representations.get(root);
         }
 
         if (representations == null) {
@@ -191,40 +158,5 @@ public class ChestLock extends FkPlayerCommand implements Listener {
                 .replace("%advancement%", advancement)
         );
         return CommandResult.SUCCESS;
-    }
-
-    static class AdvancementRoot {
-
-        private final String name;
-        private ItemStack itemStack;
-
-        AdvancementRoot(String name) {
-            this.name = name;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public ItemStack getItemStack() {
-            return itemStack;
-        }
-
-        public void setItemStack(ItemStack itemStack) {
-            this.itemStack = itemStack;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            AdvancementRoot that = (AdvancementRoot) o;
-            return name.equals(that.name);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(name);
-        }
     }
 }
