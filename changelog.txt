@@ -460,3 +460,7 @@ Il est conseillé de réinitialiser les fichiers de langue.
 [*] Les commandes Brigadier peuvent désormais être exécutées dans des blocs de commande (1.13+)
 [*] Corrige une erreur avec une pause approfondie des items en 1.17
 [*] L'interface avec /fk chests lock est de retour en 1.17
+
+      >> 2.21.5
+[+] Remplir un seau a les mêmes restrictions que le vider
+[*] L'interface de chest lock utilise une méthode plus stable sur les serveurs supportés
