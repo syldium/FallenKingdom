@@ -307,6 +307,7 @@ public enum Messages
     PLAYER_DISABLED_POTION_BLAZE_POWDER_SHIFT("player.disabled-potion.blaze-powder-shift"),
     PLAYER_DISABLED_POTION_CONSUME("player.disabled-potion.consume"),
     PLAYER_DISABLED_POTION_CRAFT("player.disabled-potion.craft"),
+    PLAYER_FILL_BUCKET_NEXT("player.fill-bucket-next"),
     PLAYER_END_NOT_ACTIVE("player.not-active.end"),
     PLAYER_LIFES_REMAINING("player.lifes-remaining"),
     PLAYER_LOCKED_CHEST_ACCESS_UNLOCKED("player.locked-chest.access-unlocked"),

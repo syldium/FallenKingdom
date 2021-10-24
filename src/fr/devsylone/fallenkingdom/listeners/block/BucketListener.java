@@ -12,46 +12,52 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
+import org.bukkit.event.player.PlayerBucketEvent;
+import org.bukkit.event.player.PlayerBucketFillEvent;
+import org.jetbrains.annotations.NotNull;
 
 public class BucketListener implements Listener
 {
-	private final Fk plugin;
+    private final Fk plugin;
 
-	public BucketListener(Fk plugin)
-	{
-		this.plugin = plugin;
-	}
+    public BucketListener(@NotNull Fk plugin) {
+        this.plugin = plugin;
+    }
 
-	@EventHandler
-	public void event(PlayerBucketEmptyEvent e)
-	{
-		Player p = e.getPlayer();
-		Block block = e.getBlockClicked();
+    @EventHandler
+    public void event(PlayerBucketEmptyEvent event) {
+        onBucket(event, Messages.PLAYER_PLACE_WATER_NEXT);
+    }
 
-		if(p.getGameMode() == GameMode.CREATIVE || !plugin.getWorldManager().isWorldWithBase(e.getPlayer().getWorld()))
-			return;
+    @EventHandler
+    public void onFill(PlayerBucketFillEvent event) {
+        onBucket(event, Messages.PLAYER_FILL_BUCKET_NEXT);
+    }
 
-		Team playerTeam = plugin.getFkPI().getTeamManager().getPlayerTeam(p);
-		if(playerTeam == null || plugin.getGame().getState() == GameState.BEFORE_STARTING)
-			return;
+    private void onBucket(@NotNull PlayerBucketEvent event, Messages message) {
+        final Player player = event.getPlayer();
+        final Block block = event.getBlockClicked();
+        if (player.getGameMode() == GameMode.CREATIVE || !plugin.getWorldManager().isWorldWithBase(player.getWorld())) {
+            return;
+        }
 
-		if (plugin.getFkPI().getRulesManager().getRule(Rule.BUCKET_ASSAULT))
-			return;
+        final Team playerTeam = plugin.getFkPI().getTeamManager().getPlayerTeam(player);
+        if (playerTeam == null || plugin.getGame().getState() == GameState.BEFORE_STARTING) {
+            return;
+        }
 
-		if(plugin.getGame().getState().equals(GameState.PAUSE))
-		{
-			ChatUtils.sendMessage(p, Messages.PLAYER_PAUSE);
-			e.setCancelled(true);
-			return;
-		}
+        if (plugin.getFkPI().getRulesManager().getRule(Rule.BUCKET_ASSAULT)) {
+            return;
+        }
 
-		for(Team team : Fk.getInstance().getFkPI().getTeamManager().getTeams())
-			if(!playerTeam.equals(team))
-				if(team.getBase() != null && team.getBase().contains(block, 3))
-				{
-					ChatUtils.sendMessage(p, Messages.PLAYER_PLACE_WATER_NEXT);
-					e.setCancelled(true);
-					break;
-				}
-	}
+        for (Team team : Fk.getInstance().getFkPI().getTeamManager().getTeams()) {
+            if (!playerTeam.equals(team)) {
+                if (team.getBase() != null && team.getBase().contains(block, 3)) {
+                    ChatUtils.sendMessage(player, message);
+                    event.setCancelled(true);
+                    break;
+                }
+            }
+        }
+    }
 }
