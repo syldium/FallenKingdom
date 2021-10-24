@@ -14,9 +14,7 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -24,9 +22,11 @@ import java.util.Map;
 public final class BukkitAdvancement {
 
     private static Field BUKKIT_ADVANCEMENT;
-    private static Field NMS_DISPLAY;
+    private static Method GET_DISPLAY;
     private static Method GET_HANDLE;
     private static Method GET_PARENT;
+    private static Method GET_ICON;
+    private static Method GET_BUKKIT_ITEM_STACK;
 
     static {
         try {
@@ -34,7 +34,12 @@ public final class BukkitAdvancement {
             final Class<?> nmsAdvancement = GET_HANDLE.getReturnType();
             GET_PARENT = NMSUtils.getMethod(nmsAdvancement, nmsAdvancement);
             BUKKIT_ADVANCEMENT = NMSUtils.getField(nmsAdvancement, Advancement.class, f -> true);
-            NMS_DISPLAY = NMSUtils.getField(nmsAdvancement, NMSUtils.nmsClass("advancements", "AdvancementDisplay"), field -> !Modifier.isStatic(field.getModifiers()));
+            final Class<?> nmsDisplay = NMSUtils.nmsClass("advancements", "AdvancementDisplay");
+            GET_DISPLAY = NMSUtils.getMethod(nmsAdvancement, nmsDisplay);
+            final Class<?> craftItemStack = NMSUtils.obcClass("inventory.CraftItemStack");
+            final Class<?> nmsItemStackClass = craftItemStack.getMethod("asNMSCopy", ItemStack.class).getReturnType();
+            GET_ICON = NMSUtils.getMethod(nmsDisplay, nmsItemStackClass);
+            GET_BUKKIT_ITEM_STACK = craftItemStack.getMethod("asBukkitCopy", nmsItemStackClass);
         } catch (ReflectiveOperationException ex) {
             ex.printStackTrace();
         }
@@ -62,16 +67,9 @@ public final class BukkitAdvancement {
                 }
             }
 
-            Class<?> craftItemStack = XItemStack.ITEM_STACK;
-            Class<?> nmsItemStackClass = craftItemStack.getMethod("asNMSCopy", ItemStack.class).getReturnType();
-            Field nmsItemStackField = Arrays.stream(display.getClass().getDeclaredFields())
-                    .filter(f -> f.getType().equals(nmsItemStackClass))
-                    .findAny().orElseThrow(RuntimeException::new);
-            nmsItemStackField.setAccessible(true);
-            Object nmsItemStack = nmsItemStackField.get(display);
-            final ItemStack itemStack = (ItemStack) craftItemStack.getMethod("asBukkitCopy", nmsItemStackClass).invoke(null, nmsItemStack);
-            XItemStack.setDisplayNameComponents(name, itemStack);
-            XItemStack.setLoreComponents(description, itemStack);
+            Object nmsItemStack = GET_ICON.invoke(display);
+            final ItemStack itemStack = (ItemStack) GET_BUKKIT_ITEM_STACK.invoke(null, nmsItemStack);
+            XItemStack.setDisplayNameAndLore(itemStack, name, description);
             return itemStack;
         } catch (ReflectiveOperationException ex) {
             throw new RuntimeException(ex);
@@ -111,7 +109,7 @@ public final class BukkitAdvancement {
 
     private static @Nullable Object getDisplay(@NotNull Advancement advancement) {
         try {
-            return NMS_DISPLAY.get(GET_HANDLE.invoke(advancement));
+            return GET_DISPLAY.invoke(GET_HANDLE.invoke(advancement));
         } catch (IllegalAccessException | InvocationTargetException ex) {
             throw new RuntimeException(ex);
         }
