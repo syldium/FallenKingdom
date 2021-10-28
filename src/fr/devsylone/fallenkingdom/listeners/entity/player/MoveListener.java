@@ -85,7 +85,7 @@ public class MoveListener implements Listener
 					else
 						fkp.sendMessage(Messages.PLAYER_BASE_EXIT.getMessage().replace("%team%", team.toString()));
 
-				if(team.getBase().getChestsRoom() != null && FkPI.getInstance().getChestsRoomsManager().isEnabled() && !e.getPlayer().getGameMode().equals(GameMode.SPECTATOR))
+				if(team.getBase().getChestsRoom() != null && FkPI.getInstance().getChestsRoomsManager().isEnabled() && e.getPlayer().getGameMode() != GameMode.SPECTATOR)
 				{
 					if(team.getBase().getChestsRoom().contains(e.getTo()) && !team.getBase().getChestsRoom().contains(e.getFrom()))
 						if(team.equals(pTeam))
@@ -93,7 +93,8 @@ public class MoveListener implements Listener
 						else
 						{
 							fkp.sendMessage(Messages.PLAYER_CHEST_ROOM_ENTER.getMessage().replace("%team%", team.toString()));
-							team.getBase().getChestsRoom().addEnemyInside(e.getPlayer());
+							if(Fk.getInstance().getGame().isAssaultsEnabled())
+								team.getBase().getChestsRoom().addEnemyInside(e.getPlayer());
 						}
 
 					else if(team.getBase().getChestsRoom().contains(e.getFrom()) && !team.getBase().getChestsRoom().contains(e.getTo()))
