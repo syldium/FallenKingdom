@@ -69,7 +69,7 @@ public class DamageListener implements Listener
              */
             for(Player p : Bukkit.getOnlinePlayers())
                 if (Fk.getInstance().getWorldManager().isAffected(p.getWorld()))
-                    p.playSound(p.getLocation(), FkSound.WITHER_SPAWN.bukkitSound(), 0.8f, 1f);
+                    Fk.getInstance().getDisplayService().playDeathSound(p);
 
             /*
              * Add kill Si killer != dead
@@ -104,7 +104,7 @@ public class DamageListener implements Listener
 
                 for(Player p : Bukkit.getOnlinePlayers())
                     if (Fk.getInstance().getWorldManager().isAffected(p.getWorld()))
-                        p.playSound(p.getLocation(), FkSound.ENDERDRAGON_DEATH.bukkitSound(), 0.8f, 1f);
+                        Fk.getInstance().getDisplayService().playEliminationSound(p);
             }
             /*
              * Info nbre de vie

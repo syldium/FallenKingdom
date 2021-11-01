@@ -4,6 +4,7 @@ import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.display.change.DisplayChange;
 import fr.devsylone.fallenkingdom.display.change.SetScoreboardLineChange;
 import fr.devsylone.fallenkingdom.display.change.SetScoreboardTitleChange;
+import fr.devsylone.fallenkingdom.display.sound.SoundPlayer;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fallenkingdom.scoreboard.PlaceHolder;
 import fr.devsylone.fkpi.util.Saveable;
@@ -30,6 +31,9 @@ public class GlobalDisplayService implements DisplayService, Saveable {
     private final Stack<DisplayChange<?>> revisions = new Stack<>();
     private Map<DisplayType, DisplayService> services;
     private ScoreboardDisplayService scoreboard;
+
+    private SoundPlayer deathSound = SoundPlayer.EMPTY;
+    private SoundPlayer eliminationSound = SoundPlayer.EMPTY;
 
     public GlobalDisplayService() {
         this.services = Collections.emptyMap();
@@ -115,6 +119,8 @@ public class GlobalDisplayService implements DisplayService, Saveable {
     public static final String FILENAME = "display.yml";
     private static final String SIDEBAR = "sidebar";
     private static final String TITLE = "title";
+    private static final String DEATH_SOUND = "death-sound";
+    private static final String ELIMINATION_SOUND = "elimination-sound";
 
     @Override
     public void load(ConfigurationSection config) {
@@ -133,6 +139,18 @@ public class GlobalDisplayService implements DisplayService, Saveable {
         } else {
             this.scoreboard = new ScoreboardDisplayService();
         }
+
+        if (config.contains(DEATH_SOUND)) {
+            this.deathSound = SoundPlayer.create(requireNonNull(config.getConfigurationSection(DEATH_SOUND), "death sound config"));
+        } else {
+            this.deathSound = SoundPlayer.deathSound();
+        }
+        if (config.contains(ELIMINATION_SOUND)) {
+            this.eliminationSound = SoundPlayer.create(requireNonNull(config.getConfigurationSection(ELIMINATION_SOUND), "elimination sound config"));
+        } else {
+            this.eliminationSound = SoundPlayer.eliminationSound();
+        }
+
         this.services = services;
         this.text.load(config);
     }
@@ -155,7 +173,17 @@ public class GlobalDisplayService implements DisplayService, Saveable {
                 }
             }
         }
+        this.deathSound.save(config.createSection(DEATH_SOUND));
+        this.eliminationSound.save(config.createSection(ELIMINATION_SOUND));
         this.text.save(config);
+    }
+
+    public void playDeathSound(@NotNull Player player) {
+        this.deathSound.play(player);
+    }
+
+    public void playEliminationSound(@NotNull Player player) {
+        this.eliminationSound.play(player);
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
