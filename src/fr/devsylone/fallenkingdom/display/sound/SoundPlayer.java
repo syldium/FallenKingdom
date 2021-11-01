@@ -3,7 +3,10 @@ package fr.devsylone.fallenkingdom.display.sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import static fr.devsylone.fallenkingdom.display.sound.LegacySoundPlayer.SOUND;
+import static fr.devsylone.fallenkingdom.display.sound.LegacySoundPlayer.VOLUME;
 import static fr.devsylone.fallenkingdom.version.Version.VersionType;
 import static fr.devsylone.fallenkingdom.version.Version.classExists;
 
@@ -19,6 +22,15 @@ public interface SoundPlayer {
 
     }
 
+    static @NotNull SoundPlayer fromConfig(@Nullable ConfigurationSection config, @NotNull String defaultSound) {
+        if (config == null) {
+            return create(defaultSound);
+        } else if (config.getString(SOUND, "").isEmpty() || Double.compare(config.getDouble(VOLUME), 0) <= 0) {
+            return EMPTY;
+        }
+        return create(config);
+    }
+
     static @NotNull SoundPlayer create(@NotNull ConfigurationSection config) {
         return HAS_CATEGORY ? new ModernSoundPlayer(config) : new LegacySoundPlayer(config);
     }
@@ -27,19 +39,19 @@ public interface SoundPlayer {
         return HAS_CATEGORY ? new ModernSoundPlayer(sound, 0.8f, 1f) : new LegacySoundPlayer(sound, 0.8f, 1f);
     }
 
-    static @NotNull SoundPlayer deathSound() {
+    static @NotNull String deathSound() {
         if (VersionType.V1_9_V1_12.isHigherOrEqual()) {
-            return create("entity.wither.spawn");
+            return "entity.wither.spawn";
         }
-        return create("mob.wither.spawn");
+        return "mob.wither.spawn";
     }
 
-    static @NotNull SoundPlayer eliminationSound() {
+    static @NotNull String eliminationSound() {
         if (VersionType.V1_13.isHigherOrEqual()) {
-            return create("entity.ender_dragon.death");
+            return "entity.ender_dragon.death";
         } else if (VersionType.V1_9_V1_12.isHigherOrEqual()) {
-            return create("entity.enderdragon.death");
+            return "entity.enderdragon.death";
         }
-        return create("mob.enderdragon.end");
+        return "mob.enderdragon.end";
     }
 }

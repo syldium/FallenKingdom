@@ -140,16 +140,8 @@ public class GlobalDisplayService implements DisplayService, Saveable {
             this.scoreboard = new ScoreboardDisplayService();
         }
 
-        if (config.contains(DEATH_SOUND)) {
-            this.deathSound = SoundPlayer.create(requireNonNull(config.getConfigurationSection(DEATH_SOUND), "death sound config"));
-        } else {
-            this.deathSound = SoundPlayer.deathSound();
-        }
-        if (config.contains(ELIMINATION_SOUND)) {
-            this.eliminationSound = SoundPlayer.create(requireNonNull(config.getConfigurationSection(ELIMINATION_SOUND), "elimination sound config"));
-        } else {
-            this.eliminationSound = SoundPlayer.eliminationSound();
-        }
+        this.deathSound = SoundPlayer.fromConfig(config.getConfigurationSection(DEATH_SOUND), SoundPlayer.deathSound());
+        this.eliminationSound = SoundPlayer.fromConfig(config.getConfigurationSection(ELIMINATION_SOUND), SoundPlayer.eliminationSound());
 
         this.services = services;
         this.text.load(config);
