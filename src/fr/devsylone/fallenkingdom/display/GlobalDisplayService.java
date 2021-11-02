@@ -87,6 +87,16 @@ public class GlobalDisplayService implements DisplayService, Saveable {
         }
     }
 
+    public void updateAllScoreboards(int line) {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (!Fk.getInstance().getWorldManager().isAffected(player.getWorld())) {
+                continue;
+            }
+            final FkPlayer fkPlayer = Fk.getInstance().getPlayerManager().getPlayer(player);
+            this.scoreboard.updateLine(player, fkPlayer, line);
+        }
+    }
+
     public @NotNull ScoreboardDisplayService scoreboard() {
         return this.scoreboard;
     }

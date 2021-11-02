@@ -310,10 +310,7 @@ public class Fk extends JavaPlugin
 
 		pauseRestorer = new PauseRestorer();
 
-		// Scoreboards
-		//scoreboardManager = new ScoreboardManager(); //Le recréer pour le réinitialiser
-
-		//getScoreboardManager().recreateAllScoreboards();
+		displayService.loadNullable(null);
 
 		saveableManager = new SaveablesManager(this); // En dernier
 	}

@@ -22,6 +22,7 @@ public class Undo extends FkCommand
     {
         if (!plugin.getDisplayService().undo())
             throw new FkLightException(Messages.CMD_ERROR_SCOREBOARD_CANNOT_UNDO);
+        plugin.getDisplayService().updateAll();
         return CommandResult.SUCCESS;
     }
 }
