@@ -10,6 +10,7 @@ import fr.devsylone.fallenkingdom.scoreboard.PlaceHolder;
 import fr.devsylone.fkpi.util.Saveable;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -90,7 +91,7 @@ public class GlobalDisplayService implements DisplayService, Saveable {
         return this.scoreboard;
     }
 
-    private void setScoreboard(@NotNull ScoreboardDisplayService scoreboard) {
+    public void setScoreboard(@NotNull ScoreboardDisplayService scoreboard) {
         this.scoreboard = scoreboard;
         this.services.put(SCOREBOARD, scoreboard);
     }
@@ -135,16 +136,21 @@ public class GlobalDisplayService implements DisplayService, Saveable {
         if (config.contains(SCOREBOARD.asString())) {
             final ConfigurationSection section = requireNonNull(config.getConfigurationSection(SCOREBOARD.asString()), "scoreboard config has no section");
             this.scoreboard = new ScoreboardDisplayService(section.getString(TITLE, ""), section.getStringList(SIDEBAR));
-            services.put(SCOREBOARD, this.scoreboard);
         } else {
-            this.scoreboard = new ScoreboardDisplayService();
+            this.scoreboard = ScoreboardDisplayService.createDefault();
         }
+        services.put(SCOREBOARD, this.scoreboard);
 
         this.deathSound = SoundPlayer.fromConfig(config.getConfigurationSection(DEATH_SOUND), SoundPlayer.deathSound());
         this.eliminationSound = SoundPlayer.fromConfig(config.getConfigurationSection(ELIMINATION_SOUND), SoundPlayer.eliminationSound());
 
         this.services = services;
         this.text.load(config);
+    }
+
+    @Override
+    public void loadNullable(ConfigurationSection config) {
+        this.load(config == null ? new MemoryConfiguration() : config);
     }
 
     @Override

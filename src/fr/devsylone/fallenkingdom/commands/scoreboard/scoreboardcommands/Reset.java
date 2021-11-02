@@ -4,6 +4,7 @@ import fr.devsylone.fallenkingdom.commands.abstraction.CommandRole;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.Confirmable;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
+import fr.devsylone.fallenkingdom.display.ScoreboardDisplayService;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import org.bukkit.command.CommandSender;
 
@@ -23,7 +24,7 @@ public class Reset extends FkCommand implements Confirmable
 	{
 		if (isConfirmed(sender)) {
 			sender.sendMessage(Messages.CMD_SCOREBOARD_RESET.getMessage());
-			//plugin.getScoreboardManager().reset(); // TODO
+			plugin.getDisplayService().setScoreboard(ScoreboardDisplayService.createDefault());
 			plugin.getDisplayService().updateAll();
 			return CommandResult.SUCCESS;
 		}

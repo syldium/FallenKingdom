@@ -2,6 +2,7 @@ package fr.devsylone.fallenkingdom.display;
 
 import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fallenkingdom.scoreboard.PlaceHolder;
+import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
@@ -10,6 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.EnumSet;
@@ -55,6 +57,12 @@ public class ScoreboardDisplayService implements DisplayService {
             }
             this.indexes.add(set);
         }
+    }
+
+    public static @NotNull ScoreboardDisplayService createDefault() {
+        final List<String> lines = new ArrayList<>(Arrays.asList(Messages.SCOREBOARD_DEFAULT.getMessage().split("\n")));
+        lines.add(ChatUtils.DEVSYLONE);
+        return new ScoreboardDisplayService(ChatUtils.PREFIX, lines);
     }
 
     @Override

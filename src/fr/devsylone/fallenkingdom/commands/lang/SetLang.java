@@ -4,6 +4,7 @@ import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandRole;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
+import fr.devsylone.fallenkingdom.display.ScoreboardDisplayService;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fallenkingdom.utils.Messages;
@@ -50,7 +51,7 @@ public class SetLang extends FkCommand
         plugin.getLanguageManager().init(plugin);
 
         if (isDefaultScoreboard) {
-            plugin.getDisplayService().setScoreboardLines(Arrays.asList(Messages.SCOREBOARD_DEFAULT.getMessage().split("\n")));
+            plugin.getDisplayService().setScoreboard(ScoreboardDisplayService.createDefault());
             plugin.getDisplayService().updateAll();
         }
         ChatUtils.sendMessage(sender, Messages.CMD_LANG_SET);

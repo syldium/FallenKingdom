@@ -211,7 +211,7 @@ public class FilesUpdater
         if(isGrowing(lastv, "2.22.0"))
         {
             final FkConfig displayConfig = Fk.getInstance().getSaveableManager().getFileConfiguration(GlobalDisplayService.FILENAME);
-            final FkConfig scoreboardConfig = Fk.getInstance().getSaveableManager().getFileConfiguration("scoreboard.yml");
+            final FkConfig scoreboardConfig = Fk.getInstance().getSaveableManager().getTempFileConfiguration("scoreboard.yml");
             if (!displayConfig.fileExists() && scoreboardConfig.fileExists()) {
                 scoreboardConfig.load();
                 final String oldClass = ScoreboardManager.class.getSimpleName();

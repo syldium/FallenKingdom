@@ -137,11 +137,19 @@ public class SaveablesManager {
 				file.set(key, null);
 	}
 
-	public @NotNull FkConfig getFileConfiguration(String path) {
-		return files.computeIfAbsent(path, this::loadFile);
+	public @NotNull FkConfig getFileConfiguration(@NotNull String path) {
+		return this.files.computeIfAbsent(path, this::loadFile);
 	}
 
-	private @NotNull FkConfig loadFile(String filename) {
+	public @NotNull FkConfig getTempFileConfiguration(@NotNull String path) {
+		FkConfig config = this.files.get(path);
+		if (config == null) {
+			return this.loadFile(path);
+		}
+		return config;
+	}
+
+	private @NotNull FkConfig loadFile(@NotNull String filename) {
 		return new FkConfig(new File(plugin.getDataFolder(), filename));
 	}
 
