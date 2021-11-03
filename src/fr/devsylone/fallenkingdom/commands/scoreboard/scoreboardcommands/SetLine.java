@@ -26,14 +26,19 @@ public class SetLine extends FkCommand
 	public CommandResult execute(Fk plugin, CommandSender sender, List<String> args, String label)
 	{
 		GlobalDisplayService service = plugin.getDisplayService();
-		int line = service.scoreboard().reverseIndex(ArgumentParser.parseScoreboardLine(args.get(0), Messages.CMD_ERROR_SCOREBOARD_INVALID_LINE));
+		int previousSize = service.scoreboard().size();
+		int line = ArgumentParser.parseScoreboardLine(service.scoreboard(), false, args.get(0), Messages.CMD_ERROR_SCOREBOARD_INVALID_LINE);
 		String content = String.join(" ", args.subList(1, args.size()));
 		int maxLength = Version.VersionType.V1_13.isHigherOrEqual() ? 64 : 32;
 		if (content.length() > maxLength) {
 			throw new FkLightException(Messages.CMD_ERROR_SCOREBOARD_TOO_MANY_CHARS);
 		}
 		service.setScoreboardLine(line, ChatColor.translateAlternateColorCodes('&', content));
-		service.updateAllScoreboards(line);
+		if (line < 0 || line > previousSize) {
+			service.updateAll();
+		} else {
+			service.updateAllScoreboards(line);
+		}
 		return CommandResult.SUCCESS;
 	}
 }

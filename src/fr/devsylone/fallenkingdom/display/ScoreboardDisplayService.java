@@ -155,11 +155,29 @@ public class ScoreboardDisplayService implements DisplayService {
 
     @Contract("_, _ -> new")
     public @NotNull ScoreboardDisplayService withLine(int line, @Nullable String value) {
-        final List<String> lines = new ArrayList<>(this.lines);
+        final List<String> lines;
         if (value == null) {
+            // Supprimer une ligne
+            if (0 > line || line >= this.size()) {
+                throw new IllegalArgumentException("Index " + line + " of the line to be removed is invalid for length " + this.size() + ".");
+            }
+            lines = new ArrayList<>(this.lines);
             lines.remove(line);
         } else {
-            lines.set(line, value);
+            // Éditer/Ajouter une ligne
+            if (line < 0) {
+                // Rajouter au début
+                lines = new ArrayList<>(this.size() - line);
+                lines.add(value);
+                fillWith(lines, line + 1, 0);
+                lines.addAll(this.lines);
+            } else {
+                // Rajouter à la fin/Éditer
+                lines = new ArrayList<>(Math.max(this.size(), line + 1));
+                lines.addAll(this.lines);
+                fillWith(lines, this.size(), line + 1);
+                lines.set(line, value);
+            }
         }
         return new ScoreboardDisplayService(this.title, lines);
     }
@@ -186,5 +204,11 @@ public class ScoreboardDisplayService implements DisplayService {
             }
         }
         return true;
+    }
+
+    private static void fillWith(@NotNull List<@NotNull String> lines, int from, int to) {
+        for (int i = from; i < to; i++) {
+            lines.add("");
+        }
     }
 }

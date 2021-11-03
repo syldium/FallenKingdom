@@ -13,7 +13,7 @@ public class SetScoreboardLineChange implements DisplayChange<ScoreboardDisplayS
 
     public SetScoreboardLineChange(@NotNull ScoreboardDisplayService scoreboard, int line, @Nullable String next) {
         this.line = line;
-        this.previous = line < scoreboard.size() ? scoreboard.line(line) : null;
+        this.previous = 0 <= line && line < scoreboard.size() ? scoreboard.line(line) : null;
         this.next = next;
     }
 
