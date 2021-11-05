@@ -4,11 +4,13 @@ import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.display.change.DisplayChange;
 import fr.devsylone.fallenkingdom.display.change.SetScoreboardLineChange;
 import fr.devsylone.fallenkingdom.display.change.SetScoreboardTitleChange;
+import fr.devsylone.fallenkingdom.display.progress.ProgressBar;
 import fr.devsylone.fallenkingdom.display.sound.SoundPlayer;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fallenkingdom.scoreboard.PlaceHolder;
 import fr.devsylone.fkpi.util.Saveable;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.entity.Player;
@@ -26,12 +28,21 @@ import static fr.devsylone.fallenkingdom.display.DisplayType.BOSSBAR;
 import static fr.devsylone.fallenkingdom.display.DisplayType.SCOREBOARD;
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Point d'entrée de tous les supports d'affichage.
+ * <p>
+ * Ce service n'étant pas forcément hydraté de la configuration tout de suite,
+ * chaque propriété doit être initialisée à une valeur vide, mais pas {@code
+ * null} (no-op).
+ */
 public class GlobalDisplayService implements DisplayService, Saveable {
 
     private final DisplayText text = new DisplayText();
     private final Stack<DisplayChange<?>> revisions = new Stack<>();
     private Map<DisplayType, DisplayService> services;
     private ScoreboardDisplayService scoreboard;
+
+    private ProgressBar.Provider barProvider = ProgressBar.Provider.EMPTY;
 
     private SoundPlayer deathSound = SoundPlayer.EMPTY;
     private SoundPlayer eliminationSound = SoundPlayer.EMPTY;
@@ -132,6 +143,7 @@ public class GlobalDisplayService implements DisplayService, Saveable {
     private static final String TITLE = "title";
     private static final String DEATH_SOUND = "death-sound";
     private static final String ELIMINATION_SOUND = "elimination-sound";
+    private static final String PROGRESSBAR = "progressbar";
 
     @Override
     public void load(ConfigurationSection config) {
@@ -150,6 +162,8 @@ public class GlobalDisplayService implements DisplayService, Saveable {
             this.scoreboard = ScoreboardDisplayService.createDefault();
         }
         services.put(SCOREBOARD, this.scoreboard);
+
+        this.barProvider = ProgressBar.Provider.fromConfig(config.getConfigurationSection(PROGRESSBAR));
 
         this.deathSound = SoundPlayer.fromConfig(config.getConfigurationSection(DEATH_SOUND), SoundPlayer.deathSound());
         this.eliminationSound = SoundPlayer.fromConfig(config.getConfigurationSection(ELIMINATION_SOUND), SoundPlayer.eliminationSound());
@@ -181,9 +195,15 @@ public class GlobalDisplayService implements DisplayService, Saveable {
                 }
             }
         }
+
+        this.barProvider.save(config.createSection(PROGRESSBAR));
         this.deathSound.save(config.createSection(DEATH_SOUND));
         this.eliminationSound.save(config.createSection(ELIMINATION_SOUND));
         this.text.save(config);
+    }
+
+    public @NotNull ProgressBar initProgressBar(@NotNull Player player, @NotNull Location location) {
+        return this.barProvider.init(player, location);
     }
 
     public void playDeathSound(@NotNull Player player) {
