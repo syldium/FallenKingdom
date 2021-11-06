@@ -42,6 +42,7 @@ public class GlobalDisplayService implements DisplayService, Saveable {
     private Map<DisplayType, DisplayService> services;
     private ScoreboardDisplayService scoreboard;
 
+    private TickFormatter tickFormat;
     private ProgressBar.Provider barProvider = ProgressBar.Provider.EMPTY;
 
     private SoundPlayer deathSound = SoundPlayer.EMPTY;
@@ -50,6 +51,7 @@ public class GlobalDisplayService implements DisplayService, Saveable {
     public GlobalDisplayService() {
         this.services = Collections.emptyMap();
         this.scoreboard = new ScoreboardDisplayService();
+        this.tickFormat = new TickFormatter();
     }
 
     @Override
@@ -138,11 +140,16 @@ public class GlobalDisplayService implements DisplayService, Saveable {
         return this.text;
     }
 
+    public @NotNull TickFormatter tick() {
+        return tickFormat;
+    }
+
     public static final String FILENAME = "display.yml";
     private static final String SIDEBAR = "sidebar";
     private static final String TITLE = "title";
     private static final String DEATH_SOUND = "death-sound";
     private static final String ELIMINATION_SOUND = "elimination-sound";
+    private static final String TICK_FORMAT = "tick-format";
     private static final String PROGRESSBAR = "progressbar";
 
     @Override
@@ -163,6 +170,9 @@ public class GlobalDisplayService implements DisplayService, Saveable {
         }
         services.put(SCOREBOARD, this.scoreboard);
 
+        if (config.contains(TICK_FORMAT)) {
+            this.tickFormat = new TickFormatter(requireNonNull(config.getConfigurationSection(TICK_FORMAT), "tick format config"));
+        }
         this.barProvider = ProgressBar.Provider.fromConfig(config.getConfigurationSection(PROGRESSBAR));
 
         this.deathSound = SoundPlayer.fromConfig(config.getConfigurationSection(DEATH_SOUND), SoundPlayer.deathSound());
@@ -196,6 +206,7 @@ public class GlobalDisplayService implements DisplayService, Saveable {
             }
         }
 
+        this.tickFormat.save(config.createSection(TICK_FORMAT));
         this.barProvider.save(config.createSection(PROGRESSBAR));
         this.deathSound.save(config.createSection(DEATH_SOUND));
         this.eliminationSound.save(config.createSection(ELIMINATION_SOUND));

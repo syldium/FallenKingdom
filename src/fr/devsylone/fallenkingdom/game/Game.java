@@ -235,7 +235,7 @@ public class Game implements Saveable
 			dayDurationCache = 24000;
 		}
 		dayTickFactor = dayDurationCache / 24000f;
-		scoreboardUpdate = dayDurationCache / 1200;
+		scoreboardUpdate = dayDurationCache / 1200; // TODO si une journée dure 24h, une minute vaut 16.67 ticks != 20
 		time = (int) (time / previousDayTickFactor * dayTickFactor);
 	}
 
@@ -248,23 +248,13 @@ public class Game implements Saveable
 	{
 		if(day == 0)
 			return "--";
-		int gameTime = (int) (time / dayTickFactor);
-		int hours = gameTime / 1000 + 6;
-		hours %= 24;
-		return String.format("%02d", hours);
+		return Fk.getInstance().getDisplayService().tick().formatHours((long) (time / dayTickFactor));
 	}
 
 	public String getMinute()
 	{
 		if(day == 0)
 			return "--";
-		int gameTime = (int) (time / dayTickFactor);
-		int minutes = (gameTime % 1000) * 60 / 1000;
-		return String.format("%02d", minutes);
-	}
-
-	public int getTime()
-	{
-		return time;
+		return Fk.getInstance().getDisplayService().tick().formatMinutes((long) (time / dayTickFactor));
 	}
 }
