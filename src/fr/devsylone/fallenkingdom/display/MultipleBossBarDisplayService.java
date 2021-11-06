@@ -19,7 +19,7 @@ import java.util.UUID;
 import static fr.devsylone.fallenkingdom.utils.ConfigHelper.enumValueOf;
 import static java.util.Objects.requireNonNull;
 
-public class MultipleBossBarDisplayService extends BossBarDisplayService {
+class MultipleBossBarDisplayService extends BossBarDisplayService {
 
     private final Map<UUID, KeyedBossBar> bars;
     private BarColor color;
@@ -29,7 +29,7 @@ public class MultipleBossBarDisplayService extends BossBarDisplayService {
     private static final String STYLE = "style";
     private static final String TITLE = "title";
 
-    public MultipleBossBarDisplayService(@NotNull ConfigurationSection section) {
+    MultipleBossBarDisplayService(@NotNull ConfigurationSection section) {
         this(
                 section.getString(TITLE, ""),
                 enumValueOf(BarColor.class, section.getString(COLOR), BarColor.WHITE),
@@ -37,11 +37,11 @@ public class MultipleBossBarDisplayService extends BossBarDisplayService {
         );
     }
 
-    public MultipleBossBarDisplayService(@NotNull String value, @NotNull BarColor color, @NotNull BarStyle style) {
+    MultipleBossBarDisplayService(@NotNull String value, @NotNull BarColor color, @NotNull BarStyle style) {
         this(value, color, style, new HashMap<>());
     }
 
-    public MultipleBossBarDisplayService(@NotNull String value, @NotNull BarColor color, @NotNull BarStyle style, @NotNull Map<UUID, KeyedBossBar> bars) {
+    MultipleBossBarDisplayService(@NotNull String value, @NotNull BarColor color, @NotNull BarStyle style, @NotNull Map<UUID, KeyedBossBar> bars) {
         super(value);
         this.color = color;
         this.style = style;
@@ -102,7 +102,7 @@ public class MultipleBossBarDisplayService extends BossBarDisplayService {
         return new MultipleBossBarDisplayService(next, this.color, this.style, this.bars);
     }
 
-    public void save(@NotNull ConfigurationSection section) {
+    void save(@NotNull ConfigurationSection section) {
         section.set(COLOR, this.color.name());
         section.set(STYLE, this.style.name());
         section.set(TITLE, this.value());
