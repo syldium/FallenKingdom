@@ -72,7 +72,7 @@ public class ActionBarDisplayService extends SimpleDisplayService {
         @Override
         public void accept(Player player, String message) {
             try {
-                PacketUtils.sendPacket(player, PACKET_CONSTRUCTOR.newInstance(ChatMessage.fromString(message), (byte) 2));
+                PacketUtils.sendPacket(player, PACKET_CONSTRUCTOR.newInstance(ChatMessage.legacyTextComponent(message), (byte) 2));
             } catch (ReflectiveOperationException ex) {
                 ex.printStackTrace();
                 player.sendMessage(message);
