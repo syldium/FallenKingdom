@@ -12,7 +12,7 @@ public final class ChatMessage {
     public static final Class<?> CRAFT_CHAT_MESSAGE;
     public static final Class<?> CHAT_BASE_COMPONENT;
     private static final Method MESSAGE_FROM_STRING;
-    private static final Method MESSAGE_FROM_JSON;
+    private static Method MESSAGE_FROM_JSON;
 
     private ChatMessage() throws IllegalAccessException {
         throw new IllegalAccessException(this.getClass().getSimpleName() + " cannot be instantiated.");
@@ -23,11 +23,14 @@ public final class ChatMessage {
             CRAFT_CHAT_MESSAGE = NMSUtils.obcClass("util.CraftChatMessage");
             MESSAGE_FROM_STRING = CRAFT_CHAT_MESSAGE.getMethod("fromString", String.class);
             CHAT_BASE_COMPONENT = NMSUtils.nmsClass("network.chat", "IChatBaseComponent");
-            final Class<?> serializer = CHAT_BASE_COMPONENT.getDeclaredClasses()[0];
-            MESSAGE_FROM_JSON = NMSUtils.getMethod(serializer, CHAT_BASE_COMPONENT, String.class);
         } catch (ReflectiveOperationException ex) {
             throw new ExceptionInInitializerError(ex);
         }
+
+        try {
+            final Class<?> serializer = CHAT_BASE_COMPONENT.getDeclaredClasses()[0];
+            MESSAGE_FROM_JSON = NMSUtils.getMethod(serializer, CHAT_BASE_COMPONENT, String.class);
+        } catch (ReflectiveOperationException ignored) {}
     }
 
     /**
@@ -54,6 +57,10 @@ public final class ChatMessage {
      * @return Le composant de chat NMS
      */
     public static @NotNull Object legacyTextComponent(String message) {
+        if (MESSAGE_FROM_JSON == null) {
+            return fromString(message);
+        }
+
         final StringBuilder builder = new StringBuilder("{\"text\":\"");
         for (char c : message.toCharArray()) {
             if (c == '"') {
