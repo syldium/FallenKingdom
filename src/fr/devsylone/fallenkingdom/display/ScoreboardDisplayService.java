@@ -83,7 +83,7 @@ public class ScoreboardDisplayService implements DisplayService {
     @Override
     public void update(@NotNull Player player, @NotNull FkPlayer fkPlayer, @NotNull PlaceHolder... placeHolders) {
         if (placeHolders.length == 0) {
-            fkPlayer.getScoreboard().updateLines(this.renderLines(player));
+            fkPlayer.getScoreboard().updateLines(this.renderLines(player, fkPlayer));
             return;
         }
 
@@ -100,7 +100,7 @@ public class ScoreboardDisplayService implements DisplayService {
                 }
                 fkPlayer.getScoreboard().updateLine(
                         line,
-                        this.renderLine(player, line)
+                        this.renderLine(player, fkPlayer, line)
                 );
                 visitedLines.add(line);
             }
@@ -113,15 +113,18 @@ public class ScoreboardDisplayService implements DisplayService {
     }
 
     public void updateLine(@NotNull Player player, @NotNull FkPlayer fkPlayer, int line) {
-        fkPlayer.getScoreboard().updateLine(line, this.renderLine(player, line));
+        fkPlayer.getScoreboard().updateLine(line, this.renderLine(player, fkPlayer, line));
     }
 
     public int reverseIndex(int index) {
         return this.size() - index - 1;
     }
 
-    public @NotNull String renderLine(@NotNull Player player, int line) {
+    public @NotNull String renderLine(@NotNull Player player, @NotNull FkPlayer fkPlayer, int line) {
         String replaced = this.lines.get(line);
+        if (!fkPlayer.useFormattedText()) {
+            return ChatUtils.translateColorCodeToAmpersand(replaced);
+        }
         for (PlaceHolder placeHolder : this.indexes.get(line)) {
             final int usageIndex = this.placeHolders.get(placeHolder).indexOf(line);
             replaced = placeHolder.replace(replaced, player, usageIndex);
@@ -137,10 +140,10 @@ public class ScoreboardDisplayService implements DisplayService {
         return Collections.unmodifiableList(this.lines);
     }
 
-    public @NotNull List<String> renderLines(@NotNull Player player) {
+    public @NotNull List<String> renderLines(@NotNull Player player, @NotNull FkPlayer fkPlayer) {
         final List<String> rendered = new ArrayList<>(this.size());
         for (int i = 0; i < this.size(); i++) {
-            rendered.add(this.renderLine(player, i));
+            rendered.add(this.renderLine(player, fkPlayer, i));
         }
         return rendered;
     }

@@ -37,4 +37,15 @@ public final class ChatUtils
 	{
 		sendMessage(sender, colorMessage(message));
 	}
+
+	public static String translateColorCodeToAmpersand(String text)
+	{
+		char[] chars = text.toCharArray();
+		for (int i = 0; i < chars.length - 1; i++) {
+			if (chars[i] == ChatColor.COLOR_CHAR) {
+				chars[i] = '&';
+			}
+		}
+		return new String(chars);
+	}
 }

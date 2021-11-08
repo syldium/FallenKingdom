@@ -98,10 +98,7 @@ public class ScoreboardDisplayer
 			packetManager.remove(id);
 		entities.clear();
 
-		FkScoreboard scoreboard = fkPlayer.getScoreboardIfExists();
-		if (scoreboard != null) {
-			scoreboard.setFormatted(true);
-		}
+		fkPlayer.setUseFormattedText(true);
 	}
 
 	public void startUpdateRunnable()

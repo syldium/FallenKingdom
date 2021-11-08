@@ -37,6 +37,7 @@ public class FkPlayer implements Saveable
 	private FkScoreboard board;
 	private ScoreboardDisplayer sbDisplayer;
 	private Location portal;
+	private boolean formatted = true;
 
     public enum PlayerState
 	{
@@ -241,6 +242,21 @@ public class FkPlayer implements Saveable
 			nearAllies.add(worldPlayer.getLocation(), worldPlayer);
 		}
 		return nearAllies;
+	}
+
+	public boolean useFormattedText()
+	{
+		return formatted;
+	}
+
+	public void setUseFormattedText(boolean formatted)
+	{
+		this.formatted = formatted;
+		final FkScoreboard scoreboard = this.getScoreboard();
+		final Player player = scoreboard.player();
+		if (player != null) {
+			scoreboard.updateLines(this.displayService.scoreboard().renderLines(player, this));
+		}
 	}
 
 	public void load(ConfigurationSection config)

@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -24,7 +25,6 @@ import java.util.stream.Collectors;
 
 public class FkScoreboard
 {
-	private boolean formatted = true;
 
 	private final GlobalDisplayService displayService;
 	private final Scoreboard bukkitBoard;
@@ -94,7 +94,7 @@ public class FkScoreboard
 		}
 		else
 		{
-			this.sidebarBoard.updateLines(displayService.scoreboard().renderLines(player));
+			this.sidebarBoard.updateLines(displayService.scoreboard().renderLines(player, this.fkPlayer));
 		}
 		Fk.getInstance().getScoreboardManager().refreshNicks();
 
@@ -124,19 +124,18 @@ public class FkScoreboard
 		this.displayService.update(player, this.fkPlayer, placeHolders);
 	}
 
+	public @Nullable Player player()
+	{
+		return this.player.get();
+	}
+
+	/**
+	 * @deprecated {@link FkPlayer#setUseFormattedText(boolean)}
+	 */
+	@Deprecated
 	public void setFormatted(boolean formatted)
 	{
-		this.formatted = formatted;
-		final Player player = this.player.get();
-		if (player == null) {
-			return;
-		}
-
-		if (formatted) {
-			this.updateLines(this.displayService.scoreboard().renderLines(player));
-		} else {
-			this.updateLines(this.displayService.scoreboard().lines());
-		}
+		this.fkPlayer.setUseFormattedText(formatted);
 	}
 
 	public void remove()
