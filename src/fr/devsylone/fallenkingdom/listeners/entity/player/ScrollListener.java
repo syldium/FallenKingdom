@@ -19,7 +19,7 @@ public class ScrollListener implements Listener
 			return;
 		if(Fk.getInstance().getPlayerManager().getPlayer(e.getPlayer()).getState() == PlayerState.EDITING_SCOREBOARD && System.currentTimeMillis() - last > 200)
 		{
-			Fk.getInstance().getPlayerManager().getPlayer(e.getPlayer()).getScoreboard().setFormatted(alternate);
+			Fk.getInstance().getPlayerManager().getPlayer(e.getPlayer()).setUseFormattedText(alternate);
 			alternate = !alternate;
 			last = System.currentTimeMillis();
 		}

@@ -16,6 +16,7 @@ import fr.devsylone.fallenkingdom.manager.saveable.StarterInventoryManager;
 import fr.devsylone.fallenkingdom.pause.PauseRestorer;
 import fr.devsylone.fkpi.FkPI;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPluginLoader;
 
@@ -68,5 +69,8 @@ public class FkMock extends Fk {
     public void reset() {
         Bukkit.getScheduler().cancelTasks(this);
         game = new Game();
+        for (World world : Bukkit.getWorlds()) {
+            world.setFullTime(2000L);
+        }
     }
 }

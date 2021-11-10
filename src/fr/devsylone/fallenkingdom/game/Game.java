@@ -1,9 +1,12 @@
 package fr.devsylone.fallenkingdom.game;
 
+import fr.devsylone.fallenkingdom.display.tick.CycleTickFormatter;
+import fr.devsylone.fallenkingdom.display.tick.TickFormatter;
 import fr.devsylone.fkpi.teams.Team;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.entity.Player;
 
 import fr.devsylone.fallenkingdom.Fk;
@@ -18,6 +21,7 @@ import lombok.Getter;
 
 import java.util.Locale;
 
+import static fr.devsylone.fallenkingdom.display.tick.CycleTickFormatter.TICKS_PER_DAY_NIGHT_CYCLE;
 import static fr.devsylone.fallenkingdom.utils.ConfigHelper.enumValueOf;
 
 public class Game implements Saveable
@@ -25,11 +29,9 @@ public class Game implements Saveable
 	@Getter protected GameState state = GameState.BEFORE_STARTING;
 	@Getter protected int day = 0;
 	@Getter protected int time = FkPI.getInstance().getRulesManager().getRule(Rule.DAY_DURATION) - 10;
+	@Getter protected TickFormatter timeFormat = new CycleTickFormatter();
 
 	protected GameRunnable task = null;
-	protected int dayDurationCache = 24000;
-	protected int scoreboardUpdate = 20;
-	protected float dayTickFactor = 1;
 
 	@Getter protected boolean assaultsEnabled = false;
 	@Getter protected boolean pvpEnabled = false;
@@ -109,10 +111,13 @@ public class Game implements Saveable
 		endEnabled = false;
 	}
 
+	@Override
 	public void load(ConfigurationSection config)
 	{
 		day = Math.max(0, config.getInt("Day"));
 		time = Math.max(0, config.getInt("Time"));
+		ConfigurationSection format = config.getConfigurationSection("TimeFormat");
+		timeFormat = TickFormatter.fromConfig(format == null ? new MemoryConfiguration() : format);
 		state = enumValueOf(GameState.class, config.getString("State"), day > 1 ? GameState.STARTED : GameState.BEFORE_STARTING);
 
 		pvpEnabled = FkPI.getInstance().getRulesManager().getRule(Rule.PVP_CAP) <= day;
@@ -137,11 +142,13 @@ public class Game implements Saveable
 		}
 	}
 
+	@Override
 	public void save(ConfigurationSection config)
 	{
 		config.set("State", state.name());
 		config.set("Day", day);
 		config.set("Time", time);
+		timeFormat.save(config.createSection("TimeFormat"));
 	}
 
 	public void start()
@@ -220,41 +227,39 @@ public class Game implements Saveable
 	public long getExceptedWorldTime()
 	{
 		if (FkPI.getInstance().getRulesManager().getRule(Rule.ETERNAL_DAY))
-			return 6000;
+			return 6000L;
 		else
-			return dayDurationCache == 24000 ? time : (long) (time / dayTickFactor);
+			return timeFormat.worldTime(day, time);
 	}
 
 	public void updateDayDuration()
 	{
-		float previousDayTickFactor = dayTickFactor;
-		dayDurationCache = FkPI.getInstance().getRulesManager().getRule(Rule.DAY_DURATION);
-		if(dayDurationCache < 1200)
-		{
-			FkPI.getInstance().getRulesManager().setRule(Rule.DAY_DURATION, 24000);
-			dayDurationCache = 24000;
+		int dayDuration = FkPI.getInstance().getRulesManager().getRule(Rule.DAY_DURATION);
+		if (dayDuration < 1200) {
+			FkPI.getInstance().getRulesManager().setRule(Rule.DAY_DURATION, TICKS_PER_DAY_NIGHT_CYCLE);
+			dayDuration = TICKS_PER_DAY_NIGHT_CYCLE;
 		}
-		dayTickFactor = dayDurationCache / 24000f;
-		scoreboardUpdate = dayDurationCache / 1200; // TODO si une journée dure 24h, une minute vaut 16.67 ticks != 20
-		time = (int) (time / previousDayTickFactor * dayTickFactor);
+		long previousTime = timeFormat.worldTime(day, time);
+		timeFormat = timeFormat.withDayDuration(dayDuration);
+		time = timeFormat.timeFromWorld(previousTime);
 	}
 
 	public String getFormattedTime()
 	{
-		return getHour()  + "h" + getMinute();
+		return getHour() + 'h' + getMinute();
 	}
 
 	public String getHour()
 	{
 		if(day == 0)
 			return "--";
-		return Fk.getInstance().getDisplayService().tick().formatHours((long) (time / dayTickFactor));
+		return timeFormat.formatHours(time);
 	}
 
 	public String getMinute()
 	{
 		if(day == 0)
 			return "--";
-		return Fk.getInstance().getDisplayService().tick().formatMinutes((long) (time / dayTickFactor));
+		return timeFormat.formatMinutes(time);
 	}
 }
