@@ -20,4 +20,9 @@ public final class KeyHelper {
     public static NamespacedKey parseKey(String string) {
         return parseKey(string, string.indexOf(':'));
     }
+
+    @SuppressWarnings("deprecation")
+    public static NamespacedKey plugin(String value) {
+        return new NamespacedKey("fallenkingdom", value);
+    }
 }

@@ -1,5 +1,6 @@
 package fr.devsylone.fallenkingdom.listeners.entity.player;
 
+import fr.devsylone.fallenkingdom.players.FkPlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemHeldEvent;
@@ -15,11 +16,16 @@ public class ScrollListener implements Listener
 	@EventHandler
 	public void scroll(PlayerItemHeldEvent e)
 	{
-		if(!Fk.getInstance().getWorldManager().isAffected(e.getPlayer().getWorld()))
+		if (!Fk.getInstance().getWorldManager().isAffected(e.getPlayer().getWorld())) {
 			return;
-		if(Fk.getInstance().getPlayerManager().getPlayer(e.getPlayer()).getState() == PlayerState.EDITING_SCOREBOARD && System.currentTimeMillis() - last > 200)
-		{
-			Fk.getInstance().getPlayerManager().getPlayer(e.getPlayer()).getScoreboard().setFormatted(alternate);
+		}
+		final FkPlayer fkPlayer = Fk.getInstance().getPlayerManager().getPlayerIfExist(e.getPlayer());
+		if (fkPlayer == null) {
+			return;
+		}
+
+		if (fkPlayer.getState() == PlayerState.EDITING_SCOREBOARD && System.currentTimeMillis() - last > 200) {
+			fkPlayer.setUseFormattedText(alternate);
 			alternate = !alternate;
 			last = System.currentTimeMillis();
 		}

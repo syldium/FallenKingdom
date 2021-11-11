@@ -4,6 +4,7 @@ import fr.devsylone.fallenkingdom.commands.abstraction.CommandRole;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
 import fr.devsylone.fallenkingdom.utils.Messages;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import fr.devsylone.fallenkingdom.Fk;
@@ -26,7 +27,7 @@ public class SetName extends FkCommand
 		if(line.length() >= 32)
 			throw new FkLightException(Messages.CMD_ERROR_SCOREBOARD_TITLE_TOO_LONG);
 
-		Fk.getInstance().getScoreboardManager().setName(line.replace("&", "§"));
+		plugin.getDisplayService().setScoreboardTitle(ChatColor.translateAlternateColorCodes('&', line));
 		return CommandResult.SUCCESS;
 	}
 }

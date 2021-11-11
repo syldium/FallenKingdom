@@ -1,6 +1,7 @@
 package fr.devsylone.fallenkingdom;
 
 import fr.devsylone.fallenkingdom.commands.FkCommandExecutor;
+import fr.devsylone.fallenkingdom.display.GlobalDisplayService;
 import fr.devsylone.fallenkingdom.game.Game;
 import fr.devsylone.fallenkingdom.manager.LanguageManager;
 import fr.devsylone.fallenkingdom.manager.ListenersManager;
@@ -15,6 +16,7 @@ import fr.devsylone.fallenkingdom.manager.saveable.StarterInventoryManager;
 import fr.devsylone.fallenkingdom.pause.PauseRestorer;
 import fr.devsylone.fkpi.FkPI;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPluginLoader;
 
@@ -46,7 +48,8 @@ public class FkMock extends Fk {
 
         commandManager = new FkCommandExecutor(this, Objects.requireNonNull(getCommand("fk"), "Unable to register /fk command"));
 
-        playerManager = new PlayerManagerMock();
+        displayService = new GlobalDisplayService();
+        playerManager = new PlayerManagerMock(displayService);
         pauseRestorer = mock(PauseRestorer.class);
         starterInventoryManager = new StarterInventoryManager();
         scoreboardManager = new ScoreboardManager();
@@ -66,5 +69,8 @@ public class FkMock extends Fk {
     public void reset() {
         Bukkit.getScheduler().cancelTasks(this);
         game = new Game();
+        for (World world : Bukkit.getWorlds()) {
+            world.setFullTime(2000L);
+        }
     }
 }

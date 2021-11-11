@@ -32,7 +32,7 @@ public class ChestsList extends FkCommand
             builder.add(Messages.CMD_LOCKED_CHEST_LIST_INFO.getMessage()
                     .replace("%name%", chest.getName())
                     .replace("%day%", String.valueOf(chest.getUnlockDay()))
-                    .replace("%time%", String.valueOf(chest.getUnlockingTime()))
+                    .replace("%time%", String.valueOf(chest.getUnlockingTimeSecs()))
             );
             builder.add(Messages.CMD_LOCKED_CHEST_LIST_POSITION.getMessage()
                     .replace("%x%", String.valueOf(chest.getLocation().getBlockX()))

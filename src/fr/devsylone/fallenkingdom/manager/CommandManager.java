@@ -102,9 +102,9 @@ public class CommandManager
 			result = CommandResult.FAILURE;
 		}
 
-		// @todo En créer une interface ?
+		// TODO En créer une interface ?
 		if (main.getClass().getName().contains("rulescommands") && !(main instanceof RulesList) && plugin.getGame().getState().equals(Game.GameState.BEFORE_STARTING))
-			plugin.getScoreboardManager().recreateAllScoreboards();
+			plugin.getDisplayService().updateAll();
 		plugin.getTipsManager().addUsed(main);
 
 		return result;

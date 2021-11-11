@@ -42,7 +42,7 @@ public class SetColor extends FkCommand
 				.replace("%team%", team.toString())
 				.replace("%color%", team.getChatColor() + team.getColor().getGenredName(Color.GENRE_F))
 		);
-		plugin.getScoreboardManager().recreateAllScoreboards();
+		plugin.getDisplayService().updateAll();
 		return CommandResult.SUCCESS;
 	}
 

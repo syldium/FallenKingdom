@@ -1,6 +1,7 @@
 package fr.devsylone.fallenkingdom.manager.saveable;
 
 import fr.devsylone.fallenkingdom.Fk;
+import fr.devsylone.fallenkingdom.display.GlobalDisplayService;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fkpi.util.Saveable;
 import org.bukkit.Bukkit;
@@ -16,14 +17,21 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
 public class PlayerManager implements Saveable
 {
+	protected final GlobalDisplayService displayService;
 	protected final Map<UUID, Location> onTnt = new HashMap<>();
 	protected final Map<UUID, FkPlayer> playersByUUID = new HashMap<>();
 	protected final Map<String, FkPlayer> playersByString = new HashMap<>();
+
+	public PlayerManager(@NotNull GlobalDisplayService displayService)
+	{
+		this.displayService = displayService;
+	}
 
 	public @NotNull List<@NotNull FkPlayer> getConnectedPlayers()
 	{
@@ -71,7 +79,14 @@ public class PlayerManager implements Saveable
 
 	public @NotNull FkPlayer getPlayer(@NotNull String name)
 	{
-		return this.playersByString.computeIfAbsent(name, FkPlayer::new);
+		FkPlayer fkPlayer = this.playersByString.get(name);
+		if (fkPlayer != null) {
+			return fkPlayer;
+		}
+
+		fkPlayer = new FkPlayer(name, this.displayService);
+		playersByString.put(name, fkPlayer);
+		return fkPlayer;
 	}
 
 	public @NotNull FkPlayer getPlayer(@NotNull OfflinePlayer player)

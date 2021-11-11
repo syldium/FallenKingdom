@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import fr.devsylone.fallenkingdom.display.GlobalDisplayService;
 import fr.devsylone.fallenkingdom.manager.packets.PacketManager1_17;
 import fr.devsylone.fallenkingdom.utils.FkConfig;
 import fr.devsylone.fallenkingdom.version.LuckPermsContext;
@@ -14,6 +15,7 @@ import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
@@ -67,6 +69,7 @@ public class Fk extends JavaPlugin
 	protected PauseRestorer pauseRestorer;
 	protected StarterInventoryManager starterInventoryManager;
 	protected ScoreboardManager scoreboardManager;
+	protected GlobalDisplayService displayService;
 	protected PacketManager packetManager;
 	protected DeepPauseManager deepPauseManager;
 	protected TipsManager tipsManager;
@@ -153,7 +156,8 @@ public class Fk extends JavaPlugin
 		/*
 		 * MANAGER
 		 */
-		playerManager = new PlayerManager();
+		displayService = new GlobalDisplayService();
+		playerManager = new PlayerManager(displayService);
 		pauseRestorer = new PauseRestorer();
 		starterInventoryManager = new StarterInventoryManager();
 		scoreboardManager = new ScoreboardManager();
@@ -167,6 +171,7 @@ public class Fk extends JavaPlugin
 		game = new Game();
 
 		saveableManager = new SaveablesManager(this);
+		saveableManager.update();
 
 		/*
 		 * Update & load
@@ -227,19 +232,20 @@ public class Fk extends JavaPlugin
 	@Override
 	public void onDisable()
 	{
-		saveableManager.delayedSaveAll();
+		for (Player player : this.getServer().getOnlinePlayers()) {
+			final FkPlayer fkPlayer = this.playerManager.getPlayerIfExist(player);
+			if (fkPlayer != null) {
+				this.displayService.hide(player, fkPlayer);
+			}
+		}
+
+		this.saveableManager.delayedSaveAll();
 		FkConfig.awaitSaveEnd();
 
-		if(game.getState().equals(Game.GameState.PAUSE))
-		{
+		if (this.game.getState() == Game.GameState.PAUSE) {
 			getDeepPauseManager().unprotectItems();
 			getDeepPauseManager().resetAIs();
 		}
-
-		scoreboardManager.removeAllScoreboards();
-
-		for(FkPlayer p : getPlayerManager().getConnectedPlayers())
-			p.getScoreboard().remove();
 	}
 
 	public static void broadcast(String message, String prefix, FkSound sound)
@@ -293,7 +299,7 @@ public class Fk extends JavaPlugin
 		for(FkPlayer p : getPlayerManager().getConnectedPlayers())
 			p.getScoreboard().remove();
 
-		playerManager = new PlayerManager();
+		playerManager = new PlayerManager(displayService);
 		portalsManager = new PortalsManager();
 		deepPauseManager.unprotectItems();
 		deepPauseManager.resetAIs();
@@ -304,10 +310,8 @@ public class Fk extends JavaPlugin
 
 		pauseRestorer = new PauseRestorer();
 
-		// Scoreboards
-		scoreboardManager = new ScoreboardManager(); //Le recréer pour le réinitialiser
-
-		getScoreboardManager().recreateAllScoreboards();
+		displayService.loadNullable(null);
+		displayService.updateAll();
 
 		saveableManager = new SaveablesManager(this); // En dernier
 	}
@@ -334,7 +338,8 @@ public class Fk extends JavaPlugin
 			if(team.getBase() != null)
 				team.getBase().resetChestRoom();
 		}
-		getScoreboardManager().recreateAllScoreboards();
+		displayService.hideAll();
+		displayService.updateAll();
 	}
 
 	private boolean check()

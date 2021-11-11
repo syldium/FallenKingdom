@@ -5,6 +5,7 @@ import fr.devsylone.fallenkingdom.commands.ArgumentParser;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandRole;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
+import fr.devsylone.fallenkingdom.display.GlobalDisplayService;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import org.bukkit.command.CommandSender;
@@ -21,9 +22,11 @@ public class RemoveLine extends FkCommand
     @Override
     public CommandResult execute(Fk plugin, CommandSender sender, List<String> args, String label)
     {
-        int line = ArgumentParser.parseScoreboardLine(args.get(0), Messages.CMD_ERROR_SCOREBOARD_INVALID_LINE);
-        if(!Fk.getInstance().getScoreboardManager().removeLine(line))
+        GlobalDisplayService service = plugin.getDisplayService();
+        int line = ArgumentParser.parseScoreboardLine(service.scoreboard(), true, args.get(0), Messages.CMD_ERROR_SCOREBOARD_INVALID_LINE);
+        if(!service.setScoreboardLine(line, null))
             throw new FkLightException(Messages.CMD_ERROR_SCOREBOARD_INVALID_LINE);
+        service.updateAll();
         return CommandResult.SUCCESS;
     }
 }

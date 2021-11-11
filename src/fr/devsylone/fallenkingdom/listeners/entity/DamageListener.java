@@ -28,97 +28,98 @@ import java.util.Random;
 
 public class DamageListener implements Listener
 {
-	@EventHandler
-	public void damage(EntityDamageEvent e)
-	{
-		if(!Fk.getInstance().getWorldManager().isAffected(e.getEntity().getWorld()))
-			return;
-		if(Fk.getInstance().getGame().getState().equals(GameState.PAUSE) && !e.getCause().equals(EntityDamageEvent.DamageCause.VOID))
-			e.setCancelled(true);
-	}
+    @EventHandler
+    public void damage(EntityDamageEvent e)
+    {
+        if(!Fk.getInstance().getWorldManager().isAffected(e.getEntity().getWorld()))
+            return;
+        if(Fk.getInstance().getGame().getState().equals(GameState.PAUSE) && !e.getCause().equals(EntityDamageEvent.DamageCause.VOID))
+            e.setCancelled(true);
+    }
 
-	@EventHandler
-	public void creeperDeath(EntityDeathEvent e)
-	{
-		if(!Fk.getInstance().getWorldManager().isAffected(e.getEntity().getWorld()))
-			return;
-		ChargedCreepers rule = FkPI.getInstance().getRulesManager().getRule(Rule.CHARGED_CREEPERS);
-		if(e.getEntity() instanceof Creeper && ((Creeper) e.getEntity()).isPowered() && (new Random().nextInt(100) <= rule.getDrop()))
-			e.getDrops().add(new ItemStack(Material.TNT, rule.getTntAmount()));
-	}
+    @EventHandler
+    public void creeperDeath(EntityDeathEvent e)
+    {
+        if(!Fk.getInstance().getWorldManager().isAffected(e.getEntity().getWorld()))
+            return;
+        ChargedCreepers rule = FkPI.getInstance().getRulesManager().getRule(Rule.CHARGED_CREEPERS);
+        if(e.getEntity() instanceof Creeper && ((Creeper) e.getEntity()).isPowered() && (new Random().nextInt(100) <= rule.getDrop()))
+            e.getDrops().add(new ItemStack(Material.TNT, rule.getTntAmount()));
+    }
 
-	@EventHandler
-	public void dead(PlayerDeathEvent e)
-	{
-		if(e.getEntity().hasMetadata("NPC") || !Fk.getInstance().getWorldManager().isAffected(e.getEntity().getWorld()))
-			return;
+    @EventHandler
+    public void dead(PlayerDeathEvent e)
+    {
+        if(e.getEntity().hasMetadata("NPC") || !Fk.getInstance().getWorldManager().isAffected(e.getEntity().getWorld()))
+            return;
 
-		Environment.setDeathMessage(
-				e,
-				FkPI.getInstance().getTeamManager().getPlayerTeam(e.getEntity()),
-				FkPI.getInstance().getTeamManager().getPlayerTeam(e.getEntity().getKiller())
-		);
+        Environment.setDeathMessage(
+                e,
+                FkPI.getInstance().getTeamManager().getPlayerTeam(e.getEntity()),
+                FkPI.getInstance().getTeamManager().getPlayerTeam(e.getEntity().getKiller())
+        );
 
-		/*
-		 * Si le killer a une team
-		 */
-		if(e.getEntity().getKiller() != null && FkPI.getInstance().getTeamManager().getPlayerTeam(e.getEntity().getKiller()) != null)
-		{
-			/*
-			 * Sound
-			 */
-			for(Player p : Bukkit.getOnlinePlayers())
-				p.playSound(p.getLocation(), FkSound.WITHER_SPAWN.bukkitSound(), 1, 1);
+        /*
+         * Si le killer a une team
+         */
+        if(e.getEntity().getKiller() != null && FkPI.getInstance().getTeamManager().getPlayerTeam(e.getEntity().getKiller()) != null)
+        {
+            /*
+             * Sound
+             */
+            for(Player p : Bukkit.getOnlinePlayers())
+                if (Fk.getInstance().getWorldManager().isAffected(p.getWorld()))
+                    Fk.getInstance().getDisplayService().playDeathSound(p);
 
-			/*
-			 * Add kill Si killer != dead
-			*/
-			if(e.getEntity().getKiller() != null && !e.getEntity().getKiller().getName().equals(e.getEntity().getName()))
-				Fk.getInstance().getPlayerManager().getPlayer(e.getEntity().getKiller()).addKill();
-		}
+            /*
+             * Add kill Si killer != dead
+             */
+            if(e.getEntity().getKiller() != null && !e.getEntity().getKiller().getName().equals(e.getEntity().getName()))
+                Fk.getInstance().getPlayerManager().getPlayer(e.getEntity().getKiller()).addKill();
+        }
 
-		/*
-		 * Si tué ou tueur pas de team pas de deathlimit
-		 */
-		if(Fk.getInstance().getGame().getState().equals(GameState.BEFORE_STARTING) || Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(e.getEntity()) == null || (e.getEntity().getKiller() != null && Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(e.getEntity().getKiller()) == null))
-			return;
+        /*
+         * Si tué ou tueur pas de team pas de deathlimit
+         */
+        if(Fk.getInstance().getGame().getState().equals(GameState.BEFORE_STARTING) || Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(e.getEntity()) == null || (e.getEntity().getKiller() != null && Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(e.getEntity().getKiller()) == null))
+            return;
 
-		/*
-		 * Add death
-		 */
-		Fk.getInstance().getPlayerManager().getPlayer(e.getEntity()).addDeath();
+        /*
+         * Add death
+         */
+        Fk.getInstance().getPlayerManager().getPlayer(e.getEntity()).addDeath();
 
-		/*
-		 * DeathLimit > 0
-		 */
-		if(FkPI.getInstance().getRulesManager().getRule(Rule.DEATH_LIMIT) > 0)
-			if(Fk.getInstance().getPlayerManager().getPlayer(e.getEntity()).getDeaths() >= FkPI.getInstance().getRulesManager().getRule(Rule.DEATH_LIMIT))
-			{
-				/*
-				 * Elimination
-				 */
+        /*
+         * DeathLimit > 0
+         */
+        if(FkPI.getInstance().getRulesManager().getRule(Rule.DEATH_LIMIT) > 0)
+            if(Fk.getInstance().getPlayerManager().getPlayer(e.getEntity()).getDeaths() >= FkPI.getInstance().getRulesManager().getRule(Rule.DEATH_LIMIT))
+            {
+                /*
+                 * Elimination
+                 */
 
-				Fk.broadcast(Messages.BROADCAST_PLAYER_ELIMINATED.getMessage().replace("%player%", e.getEntity().getDisplayName()));
-				e.getEntity().setGameMode(GameMode.SPECTATOR);
+                Fk.broadcast(Messages.BROADCAST_PLAYER_ELIMINATED.getMessage().replace("%player%", e.getEntity().getDisplayName()));
+                e.getEntity().setGameMode(GameMode.SPECTATOR);
 
-				for(Player p : Bukkit.getOnlinePlayers())
-					p.playSound(p.getLocation(), FkSound.ENDERDRAGON_DEATH.bukkitSound(), 1, 1);
-			}
-			/*
-			 * Info nbre de vie
-			 */
-			else
-				ChatUtils.sendMessage(e.getEntity(), Messages.PLAYER_LIFES_REMAINING.getMessage()
-						.replace("%amount%", String.valueOf(Fk.getInstance().getPlayerManager().getPlayer(e.getEntity()).getDeaths()))
-						.replace("%over%", String.valueOf(FkPI.getInstance().getRulesManager().getRule(Rule.DEATH_LIMIT))
-						.replace("%unit%", Messages.Unit.TRY.tl(Fk.getInstance().getPlayerManager().getPlayer(e.getEntity()).getDeaths())))
-				);
+                for(Player p : Bukkit.getOnlinePlayers())
+                    if (Fk.getInstance().getWorldManager().isAffected(p.getWorld()))
+                        Fk.getInstance().getDisplayService().playEliminationSound(p);
+            }
+            /*
+             * Info nbre de vie
+             */
+            else
+                ChatUtils.sendMessage(e.getEntity(), Messages.PLAYER_LIFES_REMAINING.getMessage()
+                        .replace("%amount%", String.valueOf(Fk.getInstance().getPlayerManager().getPlayer(e.getEntity()).getDeaths()))
+                        .replace("%over%", String.valueOf(FkPI.getInstance().getRulesManager().getRule(Rule.DEATH_LIMIT))
+                                .replace("%unit%", Messages.Unit.TRY.tl(Fk.getInstance().getPlayerManager().getPlayer(e.getEntity()).getDeaths())))
+                );
 
-		FkPlayer fkP = Fk.getInstance().getPlayerManager().getPlayer(e.getEntity());
-		if(fkP.getState() == PlayerState.EDITING_SCOREBOARD)
-			fkP.getSbDisplayer().exit();
+        FkPlayer fkP = Fk.getInstance().getPlayerManager().getPlayer(e.getEntity());
+        if(fkP.getState() == PlayerState.EDITING_SCOREBOARD)
+            fkP.getSbDisplayer().exit();
 
-		Fk.getInstance().getScoreboardManager().refreshAllScoreboards(PlaceHolder.DEATHS);
-		Fk.getInstance().getScoreboardManager().refreshAllScoreboards(PlaceHolder.KILLS);
-	}
+        Fk.getInstance().getDisplayService().updateAll(PlaceHolder.KILLS_RELATIVE);
+    }
 }

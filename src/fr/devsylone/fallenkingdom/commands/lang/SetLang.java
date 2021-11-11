@@ -4,6 +4,7 @@ import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandRole;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
+import fr.devsylone.fallenkingdom.display.ScoreboardDisplayService;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fallenkingdom.utils.Messages;
@@ -29,7 +30,7 @@ public class SetLang extends FkCommand
     public CommandResult execute(Fk plugin, CommandSender sender, List<String> args, String label) {
         File[] files = Objects.requireNonNull(new File(plugin.getDataFolder(), File.separator + "locales").listFiles(), Messages.CONSOLE_LANG_COULD_NOT_LIST_FILES.getMessage());
 
-        boolean isDefaultScoreboard = plugin.getScoreboardManager().isDefaultSidebar();
+        boolean isDefaultScoreboard = plugin.getDisplayService().scoreboard().isDefaultSidebar();
         String lang = Arrays.stream(files)
                 .filter(File::isFile)
                 .map(file -> file.getName().substring(0, file.getName().lastIndexOf('.')))
@@ -50,8 +51,8 @@ public class SetLang extends FkCommand
         plugin.getLanguageManager().init(plugin);
 
         if (isDefaultScoreboard) {
-            plugin.getScoreboardManager().setSidebar(Arrays.asList(Messages.SCOREBOARD_DEFAULT.getMessage().split("\n")), true);
-            plugin.getScoreboardManager().recreateAllScoreboards();
+            plugin.getDisplayService().setScoreboard(ScoreboardDisplayService.createDefault());
+            plugin.getDisplayService().updateAll();
         }
         ChatUtils.sendMessage(sender, Messages.CMD_LANG_SET);
         return CommandResult.SUCCESS;

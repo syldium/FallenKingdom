@@ -1,5 +1,6 @@
 package fr.devsylone.fallenkingdom.commands;
 
+import fr.devsylone.fallenkingdom.display.ScoreboardDisplayService;
 import fr.devsylone.fallenkingdom.exception.ArgumentParseException;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fallenkingdom.version.Version;
@@ -138,9 +139,9 @@ public class ArgumentParser {
         return integer;
     }
 
-    public static int parseScoreboardLine(String line, Messages errorMessage) throws ArgumentParseException {
-        int integer = parseInt(line, errorMessage);
-        if (integer > 14 || integer < 0) {
+    public static int parseScoreboardLine(ScoreboardDisplayService scoreboard, boolean checkRange, String line, Messages errorMessage) throws ArgumentParseException {
+        int integer = scoreboard.reverseIndex(parseInt(line, errorMessage));
+        if (checkRange && integer < 0 || integer >= scoreboard.size()) {
             throw new ArgumentParseException(errorMessage.getMessage());
         }
         return integer;

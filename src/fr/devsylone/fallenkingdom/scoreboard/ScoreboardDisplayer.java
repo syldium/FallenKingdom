@@ -49,12 +49,12 @@ public class ScoreboardDisplayer
 		entities.add(packetManager.createFloatingText(Messages.CMD_MAP_SCOREBOARD_DISPLAYER_VARIABLES.getMessage(), player, location));
 
 		for(PlaceHolder ph : PlaceHolder.values())
-			entities.add(packetManager.createFloatingText("§8" + ph.getDescription() + "        §c->§r        " + ph.getShortestKey(), player, location));
+			entities.add(packetManager.createFloatingText("§8" + ph.getDescription() + "        §c->§r        " + ph.getKey(), player, location));
 
 		entities.add(packetManager.createFloatingText(Messages.CMD_MAP_SCOREBOARD_DISPLAYER_LEAVE_EDIT.getMessage(), player, location));
 
 		startUpdateRunnable();
-		fkPlayer.recreateScoreboard();
+		fkPlayer.refreshScoreboard();
 	}
 
 	public void updateLoc(Player player)
@@ -98,11 +98,8 @@ public class ScoreboardDisplayer
 			packetManager.remove(id);
 		entities.clear();
 
-		if(fkPlayer.getScoreboard() != null)
-		{
-			fkPlayer.getScoreboard().setFormatted(true);
-			fkPlayer.getScoreboard().refreshAll();
-		}
+		fkPlayer.setUseFormattedText(true);
+		fkPlayer.refreshScoreboard();
 	}
 
 	public void startUpdateRunnable()

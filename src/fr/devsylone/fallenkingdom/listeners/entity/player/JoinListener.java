@@ -52,7 +52,7 @@ public class JoinListener implements Listener
 			for(String s : Fk.getInstance().getOnConnectWarnings())
 				e.getPlayer().sendMessage(s);
 
-		player.recreateScoreboard();
+		player.refreshScoreboard();
 
 		final Team pTeam = Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(e.getPlayer());
 		if(pTeam != null) //REFRESH LES TEAMS SCOREBOARD (MC=CACA)
@@ -75,8 +75,12 @@ public class JoinListener implements Listener
 	@EventHandler
 	public void quit(PlayerQuitEvent e)
 	{
-		if(Fk.getInstance().getPlayerManager().getPlayer(e.getPlayer()).getState() == PlayerState.EDITING_SCOREBOARD)
-			Fk.getInstance().getPlayerManager().getPlayer(e.getPlayer()).getSbDisplayer().exit();
+		final FkPlayer fkPlayer = Fk.getInstance().getPlayerManager().getPlayerIfExist(e.getPlayer());
+		if (fkPlayer != null) {
+			Fk.getInstance().getDisplayService().hide(e.getPlayer(), fkPlayer);
+			if(fkPlayer.getState() == PlayerState.EDITING_SCOREBOARD)
+				fkPlayer.getSbDisplayer().exit();
+		}
 
 		if (!Fk.getInstance().getWorldManager().isAffected(e.getPlayer().getWorld()))
 			return;

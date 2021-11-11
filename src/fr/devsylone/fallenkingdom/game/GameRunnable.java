@@ -17,9 +17,12 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Collections;
 
+import static fr.devsylone.fallenkingdom.display.tick.CycleTickFormatter.TICKS_PER_DAY_NIGHT_CYCLE;
+
 class GameRunnable extends BukkitRunnable
 {
     protected final Game game;
+    private int lastMinutes;
     
     GameRunnable(Game game)
     {
@@ -30,9 +33,9 @@ class GameRunnable extends BukkitRunnable
     @Override
     public void run()
     {
-        if(!game.state.equals(Game.GameState.STARTED))
+        if(game.state != Game.GameState.STARTED)
         {
-            Bukkit.getLogger().warning("Game is not running. Cancelling game task.");
+            Fk.getInstance().getLogger().warning("Game is not running. Cancelling game task.");
             game.task = null;
             this.cancel();
             return;
@@ -41,11 +44,15 @@ class GameRunnable extends BukkitRunnable
         game.time++;
         updateWorldTime();
 
-        if(game.time >= game.dayDurationCache)
+        if(game.time >= game.timeFormat.dayDuration())
             incrementDay();
 
-        if(game.time % game.scoreboardUpdate == 0)
-            Fk.getInstance().getScoreboardManager().refreshAllScoreboards(PlaceHolder.DAY, PlaceHolder.HOUR, PlaceHolder.MINUTE);
+        int minutes = game.timeFormat.extractMinutes(game.time);
+        if(minutes != lastMinutes)
+        {
+            Fk.getInstance().getDisplayService().updateAll(PlaceHolder.DAY, PlaceHolder.HOUR, PlaceHolder.MINUTE);
+            lastMinutes = minutes;
+        }
     }
 
     protected void updateWorldTime()
@@ -56,13 +63,13 @@ class GameRunnable extends BukkitRunnable
             if(!Fk.getInstance().getWorldManager().isAffected(w))
                 continue;
 
-            if(w.getEnvironment().equals(World.Environment.NORMAL) && Math.abs(w.getTime() - worldTime) > 32 && game.time < game.dayDurationCache && !(game.day == 0 && game.time < 20))
+            if(w.getEnvironment() == World.Environment.NORMAL && Math.abs(w.getFullTime() - worldTime) > 32 && game.time < game.timeFormat.dayDuration() && !(game.day == 0 && game.time < 20))
             {
                 Bukkit.getLogger().info(Messages.CONSOLE_ADJUSTMENT_GAME_TIME.getMessage());
-                game.time = (int) (w.getTime() * game.dayTickFactor);
+                game.time = game.timeFormat.timeFromWorld(w.getFullTime()) % TICKS_PER_DAY_NIGHT_CYCLE;
                 worldTime = game.getExceptedWorldTime();
             }
-            w.setTime(worldTime);
+            w.setFullTime(worldTime);
         }
 
         if(worldTime == 23000)
@@ -130,6 +137,6 @@ class GameRunnable extends BukkitRunnable
                 player.playSound(player.getLocation(), FkSound.ENDERMAN_TELEPORT.bukkitSound(), 1.0F, 1.0F);
             }
         }
-        Fk.getInstance().getScoreboardManager().recreateAllScoreboards();
+        Fk.getInstance().getDisplayService().updateAll();
     }
 }

@@ -33,7 +33,7 @@ public class RemovePlayer extends FkCommand
 			broadcast(Messages.CMD_TEAM_REMOVE_PLAYER.getMessage().replace("%player%", p), 1, args);
 		}
 		if (!players.isEmpty())
-			plugin.getScoreboardManager().refreshAllScoreboards();
+			plugin.getDisplayService().updateAll();
 		return CommandResult.SUCCESS;
 	}
 }

@@ -41,7 +41,7 @@ public class AddPlayer extends FkCommand
 			2, args);
 		}
 		if (!players.isEmpty())
-			plugin.getScoreboardManager().refreshAllScoreboards();
+			plugin.getDisplayService().updateAll();
 		return CommandResult.SUCCESS;
 	}
 }

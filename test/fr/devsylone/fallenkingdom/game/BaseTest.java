@@ -1,5 +1,6 @@
 package fr.devsylone.fallenkingdom.game;
 
+import fr.devsylone.fallenkingdom.MockUtils;
 import fr.devsylone.fkpi.teams.Base;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -10,7 +11,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class BaseTest {
 
-    private final Base base = new Base(null, new Location(null, 10, 70, 80), 10, Material.COBBLESTONE, (byte) 0);
+    private final Base base;
+
+    public BaseTest() {
+        MockUtils.getPluginMockSafe();
+        this.base = new Base(null, new Location(null, 10, 70, 80), 10, Material.COBBLESTONE, (byte) 0);
+    }
 
     @Test
     public void isInside() {
