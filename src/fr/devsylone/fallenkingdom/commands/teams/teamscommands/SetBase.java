@@ -54,7 +54,6 @@ public class SetBase extends FkPlayerCommand
 				.replace("%x%", String.valueOf(base.getCenter().getBlockX()))
 				.replace("%z%", String.valueOf(base.getCenter().getBlockZ())),
 		4, args);
-		plugin.getDisplayService().updateAll();
 		plugin.getWorldManager().invalidateBaseWorldsCache(plugin.getFkPI().getTeamManager());
 		return CommandResult.SUCCESS;
 	}

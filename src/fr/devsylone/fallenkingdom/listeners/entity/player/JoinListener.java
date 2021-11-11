@@ -52,7 +52,7 @@ public class JoinListener implements Listener
 			for(String s : Fk.getInstance().getOnConnectWarnings())
 				e.getPlayer().sendMessage(s);
 
-		player.recreateScoreboard();
+		player.refreshScoreboard();
 
 		final Team pTeam = Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(e.getPlayer());
 		if(pTeam != null) //REFRESH LES TEAMS SCOREBOARD (MC=CACA)

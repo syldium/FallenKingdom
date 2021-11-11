@@ -311,6 +311,7 @@ public class Fk extends JavaPlugin
 		pauseRestorer = new PauseRestorer();
 
 		displayService.loadNullable(null);
+		displayService.updateAll();
 
 		saveableManager = new SaveablesManager(this); // En dernier
 	}
@@ -337,6 +338,7 @@ public class Fk extends JavaPlugin
 			if(team.getBase() != null)
 				team.getBase().resetChestRoom();
 		}
+		displayService.hideAll();
 		displayService.updateAll();
 	}
 

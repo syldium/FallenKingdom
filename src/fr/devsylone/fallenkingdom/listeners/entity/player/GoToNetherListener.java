@@ -18,7 +18,7 @@ public class GoToNetherListener implements Listener
 		if(Fk.getInstance().getWorldManager().isAffected(e.getPlayer().getWorld()))
 		{
 			FkPlayer player = Fk.getInstance().getPlayerManager().getPlayer(e.getPlayer());
-			player.recreateScoreboard();
+			player.refreshScoreboard();
 		}
 		else
 		{

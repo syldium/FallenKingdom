@@ -6,6 +6,7 @@ import fr.devsylone.fallenkingdom.display.change.SetScoreboardLineChange;
 import fr.devsylone.fallenkingdom.display.change.SetScoreboardTitleChange;
 import fr.devsylone.fallenkingdom.display.progress.ProgressBar;
 import fr.devsylone.fallenkingdom.display.sound.SoundPlayer;
+import fr.devsylone.fallenkingdom.game.Game;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fallenkingdom.scoreboard.PlaceHolder;
 import fr.devsylone.fkpi.util.Saveable;
@@ -74,8 +75,14 @@ public class GlobalDisplayService implements DisplayService, Saveable {
 
     @Override
     public void update(@NotNull Player player, @NotNull FkPlayer fkPlayer, @NotNull PlaceHolder... placeHolders) {
-        for (DisplayService service : this.services.values()) {
-            service.update(player, fkPlayer, placeHolders);
+        if (this.isPreStart() && fkPlayer.getState() == FkPlayer.PlayerState.INGAME) {
+            if (placeHolders.length == 0) {
+                fkPlayer.refreshScoreboard();
+            }
+        } else {
+            for (DisplayService service : this.services.values()) {
+                service.update(player, fkPlayer, placeHolders);
+            }
         }
     }
 
@@ -87,25 +94,46 @@ public class GlobalDisplayService implements DisplayService, Saveable {
     }
 
     public void updateAll(PlaceHolder... placeHolders) {
+        final boolean preStart = this.isPreStart();
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (!Fk.getInstance().getWorldManager().isAffected(player.getWorld())) {
                 continue;
             }
             final FkPlayer fkPlayer = Fk.getInstance().getPlayerManager().getPlayer(player);
-            for (DisplayService service : this.services.values()) {
-                service.update(player, fkPlayer, placeHolders);
+            if (preStart && fkPlayer.getState() == FkPlayer.PlayerState.INGAME) {
+                if (placeHolders.length == 0) {
+                    fkPlayer.refreshScoreboard();
+                }
+            } else {
+                for (DisplayService service : this.services.values()) {
+                    service.update(player, fkPlayer, placeHolders);
+                }
             }
         }
     }
 
     public void updateAllScoreboards(int line) {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            if (!Fk.getInstance().getWorldManager().isAffected(player.getWorld())) {
-                continue;
+            if (Fk.getInstance().getWorldManager().isAffected(player.getWorld())) {
+                final FkPlayer fkPlayer = Fk.getInstance().getPlayerManager().getPlayer(player);
+                this.scoreboard.updateLine(player, fkPlayer, line);
             }
-            final FkPlayer fkPlayer = Fk.getInstance().getPlayerManager().getPlayer(player);
-            this.scoreboard.updateLine(player, fkPlayer, line);
         }
+    }
+
+    public void hideAll() {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (Fk.getInstance().getWorldManager().isAffected(player.getWorld())) {
+                final FkPlayer fkPlayer = Fk.getInstance().getPlayerManager().getPlayer(player);
+                for (DisplayService service : this.services.values()) {
+                    service.hide(player, fkPlayer);
+                }
+            }
+        }
+    }
+
+    public boolean isPreStart() {
+        return Fk.getInstance().getGame().getState() == Game.GameState.BEFORE_STARTING;
     }
 
     public @NotNull ScoreboardDisplayService scoreboard() {
@@ -147,6 +175,7 @@ public class GlobalDisplayService implements DisplayService, Saveable {
 
     @Override
     public void load(ConfigurationSection config) {
+        this.hideAll();
         final Map<DisplayType, DisplayService> services = new EnumMap<>(DisplayType.class);
         if (config.contains(ACTIONBAR.asString())) {
             services.put(ACTIONBAR, new ActionBarDisplayService(config.getString(ACTIONBAR.asString(), "")));

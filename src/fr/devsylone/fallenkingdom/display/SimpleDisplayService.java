@@ -2,6 +2,7 @@ package fr.devsylone.fallenkingdom.display;
 
 import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fallenkingdom.scoreboard.PlaceHolder;
+import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -57,12 +58,15 @@ public abstract class SimpleDisplayService implements DisplayService {
         if (!this.containsAny(placeHolders)) {
             return;
         }
-
-        String replaced = this.value;
-        for (PlaceHolder placeHolder : this.placeHolders) {
-            replaced = placeHolder.replaceMultiple(replaced, player);
+        if (fkPlayer.useFormattedText()) {
+            String replaced = this.value;
+            for (PlaceHolder placeHolder : this.placeHolders) {
+                replaced = placeHolder.replaceMultiple(replaced, player);
+            }
+            this.show(player, replaced);
+        } else {
+            this.show(player, ChatUtils.translateColorCodeToAmpersand(this.value));
         }
-        this.show(player, replaced);
     }
 
     public abstract void show(@NotNull Player player, @NotNull String message);

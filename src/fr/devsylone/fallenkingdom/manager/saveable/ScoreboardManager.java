@@ -213,7 +213,7 @@ public class ScoreboardManager implements Saveable
 	public void recreateAllScoreboards()
 	{
 		for(FkPlayer player : Fk.getInstance().getPlayerManager().getConnectedPlayers())
-			player.recreateScoreboard();
+			player.refreshScoreboard();
 	}
 
 	public void refreshAllScoreboards(PlaceHolder... placeHolders)

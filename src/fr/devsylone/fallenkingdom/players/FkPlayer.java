@@ -178,12 +178,21 @@ public class FkPlayer implements Saveable
 		return board;
 	}
 
+	/**
+	 * @deprecated {@link #refreshScoreboard()}
+	 */
+	@Deprecated
 	public void recreateScoreboard()
 	{
-		if(board != null)
-			board.remove();
+		refreshScoreboard();
+	}
 
-		board = new FkScoreboard(this, Bukkit.getPlayerExact(name));
+	public void refreshScoreboard()
+	{
+		if (board == null)
+			board = new FkScoreboard(this, Bukkit.getPlayerExact(name));
+		else
+			board.refreshAll();
 	}
 
 	public void removeScoreboard()

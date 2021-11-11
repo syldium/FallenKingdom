@@ -15,7 +15,7 @@ public class FkPlayerMock extends FkPlayer {
     }
 
     @Override
-    public void recreateScoreboard() {
+    public void refreshScoreboard() {
         // do nothing
     }
 
