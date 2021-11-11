@@ -55,7 +55,7 @@ public abstract class SimpleDisplayService implements DisplayService {
 
     @Override
     public void update(@NotNull Player player, @NotNull FkPlayer fkPlayer, @NotNull PlaceHolder... placeHolders) {
-        if (!this.containsAny(placeHolders)) {
+        if (placeHolders.length != 0 && !this.containsAny(placeHolders)) {
             return;
         }
         if (fkPlayer.useFormattedText()) {
