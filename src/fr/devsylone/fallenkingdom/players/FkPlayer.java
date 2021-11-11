@@ -199,6 +199,7 @@ public class FkPlayer implements Saveable
 	{
 		if(board != null)
 			board.remove();
+		board = null;
 	}
 
 	public @NotNull GlobalDisplayService getDisplayService()
@@ -261,10 +262,9 @@ public class FkPlayer implements Saveable
 	public void setUseFormattedText(boolean formatted)
 	{
 		this.formatted = formatted;
-		final FkScoreboard scoreboard = this.getScoreboard();
-		final Player player = scoreboard.player();
+		final Player player = Bukkit.getPlayerExact(this.name);
 		if (player != null) {
-			scoreboard.updateLines(this.displayService.scoreboard().renderLines(player, this));
+			this.displayService.update(player, this);
 		}
 	}
 
@@ -289,10 +289,6 @@ public class FkPlayer implements Saveable
 		config.set("State", state.name());
 		config.set("KnowsSbEdit", knowsSbEdit);
 
-		if(state == PlayerState.EDITING_SCOREBOARD)
-		{
-			sbDisplayer.exit();
-		}
 		if(portal != null && portal.getWorld() != null)
 		{
 			config.set("Portal.World", portal.getWorld().getName());

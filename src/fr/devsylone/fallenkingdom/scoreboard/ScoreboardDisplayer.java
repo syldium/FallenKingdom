@@ -99,6 +99,7 @@ public class ScoreboardDisplayer
 		entities.clear();
 
 		fkPlayer.setUseFormattedText(true);
+		fkPlayer.refreshScoreboard();
 	}
 
 	public void startUpdateRunnable()
