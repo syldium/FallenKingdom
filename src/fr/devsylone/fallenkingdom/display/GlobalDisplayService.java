@@ -6,7 +6,6 @@ import fr.devsylone.fallenkingdom.display.change.SetScoreboardLineChange;
 import fr.devsylone.fallenkingdom.display.change.SetScoreboardTitleChange;
 import fr.devsylone.fallenkingdom.display.progress.ProgressBar;
 import fr.devsylone.fallenkingdom.display.sound.SoundPlayer;
-import fr.devsylone.fallenkingdom.game.Game;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fallenkingdom.scoreboard.PlaceHolder;
 import fr.devsylone.fkpi.util.Saveable;
@@ -133,7 +132,7 @@ public class GlobalDisplayService implements DisplayService, Saveable {
     }
 
     public boolean isPreStart() {
-        return Fk.getInstance().getGame().getState() == Game.GameState.BEFORE_STARTING;
+        return Fk.getInstance().getGame().isPreStart();
     }
 
     public @NotNull ScoreboardDisplayService scoreboard() {

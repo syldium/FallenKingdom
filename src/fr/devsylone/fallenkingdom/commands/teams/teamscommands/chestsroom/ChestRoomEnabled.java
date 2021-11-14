@@ -6,7 +6,6 @@ import fr.devsylone.fallenkingdom.commands.abstraction.CommandRole;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
-import fr.devsylone.fallenkingdom.game.Game;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import org.bukkit.command.CommandSender;
 
@@ -20,7 +19,7 @@ public class ChestRoomEnabled extends FkCommand {
     @Override
     public CommandResult execute(Fk plugin, CommandSender sender, List<String> args, String label)
     {
-        if(Fk.getInstance().getGame().getState() != Game.GameState.BEFORE_STARTING)
+        if(plugin.getGame().hasStarted())
             throw new FkLightException(Messages.CMD_ERROR_CHEST_ROOM_STARTED);
 
         boolean value = ArgumentParser.parseBoolean(args.get(0), Messages.CMD_ERROR_BOOL_FORMAT);

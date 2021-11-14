@@ -1,12 +1,10 @@
 package fr.devsylone.fallenkingdom.listeners.entity;
 
 import fr.devsylone.fallenkingdom.Fk;
-import fr.devsylone.fallenkingdom.game.Game.GameState;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fallenkingdom.players.FkPlayer.PlayerState;
 import fr.devsylone.fallenkingdom.scoreboard.PlaceHolder;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
-import fr.devsylone.fallenkingdom.utils.FkSound;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fallenkingdom.version.Environment;
 import fr.devsylone.fkpi.FkPI;
@@ -33,7 +31,7 @@ public class DamageListener implements Listener
     {
         if(!Fk.getInstance().getWorldManager().isAffected(e.getEntity().getWorld()))
             return;
-        if(Fk.getInstance().getGame().getState().equals(GameState.PAUSE) && !e.getCause().equals(EntityDamageEvent.DamageCause.VOID))
+        if(Fk.getInstance().getGame().isPaused() && !e.getCause().equals(EntityDamageEvent.DamageCause.VOID))
             e.setCancelled(true);
     }
 
@@ -81,7 +79,7 @@ public class DamageListener implements Listener
         /*
          * Si tué ou tueur pas de team pas de deathlimit
          */
-        if(Fk.getInstance().getGame().getState().equals(GameState.BEFORE_STARTING) || Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(e.getEntity()) == null || (e.getEntity().getKiller() != null && Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(e.getEntity().getKiller()) == null))
+        if(Fk.getInstance().getGame().isPreStart() || Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(e.getEntity()) == null || (e.getEntity().getKiller() != null && Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(e.getEntity().getKiller()) == null))
             return;
 
         /*

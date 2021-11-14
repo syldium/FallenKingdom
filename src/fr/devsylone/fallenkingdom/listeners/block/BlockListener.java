@@ -1,7 +1,6 @@
 package fr.devsylone.fallenkingdom.listeners.block;
 
 import fr.devsylone.fallenkingdom.Fk;
-import fr.devsylone.fallenkingdom.game.Game.GameState;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fallenkingdom.utils.Messages;
@@ -43,7 +42,7 @@ public class BlockListener implements Listener
 		if(p.getGameMode() == GameMode.CREATIVE)
 			return;
 
-		if(team == null || plugin.getGame().getState().equals(GameState.BEFORE_STARTING))
+		if(team == null || plugin.getGame().isPreStart())
 			return;
 
 		if(e.getBlock().getType() == Material.TNT)
@@ -145,7 +144,7 @@ public class BlockListener implements Listener
 		Player p = e.getPlayer();
 		Team team = Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(p);
 
-		if(team == null || plugin.getGame().getState().equals(GameState.BEFORE_STARTING))
+		if(team == null || plugin.getGame().isPreStart())
 			return;
 
 		//AVANT check creative

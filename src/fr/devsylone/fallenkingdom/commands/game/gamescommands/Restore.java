@@ -11,7 +11,6 @@ import org.bukkit.command.CommandSender;
 
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
-import fr.devsylone.fallenkingdom.game.Game;
 import fr.devsylone.fallenkingdom.utils.FkSound;
 
 import java.util.List;
@@ -26,7 +25,7 @@ public class Restore extends FkCommand
 	@Override
 	public CommandResult execute(Fk plugin, CommandSender sender, List<String> args, String label)
 	{
-		if(!Fk.getInstance().getGame().getState().equals(Game.GameState.PAUSE))
+		if(!Fk.getInstance().getGame().isPaused())
 			throw new FkLightException(Messages.CMD_ERROR_NOT_IN_PAUSE);
 
 		int id = -1;

@@ -2,7 +2,6 @@ package fr.devsylone.fallenkingdom.scoreboard;
 
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.display.GlobalDisplayService;
-import fr.devsylone.fallenkingdom.game.Game.GameState;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fallenkingdom.players.FkPlayer.PlayerState;
 import fr.devsylone.fallenkingdom.utils.Messages;
@@ -74,7 +73,7 @@ public class FkScoreboard
 		if(player == null)
 			return;
 
-		if(Fk.getInstance().getGame().getState().equals(GameState.BEFORE_STARTING) && !Fk.getInstance().getPlayerManager().getPlayer(player).getState().equals(PlayerState.EDITING_SCOREBOARD))
+		if(Fk.getInstance().getGame().isPreStart() && !Fk.getInstance().getPlayerManager().getPlayer(player).getState().equals(PlayerState.EDITING_SCOREBOARD))
 		{
 			List<String> lines = new ArrayList<>();
 			lines.add(Messages.SCOREBOARD_TEAMS.getMessage());
@@ -118,7 +117,7 @@ public class FkScoreboard
 			refreshAll();
 			return;
 		}
-		if(Fk.getInstance().getGame().getState() == GameState.BEFORE_STARTING && this.fkPlayer.getState() != PlayerState.EDITING_SCOREBOARD)
+		if(Fk.getInstance().getGame().isPreStart() && this.fkPlayer.getState() != PlayerState.EDITING_SCOREBOARD)
 			return;
 
 		this.displayService.update(player, this.fkPlayer, placeHolders);

@@ -1,7 +1,6 @@
 package fr.devsylone.fallenkingdom.listeners.block;
 
 import fr.devsylone.fallenkingdom.Fk;
-import fr.devsylone.fallenkingdom.game.Game.GameState;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fallenkingdom.utils.XBlock;
 import fr.devsylone.fkpi.FkPI;
@@ -45,7 +44,7 @@ public class PortalCreateListener implements Listener
 			for(Player p : Bukkit.getOnlinePlayers())
 				if(p.getLocation().distanceSquared(air.getLocation()) <= 15*15)
 				{
-					if(Fk.getInstance().getGame().getState().equals(GameState.BEFORE_STARTING) && p.getGameMode().equals(GameMode.CREATIVE))
+					if(Fk.getInstance().getGame().isPreStart() && p.getGameMode().equals(GameMode.CREATIVE))
 					{
 						e.setCancelled(false);
 						p.sendMessage(Messages.PLAYER_NETHER_PORTAL_SETUP.getMessage());

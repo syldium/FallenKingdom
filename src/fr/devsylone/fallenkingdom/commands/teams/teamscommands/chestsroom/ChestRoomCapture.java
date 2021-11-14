@@ -6,7 +6,6 @@ import fr.devsylone.fallenkingdom.commands.abstraction.CommandRole;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
-import fr.devsylone.fallenkingdom.game.Game;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import org.bukkit.command.CommandSender;
 
@@ -20,7 +19,7 @@ public class ChestRoomCapture extends FkCommand {
     @Override
     public CommandResult execute(Fk plugin, CommandSender sender, List<String> args, String label)
     {
-        if(plugin.getGame().getState() != Game.GameState.BEFORE_STARTING)
+        if(plugin.getGame().hasStarted())
             throw new FkLightException(Messages.CMD_ERROR_CHEST_ROOM_STARTED);
 
         int time = ArgumentParser.parsePositiveInt(args.get(0), false, Messages.CMD_ERROR_CHEST_ROOM_CAPTURE_TIME_FORMAT);

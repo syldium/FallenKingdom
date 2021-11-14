@@ -9,7 +9,6 @@ import org.bukkit.command.CommandSender;
 
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
-import fr.devsylone.fallenkingdom.game.Game;
 
 import java.util.List;
 
@@ -23,7 +22,7 @@ public class Stop extends FkCommand implements Confirmable
 	@Override
 	public CommandResult execute(Fk plugin, CommandSender sender, List<String> args, String label)
 	{
-		if (Fk.getInstance().getGame().getState().equals(Game.GameState.BEFORE_STARTING)) {
+		if (Fk.getInstance().getGame().isPreStart()) {
 			throw new FkLightException(Messages.CMD_ERROR_GAME_NOT_STARTED);
 		}
 

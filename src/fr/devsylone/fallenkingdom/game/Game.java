@@ -84,7 +84,7 @@ public class Game implements Saveable
 		if(task != null)
 			throw new IllegalStateException("Main timer already running");
 
-		if(!state.equals(GameState.BEFORE_STARTING))
+		if (hasStarted())
 			Fk.getInstance().getTipsManager().cancelBroadcasts();
 
 		task = new GameRunnable(this);
@@ -153,7 +153,7 @@ public class Game implements Saveable
 
 	public void start()
 	{
-		if(!state.equals(GameState.BEFORE_STARTING))
+		if(hasStarted())
 			throw new FkLightException(Messages.CMD_ERROR_GAME_ALREADY_STARTED);
 
 		setState(GameState.STARTING);
@@ -261,5 +261,20 @@ public class Game implements Saveable
 		if(day == 0)
 			return "--";
 		return timeFormat.formatMinutes(time);
+	}
+
+	public boolean isPreStart()
+	{
+		return state == GameState.BEFORE_STARTING;
+	}
+
+	public boolean hasStarted()
+	{
+		return state != GameState.BEFORE_STARTING;
+	}
+
+	public boolean isPaused()
+	{
+		return state == GameState.PAUSE;
 	}
 }

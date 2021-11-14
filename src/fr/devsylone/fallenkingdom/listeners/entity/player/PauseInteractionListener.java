@@ -39,7 +39,7 @@ public class PauseInteractionListener implements Listener
     {
         if (!Fk.getInstance().getWorldManager().isAffected(player.getWorld()))
             return false;
-        if (Fk.getInstance().getGame().getState().equals(GameState.PAUSE) && FkPI.getInstance().getRulesManager().getRule(Rule.DEEP_PAUSE))
+        if (Fk.getInstance().getGame().isPaused() && FkPI.getInstance().getRulesManager().getRule(Rule.DEEP_PAUSE))
             return player.getGameMode().equals(GameMode.SURVIVAL) || player.getGameMode().equals(GameMode.ADVENTURE);
         return false;
     }

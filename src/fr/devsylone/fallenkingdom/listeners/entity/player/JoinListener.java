@@ -67,7 +67,7 @@ public class JoinListener implements Listener
 		if(NON_TESTING_ENV)
 		{
 			LocalDate currentDate = LocalDate.now();
-			if(Fk.getInstance().getGame().getState().equals(GameState.BEFORE_STARTING) && e.getPlayer().getInventory().getHelmet() == null && (currentDate.getDayOfMonth() == 12) && (currentDate.getMonth() == Month.JUNE))
+			if(Fk.getInstance().getGame().isPreStart() && e.getPlayer().getInventory().getHelmet() == null && (currentDate.getDayOfMonth() == 12) && (currentDate.getMonth() == Month.JUNE))
 				e.getPlayer().getInventory().setHelmet(head(currentDate));
 		}
 	}

@@ -1,7 +1,6 @@
 package fr.devsylone.fallenkingdom.listeners.entity.player;
 
 import fr.devsylone.fallenkingdom.Fk;
-import fr.devsylone.fallenkingdom.game.Game.GameState;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.rules.Rule;
 import org.bukkit.entity.Player;
@@ -18,7 +17,7 @@ public class PvpListener implements Listener
 		if(!Fk.getInstance().getWorldManager().isAffected(e.getEntity().getWorld()))
 			return;
 
-		if(Fk.getInstance().getGame().getState().equals(GameState.PAUSE) && FkPI.getInstance().getRulesManager().getRule(Rule.DEEP_PAUSE))
+		if(Fk.getInstance().getGame().isPaused() && FkPI.getInstance().getRulesManager().getRule(Rule.DEEP_PAUSE))
 		{
 			e.setCancelled(true);
 			return;

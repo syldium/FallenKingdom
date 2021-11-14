@@ -242,7 +242,7 @@ public class Fk extends JavaPlugin
 		this.saveableManager.delayedSaveAll();
 		FkConfig.awaitSaveEnd();
 
-		if (this.game.getState() == Game.GameState.PAUSE) {
+		if (this.game.isPaused()) {
 			getDeepPauseManager().unprotectItems();
 			getDeepPauseManager().resetAIs();
 		}

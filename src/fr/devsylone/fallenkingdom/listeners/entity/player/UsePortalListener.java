@@ -8,7 +8,6 @@ import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.World.Environment;
 
 import fr.devsylone.fallenkingdom.Fk;
-import fr.devsylone.fallenkingdom.game.Game.GameState;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
 
 public class UsePortalListener implements Listener
@@ -24,7 +23,7 @@ public class UsePortalListener implements Listener
 
 		if(e.getTo().getWorld().getEnvironment().equals(Environment.NETHER))
 		{
-			if(!Fk.getInstance().getGame().isNetherEnabled() && Fk.getInstance().getGame().getState() != GameState.BEFORE_STARTING)
+			if(!Fk.getInstance().getGame().isNetherEnabled() && Fk.getInstance().getGame().hasStarted())
 			{
 				ChatUtils.sendMessage(e.getPlayer(), Messages.PLAYER_NETHER_NOT_ACTIVE);
 				e.setCancelled(true);
@@ -32,7 +31,7 @@ public class UsePortalListener implements Listener
 		}
 		else if(e.getTo().getWorld().getEnvironment().equals(Environment.THE_END))
 		{
-			if(!Fk.getInstance().getGame().isEndEnabled() && Fk.getInstance().getGame().getState() != GameState.BEFORE_STARTING)
+			if(!Fk.getInstance().getGame().isEndEnabled() && Fk.getInstance().getGame().hasStarted())
 			{
 				ChatUtils.sendMessage(e.getPlayer(), Messages.PLAYER_END_NOT_ACTIVE);
 				e.setCancelled(true);

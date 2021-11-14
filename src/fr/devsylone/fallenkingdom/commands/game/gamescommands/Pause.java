@@ -28,9 +28,9 @@ public class Pause extends FkCommand
 	@SuppressWarnings("deprecation")
 	public CommandResult execute(Fk plugin, CommandSender sender, List<String> args, String label)
 	{
-		if(plugin.getGame().getState().equals(Game.GameState.BEFORE_STARTING))
+		if(plugin.getGame().isPreStart())
 			throw new FkLightException(Messages.CMD_ERROR_GAME_NOT_STARTED);
-		if(plugin.getGame().getState().equals(Game.GameState.PAUSE))
+		if(plugin.getGame().isPaused())
 			throw new FkLightException(Messages.CMD_ERROR_ALREADY_IN_PAUSE);
 
 		plugin.getGame().stopTimer();

@@ -11,7 +11,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 
 import fr.devsylone.fallenkingdom.Fk;
-import fr.devsylone.fallenkingdom.game.Game.GameState;
 
 public class MobSpawn implements Listener
 {
@@ -21,10 +20,8 @@ public class MobSpawn implements Listener
 		if (!Fk.getInstance().getWorldManager().isAffected(e.getEntity().getWorld()))
 			return;
 
-		/*
-		 * PAUSE
-		 */
-		e.setCancelled(Fk.getInstance().getGame().getState().equals(GameState.PAUSE));
+		if (Fk.getInstance().getGame().isPaused())
+			e.setCancelled(true);
 
 		/*
 		 * CREEPER

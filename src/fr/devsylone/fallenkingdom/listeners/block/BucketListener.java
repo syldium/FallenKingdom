@@ -1,7 +1,6 @@
 package fr.devsylone.fallenkingdom.listeners.block;
 
 import fr.devsylone.fallenkingdom.Fk;
-import fr.devsylone.fallenkingdom.game.Game.GameState;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fkpi.rules.Rule;
@@ -42,7 +41,7 @@ public class BucketListener implements Listener
         }
 
         final Team playerTeam = plugin.getFkPI().getTeamManager().getPlayerTeam(player);
-        if (playerTeam == null || plugin.getGame().getState() == GameState.BEFORE_STARTING) {
+        if (playerTeam == null || plugin.getGame().isPreStart()) {
             return;
         }
 

@@ -27,7 +27,7 @@ public class Resume extends FkCommand
 	@SuppressWarnings("deprecation")
 	public CommandResult execute(Fk plugin, CommandSender sender, List<String> args, String label)
 	{
-		if(plugin.getGame().getState().equals(Game.GameState.BEFORE_STARTING))
+		if(plugin.getGame().isPreStart())
 			throw new FkLightException(Messages.CMD_ERROR_GAME_NOT_STARTED);
 		if(plugin.getGame().getState().equals(Game.GameState.STARTED))
 			throw new FkLightException(Messages.CMD_ERROR_NOT_IN_PAUSE);
