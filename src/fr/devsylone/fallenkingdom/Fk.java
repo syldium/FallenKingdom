@@ -210,6 +210,10 @@ public class Fk extends JavaPlugin
 				w.setTime(6000L);
 			}
 
+		if (fkPI.getRulesManager().getRule(Rule.HEALTH_BELOW_NAME)) {
+			fkPI.getTeamManager().nametag().createHealthObjective();
+		}
+
 		/*
 		 * Metrics
 		 */
@@ -238,6 +242,7 @@ public class Fk extends JavaPlugin
 				this.displayService.hide(player, fkPlayer);
 			}
 		}
+		this.fkPI.teardown();
 
 		this.saveableManager.delayedSaveAll();
 		FkConfig.awaitSaveEnd();

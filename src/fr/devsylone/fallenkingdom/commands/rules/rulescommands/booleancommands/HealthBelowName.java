@@ -1,6 +1,7 @@
 package fr.devsylone.fallenkingdom.commands.rules.rulescommands.booleancommands;
 
 import fr.devsylone.fallenkingdom.utils.Messages;
+import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.rules.Rule;
 
 import fr.devsylone.fallenkingdom.commands.rules.FkBooleanRuleCommand;
@@ -14,9 +15,12 @@ public class HealthBelowName extends FkBooleanRuleCommand
 
 	@Override
 	protected void sendMessage(boolean newValue) {
-		if (newValue)
+		if (newValue) {
 			broadcast(Messages.CMD_RULES_HEALTH_BELOW_NAME_VISIBLE.getMessage());
-		else
+			FkPI.getInstance().getTeamManager().nametag().createHealthObjective();
+		} else {
 			broadcast(Messages.CMD_RULES_HEALTH_BELOW_NAME_HIDDEN.getMessage());
+			FkPI.getInstance().getTeamManager().nametag().removeHealthObjective();
+		}
 	}
 }

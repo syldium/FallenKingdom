@@ -29,10 +29,16 @@ public class FkPI implements Saveable
 
     public void reset()
     {
+        teardown();
         teamManager = new TeamManager();
         rulesManager = new RulesManager();
         lockedChestsManager = new LockedChestsManager();
         chestsRoomsManager = new ChestsRoomsManager();
+    }
+
+    public void teardown()
+    {
+        teamManager.teardown();
     }
 
     @Override

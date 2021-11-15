@@ -1,6 +1,7 @@
 package fr.devsylone.fkpi.teams;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import fr.devsylone.fallenkingdom.version.Version;
@@ -14,6 +15,8 @@ import org.bukkit.configuration.ConfigurationSection;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.util.Color;
 import fr.devsylone.fkpi.util.Saveable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class Team implements ITeam, Saveable
 {
@@ -32,13 +35,17 @@ public class Team implements ITeam, Saveable
 		setColor(Color.of(name));
 	}
 
-	public void addPlayer(String p)
+	@Override
+	public void addPlayer(@NotNull String p)
 	{
+		scoreboardTeam.addEntry(p);
 		players.add(p);
 	}
 
-	public void removePlayer(String p)
+	@Override
+	public void removePlayer(@NotNull String p)
 	{
+		scoreboardTeam.removeEntry(p);
 		players.remove(p);
 	}
 
@@ -48,43 +55,50 @@ public class Team implements ITeam, Saveable
 		this.base = base;
 	}
 
-	public List<String> getPlayers()
+	@Override
+	public @NotNull List<String> getPlayers()
 	{
-		return players;
+		return Collections.unmodifiableList(players);
 	}
 
-	public void setName(String name)
+	@Override
+	public void setName(@NotNull String name)
 	{
 		Bukkit.getPluginManager().callEvent(new TeamUpdateEvent(this, TeamUpdateEvent.TeamUpdate.UPDATE)); // EVENT
+		this.scoreboardTeam.setDisplayName(name);
 		this.name = name;
 	}
 
-	public String getName()
+	@Override
+	public @NotNull String getName()
 	{
 		return name;
 	}
 
-	public Base getBase()
+	@Override
+	public @Nullable Base getBase()
 	{
 		return base;
 	}
 
-	public Color getColor()
+	public @NotNull Color getColor()
 	{
 		return color;
 	}
 
-	public ChatColor getChatColor()
+	@Override
+	public @NotNull ChatColor getChatColor()
 	{
 		return color.getChatColor();
 	}
 
-	public DyeColor getDyeColor()
+	@Override
+	public @NotNull DyeColor getDyeColor()
 	{
 		return color.getDyeColor();
 	}
 
-	public void setColor(Color color)
+	public void setColor(@Nullable Color color)
 	{
 		this.color = color == null ? Color.BLANC : color;
 		if(Version.VersionType.V1_13.isHigherOrEqual())
@@ -93,7 +107,7 @@ public class Team implements ITeam, Saveable
 			scoreboardTeam.setPrefix(String.valueOf(this.color.getChatColor()));
 	}
 
-	public org.bukkit.scoreboard.Team getScoreboardTeam()
+	public @NotNull org.bukkit.scoreboard.Team getScoreboardTeam()
 	{
 		return scoreboardTeam;
 	}
@@ -143,7 +157,6 @@ public class Team implements ITeam, Saveable
 
 		players = config.getStringList("Members");
 		setColor(Color.of(config.getString("Color")));
-		scoreboardTeam.setPrefix(this.color.getChatColor() + "");
 
 		if(!config.isConfigurationSection("Base"))
 			return;
@@ -169,6 +182,7 @@ public class Team implements ITeam, Saveable
 		base.save(config.createSection("Base"));
 	}
 
+	@Override
 	public String toString()
 	{
 		return color.getChatColor() + getName();

@@ -8,10 +8,9 @@ import java.util.List;
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fallenkingdom.players.FkPlayer.PlayerState;
-import fr.devsylone.fallenkingdom.game.Game.GameState;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fallenkingdom.utils.NMSUtils;
-import fr.devsylone.fkpi.teams.Team;
+import fr.devsylone.fkpi.FkPI;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
@@ -47,16 +46,13 @@ public class JoinListener implements Listener
 			return;
 
 		FkPlayer player = Fk.getInstance().getPlayerManager().getPlayer(e.getPlayer());
-		
+
 		if(e.getPlayer().isOp())
 			for(String s : Fk.getInstance().getOnConnectWarnings())
 				e.getPlayer().sendMessage(s);
 
 		player.refreshScoreboard();
-
-		final Team pTeam = Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(e.getPlayer());
-		if(pTeam != null) //REFRESH LES TEAMS SCOREBOARD (MC=CACA)
-			Fk.getInstance().getScoreboardManager().refreshNicks();
+		FkPI.getInstance().getTeamManager().nametag().addEntry(e.getPlayer());
 
 		e.setJoinMessage(null);
 		Fk.broadcast(Messages.CHAT_JOIN.getMessage().replace("%player%", e.getPlayer().getDisplayName()));

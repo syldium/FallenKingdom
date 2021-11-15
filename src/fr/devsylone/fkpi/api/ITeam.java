@@ -3,6 +3,9 @@ package fr.devsylone.fkpi.api;
 import fr.devsylone.fkpi.teams.Base;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.DyeColor;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.List;
 
@@ -15,21 +18,19 @@ import java.util.List;
  */
 public interface ITeam
 {
-    void addPlayer(String player);
+    void addPlayer(@NotNull String player);
 
-    void removePlayer(String player);
+    void removePlayer(@NotNull String player);
 
-    Base getBase();
+    @Nullable Base getBase();
 
-    ChatColor getChatColor();
+    @NotNull ChatColor getChatColor();
 
-    DyeColor getDyeColor();
+    @NotNull DyeColor getDyeColor();
 
-    void setName(String name);
+    void setName(@NotNull String name);
 
-    String getName();
+    @NotNull String getName();
 
-    List<String> getPlayers();
-
-    String toString();
+    @UnmodifiableView List<String> getPlayers();
 }

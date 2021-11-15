@@ -11,8 +11,6 @@ import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.rules.Rule;
 import fr.mrmicky.fastboard.FastBoard;
 import org.bukkit.entity.Player;
-import org.bukkit.scoreboard.DisplaySlot;
-import org.bukkit.scoreboard.Scoreboard;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,7 +24,6 @@ public class FkScoreboard
 {
 
 	private final GlobalDisplayService displayService;
-	private final Scoreboard bukkitBoard;
 	private final FastBoard sidebarBoard;
 
 	private final FkPlayer fkPlayer;
@@ -36,16 +33,11 @@ public class FkScoreboard
 	{
 		this.fkPlayer = fkPlayer;
 		this.player = new WeakReference<>(player);
-		this.bukkitBoard = FkPI.getInstance().getTeamManager().getScoreboard();
 		this.displayService = fkPlayer.getDisplayService();
 
 		this.sidebarBoard = new FastBoard(player);
 		this.sidebarBoard.updateTitle(Fk.getInstance().getDisplayService().scoreboard().title());
 
-		if(FkPI.getInstance().getRulesManager().getRule(Rule.HEALTH_BELOW_NAME) && bukkitBoard.getObjective("§c❤") == null)
-			this.bukkitBoard.registerNewObjective("§c❤", "health").setDisplaySlot(DisplaySlot.BELOW_NAME);
-
-		player.setScoreboard(this.bukkitBoard);
 		refreshAll();
 	}
 
@@ -94,15 +86,6 @@ public class FkScoreboard
 		else
 		{
 			this.sidebarBoard.updateLines(displayService.scoreboard().renderLines(player, this.fkPlayer));
-		}
-		Fk.getInstance().getScoreboardManager().refreshNicks();
-
-		try
-		{
-			player.setScoreboard(bukkitBoard);
-		}catch(IllegalStateException ignored)
-		{
-			// Pas de player connection
 		}
 	}
 

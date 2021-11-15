@@ -1,6 +1,7 @@
 package fr.devsylone.fkpi.managers;
 
 import fr.devsylone.fallenkingdom.Fk;
+import fr.devsylone.fallenkingdom.display.NametagService;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fallenkingdom.version.Environment;
@@ -36,7 +37,7 @@ public class TeamManager implements Saveable
 {
 	private final List<Team> teams = Collections.synchronizedList(new ArrayList<>());
 	private final Map<UUID, Team> teamByPlayerUUID = new ConcurrentHashMap<>();
-	private final Scoreboard board = Bukkit.getScoreboardManager().getNewScoreboard();
+	private final NametagService nametagService = new NametagService(this);
 
 	public @NotNull Team createTeam(String name)
 	{
@@ -56,9 +57,14 @@ public class TeamManager implements Saveable
 		return team;
 	}
 
-	public Scoreboard getScoreboard()
+	public @NotNull Scoreboard getScoreboard()
 	{
-		return board;
+		return this.nametagService.scoreboard();
+	}
+
+	public @NotNull NametagService nametag()
+	{
+		return this.nametagService;
 	}
 
 	public void removeTeam(String name)
@@ -75,7 +81,6 @@ public class TeamManager implements Saveable
 				teamByPlayerUUID.remove(uuid);
 			}
 		}
-		team.getPlayers().clear();
 
 		team.getScoreboardTeam().unregister();
 		teams.remove(team);
@@ -229,10 +234,20 @@ public class TeamManager implements Saveable
 		return ret;
 	}
 
+	private static final String NAMETAG_INTEGRATION = "nametag-integration";
+
 	@Override
 	public void load(ConfigurationSection config)
 	{
+		this.teardown();
+		this.teams.clear();
+
+		this.nametagService.loadNullable(config.getConfigurationSection(NAMETAG_INTEGRATION));
 		for (Map.Entry<String, Object> entry : config.getValues(false).entrySet()) {
+			if (NAMETAG_INTEGRATION.equals(entry.getKey())) {
+				continue;
+			}
+
 			Team team;
 			try {
 				team = createTeam(entry.getKey());
@@ -253,5 +268,14 @@ public class TeamManager implements Saveable
 	{
 		for(Team t : teams)
 			t.save(config.createSection(t.getName()));
+
+		this.nametagService.save(config.createSection(NAMETAG_INTEGRATION));
+	}
+
+	public void teardown()
+	{
+		for(Team team : teams)
+			team.getScoreboardTeam().unregister();
+		this.nametagService.removeHealthObjective();
 	}
 }
