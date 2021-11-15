@@ -12,7 +12,6 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import fr.devsylone.fallenkingdom.display.GlobalDisplayService;
-import fr.devsylone.fallenkingdom.manager.saveable.ScoreboardManager;
 import fr.devsylone.fallenkingdom.scoreboard.PlaceHolder;
 import fr.devsylone.fallenkingdom.utils.FkConfig;
 import org.bukkit.configuration.ConfigurationSection;
@@ -214,7 +213,7 @@ public class FilesUpdater
             final FkConfig scoreboardConfig = Fk.getInstance().getSaveableManager().getTempFileConfiguration("scoreboard.yml");
             if (!displayConfig.fileExists() && scoreboardConfig.fileExists()) {
                 scoreboardConfig.load();
-                final String oldClass = ScoreboardManager.class.getSimpleName();
+                final String oldClass = "ScoreboardManager";
                 final String newClass = GlobalDisplayService.class.getSimpleName();
                 displayConfig.set(newClass + ".scoreboard.title", scoreboardConfig.get(oldClass + ".Name"));
                 displayConfig.set(
