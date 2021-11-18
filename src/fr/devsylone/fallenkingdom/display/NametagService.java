@@ -1,6 +1,5 @@
 package fr.devsylone.fallenkingdom.display;
 
-import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.managers.TeamManager;
 import fr.devsylone.fkpi.teams.Team;
 import fr.devsylone.fkpi.util.Saveable;
@@ -43,20 +42,18 @@ public class NametagService implements Saveable {
     }
 
     public void addEntry(@NotNull Player player) {
-        final Team team = FkPI.getInstance().getTeamManager().getPlayerTeam(player);
+        final Team team = this.teamManager.getPlayerTeam(player);
         if (team != null) {
             player.setDisplayName(team.getChatColor() + player.getName());
-            team.getScoreboardTeam().addEntry(player.getName());
-            player.setScoreboard(this.scoreboard);
         }
+        player.setScoreboard(this.scoreboard);
     }
 
     public void removeEntry(@NotNull Player player) {
-        final Team team = this.teamManager.getPlayerTeam(player);
-        if (team != null) {
-            team.getScoreboardTeam().removeEntry(player.getName());
-            player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
+        if (this.teamManager.getPlayerTeam(player) != null) {
+            player.setDisplayName(null);
         }
+        player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
     }
 
     private static final String USE_MAIN_SCOREBOARD = "use-main-scoreboard";
