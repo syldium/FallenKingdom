@@ -43,9 +43,9 @@ public class Add extends FkPlayerCommand
 		broadcast(Messages.CMD_LOCKED_CHEST_CREATED.getMessage()
 				.replace("%name%", name)
 				.replace("%day%", String.valueOf(day))
-				.replace("%x%", String.valueOf(target.getLocation().getBlockX()))
-				.replace("%y%", String.valueOf(target.getLocation().getBlockY()))
-				.replace("%z%", String.valueOf(target.getLocation().getBlockZ()))
+				.replace("%x%", String.valueOf(target.getX()))
+				.replace("%y%", String.valueOf(target.getY()))
+				.replace("%z%", String.valueOf(target.getZ()))
 				.replace("%time%", String.valueOf(time))
 				.replace("%unit%", Messages.Unit.SECONDS.tl(time)),
 		3, args);
