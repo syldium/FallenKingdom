@@ -415,8 +415,6 @@ public enum Messages
     CONSOLE_NEW_VERSION_AVAILABLE_3("console.new-version.available.3"),
     CONSOLE_DOWNLOADING_NEW_VERSION("console.downloading-new-version"),
     CONSOLE_VERSION_DOWNLOADED("console.version.downloaded"),
-    CONSOLE_DOWNLOADING_UPDATER("console.downloading.updater"),
-    CONSOLE_UPDATER_DOWNLOADED("console.updater.downloaded"),
     CONSOLE_UPDATE("console.update"),
     CONSOLE_UPDATE_ERROR("console.update.error"),
     CONSOLE_UPDATE_ERROR_OCCURRED("console.update.error.occurred"),

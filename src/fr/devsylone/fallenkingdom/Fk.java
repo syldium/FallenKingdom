@@ -1,12 +1,19 @@
 package fr.devsylone.fallenkingdom;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Level;
 
 import fr.devsylone.fallenkingdom.display.GlobalDisplayService;
 import fr.devsylone.fallenkingdom.manager.packets.PacketManager1_17;
+import fr.devsylone.fallenkingdom.updater.GitHubAssetInfo;
+import fr.devsylone.fallenkingdom.updater.UpdateChecker;
 import fr.devsylone.fallenkingdom.utils.FkConfig;
 import fr.devsylone.fallenkingdom.version.LuckPermsContext;
 import org.bstats.bukkit.Metrics;
@@ -45,7 +52,6 @@ import fr.devsylone.fallenkingdom.manager.saveable.StarterInventoryManager;
 import fr.devsylone.fallenkingdom.pause.PauseRestorer;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fallenkingdom.scoreboard.PlaceHolderExpansion;
-import fr.devsylone.fallenkingdom.updater.PluginUpdater;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fallenkingdom.utils.DebuggerUtils;
 import fr.devsylone.fallenkingdom.utils.FkSound;
@@ -55,6 +61,7 @@ import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.rules.Rule;
 import fr.devsylone.fkpi.teams.Team;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
 @Getter
 public class Fk extends JavaPlugin
@@ -227,8 +234,10 @@ public class Fk extends JavaPlugin
 		 * Updater
 		 */
 
-		PluginUpdater updater = new PluginUpdater(Fk.getInstance());
-		updater.runTaskAsynchronously(this);
+		UpdateChecker updater = new UpdateChecker(this);
+		if (updater.getCurrentVersion().isRelease()) {
+			updater.runTaskAsynchronously(this);
+		}
 
 		getServer().getScheduler().runTaskTimer(this, saveableManager::delayedSaveAll, 5L * 60L * 20L, 5L * 60L * 20L);
 	}
@@ -400,5 +409,21 @@ public class Fk extends JavaPlugin
 	public void addOnConnectWarning(String warning)
 	{
 		onConnectWarnings.add(warning);
+	}
+
+	public boolean updatePlugin(@NotNull GitHubAssetInfo assetInfo) {
+		try (BufferedInputStream in = new BufferedInputStream(new URL(assetInfo.browserDownloadUrl()).openStream());
+			 FileOutputStream fileOutputStream = new FileOutputStream(this.getDataFolder().getParentFile().getName() + '/' + assetInfo.name())) {
+			byte[] dataBuffer = new byte[1024];
+			int bytesRead;
+			while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
+				fileOutputStream.write(dataBuffer, 0, bytesRead);
+			}
+
+			return this.getFile().delete();
+		} catch (IOException ex) {
+			this.getLogger().log(Level.SEVERE, "Unable to download the update.", ex);
+			return false;
+		}
 	}
 }
