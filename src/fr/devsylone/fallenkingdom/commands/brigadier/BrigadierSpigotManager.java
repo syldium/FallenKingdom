@@ -50,10 +50,10 @@ public class BrigadierSpigotManager<S> extends BrigadierManager<S> implements Li
             CONSOLE_FIELD.setAccessible(true);
 
             Class<?> minecraftServer = NMSUtils.nmsClass("server", "MinecraftServer");
-            GET_COMMAND_DISPATCHER_METHOD = minecraftServer.getDeclaredMethod("getCommandDispatcher");
+            Class<?> commandDispatcher = NMSUtils.nmsClass("commands", "CommandDispatcher");
+            GET_COMMAND_DISPATCHER_METHOD = NMSUtils.getMethod(minecraftServer, commandDispatcher);
             GET_COMMAND_DISPATCHER_METHOD.setAccessible(true);
 
-            Class<?> commandDispatcher = NMSUtils.nmsClass("commands", "CommandDispatcher");
             GET_BRIGADIER_DISPATCHER_METHOD = Arrays.stream(commandDispatcher.getDeclaredMethods())
                     .filter(method -> method.getParameterCount() == 0)
                     .filter(method -> CommandDispatcher.class.isAssignableFrom(method.getReturnType()))

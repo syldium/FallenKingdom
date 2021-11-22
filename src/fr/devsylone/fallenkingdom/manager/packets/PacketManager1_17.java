@@ -45,10 +45,16 @@ public class PacketManager1_17 extends PacketManager {
             ZERO_VEC3D = NMSUtils.getField(vec3dClass, vec3dClass, field -> Modifier.isStatic(field.getModifiers())).get(null);
 
             final String packetsPackage = "network.protocol.game";
-            final Class<?> packetChunkClass = NMSUtils.nmsClass(packetsPackage, "PacketPlayOutMapChunk");
             final Class<?> packetSpawnEntityClass = NMSUtils.nmsClass(packetsPackage, "PacketPlayOutSpawnEntity");
             final Class<?> packetDestroyEntityClass = NMSUtils.nmsClass(packetsPackage, "PacketPlayOutEntityDestroy");
             final Class<?> packetEntityEquipment = NMSUtils.nmsClass(packetsPackage, "PacketPlayOutEntityEquipment");
+
+            Class<?> packetChunkClass;
+            try {
+                packetChunkClass = NMSUtils.nmsClass(packetsPackage, "PacketPlayOutMapChunk");
+            } catch (ClassNotFoundException e) { // 1.18
+                packetChunkClass = NMSUtils.nmsClass(packetsPackage, "ClientboundLevelChunkPacketData");
+            }
 
             Constructor<?> entityDestroy;
             try {
