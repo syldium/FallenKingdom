@@ -24,6 +24,7 @@ package fr.devsylone.fallenkingdom.utils;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -175,6 +176,6 @@ public final class XBlock {
         return stream
                 .map(XMaterial::parseMaterial)
                 .filter(Objects::nonNull)
-                .collect(Collectors.toCollection(() -> EnumSet.noneOf(Material.class)));
+                .collect(Collectors.toCollection(() -> Material.class.isEnum() ? EnumSet.noneOf(Material.class) : new HashSet<>()));
     }
 }
