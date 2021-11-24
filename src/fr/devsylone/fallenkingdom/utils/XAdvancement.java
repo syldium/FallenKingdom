@@ -3,9 +3,6 @@ package fr.devsylone.fallenkingdom.utils;
 import com.cryptomorin.xseries.SkullUtils;
 import com.cryptomorin.xseries.XMaterial;
 import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.TextComponent;
-import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.advancement.Advancement;
@@ -15,14 +12,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -119,7 +112,8 @@ public class XAdvancement {
      * @return Représentation du trophée
      */
     public static ItemStack getAchievementIcon(Object achievement) {
-        String name = StringUtils.capitalize(achievement.toString().toLowerCase().replace("_", " "));
+        String name = achievement.toString().toLowerCase().replace("_", " ");
+        name = name.substring(0, 1).toUpperCase(Locale.ROOT) + name.substring(1);
         for (String word : ChatColor.stripColor(name).toLowerCase().split(" ")) {
             if (word.charAt(word.length() - 1) == 's') {
                 word = word.substring(0, word.length() - 1);
@@ -137,7 +131,7 @@ public class XAdvancement {
             for (EntityType entityType : EntityType.values()) {
                 if (entityType.name().equalsIgnoreCase(word)) {
                     ItemStack skull = new ItemStack(XMaterial.PLAYER_HEAD.parseItem());
-                    SkullMeta skullMeta = SkullUtils.applySkin(skull.getItemMeta(), "MHF_" + StringUtils.capitalize(word));
+                    SkullMeta skullMeta = SkullUtils.applySkin(skull.getItemMeta(), "MHF_" + word.substring(0, 1).toUpperCase(Locale.ROOT) + word.substring(1));
                     skull.setItemMeta(skullMeta);
                     return build(skull, name, achievement.toString());
                 }

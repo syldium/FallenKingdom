@@ -10,7 +10,6 @@ import fr.devsylone.fkpi.api.event.PlayerLockedChestInteractEvent;
 import fr.devsylone.fkpi.teams.Team;
 import fr.devsylone.fkpi.util.Saveable;
 import net.md_5.bungee.api.ChatColor;
-import org.apache.commons.lang.NotImplementedException;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.advancement.Advancement;
@@ -233,7 +232,7 @@ public class LockedChest implements Saveable
 		}
 		if (Version.VersionType.V1_13.isHigherOrEqual())
 			return Bukkit.getLootTable(parseKey(lootTable));
-		throw new NotImplementedException("Loot tables api don't exist in versions prior to 1.13.");
+		throw new UnsupportedOperationException("Loot tables api don't exist in versions prior to 1.13.");
 	}
 
 	@Override

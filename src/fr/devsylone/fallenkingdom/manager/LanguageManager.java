@@ -6,13 +6,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -61,7 +62,7 @@ public class LanguageManager
                 .map(file -> file.getName().substring(0, file.getName().lastIndexOf('.')))
                 .toArray(String[]::new);
             String message = ChatColor.RED + "Veuillez sélectionner votre langue en cliquant dessus.\n\u21AA Please select your language by clicking on it.\n\u21AA Bitte wählen Sie Ihre Sprache aus, indem Sie darauf klicken.";
-            BaseComponent[] localeComponents = new BaseComponent[] {};
+            List<BaseComponent> localeComponents = new ArrayList<>();
             for (String locale : locales) {
                 BaseComponent[] localeComponent = TextComponent.fromLegacyText(ChatColor.GRAY + "[" + ChatColor.UNDERLINE + ChatColor.DARK_AQUA + locale + ChatColor.GRAY + "] ");
                 for (BaseComponent component : localeComponent) {
@@ -70,9 +71,11 @@ public class LanguageManager
                 }
                 localeComponent[1].setItalic(true);
                 localeComponent[2].setItalic(false);
-                localeComponents = (BaseComponent[]) ArrayUtils.addAll(localeComponents, localeComponent);
+                localeComponents.addAll(Arrays.asList(localeComponent));
             }
-            TextComponent finalMessage = new TextComponent((BaseComponent[]) ArrayUtils.addAll(TextComponent.fromLegacyText(ChatUtils.PREFIX), localeComponents));
+
+            localeComponents.addAll(0, Arrays.asList(TextComponent.fromLegacyText(ChatUtils.PREFIX)));
+            TextComponent finalMessage = new TextComponent(localeComponents.toArray(new BaseComponent[0]));
             Bukkit.getConsoleSender().sendMessage(message);
             taskId = new BukkitRunnable() {
                 @Override

@@ -1,6 +1,5 @@
 package fr.devsylone.fallenkingdom.utils;
 
-import org.apache.commons.lang.mutable.MutableInt;
 import org.bukkit.Location;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -208,8 +207,7 @@ public class DistanceTree<T> implements Iterable<T> {
                     return value;
                 }
             }
-            current.increment();
-            if (index == current.intValue()) {
+            if (index == current.incrementAndGet()) {
                 return Optional.of(this.value);
             }
             if (this.right != null) {
@@ -217,6 +215,18 @@ public class DistanceTree<T> implements Iterable<T> {
                 return value;
             }
             return Optional.empty();
+        }
+    }
+
+    static class MutableInt {
+        private int value;
+
+        MutableInt(int value) {
+            this.value = value;
+        }
+
+        int incrementAndGet() {
+            return ++this.value;
         }
     }
 }
