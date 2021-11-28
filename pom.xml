@@ -136,22 +136,22 @@
         </dependency>
         <!-- Used to check the structure of NMS packets -->
         <!--<dependency>
-            <groupId>io.papermc.minecraft-server</groupId>
-            <artifactId>paper_1_16_4</artifactId>
-            <version>v1_16_R3</version>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-server</artifactId>
+            <version>1.18-rc3-R0.1-SNAPSHOT</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/../cache/patched_1.16.4.jar</systemPath>
+            <systemPath>${project.basedir}/../../1_18/bundler/versions/spigot-1.18-rc3-R0.1-SNAPSHOT.jar</systemPath>
         </dependency>-->
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>1.17.1-R0.1-SNAPSHOT</version>
+            <version>1.18-rc3-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-mojangapi</artifactId>
-            <version>1.17.1-R0.1-SNAPSHOT</version>
+            <version>1.18-rc3-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
