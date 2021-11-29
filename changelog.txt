@@ -464,3 +464,18 @@ Il est conseillé de réinitialiser les fichiers de langue.
       >> 2.21.5
 [+] Remplir un seau a les mêmes restrictions que le vider
 [*] L'interface de chest lock utilise une méthode plus stable sur les serveurs supportés
+--------
+
+      >> 2.22.0
+[+] Création du fichier display.yml pour contrôler l'affichage
+[+] Support des serveurs en 1.18
+[+] Les placeholders peuvent être utilisés dans les barres d'action et de boss
+[+] Les placeholders {ALLY}, {ALLY_DIR} et {ALLY_DIST} indiquent des informations sur les alliés proches
+[+] Les placeholders {KILLS_TEAM}, {DEATHS_TEAM} indiquent le nombre de kills/morts pour l'équipe
+[+] La progression d'un crochetage de coffre peut être affichée dans une barre d'action ou de boss
+[+] Le temps de la partie peut être affiché comme un chronomètre plutôt que sur 24 heures
+[+] Les sons joués à la mort d'un joueur sont configurables
+[+] Les équipes peuvent utiliser le scoreboard par défaut pour conserver les scoreboards vanilla
+[*] La mise à jour du plugin se fait désormais sans plugin intermédiaire
+[*] Les sons joués à la mort d'un joueur sont désormais dans la catégorie "joueurs" par défaut
+[*] Il n'est plus possible de capturer une salle des coffres avant le jour des assauts
