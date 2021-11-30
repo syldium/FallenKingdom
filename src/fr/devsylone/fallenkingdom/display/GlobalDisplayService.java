@@ -6,6 +6,8 @@ import fr.devsylone.fallenkingdom.display.change.SetScoreboardLineChange;
 import fr.devsylone.fallenkingdom.display.change.SetScoreboardTitleChange;
 import fr.devsylone.fallenkingdom.display.progress.ProgressBar;
 import fr.devsylone.fallenkingdom.display.sound.SoundPlayer;
+import fr.devsylone.fallenkingdom.display.tick.CycleTickFormatter;
+import fr.devsylone.fallenkingdom.display.tick.TickFormatter;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fallenkingdom.scoreboard.PlaceHolder;
 import fr.devsylone.fkpi.util.Saveable;
@@ -14,6 +16,7 @@ import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -43,6 +46,7 @@ public class GlobalDisplayService implements DisplayService, Saveable {
     private ScoreboardDisplayService scoreboard;
 
     private ProgressBar.Provider barProvider = ProgressBar.Provider.EMPTY;
+    private TickFormatter tickFormatter = new CycleTickFormatter();
 
     private SoundPlayer deathSound = SoundPlayer.EMPTY;
     private SoundPlayer gameStartSound = SoundPlayer.EMPTY;
@@ -175,6 +179,7 @@ public class GlobalDisplayService implements DisplayService, Saveable {
     private static final String ELIMINATION_SOUND = "elimination-sound";
     private static final String EVENT_SOUND = "event-sound";
     private static final String PROGRESSBAR = "progressbar";
+    private static final String TICK_FORMAT = "tick-format";
 
     @Override
     public void load(ConfigurationSection config) {
@@ -196,6 +201,9 @@ public class GlobalDisplayService implements DisplayService, Saveable {
         services.put(SCOREBOARD, this.scoreboard);
 
         this.barProvider = ProgressBar.Provider.fromConfig(config.getConfigurationSection(PROGRESSBAR));
+        if (config.contains(TICK_FORMAT)) {
+            this.tickFormatter = TickFormatter.fromConfig(requireNonNull(config.getConfigurationSection(TICK_FORMAT), "tick formatter config has no section"));
+        }
 
         this.deathSound = SoundPlayer.fromConfig(config.getConfigurationSection(DEATH_SOUND), SoundPlayer.deathSound());
         this.gameStartSound = SoundPlayer.fromConfig(config.getConfigurationSection(GAME_START_SOUND), SoundPlayer.gameStartSound());
@@ -231,6 +239,7 @@ public class GlobalDisplayService implements DisplayService, Saveable {
         }
 
         this.barProvider.save(config.createSection(PROGRESSBAR));
+        this.tickFormatter.save(config.createSection(TICK_FORMAT));
         this.deathSound.save(config.createSection(DEATH_SOUND));
         this.gameStartSound.save(config.createSection(GAME_START_SOUND));
         this.eliminationSound.save(config.createSection(ELIMINATION_SOUND));
@@ -240,6 +249,11 @@ public class GlobalDisplayService implements DisplayService, Saveable {
 
     public @NotNull ProgressBar initProgressBar(@NotNull Player player, @NotNull Location location) {
         return this.barProvider.init(player, location);
+    }
+
+    @Contract("_ -> new")
+    public @NotNull TickFormatter configureTickFormatter(int dayDuration) {
+        return this.tickFormatter.withDayDuration(dayDuration);
     }
 
     public void playDeathSound(@NotNull Player player) {

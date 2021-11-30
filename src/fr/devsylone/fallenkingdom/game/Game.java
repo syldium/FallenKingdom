@@ -1,12 +1,12 @@
 package fr.devsylone.fallenkingdom.game;
 
+import fr.devsylone.fallenkingdom.display.GlobalDisplayService;
 import fr.devsylone.fallenkingdom.display.tick.CycleTickFormatter;
 import fr.devsylone.fallenkingdom.display.tick.TickFormatter;
 import fr.devsylone.fkpi.teams.Team;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.entity.Player;
 
 import fr.devsylone.fallenkingdom.Fk;
@@ -18,6 +18,7 @@ import fr.devsylone.fkpi.api.event.GameEvent;
 import fr.devsylone.fkpi.rules.Rule;
 import fr.devsylone.fkpi.util.Saveable;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
@@ -116,8 +117,6 @@ public class Game implements Saveable
 	{
 		day = Math.max(0, config.getInt("Day"));
 		time = Math.max(0, config.getInt("Time"));
-		ConfigurationSection format = config.getConfigurationSection("TimeFormat");
-		timeFormat = TickFormatter.fromConfig(format == null ? new MemoryConfiguration() : format);
 		state = enumValueOf(GameState.class, config.getString("State"), day > 1 ? GameState.STARTED : GameState.BEFORE_STARTING);
 
 		pvpEnabled = FkPI.getInstance().getRulesManager().getRule(Rule.PVP_CAP) <= day;
@@ -148,7 +147,6 @@ public class Game implements Saveable
 		config.set("State", state.name());
 		config.set("Day", day);
 		config.set("Time", time);
-		timeFormat.save(config.createSection("TimeFormat"));
 	}
 
 	public void start()
@@ -242,6 +240,12 @@ public class Game implements Saveable
 		long previousTime = timeFormat.worldTime(day, time);
 		timeFormat = timeFormat.withDayDuration(dayDuration);
 		time = timeFormat.timeFromWorld(previousTime);
+		day = timeFormat.dayFromWorld(previousTime);
+	}
+
+	public void updateDayDuration(@NotNull GlobalDisplayService displayService)
+	{
+		timeFormat = displayService.configureTickFormatter(timeFormat.dayDuration());
 	}
 
 	public String getFormattedTime()

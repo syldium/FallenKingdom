@@ -69,6 +69,11 @@ public class CycleTickFormatter extends TickFormatter {
     }
 
     @Override
+    public int dayFromWorld(long worldTime) {
+        return (int) (worldTime * this.dayTickFactor) / TICKS_PER_DAY_NIGHT_CYCLE;
+    }
+
+    @Override
     public @NotNull TickFormatter withDayDuration(int dayDuration) {
         return new CycleTickFormatter(dayDuration, this.twelveHours, this.countdown, this.startTimeDay);
     }

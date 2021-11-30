@@ -59,6 +59,8 @@ public abstract class TickFormatter {
 
     public abstract int timeFromWorld(long worldTime);
 
+    public abstract int dayFromWorld(long worldTime);
+
     public int dayDuration() {
         return this.dayDuration;
     }

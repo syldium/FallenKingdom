@@ -42,8 +42,13 @@ public class TimerTickFormatter extends TickFormatter {
     }
 
     @Override
+    public int dayFromWorld(long worldTime) {
+        return (int) (worldTime / this.dayDuration);
+    }
+
+    @Override
     public @NotNull TickFormatter withDayDuration(int dayDuration) {
-        return new TimerTickFormatter(this.dayDuration, this.countdown);
+        return new TimerTickFormatter(dayDuration, this.countdown);
     }
 
     @Override

@@ -190,6 +190,7 @@ public class Fk extends JavaPlugin
 		previousVersion = saveableManager.getFileConfiguration("save.yml").getString("last_version");
 
 		saveableManager.loadAll();
+		game.updateDayDuration(displayService);
 
 		saveDefaultConfig();
 

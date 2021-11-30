@@ -67,6 +67,7 @@ class GameRunnable extends BukkitRunnable
             {
                 Bukkit.getLogger().info(Messages.CONSOLE_ADJUSTMENT_GAME_TIME.getMessage());
                 game.time = game.timeFormat.timeFromWorld(w.getFullTime()) % TICKS_PER_DAY_NIGHT_CYCLE;
+                game.day = game.timeFormat.dayFromWorld(w.getFullTime());
                 worldTime = game.getExceptedWorldTime();
             }
             w.setFullTime(worldTime);
