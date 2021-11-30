@@ -91,33 +91,38 @@ class GameRunnable extends BukkitRunnable
             Fk.getInstance().getCommandManager().search(Pause.class).orElseThrow(RuntimeException::new).execute(Fk.getInstance(), Bukkit.getConsoleSender(), Collections.emptyList(), "fk");
         }
 
+        DayEvent event = null;
         if (FkPI.getInstance().getRulesManager().getRule(Rule.PVP_CAP) == game.day) {
             game.pvpEnabled = true;
-            DayEvent event = new DayEvent(DayEvent.Type.PVP_ENABLED, game.day, Messages.BROADCAST_DAY_PVP.getMessage());
+            event = new DayEvent(DayEvent.Type.PVP_ENABLED, game.day, Messages.BROADCAST_DAY_PVP.getMessage());
             Bukkit.getPluginManager().callEvent(event); //EVENT
-            Fk.broadcast(event.getMessage(), FkSound.ENDERDRAGON_GROWL);
         }
 
         if (FkPI.getInstance().getRulesManager().getRule(Rule.TNT_CAP) == game.day) {
             game.assaultsEnabled = true;
-            DayEvent event = new DayEvent(DayEvent.Type.TNT_ENABLED, game.day, Messages.BROADCAST_DAY_ASSAULT.getMessage());
+            event = new DayEvent(DayEvent.Type.TNT_ENABLED, game.day, Messages.BROADCAST_DAY_ASSAULT.getMessage());
             Bukkit.getPluginManager().callEvent(event); //EVENT
-            Fk.broadcast(event.getMessage(), FkSound.ENDERDRAGON_GROWL);
         }
 
         if (FkPI.getInstance().getRulesManager().getRule(Rule.NETHER_CAP) == game.day) {
             game.netherEnabled = true;
-            DayEvent event = new DayEvent(DayEvent.Type.NETHER_ENABLED, game.day, Messages.BROADCAST_DAY_NETHER.getMessage());
+            event = new DayEvent(DayEvent.Type.NETHER_ENABLED, game.day, Messages.BROADCAST_DAY_NETHER.getMessage());
             Bukkit.getPluginManager().callEvent(event); //EVENT
             Fk.getInstance().getPortalsManager().enablePortals();
-            Fk.broadcast(event.getMessage(), FkSound.ENDERDRAGON_GROWL);
         }
 
         if (FkPI.getInstance().getRulesManager().getRule(Rule.END_CAP) == game.day) {
             game.endEnabled = true;
-            DayEvent event = new DayEvent(DayEvent.Type.END_ENABLED, game.day, Messages.BROADCAST_DAY_END.getMessage());
+            event = new DayEvent(DayEvent.Type.END_ENABLED, game.day, Messages.BROADCAST_DAY_END.getMessage());
             Bukkit.getPluginManager().callEvent(event); //EVENT
-            Fk.broadcast(event.getMessage(), FkSound.ENDERDRAGON_GROWL);
+        }
+
+        if (event != null) {
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                if (Fk.getInstance().getWorldManager().isAffected(player.getWorld())) {
+                    Fk.getInstance().getDisplayService().playEventSound(player);
+                }
+            }
         }
 
         for (LockedChest chest : Fk.getInstance().getFkPI().getLockedChestsManager().getChests()) {

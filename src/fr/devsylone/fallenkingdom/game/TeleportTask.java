@@ -40,7 +40,7 @@ class TeleportTask implements Runnable {
             player.setFireTicks(0);
             player.setFlying(false);
             Fk.getInstance().getStarterInventoryManager().applyStarterInv(player);
-            player.playSound(player.getLocation(), FkSound.EXPLODE.bukkitSound(), 1, 1);
+            Fk.getInstance().getDisplayService().playGameStartSound(player);
         }
     }
 }

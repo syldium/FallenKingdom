@@ -45,7 +45,9 @@ public class GlobalDisplayService implements DisplayService, Saveable {
     private ProgressBar.Provider barProvider = ProgressBar.Provider.EMPTY;
 
     private SoundPlayer deathSound = SoundPlayer.EMPTY;
+    private SoundPlayer gameStartSound = SoundPlayer.EMPTY;
     private SoundPlayer eliminationSound = SoundPlayer.EMPTY;
+    private SoundPlayer eventSound = SoundPlayer.EMPTY;
 
     public GlobalDisplayService() {
         this.services = Collections.emptyMap();
@@ -169,7 +171,9 @@ public class GlobalDisplayService implements DisplayService, Saveable {
     private static final String SIDEBAR = "sidebar";
     private static final String TITLE = "title";
     private static final String DEATH_SOUND = "death-sound";
+    private static final String GAME_START_SOUND = "game-start-sound";
     private static final String ELIMINATION_SOUND = "elimination-sound";
+    private static final String EVENT_SOUND = "event-sound";
     private static final String PROGRESSBAR = "progressbar";
 
     @Override
@@ -194,7 +198,9 @@ public class GlobalDisplayService implements DisplayService, Saveable {
         this.barProvider = ProgressBar.Provider.fromConfig(config.getConfigurationSection(PROGRESSBAR));
 
         this.deathSound = SoundPlayer.fromConfig(config.getConfigurationSection(DEATH_SOUND), SoundPlayer.deathSound());
+        this.gameStartSound = SoundPlayer.fromConfig(config.getConfigurationSection(GAME_START_SOUND), SoundPlayer.gameStartSound());
         this.eliminationSound = SoundPlayer.fromConfig(config.getConfigurationSection(ELIMINATION_SOUND), SoundPlayer.eliminationSound());
+        this.eventSound = SoundPlayer.fromConfig(config.getConfigurationSection(EVENT_SOUND), SoundPlayer.eventSound());
 
         this.services = services;
         this.text.load(config);
@@ -226,7 +232,9 @@ public class GlobalDisplayService implements DisplayService, Saveable {
 
         this.barProvider.save(config.createSection(PROGRESSBAR));
         this.deathSound.save(config.createSection(DEATH_SOUND));
+        this.gameStartSound.save(config.createSection(GAME_START_SOUND));
         this.eliminationSound.save(config.createSection(ELIMINATION_SOUND));
+        this.eventSound.save(config.createSection(EVENT_SOUND));
         this.text.save(config);
     }
 
@@ -238,8 +246,16 @@ public class GlobalDisplayService implements DisplayService, Saveable {
         this.deathSound.play(player);
     }
 
+    public void playGameStartSound(@NotNull Player player) {
+        this.gameStartSound.play(player);
+    }
+
     public void playEliminationSound(@NotNull Player player) {
         this.eliminationSound.play(player);
+    }
+
+    public void playEventSound(@NotNull Player player) {
+        this.eventSound.play(player);
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})

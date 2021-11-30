@@ -46,6 +46,13 @@ public interface SoundPlayer {
         return "mob.wither.spawn";
     }
 
+    static @NotNull String gameStartSound() {
+        if (VersionType.V1_9_V1_12.isHigherOrEqual()) {
+            return "entity.generic.explode";
+        }
+        return "random.explode";
+    }
+
     static @NotNull String eliminationSound() {
         if (VersionType.V1_13.isHigherOrEqual()) {
             return "entity.ender_dragon.death";
@@ -53,5 +60,14 @@ public interface SoundPlayer {
             return "entity.enderdragon.death";
         }
         return "mob.enderdragon.end";
+    }
+
+    static @NotNull String eventSound() {
+        if (VersionType.V1_13.isHigherOrEqual()) {
+            return "entity.ender_dragon.growl";
+        } else if (VersionType.V1_9_V1_12.isHigherOrEqual()) {
+            return "entity.enderdragon.growl";
+        }
+        return "mob.enderdragon.growl";
     }
 }
