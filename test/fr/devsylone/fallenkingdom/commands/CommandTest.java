@@ -5,7 +5,8 @@ import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.manager.CommandManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.junit.Assert;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public abstract class CommandTest {
 
@@ -14,7 +15,7 @@ public abstract class CommandTest {
     public void assertRun(CommandSender sender, String literal, CommandResult excepted) {
         CommandResult result = commandManager.executeCommand(MockUtils.getPluginMockSafe(), sender, literal);
         String message = CommandResult.SUCCESS.equals(excepted) ? "Command should be executed successfully." : "Command should fail at runtime.";
-        Assert.assertEquals(message, excepted, result);
+        assertEquals(excepted, result, message);
     }
 
     public void assertRun(CommandSender sender, String literal) {
