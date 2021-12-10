@@ -125,7 +125,7 @@
         <dependency> <!-- Units tests - seems like it needs to be before paper-api -->
             <groupId>com.github.seeseemelk</groupId>
             <artifactId>MockBukkit-v1.17</artifactId>
-            <version>1.10.3</version>
+            <version>1.13.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -145,13 +145,13 @@
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>1.18-rc3-R0.1-SNAPSHOT</version>
+            <version>1.18.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-mojangapi</artifactId>
-            <version>1.18-rc3-R0.1-SNAPSHOT</version>
+            <version>1.18.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -182,13 +182,13 @@
         <dependency>
             <groupId>com.github.cryptomorin</groupId>
             <artifactId>XSeries</artifactId>
-            <version>8.4.0</version>
+            <version>8.5.0.1</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>fr.mrmicky</groupId>
             <artifactId>fastboard</artifactId>
-            <version>1.2.0</version>
+            <version>1.2.1</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -221,13 +221,13 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>5.8.1</version>
+            <version>5.8.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>4.0.0</version>
+            <version>4.1.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
