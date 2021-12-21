@@ -68,7 +68,9 @@ public class UpdateChecker extends BukkitRunnable {
                 }
                 if (done) {
                     this.logger.info(Messages.CONSOLE_VERSION_DOWNLOADED.getMessage());
-                    this.plugin.getServer().dispatchCommand(Bukkit.getConsoleSender(), "restart");
+                    this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin,
+                            () -> this.plugin.getServer().dispatchCommand(Bukkit.getConsoleSender(), "restart")
+                    );
                 } else {
                     this.logger.warning(Messages.CONSOLE_UPDATE_ERROR.getMessage());
                     this.plugin.addOnConnectWarning(Messages.CONSOLE_NEW_VERSION_AVAILABLE.getMessage());
