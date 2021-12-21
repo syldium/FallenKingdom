@@ -60,8 +60,10 @@ public class SaveablesManager {
 
 		registerSaveable(fk.getPortalsManager(), "portals.yml");
 
-		this.filesUpdater = new FilesUpdater(fk.getDescription().getVersion());
+		mainConfig.load();
+		this.filesUpdater = new FilesUpdater(mainConfig.getString("last_version", fk.getDescription().getVersion()));
 		mainConfig.set("last_version", fk.getDescription().getVersion());
+		mainConfig.saveSync();
 	}
 
 	public void update() {

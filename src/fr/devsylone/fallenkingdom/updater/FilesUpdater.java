@@ -36,7 +36,6 @@ public class FilesUpdater
         lastv = lastVersion;
     }
 
-    @SuppressWarnings("deprecation")
     public void update()
     {
         if(isGrowing(lastv, "2.6.0"))
