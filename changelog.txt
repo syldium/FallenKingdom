@@ -479,3 +479,7 @@ Il est conseillé de réinitialiser les fichiers de langue.
 [*] La mise à jour du plugin se fait désormais sans plugin intermédiaire
 [*] Les sons joués à la mort d'un joueur sont désormais dans la catégorie "joueurs" par défaut
 [*] Il n'est plus possible de capturer une salle des coffres avant le jour des assauts
+
+
+      >> 2.22.1
+[*] Intégration avec l'ancien updater
