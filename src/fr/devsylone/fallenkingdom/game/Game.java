@@ -190,7 +190,7 @@ public class Game implements Saveable
 				updateDayDuration();
 				for(World w : Bukkit.getWorlds()) {
 					if (Fk.getInstance().getWorldManager().isAffected(w))
-						w.setTime(getExceptedWorldTime());
+						w.setFullTime(getExceptedWorldTime());
 				}
 
 				Fk.broadcast(Messages.BROADCAST_START.getMessage());
