@@ -468,7 +468,7 @@ Il est conseillé de réinitialiser les fichiers de langue.
 
       >> 2.22.0
 [+] Création du fichier display.yml pour contrôler l'affichage
-[+] Support des serveurs en 1.18
+[+] Support des serveurs en 1.18 et 1.18.1
 [+] Les placeholders peuvent être utilisés dans les barres d'action et de boss
 [+] Les placeholders {ALLY}, {ALLY_DIR} et {ALLY_DIST} indiquent des informations sur les alliés proches
 [+] Les placeholders {KILLS_TEAM}, {DEATHS_TEAM} indiquent le nombre de kills/morts pour l'équipe

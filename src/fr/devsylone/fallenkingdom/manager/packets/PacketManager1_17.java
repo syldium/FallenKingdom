@@ -14,7 +14,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.BitSet;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -22,6 +24,7 @@ import java.util.UUID;
 
 import static fr.devsylone.fallenkingdom.manager.packets.PacketManager1_9.getEnumItemSlot;
 import static fr.devsylone.fallenkingdom.utils.PacketUtils.MINECRAFT_CHUNK;
+import static fr.devsylone.fallenkingdom.utils.PacketUtils.MINECRAFT_WORLD;
 
 public class PacketManager1_17 extends PacketManager {
 
@@ -34,6 +37,8 @@ public class PacketManager1_17 extends PacketManager {
     private static final Constructor<?> PACKET_ENTITY_EQUIPMENT;
     private static final Class<?> PACKET_ENTITY_METADATA;
     private static final Class<?> PACKET_ENTITY_POSITION;
+
+    private static final Method GET_LIGHT_ENGINE;
 
     private static final boolean PACKET_DESTROY_ENTITY_LIST;
 
@@ -49,12 +54,18 @@ public class PacketManager1_17 extends PacketManager {
             final Class<?> packetDestroyEntityClass = NMSUtils.nmsClass(packetsPackage, "PacketPlayOutEntityDestroy");
             final Class<?> packetEntityEquipment = NMSUtils.nmsClass(packetsPackage, "PacketPlayOutEntityEquipment");
 
-            Class<?> packetChunkClass;
+            Constructor<?> packetChunk;
+            Method lightEngine = null;
             try {
-                packetChunkClass = NMSUtils.nmsClass(packetsPackage, "PacketPlayOutMapChunk");
+                packetChunk = NMSUtils.nmsClass(packetsPackage, "PacketPlayOutMapChunk")
+                        .getConstructor(MINECRAFT_CHUNK);
             } catch (ClassNotFoundException e) { // 1.18
-                packetChunkClass = NMSUtils.nmsClass(packetsPackage, "ClientboundLevelChunkPacketData");
+                final Class<?> lightEngineClass = NMSUtils.nmsClass("world.level.lighting", "LightEngine");
+                packetChunk = NMSUtils.nmsClass(packetsPackage, "ClientboundLevelChunkWithLightPacket")
+                        .getConstructor(MINECRAFT_CHUNK, lightEngineClass, BitSet.class, BitSet.class, boolean.class);
+                lightEngine = NMSUtils.getMethod(MINECRAFT_WORLD.getSuperclass(), lightEngineClass);
             }
+            GET_LIGHT_ENGINE = lightEngine;
 
             Constructor<?> entityDestroy;
             try {
@@ -64,7 +75,7 @@ public class PacketManager1_17 extends PacketManager {
             }
             PACKET_DESTROY_ENTITY_LIST = entityDestroy.getParameterTypes()[0].equals(int[].class);
 
-            PACKET_CHUNK = packetChunkClass.getConstructor(MINECRAFT_CHUNK);
+            PACKET_CHUNK = packetChunk;
             PACKET_SPAWN_ENTITY = packetSpawnEntityClass.getConstructor(int.class, UUID.class, double.class, double.class, double.class, float.class, float.class, entityTypesClass, int.class, vec3dClass);
             PACKET_DESTROY_ENTITY = entityDestroy;
             PACKET_ENTITY_EQUIPMENT = packetEntityEquipment.getConstructor(int.class, List.class);
@@ -157,7 +168,13 @@ public class PacketManager1_17 extends PacketManager {
     @Override
     public void sendChunkReset(Player player, Chunk chunk) {
         try {
-            PacketUtils.sendPacket(player, PACKET_CHUNK.newInstance(PacketUtils.getNMSChunk(chunk)));
+            Object packet;
+            if (GET_LIGHT_ENGINE != null) {
+                packet = PACKET_CHUNK.newInstance(PacketUtils.getNMSChunk(chunk), GET_LIGHT_ENGINE.invoke(PacketUtils.getNMSWorld(chunk.getWorld())), null, null, true);
+            } else {
+                packet = PACKET_CHUNK.newInstance(PacketUtils.getNMSChunk(chunk));
+            }
+            PacketUtils.sendPacket(player, packet);
         } catch (ReflectiveOperationException e) {
             e.printStackTrace();
         }
