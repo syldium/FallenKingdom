@@ -8,9 +8,11 @@ import fr.devsylone.fallenkingdom.utils.Messages;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabExecutor;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -34,6 +36,12 @@ public class FkCommandExecutor extends CommandManager implements TabExecutor
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        // Legacy updater
+        if (sender instanceof ConsoleCommandSender && args.length > 0 && args[0].equals("updated")) {
+            new File(this.plugin.getDataFolder().getParentFile(), "FkUpdater.jar").delete();
+            this.plugin.getServer().dispatchCommand(sender, "restart");
+            return true;
+        }
         List<String> arguments = new ArrayList<>(Arrays.asList(args)); // Copie de la liste pour pouvoir modifier sa taille
         CommandResult result = executeCommand(plugin, sender, label, arguments);
         if (result.equals(CommandResult.NO_PERMISSION))
