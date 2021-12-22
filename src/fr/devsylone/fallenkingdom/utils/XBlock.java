@@ -76,7 +76,8 @@ public final class XBlock {
             XMaterial.OAK_FENCE, XMaterial.AIR
     );
     public static final Set<Material> BLOCKS_IN_CAVES = materialSet(
-            XMaterial.STONE, XMaterial.GRANITE, XMaterial.DIORITE, XMaterial.ANDESITE
+            XMaterial.STONE, XMaterial.GRANITE, XMaterial.DIORITE, XMaterial.ANDESITE, XMaterial.DEEPSLATE, XMaterial.DRIPSTONE_BLOCK,
+            XMaterial.CALCITE, XMaterial.SMOOTH_BASALT, XMaterial.TUFF
     );
     public static final Set<Material> CONTAINERS = materialSet(
             XMaterial.CHEST, XMaterial.TRAPPED_CHEST, XMaterial.BARREL
