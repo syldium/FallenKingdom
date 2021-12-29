@@ -480,6 +480,8 @@ Il est conseillé de réinitialiser les fichiers de langue.
 [*] Les sons joués à la mort d'un joueur sont désormais dans la catégorie "joueurs" par défaut
 [*] Il n'est plus possible de capturer une salle des coffres avant le jour des assauts
 
-
       >> 2.22.1
 [*] Intégration avec l'ancien updater
+
+      >> 2.22.2
+[*] Tronque toujours les lignes de plus de 30 caractères en version 1.12.2 et inférieur
