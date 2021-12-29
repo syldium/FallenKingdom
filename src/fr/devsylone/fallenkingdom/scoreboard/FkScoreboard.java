@@ -81,11 +81,11 @@ public class FkScoreboard
 					.limit(14 - lines.size())
 					.forEach(rule -> lines.add(" " + rule));
 			lines.add(" §6... (§e/fk rules list§6)");
-			sidebarBoard.updateLines(Version.VersionType.V1_13.isHigherOrEqual() ? lines : lines.stream().map(line -> line.substring(0, Math.min(30, line.length()))).collect(Collectors.toList()));
+			this.updateLines(lines);
 		}
 		else
 		{
-			this.sidebarBoard.updateLines(displayService.scoreboard().renderLines(player, this.fkPlayer));
+			this.updateLines(displayService.scoreboard().renderLines(player, this.fkPlayer));
 		}
 	}
 
