@@ -20,7 +20,7 @@ import java.util.logging.Logger;
 
 public class UpdateChecker extends BukkitRunnable {
 
-    private static final String LATEST_RELEASE_ENDPOINT = "https://api.github.com/repos/Etrenak/FallenKingdom/releases/latest";
+    private static final String LATEST_RELEASE_ENDPOINT = "https://api.github.com/repos/syldium/FallenKingdom/releases/latest";
     private static final String USER_AGENT = "FallenKingdom/Updater";
 
     private final Fk plugin;

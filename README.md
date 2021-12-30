@@ -1,7 +1,7 @@
 FallenKingdom
 ===
 - [Téléchargez le plugin ici](https://www.spigotmc.org/resources/fallenkingdom.38878/)
-- [Lisez le wiki](https://github.com/Etrenak/FallenKingdom/wiki)
+- [Lisez le wiki](https://github.com/syldium/FallenKingdom/wiki)
 - [Rejoignez le discord](https://discord.gg/SmAAFxh)
 
 Le plugin est sous la Licence publique Creative Commons Attribution - Utilisation non commerciale - Pas d'œuvre dérivée 4.0 International.
@@ -10,8 +10,8 @@ Initialement développé par Etrenak & Fabulacraft, le plugin est désormais mai
 
 ## Wiki
 Le plugin dispose d'un wiki pour aider dans la configuration et l'explication de ses différentes facettes. N'hésitez pas à y jeter un coup d'œil, il est régulièrement mis à jour !
-- [Accueil du wiki](https://github.com/Etrenak/FallenKingdom/wiki)
-- [Index](https://github.com/Etrenak/FallenKingdom/wiki#diff%C3%A9rentes-page-du-wiki--index-%EF%B8%8F)
+- [Accueil du wiki](https://github.com/syldium/FallenKingdom/wiki)
+- [Index](https://github.com/syldium/FallenKingdom/wiki#diff%C3%A9rentes-page-du-wiki--index-%EF%B8%8F)
 
 ## Compiler avec Maven/Artifacts
 Utiliser `mvn clean install` pour créer un JAR prêt à l'emploi.
