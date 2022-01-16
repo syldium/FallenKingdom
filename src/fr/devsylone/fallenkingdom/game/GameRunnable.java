@@ -28,6 +28,11 @@ class GameRunnable extends BukkitRunnable
     {
         this.game = game;
         game.updateDayDuration();
+        for (World world : Bukkit.getWorlds()) {
+            if (Fk.getInstance().getWorldManager().isAffected(world)) {
+                world.setFullTime(game.getExceptedWorldTime());
+            }
+        }
     }
 
     @Override
