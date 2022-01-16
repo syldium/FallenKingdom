@@ -18,7 +18,6 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class FkScoreboard
 {
@@ -36,7 +35,7 @@ public class FkScoreboard
 		this.displayService = fkPlayer.getDisplayService();
 
 		this.sidebarBoard = new FastBoard(player);
-		this.sidebarBoard.updateTitle(Fk.getInstance().getDisplayService().scoreboard().title());
+		this.sidebarBoard.updateTitle(this.displayService.scoreboard().title());
 
 		refreshAll();
 	}
@@ -56,7 +55,11 @@ public class FkScoreboard
 
 	public void updateLine(int line, @NotNull String text)
 	{
-		this.sidebarBoard.updateLine(line, text);
+		if (Version.VersionType.V1_13.isHigherOrEqual()) {
+			this.sidebarBoard.updateLine(line, text);
+		} else {
+			this.sidebarBoard.updateLine(line, text.substring(0, Math.min(30, text.length())));
+		}
 	}
 
 	public void refreshAll()
