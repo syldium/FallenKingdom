@@ -3,6 +3,7 @@ package fr.devsylone.fkpi.teams;
 import com.cryptomorin.xseries.XMaterial;
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.game.ChestRoomRunnable;
+import fr.devsylone.fallenkingdom.manager.packets.block.MultiBlockChange;
 import fr.devsylone.fallenkingdom.manager.packets.PacketManager;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fallenkingdom.utils.Messages;
@@ -12,7 +13,6 @@ import fr.devsylone.fkpi.api.event.TeamCaptureEvent;
 import fr.devsylone.fkpi.rules.Rule;
 import fr.devsylone.fkpi.util.Saveable;
 import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -21,9 +21,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 public class ChestsRoom implements Saveable
@@ -129,7 +127,7 @@ public class ChestsRoom implements Saveable
 		double xDif = max.getX() - min.getX();
 		double yDif = max.getY() - min.getY();
 		double zDif = max.getZ() - min.getZ();
-		final Set<Chunk> toReset = new HashSet<>();
+		MultiBlockChange change = MultiBlockChange.create();
 		for(int ix = 0; ix <= Math.abs(xDif); ix++)
 			for(int iy = 0; iy <= Math.abs(yDif); iy++)
 				for(int iz = 0; iz <= Math.abs(zDif); iz++)
@@ -143,10 +141,7 @@ public class ChestsRoom implements Saveable
 					inter = inter + (iz == 0 ? 1 : 0);
 
 					if(!loc.equals(p.getLocation().add(0, -1, 0).getBlock().getLocation()) && XBlock.isBlockInCave(loc.getBlock().getType()) || loc.getBlock().getType() == Material.SAND || loc.getBlock().getType() == Material.COBBLESTONE || loc.getBlock().getType() == Material.DIRT || loc.getBlock().getType() == XMaterial.GRASS_BLOCK.parseMaterial() || loc.getBlock().getType() == Material.GRAVEL || loc.getBlock().getType().name().contains("ORE"))
-					{
-						Fk.getInstance().getPacketManager().sendBlockChange(p, loc, Material.AIR);
-						toReset.add(loc.getChunk());
-					}
+						change.change(loc.getBlock(), Material.AIR);
 
 					int id = -1;
 
@@ -169,11 +164,9 @@ public class ChestsRoom implements Saveable
 					}, Math.abs(seetime) * 20L);
 				}
 
+		change.send(p);
 		Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), () -> {
-			for (Chunk chunk : toReset) {
-				Fk.getInstance().getPacketManager().sendChunkReset(p, chunk);
-			}
-
+			change.cancel(p);
 		}, Math.abs(seetime) * 20L);
 
 		new BukkitRunnable()

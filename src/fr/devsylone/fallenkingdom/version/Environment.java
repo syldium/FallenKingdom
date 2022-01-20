@@ -19,6 +19,7 @@ import java.util.concurrent.CompletableFuture;
 public class Environment {
 
     private static final boolean HAS_ASYNC_TELEPORT;
+    private static final boolean HAS_MULTI_BLOCK_CHANGE;
     private static final boolean HAS_UUID_BY_PLAYER_NAME;
     private static final boolean HAS_ASYNC_CHUNK_LOAD;
     private static final boolean HAS_ADVENTURE_API;
@@ -32,6 +33,13 @@ public class Environment {
             hasAsyncTeleport = true;
         } catch (NoSuchMethodException ignored) { }
         HAS_ASYNC_TELEPORT = hasAsyncTeleport;
+
+        boolean hasMultiBlockChange = false;
+        try {
+            Player.class.getDeclaredMethod("sendMultiBlockChange", java.util.Map.class);
+            hasMultiBlockChange = true;
+        } catch (NoSuchMethodException ignored) { }
+        HAS_MULTI_BLOCK_CHANGE = hasMultiBlockChange;
 
         boolean hasUuidByPlayerName = false;
         try {
@@ -111,6 +119,10 @@ public class Environment {
 
     public static int getMinHeight(World world) {
         return HAS_MIN_HEIGHT ? world.getMinHeight() : 0;
+    }
+
+    public static boolean hasMultiBlockChange() {
+        return HAS_MULTI_BLOCK_CHANGE;
     }
 
     public static boolean hasSpigotBookPages() {
