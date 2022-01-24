@@ -2,12 +2,10 @@ package fr.devsylone.fallenkingdom.manager.packets;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import fr.devsylone.fallenkingdom.version.component.FkBook;
 import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -38,7 +36,6 @@ public class PacketManager1_8 extends PacketManager
 			NMSUtils.register("net.minecraft.server._version_.BlockPosition");
 			NMSUtils.register("net.minecraft.server._version_.PacketPlayOutBlockChange");
 			NMSUtils.register("net.minecraft.server._version_.World");
-			NMSUtils.register("net.minecraft.server._version_.PacketPlayOutMapChunkBulk");
 			NMSUtils.register("net.minecraft.server._version_.PacketPlayOutTitle");
 			NMSUtils.register("net.minecraft.server._version_.PacketPlayOutTitle$EnumTitleAction");
 			NMSUtils.register("net.minecraft.server._version_.IChatBaseComponent");
@@ -187,21 +184,7 @@ public class PacketManager1_8 extends PacketManager
 		loc.getWorld().getBlockAt(loc.getBlockX(), 0, loc.getBlockZ()).setType(oldMat);
 	}
 
-	@Override
-	public void sendChunkReset(Player p, Chunk c)
-	{
-		try
-		{
-			Object chunkBulk = NMSUtils.getClass("PacketPlayOutMapChunkBulk").getConstructor(List.class).newInstance(Arrays.asList(NMSUtils.getClass("World").getDeclaredMethod("getChunkAt", int.class, int.class).invoke(PacketUtils.getNMSWorld(p.getWorld()), c.getX(), c.getZ())));
-
-			PacketUtils.sendPacket(p, chunkBulk);
-		}catch(ReflectiveOperationException ex)
-		{
-			ex.printStackTrace();
-		}
-	}
-
-	@Override
+    @Override
 	protected void sendTitlePacket(Player p, TitleType type, String text, int fadeIn, int stay, int fadeOut)
 	{
 		try

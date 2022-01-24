@@ -7,7 +7,6 @@ import fr.devsylone.fallenkingdom.version.Environment;
 import fr.devsylone.fallenkingdom.version.component.FkBook;
 import fr.devsylone.fallenkingdom.version.tracker.DataTracker;
 import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -53,8 +52,6 @@ public class PacketManager1_9 extends PacketManager
 			NMSUtils.register("net.minecraft.server._version_.BlockPosition");
 			NMSUtils.register("net.minecraft.server._version_.PacketPlayOutBlockChange");
 			NMSUtils.register("net.minecraft.server._version_.World");
-			NMSUtils.register("net.minecraft.server._version_.Chunk");
-			NMSUtils.register("net.minecraft.server._version_.PacketPlayOutMapChunk");
 			NMSUtils.register("net.minecraft.server._version_.PacketPlayOutTitle");
 			NMSUtils.register("net.minecraft.server._version_.PacketPlayOutTitle$EnumTitleAction");
 			NMSUtils.register("net.minecraft.server._version_.IChatBaseComponent");
@@ -199,25 +196,7 @@ public class PacketManager1_9 extends PacketManager
 		loc.getWorld().getBlockAt(loc.getBlockX(), 0, loc.getBlockZ()).setType(oldMat);
 	}
 
-	@Override
-	public void sendChunkReset(Player p, Chunk c)
-	{
-		try
-		{
-			Object chunkBulk = NMSUtils.getClass("PacketPlayOutMapChunk").getConstructor(NMSUtils.getClass("Chunk"), int.class).newInstance(NMSUtils.getClass("World").getDeclaredMethod("getChunkAt", int.class, int.class).invoke(PacketUtils.getNMSWorld(p.getWorld()), c.getX(), c.getZ()), 25);
-
-			PacketUtils.sendPacket(p, chunkBulk);
-
-			Material origin = p.getWorld().getBlockAt(c.getX() * 16, 250, c.getZ() * 16).getType();
-			p.getWorld().getBlockAt(c.getX() * 16, 250, c.getZ() * 16).setType(Material.BEACON);
-			p.getWorld().getBlockAt(c.getX() * 16, 250, c.getZ() * 16).setType(origin);
-		}catch(ReflectiveOperationException ex)
-		{
-			ex.printStackTrace();
-		}
-	}
-
-	@Override
+    @Override
 	protected void sendTitlePacket(Player p, TitleType type, String text, int fadeIn, int stay, int fadeOut)
 	{
 		try

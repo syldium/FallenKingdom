@@ -47,8 +47,6 @@ public abstract class PacketManager
 
 	public abstract void sendBlockChange(Player p, Location loc, Material newBlock);
 
-	public abstract void sendChunkReset(Player p, Chunk c);
-
 	protected abstract void sendTitlePacket(Player p, TitleType type, String text, int fadeIn, int stay, int fadeOut);
 
 	public abstract void openBook(final Player p, FkBook book);
