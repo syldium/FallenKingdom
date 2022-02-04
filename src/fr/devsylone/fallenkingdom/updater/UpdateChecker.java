@@ -41,7 +41,7 @@ public class UpdateChecker extends BukkitRunnable {
             connection.setRequestProperty("User-Agent", USER_AGENT);
             connection.connect();
 
-            if (connection.getResponseCode() == HttpURLConnection.HTTP_INTERNAL_ERROR) {
+            if (connection.getResponseCode() == HttpURLConnection.HTTP_INTERNAL_ERROR || connection.getResponseCode() == HttpURLConnection.HTTP_FORBIDDEN) {
                 return;
             }
 
