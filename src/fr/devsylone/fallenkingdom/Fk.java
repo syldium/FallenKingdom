@@ -132,11 +132,12 @@ public class Fk extends JavaPlugin
 			getDataFolder().mkdir();
 
 		ListenersManager.registerListeners(this);
-		if (!check())
-			return;
 
 		languageManager = new LanguageManager();
 		languageManager.init(this);
+
+		if (!check())
+			return;
 
 		/*
 		 * FkPI
@@ -359,10 +360,8 @@ public class Fk extends JavaPlugin
 
 	private boolean check()
 	{
-		List<String> warns = new ArrayList<>();
-
 		if(getConfig().get("Charged_creepers") != null)
-			warns.add(Messages.CONSOLE_CHARGED_CREEPERS_NOT_USE.getMessage());
+			addError(Messages.CONSOLE_CHARGED_CREEPERS_NOT_USE.getMessage());
 
 		if(!Version.hasSpigotApi())
 			addError("Le serveur n'est pas supporté par le plugin. Seuls les serveurs basés sur Spigot sont supportés.\nThe server is not supported by the plugin. Only Spigot based servers are supported.\nDer Server wird vom Plugin nicht unterstützt. Es werden nur Spigot-basierte Server unterstützt.");
@@ -370,15 +369,15 @@ public class Fk extends JavaPlugin
 		if(Version.isTooOldApi())
 			addError("§rLa version du serveur n'est pas compatible avec le plugin,\nmerci d'utiliser au minimum la version §l§n1.8.3 de Spigot.\n\n§rThe server version isn't compatible with the plugin,\nplease use at least the §l§n1.8.3 version of Spigot.\n\nDie Version des Servers ist nicht mit dem Plugin kompatibel. Bitte benutzen Sie mindestens die §l§nSpigot-Version 1.8.3.");
 
-		for(String warn : warns)
+		if (!pluginError.isEmpty())
 		{
-			getLogger().warning("------------------------------------------");
-			getLogger().warning(warn);
-			getLogger().warning("------------------------------------------");
+			getLogger().severe("------------------------------------------");
+			getLogger().warning(pluginError);
+			getLogger().severe("------------------------------------------");
 
-			onConnectWarnings.add(warn);
+			onConnectWarnings.add(pluginError);
 		}
-		return warns.isEmpty();
+		return pluginError.isEmpty();
 	}
 
 	public PacketManager initPacketManager() {
