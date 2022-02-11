@@ -21,10 +21,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
+import java.util.Deque;
 import java.util.EnumMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
 
 import static fr.devsylone.fallenkingdom.display.DisplayType.ACTIONBAR;
 import static fr.devsylone.fallenkingdom.display.DisplayType.BOSSBAR;
@@ -40,8 +41,10 @@ import static java.util.Objects.requireNonNull;
  */
 public class GlobalDisplayService implements DisplayService, Saveable {
 
+    private static final int STACK_MAX_SIZE = 10;
+
     private final DisplayText text = new DisplayText();
-    private final Stack<DisplayChange<?>> revisions = new Stack<>();
+    private final Deque<DisplayChange<?>> revisions = new LinkedList<>();
     private Map<DisplayType, DisplayService> services;
     private ScoreboardDisplayService scoreboard;
 
@@ -152,7 +155,7 @@ public class GlobalDisplayService implements DisplayService, Saveable {
 
     public boolean setScoreboardLine(int line, @Nullable String value) {
         final SetScoreboardLineChange change = new SetScoreboardLineChange(this.scoreboard, line, value);
-        this.revisions.push(change);
+        this.pushChange(change);
         this.setScoreboard(change.apply(this.scoreboard));
         return true;
     }
@@ -163,8 +166,15 @@ public class GlobalDisplayService implements DisplayService, Saveable {
 
     public void setScoreboardTitle(@NotNull String title) {
         final SetScoreboardTitleChange change = new SetScoreboardTitleChange(this.scoreboard, title);
-        this.revisions.push(change);
+        this.pushChange(change);
         this.setScoreboard(change.apply(this.scoreboard));
+    }
+
+    private void pushChange(@NotNull DisplayChange<?> change) {
+        this.revisions.push(change);
+        if (this.revisions.size() > STACK_MAX_SIZE) {
+            this.revisions.removeFirst();
+        }
     }
 
     public @NotNull DisplayText text() {
@@ -274,7 +284,7 @@ public class GlobalDisplayService implements DisplayService, Saveable {
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     public boolean undo() {
-        if (this.revisions.empty()) {
+        if (this.revisions.isEmpty()) {
             return false;
         }
         final DisplayChange change = this.revisions.pop();
