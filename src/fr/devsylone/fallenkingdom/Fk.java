@@ -105,7 +105,16 @@ public class Fk extends JavaPlugin
 	}
 
 	@Override
-	public void onEnable()
+	public void onEnable() {
+		try {
+			this.onEnable0();
+		} catch (Throwable throwable) {
+			this.pluginError = throwable.getMessage();
+			throw throwable;
+		}
+	}
+
+	public void onEnable0()
 	{
 		try
 		{
