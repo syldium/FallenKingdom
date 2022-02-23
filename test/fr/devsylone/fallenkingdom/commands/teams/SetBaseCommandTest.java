@@ -12,11 +12,16 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class SetBaseCommandTest extends CommandTest {
 
-    @Disabled // Unimplemented
     @Test
     public void setBase() {
         assertNull(MockUtils.getBlueTeam().getBase());
-        assertRun(MockUtils.getConstantPlayer(), "team setBase blue 5");
+        // Charge les chunks autour du joueur
+        for (int x = -2; x <= 2; x++) {
+            for (int y = -2; y <= 2; y++) {
+                MockUtils.getConstantPlayer().getWorld().getChunkAt(x, y);
+            }
+        }
+        assertRun(MockUtils.getConstantPlayer(), "team setBase blue 5 cobblestone");
         assertNotNull(MockUtils.getBlueTeam().getBase());
         assertEquals(5, MockUtils.getBlueTeam().getBase().getRadius());
         assertEquals(MockUtils.getBlueTeam(), MockUtils.getBlueTeam().getBase().getTeam());

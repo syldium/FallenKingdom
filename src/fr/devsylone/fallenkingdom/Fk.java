@@ -62,6 +62,7 @@ import fr.devsylone.fkpi.rules.Rule;
 import fr.devsylone.fkpi.teams.Team;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.TestOnly;
 
 @Getter
 public class Fk extends JavaPlugin
@@ -99,7 +100,7 @@ public class Fk extends JavaPlugin
 		instance = this;
 	}
 
-	// Test only
+	@TestOnly
 	public Fk(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
 		super(loader, description, dataFolder, file);
 	}
