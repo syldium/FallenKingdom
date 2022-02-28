@@ -92,7 +92,7 @@ public class DebuggerUtils
 
     public static void log(String msg)
     {
-        System.out.println(msg);
+        Fk.getInstance().getLogger().info(msg);
         if(writer != null)
             writer.println(msg);
     }

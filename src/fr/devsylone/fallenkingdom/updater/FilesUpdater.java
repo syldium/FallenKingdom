@@ -164,7 +164,6 @@ public class FilesUpdater
                     lines.set(i, lines.get(i).replaceAll("Base : ", "{BASE_PORTAL}"));
                     break;
                 }
-            System.out.println(String.join(" - ", lines));
             file.set("ScoreboardManager.Sidebar", lines);
         }
 
