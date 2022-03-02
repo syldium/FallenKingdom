@@ -94,7 +94,7 @@ public class PacketManager1_17 extends PacketManager {
             PacketUtils.setField("b", new DataTracker()
                             .invisible()
                             .customName(customName)
-                            .customNameVisible(true)
+                            .customNameVisible(visible)
                             .trackedValues(),
                     packet);
             PacketUtils.sendPacket(getPlayer(id), packet);
