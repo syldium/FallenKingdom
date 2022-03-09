@@ -485,3 +485,9 @@ Il est conseillé de réinitialiser les fichiers de langue.
 
       >> 2.22.2
 [*] Tronque toujours les lignes de plus de 30 caractères en version 1.12.2 et inférieur
+
+      >> 2.22.3
+[+] Support des serveurs en 1.18.2
+[*] Évite d'utiliser des paquets NMS pour l'affichage de la salle des coffres si possible
+[*] Corrige l'affichage des avertissements pour les versions non supportées
+[*] Retire le nom des portes-armures en 1.17 et 1.18 lors de l'affichage de la salle des coffres
