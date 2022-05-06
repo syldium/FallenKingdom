@@ -13,7 +13,7 @@ public class GoToNetherListener implements Listener
 	@EventHandler
 	public void event(PlayerChangedWorldEvent e)
 	{
-		if(!e.getPlayer().getWorld().getEnvironment().equals(Environment.THE_END))
+		if(e.getPlayer().getWorld().getEnvironment() != Environment.THE_END)
 			Fk.getInstance().getPlayerManager().getPlayer(e.getPlayer()).setPortal(e.getPlayer().getLocation());
 
 		if(Fk.getInstance().getWorldManager().isAffected(e.getPlayer().getWorld()))

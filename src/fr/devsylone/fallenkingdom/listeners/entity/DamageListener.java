@@ -31,7 +31,7 @@ public class DamageListener implements Listener
     {
         if(!Fk.getInstance().getWorldManager().isAffected(e.getEntity().getWorld()))
             return;
-        if(Fk.getInstance().getGame().isPaused() && !e.getCause().equals(EntityDamageEvent.DamageCause.VOID))
+        if(Fk.getInstance().getGame().isPaused() && e.getCause() != EntityDamageEvent.DamageCause.VOID)
             e.setCancelled(true);
     }
 

@@ -54,7 +54,7 @@ public class MoveListener implements Listener
 
 		if(Fk.getInstance().getGame().isPaused() && FkPI.getInstance().getRulesManager().getRule(Rule.DEEP_PAUSE) && e.getFrom().getBlockY() == e.getTo().getBlockY())
 		{
-			if(e.getPlayer().getGameMode().equals(GameMode.CREATIVE) || e.getPlayer().getGameMode().equals(GameMode.SPECTATOR))
+			if(e.getPlayer().getGameMode() == GameMode.CREATIVE || e.getPlayer().getGameMode() == GameMode.SPECTATOR)
 				return;
 			
 			fkp.sendMessage(Messages.PLAYER_PAUSE);
@@ -115,10 +115,10 @@ public class MoveListener implements Listener
 	{
 		if(!FkPI.getInstance().getRulesManager().getRule(Rule.TNT_JUMP))
 		{
-			if(!e.getTo().clone().add(0, -1, 0).getBlock().getType().equals(Material.AIR) && !e.getTo().clone().add(0, -1, 0).getBlock().getType().equals(Material.TNT) && Fk.getInstance().getPlayerManager().wasOnTnt(e.getPlayer().getUniqueId()))
+			if(e.getTo().clone().add(0, -1, 0).getBlock().getType() != Material.AIR && !e.getTo().clone().add(0, -1, 0).getBlock().getType().equals(Material.TNT) && Fk.getInstance().getPlayerManager().wasOnTnt(e.getPlayer().getUniqueId()))
 				Fk.getInstance().getPlayerManager().removeOnTnt(e.getPlayer().getUniqueId());
 
-			else if(e.getTo().clone().add(0, -1, 0).getBlock().getType().equals(Material.TNT))
+			else if(e.getTo().clone().add(0, -1, 0).getBlock().getType() == Material.TNT)
 				for(Team t : FkPI.getInstance().getTeamManager().getTeams())
 					if(FkPI.getInstance().getTeamManager().getPlayerTeam(e.getPlayer()) != null && !FkPI.getInstance().getTeamManager().getPlayerTeam(e.getPlayer()).equals(t) && t.getBase() != null)
 						if(e.getTo().getBlockY() + 3 > t.getBase().getCenter().getBlockY())
@@ -163,7 +163,7 @@ public class MoveListener implements Listener
 			return;
 		}
 
-		if (e.getTo() == null || e.getPlayer().getGameMode().equals(GameMode.CREATIVE) || FkPI.getInstance().getRulesManager().getRule(Rule.ENDERPEARL_ASSAULT))
+		if (e.getTo() == null || e.getPlayer().getGameMode() == GameMode.CREATIVE || FkPI.getInstance().getRulesManager().getRule(Rule.ENDERPEARL_ASSAULT))
 			return;
 
 		Team pTeam = FkPI.getInstance().getTeamManager().getPlayerTeam(e.getPlayer());

@@ -15,13 +15,13 @@ public class UsePortalListener implements Listener
 	@EventHandler
 	public void use(PlayerPortalEvent e)
 	{
-		if(e.getTo() == null || e.getTo().getWorld() == null || e.getPlayer().getGameMode().equals(GameMode.CREATIVE))
+		if(e.getTo() == null || e.getTo().getWorld() == null || e.getPlayer().getGameMode() == GameMode.CREATIVE)
 			return;
 
 		if(!Fk.getInstance().getWorldManager().isAffected(e.getTo().getWorld()))
 			return;
 
-		if(e.getTo().getWorld().getEnvironment().equals(Environment.NETHER))
+		if(e.getTo().getWorld().getEnvironment() == Environment.NETHER)
 		{
 			if(!Fk.getInstance().getGame().isNetherEnabled() && Fk.getInstance().getGame().hasStarted())
 			{
@@ -29,7 +29,7 @@ public class UsePortalListener implements Listener
 				e.setCancelled(true);
 			}
 		}
-		else if(e.getTo().getWorld().getEnvironment().equals(Environment.THE_END))
+		else if(e.getTo().getWorld().getEnvironment() == Environment.THE_END)
 		{
 			if(!Fk.getInstance().getGame().isEndEnabled() && Fk.getInstance().getGame().hasStarted())
 			{
