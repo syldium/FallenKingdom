@@ -18,6 +18,8 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -65,9 +67,14 @@ public class ArgumentParser {
     }
 
     public static MaterialWithData parseBlock(String block) throws ArgumentParseException {
+        return parseBlock(block, s -> {});
+    }
+
+    public static MaterialWithData parseBlock(String block, Consumer<String> itemConsumer) throws ArgumentParseException {
         int sep = Version.VersionType.V1_13.isHigherOrEqual() ? -1 : block.indexOf(":");
         Material m = Material.matchMaterial(block.substring(0, sep < 0 ? block.length() : sep));
         if (m == null || !m.isBlock()) {
+            itemConsumer.accept(block);
             throw new ArgumentParseException(Messages.CMD_ERROR_UNKNOWN_BLOCK.getMessage().replace("%block%", block));
         }
         byte data = -1;
@@ -77,14 +84,16 @@ public class ArgumentParser {
         return new MaterialWithData(m, data);
     }
 
+
     @SuppressWarnings("deprecation")
-    public static MaterialWithData parseBlock(int index, List<String> args, Player player, boolean denyAir, boolean itemStackData) throws ArgumentParseException {
+    public static MaterialWithData parseBlock(int index, List<String> args, Player player, boolean denyAir, boolean itemStackData, BiConsumer<Player, String> itemConsumer) throws ArgumentParseException {
         if (index < args.size()) {
             return parseBlock(args.get(index));
         }
         ItemStack item = player.getItemInHand();
         Material m = item.getType();
         if (!m.isBlock() || (denyAir && isAir(m))) {
+            itemConsumer.accept(player, m.name());
             throw new ArgumentParseException(Messages.CMD_ERROR_UNKNOWN_BLOCK.getMessage().replace("%block%", m.name()));
         }
 
@@ -93,6 +102,14 @@ public class ArgumentParser {
             data = item.getData().getData();
         }
         return new MaterialWithData(player.getItemInHand().getType(), data);
+    }
+
+    public static MaterialWithData parseBlock(int index, List<String> args, Player player, boolean denyAir, boolean itemStackData) throws ArgumentParseException {
+        return parseBlock(index, args, player, denyAir, itemStackData, (p, input) -> {});
+    }
+
+    public static MaterialWithData parseBlock(int index, List<String> args, Player player, boolean denyAir, BiConsumer<Player, String> itemConsumer) throws ArgumentParseException {
+        return parseBlock(index, args, player, denyAir, false, itemConsumer);
     }
 
     public static MaterialWithData parseBlock(int index, List<String> args, Player player, boolean denyAir) throws ArgumentParseException {

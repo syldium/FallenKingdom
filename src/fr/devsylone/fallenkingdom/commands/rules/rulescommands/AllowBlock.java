@@ -34,12 +34,12 @@ public class AllowBlock extends FkCommand
 			if (args.size() <= 0) {
 				return CommandResult.NOT_VALID_EXECUTOR;
 			}
-			material = ArgumentParser.parseBlock(args.get(0));
+			material = ArgumentParser.parseBlock(args.get(0), (input) -> enderEyeSuggestion(sender, input));
 		} else {
-			material = ArgumentParser.parseBlock(0, args, (Player) sender, true);
+			material = ArgumentParser.parseBlock(0, args, (Player) sender, true, AllowBlock::enderEyeSuggestion);
 		}
-			// Si ENDER dans le nom, même si c'est un mauvais material, prévenir que les yeux c'est une state du ENDER_PORTAL_FRAME
-		makeSuggestionIf(material.getMaterial().name(), "ender", Messages.CMD_RULES_ENDER_EYE_MSG + " " + XMaterial.END_PORTAL_FRAME.parseMaterial().name() + "&a.", sender);
+
+		enderEyeSuggestion(sender, material.getMaterial().name());
 
 		AllowedBlocks rule = FkPI.getInstance().getRulesManager().getRule(Rule.ALLOWED_BLOCKS);
 
@@ -52,7 +52,11 @@ public class AllowBlock extends FkCommand
 		return CommandResult.SUCCESS;
 	}
 
-	public void makeSuggestionIf(String haystack, String needle, String message, CommandSender sender)
+	private static void enderEyeSuggestion(CommandSender sender, String input) {
+		makeSuggestionIf(input, "ender", Messages.CMD_RULES_ENDER_EYE_MSG + " " + XMaterial.END_PORTAL_FRAME.parseMaterial().name() + "&a.", sender);
+	}
+
+	private static void makeSuggestionIf(String haystack, String needle, String message, CommandSender sender)
 	{
 		if (haystack.toLowerCase().contains(needle.toLowerCase()))
 			sender.sendMessage(ChatUtils.PREFIX + message);
