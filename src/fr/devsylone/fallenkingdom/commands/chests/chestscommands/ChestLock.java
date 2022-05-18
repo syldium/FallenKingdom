@@ -24,6 +24,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -32,8 +33,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static fr.devsylone.fallenkingdom.version.Version.classExists;
 
@@ -43,6 +46,7 @@ public class ChestLock extends FkPlayerCommand implements Listener {
 
     private final List<ItemStack> categories = new ArrayList<>();
     private final Map<String, List<ItemStack>> representations = new HashMap<>();
+    private final Set<Inventory> inventories = new HashSet<>();
 
     public ChestLock() {
         super("lock", "[advancement] [chest]", Messages.CMD_MAP_CHEST_LOCK, CommandRole.ADMIN);
@@ -65,6 +69,7 @@ public class ChestLock extends FkPlayerCommand implements Listener {
                 }
                 Inventory inventory = Bukkit.createInventory(sender, 9 * 3, INVENTORY_NAME);
                 inventory.addItem(categories.toArray(new ItemStack[0]));
+                inventories.add(inventory);
                 if (sender != null && sender.isOnline()) {
                     plugin.getServer().getScheduler().runTask(plugin, () -> sender.openInventory(inventory));
                 }
@@ -112,7 +117,7 @@ public class ChestLock extends FkPlayerCommand implements Listener {
     @EventHandler
     public void onInvClick(InventoryClickEvent event)
     {
-        if(!event.getView().getTitle().contains(INVENTORY_NAME) || event.getClickedInventory() instanceof PlayerInventory || event.getCurrentItem() == null || event.getCurrentItem().getItemMeta() == null)
+        if(event.getClickedInventory() instanceof PlayerInventory || !inventories.contains(event.getInventory()) || event.getCurrentItem() == null || event.getCurrentItem().getItemMeta() == null)
             return;
 
         event.setCancelled(true);
@@ -133,11 +138,18 @@ public class ChestLock extends FkPlayerCommand implements Listener {
             return;
         }
 
+        inventories.remove(event.getInventory());
         Inventory inventory = Bukkit.createInventory(event.getWhoClicked(), ((representations.size() + 8) / 9) * 9, INVENTORY_NAME);
         for (ItemStack itemStack : representations) {
             inventory.addItem(itemStack);
         }
+        inventories.add(inventory);
         event.getWhoClicked().openInventory(inventory);
+    }
+
+    @EventHandler
+    public void onClose(InventoryCloseEvent event) {
+        inventories.remove(event.getInventory());
     }
 
     private CommandResult setLock(LivingEntity livingEntity, String advancement) {
