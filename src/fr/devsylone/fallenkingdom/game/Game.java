@@ -3,6 +3,8 @@ package fr.devsylone.fallenkingdom.game;
 import fr.devsylone.fallenkingdom.display.GlobalDisplayService;
 import fr.devsylone.fallenkingdom.display.tick.CycleTickFormatter;
 import fr.devsylone.fallenkingdom.display.tick.TickFormatter;
+import fr.devsylone.fkpi.api.event.DayEvent;
+import fr.devsylone.fkpi.api.event.RuleChangeEvent;
 import fr.devsylone.fkpi.teams.Team;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -19,7 +21,10 @@ import fr.devsylone.fkpi.rules.Rule;
 import fr.devsylone.fkpi.util.Saveable;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 import static fr.devsylone.fallenkingdom.display.tick.CycleTickFormatter.TICKS_PER_DAY_NIGHT_CYCLE;
@@ -27,6 +32,8 @@ import static fr.devsylone.fallenkingdom.utils.ConfigHelper.enumValueOf;
 
 public class Game implements Saveable
 {
+	private static final List<Rule<?>> OBSERVED_RULES = Arrays.asList(Rule.PVP_CAP, Rule.TNT_CAP, Rule.NETHER_CAP, Rule.END_CAP);
+
 	@Getter protected GameState state = GameState.BEFORE_STARTING;
 	@Getter protected int day = 0;
 	@Getter protected int time = FkPI.getInstance().getRulesManager().getRule(Rule.DAY_DURATION) - 10;
@@ -111,6 +118,13 @@ public class Game implements Saveable
 		netherEnabled = false;
 		endEnabled = false;
 	}
+
+    public <T> void onRuleChange(RuleChangeEvent<T> event) {
+        if (updateCap(event.getRule()) != null) {
+            playEventSound();
+			Fk.getInstance().getDisplayService().updateAll();
+        }
+    }
 
 	@Override
 	public void load(ConfigurationSection config)
@@ -280,5 +294,57 @@ public class Game implements Saveable
 	public boolean isPaused()
 	{
 		return state == GameState.PAUSE;
+	}
+
+	<T> @Nullable DayEvent updateCap(Rule<T> cap) {
+		DayEvent event = null;
+		if (Rule.PVP_CAP.equals(cap)) {
+			if (FkPI.getInstance().getRulesManager().getRule(Rule.PVP_CAP) == day) {
+				pvpEnabled = true;
+				event = new DayEvent(DayEvent.Type.PVP_ENABLED, day, Messages.BROADCAST_DAY_PVP.getMessage());
+			}
+		} else if (Rule.TNT_CAP.equals(cap)) {
+			if (FkPI.getInstance().getRulesManager().getRule(Rule.TNT_CAP) == day) {
+				assaultsEnabled = true;
+				event = new DayEvent(DayEvent.Type.TNT_ENABLED, day, Messages.BROADCAST_DAY_ASSAULT.getMessage());
+			}
+		} else if (Rule.NETHER_CAP.equals(cap)) {
+			if (FkPI.getInstance().getRulesManager().getRule(Rule.NETHER_CAP) == day) {
+				netherEnabled = true;
+				event = new DayEvent(DayEvent.Type.NETHER_ENABLED, day, Messages.BROADCAST_DAY_NETHER.getMessage());
+				Fk.getInstance().getPortalsManager().enablePortals();
+			}
+		} else if (Rule.END_CAP.equals(cap)) {
+			if (FkPI.getInstance().getRulesManager().getRule(Rule.END_CAP) == day) {
+				endEnabled = true;
+				event = new DayEvent(DayEvent.Type.END_ENABLED, day, Messages.BROADCAST_DAY_END.getMessage());
+			}
+		}
+		if (event != null) {
+			Bukkit.getPluginManager().callEvent(event);
+			if (event.getMessage() != null) {
+				Fk.broadcast(event.getMessage());
+			}
+		}
+		return event;
+	}
+
+	boolean updateCaps() {
+		boolean changed = false;
+		for (Rule<?> rule : OBSERVED_RULES) {
+			changed |= updateCap(rule) != null;
+		}
+		if (changed) {
+			playEventSound();
+		}
+		return changed;
+	}
+
+	private void playEventSound() {
+		for (Player player : Bukkit.getOnlinePlayers()) {
+			if (Fk.getInstance().getWorldManager().isAffected(player.getWorld())) {
+				Fk.getInstance().getDisplayService().playEventSound(player);
+			}
+		}
 	}
 }

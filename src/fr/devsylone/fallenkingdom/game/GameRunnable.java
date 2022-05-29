@@ -82,8 +82,7 @@ class GameRunnable extends BukkitRunnable
             Fk.broadcast(Messages.BROADCAST_SUN_WILL_RISE.getMessage());
     }
 
-    protected void incrementDay()
-    {
+    protected void incrementDay() {
         game.day++;
         game.time = 0;
         DayEvent dayEvent = new DayEvent(DayEvent.Type.NEW_DAY, game.day, Messages.BROADCAST_DAY.getMessage().replace("%day%", String.valueOf(game.day))); //EVENT
@@ -97,40 +96,13 @@ class GameRunnable extends BukkitRunnable
             Fk.getInstance().getCommandManager().search(Pause.class).orElseThrow(RuntimeException::new).execute(Fk.getInstance(), Bukkit.getConsoleSender(), Collections.emptyList(), "fk");
         }
 
-        DayEvent event = null;
-        if (FkPI.getInstance().getRulesManager().getRule(Rule.PVP_CAP) == game.day) {
-            game.pvpEnabled = true;
-            event = new DayEvent(DayEvent.Type.PVP_ENABLED, game.day, Messages.BROADCAST_DAY_PVP.getMessage());
-            Bukkit.getPluginManager().callEvent(event); //EVENT
+        if (game.updateCaps()) {
+            Fk.getInstance().getDisplayService().updateAll();
         }
+        updateLockedChests();
+    }
 
-        if (FkPI.getInstance().getRulesManager().getRule(Rule.TNT_CAP) == game.day) {
-            game.assaultsEnabled = true;
-            event = new DayEvent(DayEvent.Type.TNT_ENABLED, game.day, Messages.BROADCAST_DAY_ASSAULT.getMessage());
-            Bukkit.getPluginManager().callEvent(event); //EVENT
-        }
-
-        if (FkPI.getInstance().getRulesManager().getRule(Rule.NETHER_CAP) == game.day) {
-            game.netherEnabled = true;
-            event = new DayEvent(DayEvent.Type.NETHER_ENABLED, game.day, Messages.BROADCAST_DAY_NETHER.getMessage());
-            Bukkit.getPluginManager().callEvent(event); //EVENT
-            Fk.getInstance().getPortalsManager().enablePortals();
-        }
-
-        if (FkPI.getInstance().getRulesManager().getRule(Rule.END_CAP) == game.day) {
-            game.endEnabled = true;
-            event = new DayEvent(DayEvent.Type.END_ENABLED, game.day, Messages.BROADCAST_DAY_END.getMessage());
-            Bukkit.getPluginManager().callEvent(event); //EVENT
-        }
-
-        if (event != null) {
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                if (Fk.getInstance().getWorldManager().isAffected(player.getWorld())) {
-                    Fk.getInstance().getDisplayService().playEventSound(player);
-                }
-            }
-        }
-
+    private void updateLockedChests() {
         for (LockedChest chest : Fk.getInstance().getFkPI().getLockedChestsManager().getChests()) {
             if (chest.getUnlockDay() != game.day) {
                 continue;
@@ -148,6 +120,5 @@ class GameRunnable extends BukkitRunnable
                 player.playSound(player.getLocation(), FkSound.ENDERMAN_TELEPORT.bukkitSound(), 1.0F, 1.0F);
             }
         }
-        Fk.getInstance().getDisplayService().updateAll();
     }
 }

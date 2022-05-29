@@ -30,7 +30,7 @@ public class FkCapCommand extends FkCommand
 	public final CommandResult execute(Fk plugin, CommandSender sender, List<String> args, String label) {
 		int day = ArgumentParser.parsePositiveInt(args.get(0), false, Messages.CMD_ERROR_DAY_FORMAT);
 
-		if(day <= Fk.getInstance().getGame().getDay())
+		if(day < Fk.getInstance().getGame().getDay())
 			throw new FkLightException(Messages.CMD_ERROR_DAY_PASSED);
 
 		if(FkPI.getInstance().getRulesManager().getRule(cap) <= Fk.getInstance().getGame().getDay())

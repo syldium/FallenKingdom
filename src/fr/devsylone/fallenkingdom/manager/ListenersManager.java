@@ -1,6 +1,7 @@
 package fr.devsylone.fallenkingdom.manager;
 
 import fr.devsylone.fallenkingdom.Fk;
+import fr.devsylone.fallenkingdom.listeners.RuleChangeListener;
 import fr.devsylone.fallenkingdom.listeners.block.BlockExplodeListener;
 import fr.devsylone.fallenkingdom.listeners.block.BlockListener;
 import fr.devsylone.fallenkingdom.listeners.block.BucketListener;
@@ -48,6 +49,7 @@ public class ListenersManager
 		plugin.getServer().getPluginManager().registerEvents(new RespawnListener(), plugin);
 		plugin.getServer().getPluginManager().registerEvents(new PauseInteractionListener(), plugin);
 		plugin.getServer().getPluginManager().registerEvents(new DisabledPotionsListener(), plugin);
+		plugin.getServer().getPluginManager().registerEvents(new RuleChangeListener(plugin), plugin);
 		if (Version.classExists("org.bukkit.event.player.PlayerAdvancementDoneEvent"))
 			plugin.getServer().getPluginManager().registerEvents(new AdvancementListener(), plugin);
 	}
