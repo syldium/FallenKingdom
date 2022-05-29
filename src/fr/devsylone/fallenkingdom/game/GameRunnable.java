@@ -71,8 +71,11 @@ class GameRunnable extends BukkitRunnable
             if(w.getEnvironment() == World.Environment.NORMAL && Math.abs(w.getFullTime() - worldTime) > 32 && game.time < game.timeFormat.dayDuration() && !(game.day == 0 && game.time < 20))
             {
                 Bukkit.getLogger().info(Messages.CONSOLE_ADJUSTMENT_GAME_TIME.getMessage());
-                game.time = game.timeFormat.timeFromWorld(w.getFullTime()) % TICKS_PER_DAY_NIGHT_CYCLE;
-                game.day = game.timeFormat.dayFromWorld(w.getFullTime());
+                final long fullTime = w.getFullTime();
+                game.time = game.timeFormat.timeFromWorld(fullTime) % TICKS_PER_DAY_NIGHT_CYCLE;
+                if (fullTime != w.getTime()) { // Ne changer le jour seulement si celui du monde est différent de 0
+                    game.day = game.timeFormat.dayFromWorld(fullTime);
+                }
                 worldTime = game.getExceptedWorldTime();
             }
             w.setFullTime(worldTime);
