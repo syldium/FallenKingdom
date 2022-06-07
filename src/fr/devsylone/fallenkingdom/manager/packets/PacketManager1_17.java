@@ -33,6 +33,7 @@ public class PacketManager1_17 extends PacketManager {
     private static final Class<?> PACKET_ENTITY_POSITION;
 
     private static final boolean PACKET_DESTROY_ENTITY_LIST;
+    private static final boolean PACKET_SPAWN_ENTITY_HEAD_YAW;
 
     static {
         try {
@@ -54,7 +55,15 @@ public class PacketManager1_17 extends PacketManager {
             }
             PACKET_DESTROY_ENTITY_LIST = entityDestroy.getParameterTypes()[0].equals(int[].class);
 
-            PACKET_SPAWN_ENTITY = packetSpawnEntityClass.getConstructor(int.class, UUID.class, double.class, double.class, double.class, float.class, float.class, entityTypesClass, int.class, vec3dClass);
+            Constructor<?> packetSpawnEntity;
+            try {
+                packetSpawnEntity = packetSpawnEntityClass.getConstructor(int.class, UUID.class, double.class, double.class, double.class, float.class, float.class, entityTypesClass, int.class, vec3dClass);
+            } catch (NoSuchMethodException e) { // 1.19
+                packetSpawnEntity = packetSpawnEntityClass.getConstructor(int.class, UUID.class, double.class, double.class, double.class, float.class, float.class, entityTypesClass, int.class, vec3dClass, double.class);
+            }
+            PACKET_SPAWN_ENTITY = packetSpawnEntity;
+            PACKET_SPAWN_ENTITY_HEAD_YAW = packetSpawnEntity.getParameterCount() == 11;
+
             PACKET_DESTROY_ENTITY = entityDestroy;
             PACKET_ENTITY_EQUIPMENT = packetEntityEquipment.getConstructor(int.class, List.class);
             PACKET_ENTITY_POSITION = NMSUtils.nmsClass(packetsPackage, "PacketPlayOutEntityTeleport");
@@ -70,15 +79,29 @@ public class PacketManager1_17 extends PacketManager {
         playerById.put(id, p.getUniqueId());
 
         try {
-            Object packet = PACKET_SPAWN_ENTITY.newInstance(
-                    id,                         // Entity id
-                    UUID.randomUUID(),
-                    loc.getX(), loc.getY(), loc.getZ(), // Position
-                    loc.getPitch(), loc.getYaw(),       // Rotation
-                    ARMOR_STAND,                        // Entity type
-                    0,                                  // Entity data
-                    ZERO_VEC3D                          // Velocity
-            );
+            Object packet;
+            if (PACKET_SPAWN_ENTITY_HEAD_YAW) {
+                packet = PACKET_SPAWN_ENTITY.newInstance(
+                        id,                         // Entity id
+                        UUID.randomUUID(),
+                        loc.getX(), loc.getY(), loc.getZ(), // Position
+                        loc.getPitch(), loc.getYaw(),       // Rotation
+                        ARMOR_STAND,                        // Entity type
+                        0,                                  // Entity data
+                        ZERO_VEC3D,                         // Velocity
+                        0D                                  // Head yaw
+                );
+            } else {
+                packet = PACKET_SPAWN_ENTITY.newInstance(
+                        id,                         // Entity id
+                        UUID.randomUUID(),
+                        loc.getX(), loc.getY(), loc.getZ(), // Position
+                        loc.getPitch(), loc.getYaw(),       // Rotation
+                        ARMOR_STAND,                        // Entity type
+                        0,                                  // Entity data
+                        ZERO_VEC3D                          // Velocity
+                );
+            }
             PacketUtils.sendPacket(p, packet);
         } catch (ReflectiveOperationException ex) {
             ex.printStackTrace();

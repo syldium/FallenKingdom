@@ -403,6 +403,7 @@ public class Fk extends JavaPlugin
 			case V1_16:
 				return new PacketManager1_16();
 			case V1_17:
+			case V1_19:
 				return new PacketManager1_17();
 			default:
 				throw new RuntimeException("Could not get packet manager by version!");

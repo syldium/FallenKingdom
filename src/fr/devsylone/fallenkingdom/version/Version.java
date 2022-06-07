@@ -11,7 +11,7 @@ public class Version {
         if (classExists("org.bukkit.block.data.BlockData")) {
             if (classExists("org.bukkit.event.inventory.TradeSelectEvent")) {
                 if (classExists("org.bukkit.entity.Goat")) {
-                    VERSION_TYPE = VersionType.V1_17;
+                    VERSION_TYPE = classExists("org.bukkit.block.SculkCatalyst") ? VersionType.V1_19 : VersionType.V1_17;
                 } else {
                     VERSION_TYPE = classExists("org.bukkit.entity.Hoglin") ? VersionType.V1_16 : VersionType.V1_14_V1_15;
                 }
@@ -64,7 +64,8 @@ public class Version {
         V1_13,
         V1_14_V1_15,
         V1_16,
-        V1_17;
+        V1_17,
+        V1_19;
 
         public boolean isHigherOrEqual() {
             return VERSION_TYPE.ordinal() >= ordinal();
