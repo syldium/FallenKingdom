@@ -9,6 +9,7 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import fr.devsylone.fallenkingdom.commands.abstraction.Argument;
 import fr.devsylone.fallenkingdom.commands.abstraction.IntegerArgument;
 
+import fr.devsylone.fallenkingdom.version.Version.VersionType;
 import org.bukkit.NamespacedKey;
 
 class ArgumentTypeBuilder
@@ -23,7 +24,11 @@ class ArgumentTypeBuilder
         ArgumentType<?> argumentType;
         switch (arg.getName()) {
             case "block":
-                argumentType = MinecraftArgumentTypes.getByKey(NamespacedKey.minecraft("block_state"));
+                if (VersionType.V1_19.isHigherOrEqual()) {
+                    argumentType = StringArgumentType.string(); // TODO CommandBuildContext
+                } else {
+                    argumentType = MinecraftArgumentTypes.getByKey(NamespacedKey.minecraft("block_state"));
+                }
                 break;
             case "text":
                 argumentType = StringArgumentType.greedyString();
@@ -32,7 +37,7 @@ class ArgumentTypeBuilder
                 argumentType = MinecraftArgumentTypes.getByKey(NamespacedKey.minecraft("resource_location"));
                 break;
             case "color":
-                argumentType = MinecraftArgumentTypes.getByKey(NamespacedKey.minecraft("function")); // Type le plus proche autorisant le #
+                argumentType = MinecraftArgumentTypes.getByKey(NamespacedKey.minecraft("function")); // Type le plus proche autorisant le # // TODO toujours le cas ?
                 break;
             case "entity":
             case "player":

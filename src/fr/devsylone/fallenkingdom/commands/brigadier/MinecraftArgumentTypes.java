@@ -29,10 +29,16 @@ package fr.devsylone.fallenkingdom.commands.brigadier;
 
 import com.mojang.brigadier.arguments.ArgumentType;
 import fr.devsylone.fallenkingdom.utils.NMSUtils;
+import fr.devsylone.fallenkingdom.version.Version.VersionType;
+import fr.devsylone.fallenkingdom.version.tracker.MinecraftKey;
+import fr.devsylone.fallenkingdom.version.tracker.InternalRegistry;
 import org.bukkit.NamespacedKey;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -45,27 +51,21 @@ import java.util.Map;
 public final class MinecraftArgumentTypes {
     private MinecraftArgumentTypes() {}
 
-    // MinecraftKey constructor
-    private static final Constructor<?> MINECRAFT_KEY_CONSTRUCTOR;
-
-    // ArgumentRegistry#getByKey (obfuscated) method
-    private static final Method ARGUMENT_REGISTRY_GET_BY_KEY_METHOD;
+    private static final ArgumentTypeRegistry ARGUMENT_TYPE_REGISTRY;
 
     // ArgumentRegistry#BY_CLASS (obfuscated) field
     private static final Field BY_CLASS_MAP_FIELD;
 
     static {
         try {
-            Class<?> minecraftKey = NMSUtils.nmsClass("resources", "MinecraftKey");
-            MINECRAFT_KEY_CONSTRUCTOR = minecraftKey.getConstructor(String.class, String.class);
-            MINECRAFT_KEY_CONSTRUCTOR.setAccessible(true);
-
-            Class<?> argumentRegistry = NMSUtils.nmsClass("commands.synchronization", "ArgumentRegistry");
-            ARGUMENT_REGISTRY_GET_BY_KEY_METHOD = Arrays.stream(argumentRegistry.getDeclaredMethods())
-                    .filter(method -> method.getParameterCount() == 1)
-                    .filter(method -> minecraftKey.equals(method.getParameterTypes()[0]))
-                    .findFirst().orElseThrow(NoSuchMethodException::new);
-            ARGUMENT_REGISTRY_GET_BY_KEY_METHOD.setAccessible(true);
+            Class<?> argumentRegistry;
+            if (VersionType.V1_19.isHigherOrEqual()) {
+                argumentRegistry = NMSUtils.nmsClass("commands.synchronization", "ArgumentTypeInfos");
+                ARGUMENT_TYPE_REGISTRY = new ArgumentTypeRegistry1_19();
+            } else {
+                argumentRegistry = NMSUtils.nmsClass("commands.synchronization", "ArgumentRegistry");
+                ARGUMENT_TYPE_REGISTRY = new ArgumentTypeRegistry1_13(argumentRegistry);
+            }
 
             BY_CLASS_MAP_FIELD = Arrays.stream(argumentRegistry.getDeclaredFields())
                     .filter(field -> field.getType().equals(Map.class))
@@ -94,8 +94,7 @@ public final class MinecraftArgumentTypes {
     @SuppressWarnings("unchecked")
     public static Class<? extends ArgumentType<?>> getClassByKey(NamespacedKey key) throws IllegalArgumentException {
         try {
-            Object minecraftKey = MINECRAFT_KEY_CONSTRUCTOR.newInstance(key.getNamespace(), key.getKey());
-            Object entry = ARGUMENT_REGISTRY_GET_BY_KEY_METHOD.invoke(null, minecraftKey);
+            Object entry = ARGUMENT_TYPE_REGISTRY.find(key);
             if (entry == null) {
                 throw new IllegalArgumentException(key.toString());
             }
@@ -143,6 +142,41 @@ public final class MinecraftArgumentTypes {
             return constructor.newInstance(args);
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private interface ArgumentTypeRegistry {
+        @Nullable Object find(@NotNull NamespacedKey identifier) throws ReflectiveOperationException;
+    }
+
+    private static class ArgumentTypeRegistry1_13 implements ArgumentTypeRegistry {
+
+        private final Method argumentRegistryGetByKey;
+
+        private ArgumentTypeRegistry1_13(@NotNull Class<?> argumentRegistry) throws ReflectiveOperationException {
+            argumentRegistryGetByKey = Arrays.stream(argumentRegistry.getDeclaredMethods())
+                    .filter(method -> method.getParameterCount() == 1)
+                    .filter(method -> MinecraftKey.IDENTIFIER.equals(method.getParameterTypes()[0]))
+                    .findFirst().orElseThrow(NoSuchMethodException::new);
+            argumentRegistryGetByKey.setAccessible(true);
+        }
+
+        @Override
+        public @Nullable Object find(@NotNull NamespacedKey identifier) throws ReflectiveOperationException {
+            return this.argumentRegistryGetByKey.invoke(null, MinecraftKey.identifier(identifier));
+        }
+    }
+
+    private static class ArgumentTypeRegistry1_19 implements ArgumentTypeRegistry {
+
+        private final InternalRegistry<Object> registry = new InternalRegistry<>(NamespacedKey.minecraft("command_argument_type"));
+
+        private ArgumentTypeRegistry1_19() throws InvocationTargetException, IllegalAccessException {
+        }
+
+        @Override
+        public @Nullable Object find(@NotNull NamespacedKey identifier) throws ReflectiveOperationException {
+            return this.registry.get(identifier);
         }
     }
 }
