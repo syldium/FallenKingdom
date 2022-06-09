@@ -20,12 +20,16 @@ class ArgumentTypeBuilder
      * @param <S> Type de l'argument
      * @return Argument Brigadier
      */
-    public static <S> RequiredArgumentBuilder<S, ?> getFromArg(Argument<?> arg) {
+    static <S> RequiredArgumentBuilder<S, ?> getFromArg(Argument<?> arg) {
         ArgumentType<?> argumentType;
         switch (arg.getName()) {
             case "block":
                 if (VersionType.V1_19.isHigherOrEqual()) {
-                    argumentType = StringArgumentType.string(); // TODO CommandBuildContext
+                    argumentType = MinecraftArgumentTypes.constructMinecraftArgumentType(
+                            NamespacedKey.minecraft("block_state"),
+                            new Class[]{CommandBuildContextSupplier.COMMAND_BUILD_CONTEXT},
+                            CommandBuildContextSupplier.create()
+                    );
                 } else {
                     argumentType = MinecraftArgumentTypes.getByKey(NamespacedKey.minecraft("block_state"));
                 }

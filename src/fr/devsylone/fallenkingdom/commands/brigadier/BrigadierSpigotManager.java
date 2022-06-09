@@ -7,6 +7,7 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 import com.mojang.brigadier.tree.RootCommandNode;
 import fr.devsylone.fallenkingdom.manager.CommandManager;
 import fr.devsylone.fallenkingdom.utils.NMSUtils;
+import fr.devsylone.fallenkingdom.utils.PacketUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -49,7 +50,7 @@ public class BrigadierSpigotManager<S> extends BrigadierManager<S> implements Li
             CONSOLE_FIELD = craftServer.getDeclaredField("console");
             CONSOLE_FIELD.setAccessible(true);
 
-            Class<?> minecraftServer = NMSUtils.nmsClass("server", "MinecraftServer");
+            Class<?> minecraftServer = PacketUtils.MINECRAFT_SERVER;
             Class<?> commandDispatcher = NMSUtils.nmsClass("commands", "CommandDispatcher");
             GET_COMMAND_DISPATCHER_METHOD = NMSUtils.getMethod(minecraftServer, commandDispatcher);
             GET_COMMAND_DISPATCHER_METHOD.setAccessible(true);

@@ -27,8 +27,10 @@ public class PacketUtils
 	private static final Class<?> CRAFT_WORLD;
 	private static final MethodHandle GET_WORLD_HANDLE;
 	private static final MethodHandle GET_CHUNK_HANDLE_AT;
+	private static final Method GET_SERVER_HANDLE;
 	public static final Class<?> MINECRAFT_WORLD;
 	public static final Class<?> MINECRAFT_CHUNK;
+	public static final Class<?> MINECRAFT_SERVER;
 
 	static
 	{
@@ -41,7 +43,7 @@ public class PacketUtils
 			final Class<?> playerConnection = NMSUtils.nmsClass("server.network", "PlayerConnection");
 			final Field playerConnectionField = Arrays.stream(getPlayerHandle.getReturnType().getFields())
 					.filter(field -> field.getType().isAssignableFrom(playerConnection))
-					.findFirst().orElseThrow(RuntimeException::new);
+					.findFirst().orElseThrow(() -> new NoSuchFieldException("Cannot find ServerPlayer#connection"));
 			GET_PLAYER_CONNECTION_CRAFT_PLAYER = lookup.unreflectGetter(playerConnectionField);
 
 			final Class<?> packet = NMSUtils.nmsClass("network.protocol", "Packet");
@@ -59,6 +61,8 @@ public class PacketUtils
 				getChunkAt = NMSUtils.getMethod(MINECRAFT_WORLD, MINECRAFT_CHUNK, int.class, int.class);
 			}
 			GET_CHUNK_HANDLE_AT = lookup.unreflect(getChunkAt);
+			MINECRAFT_SERVER = NMSUtils.nmsClass("server", "MinecraftServer");
+			GET_SERVER_HANDLE = MINECRAFT_SERVER.getDeclaredMethod("getServer");
 		}catch(ReflectiveOperationException e)
 		{
 			throw new ExceptionInInitializerError(e);
@@ -107,6 +111,16 @@ public class PacketUtils
 	{
 		try {
 			return GET_CHUNK_HANDLE_AT.invoke(GET_WORLD_HANDLE.invoke(chunk.getWorld()), chunk.getX(), chunk.getZ());
+		} catch (Throwable throwable) {
+			throwable.printStackTrace();
+			return null;
+		}
+	}
+
+	public static Object getNMSServer()
+	{
+		try {
+			return GET_SERVER_HANDLE.invoke(null);
 		} catch (Throwable throwable) {
 			throwable.printStackTrace();
 			return null;
