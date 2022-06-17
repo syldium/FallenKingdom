@@ -1,5 +1,6 @@
 package fr.devsylone.fallenkingdom.display;
 
+import fr.devsylone.fallenkingdom.version.Version;
 import fr.devsylone.fkpi.managers.TeamManager;
 import fr.devsylone.fkpi.teams.Team;
 import fr.devsylone.fkpi.util.Saveable;
@@ -11,8 +12,17 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import static fr.devsylone.fallenkingdom.version.Version.classExists;
+
+/**
+ * Adapte les équipes FK en équipes scoreboard.
+ */
 public class NametagService implements Saveable {
+
+    // Player#setScoreboard manque d'une implémentation
+    private final boolean TEST_ENV = classExists("be.seeseemelk.mockbukkit.entity.PlayerMock");
 
     private Scoreboard scoreboard;
     private final TeamManager teamManager;
@@ -41,19 +51,137 @@ public class NametagService implements Saveable {
         return this.scoreboard;
     }
 
+    /**
+     * S'assure que l'équipe a bien été créée du point de vue du scoreboard.
+     *
+     * @param team L'équipe FK
+     */
+    public void createScoreboardTeam(@NotNull Team team) {
+        getOrCreateScoreboardTeam(team);
+    }
+
+    /**
+     * Retire l'équipe du scoreboard.
+     *
+     * @param fkTeam L'équipe FK
+     */
+    public void removeScoreboardTeam(@NotNull Team fkTeam) {
+        org.bukkit.scoreboard.Team team = this.scoreboard.getTeam(fkTeam.getName());
+        if (team != null) {
+            team.unregister();
+        }
+    }
+
+    /**
+     * Ajoute un joueur à l'équipe dans le scoreboard.
+     *
+     * @param team L'équipe FK où le joueur est déjà
+     * @param playerName Le nom du joueur (identique à {@code player.getName()})
+     * @param player Le joueur concerné s'il est connecté
+     */
+    public void addEntry(@NotNull Team team, @NotNull String playerName, @Nullable Player player) {
+        getOrCreateScoreboardTeam(team).addEntry(playerName);
+        if (player != null) {
+            player.setDisplayName(team.getChatColor() + player.getName());
+            if (!TEST_ENV) {
+                player.setScoreboard(this.scoreboard);
+            }
+        }
+    }
+
+    /**
+     * Retire un joueur à l'équipe dans le scoreboard.
+     *
+     * @param team L'équipe FK où le joueur n'est pas
+     * @param playerName Le nom du joueur (identique à {@code player.getName()})
+     * @param player Le joueur concerné s'il est connecté
+     */
+    public void removeEntry(@NotNull Team team, @NotNull String playerName, @Nullable Player player) {
+        getOrCreateScoreboardTeam(team).removeEntry(playerName);
+        if (player != null) {
+            player.setDisplayName(playerName);
+            if (!TEST_ENV) {
+                player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
+            }
+        }
+    }
+
+    /**
+     * Met à jour l'affichage scoreboard d'un joueur.
+     * <p>
+     * Si le scoreboard doit changer à cause du joueur, utiliser cette méthode.
+     * Si le scoreboard doit changer à cause d'un changement de l'équipe, préférer {@link #addEntry(Team, String, Player)}.
+     *
+     * @param player Le joueur concerné
+     */
     public void addEntry(@NotNull Player player) {
         final Team team = this.teamManager.getPlayerTeam(player);
         if (team != null) {
-            player.setDisplayName(team.getChatColor() + player.getName());
+            addEntry(team, player.getName(), player);
         }
-        player.setScoreboard(this.scoreboard);
     }
 
+    /**
+     * Retire l'affichage scoreboard d'un joueur.
+     *
+     * @param player Le joueur concerné
+     */
     public void removeEntry(@NotNull Player player) {
-        if (this.teamManager.getPlayerTeam(player) != null) {
-            player.setDisplayName(null);
+        final Team team = this.teamManager.getPlayerTeam(player);
+        if (team != null) {
+            removeEntry(team, player.getName(), player);
         }
-        player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
+    }
+
+    /**
+     * Prend en compte le changement de nom d'une équipe.
+     *
+     * @param fkTeam L'équipe FK avec un nouveau nom
+     * @param previousName L'ancien nom de l'équipe
+     */
+    public void renameTeam(@NotNull Team fkTeam, @NotNull String previousName) {
+        org.bukkit.scoreboard.Team team = getOrCreateScoreboardTeam(fkTeam);
+        for (String entry : fkTeam.getPlayers()) {
+            team.addEntry(entry);
+        }
+        team = this.scoreboard.getTeam(previousName);
+        if (team != null) {
+            team.unregister();
+        }
+    }
+
+    /**
+     * Prend en compte le changement de couleur d'une équipe.
+     *
+     * @param fkTeam L'équipe FK avec une nouvelle couleur
+     */
+    public void updateColor(@NotNull Team fkTeam) {
+        setTeamColor(getOrCreateScoreboardTeam(fkTeam), fkTeam);
+    }
+
+    public void teardown(@NotNull Iterable<Team> teams) {
+        for (Team team : teams) {
+            removeScoreboardTeam(team);
+        }
+        removeHealthObjective();
+    }
+
+    private void setTeamColor(org.bukkit.scoreboard.Team team, Team fkTeam) {
+        if (Version.VersionType.V1_13.isHigherOrEqual()) {
+            team.setColor(fkTeam.getColor().getBukkitChatColor());
+        } else {
+            team.setPrefix(String.valueOf(fkTeam.getColor().getBukkitChatColor()));
+        }
+    }
+
+    private @NotNull org.bukkit.scoreboard.Team getOrCreateScoreboardTeam(@NotNull Team fkTeam) {
+        org.bukkit.scoreboard.Team team = this.scoreboard.getTeam(fkTeam.getName());
+        if (team != null) {
+            return team;
+        }
+        team = this.scoreboard.registerNewTeam(fkTeam.getName());
+        setTeamColor(team, fkTeam);
+        return team;
     }
 
     private static final String USE_MAIN_SCOREBOARD = "use-main-scoreboard";

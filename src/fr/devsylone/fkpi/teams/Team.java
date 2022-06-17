@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import fr.devsylone.fallenkingdom.version.Version;
+import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.api.ITeam;
 import fr.devsylone.fkpi.api.event.TeamUpdateEvent;
 import net.md_5.bungee.api.ChatColor;
@@ -12,17 +12,17 @@ import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.configuration.ConfigurationSection;
 
-import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.util.Color;
 import fr.devsylone.fkpi.util.Saveable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import static java.util.Objects.requireNonNull;
+
 public class Team implements ITeam, Saveable
 {
 	private String name;
 	private Base base;
-	private final org.bukkit.scoreboard.Team scoreboardTeam;
 	private List<String> players;
 	private Color color;
 
@@ -31,21 +31,18 @@ public class Team implements ITeam, Saveable
 		this.name = name;
 		players = new ArrayList<>();
 
-		scoreboardTeam = FkPI.getInstance().getTeamManager().getScoreboard().registerNewTeam(name);
 		setColor(Color.of(name));
 	}
 
 	@Override
 	public void addPlayer(@NotNull String p)
 	{
-		scoreboardTeam.addEntry(p);
 		players.add(p);
 	}
 
 	@Override
 	public void removePlayer(@NotNull String p)
 	{
-		scoreboardTeam.removeEntry(p);
 		players.remove(p);
 	}
 
@@ -65,7 +62,6 @@ public class Team implements ITeam, Saveable
 	public void setName(@NotNull String name)
 	{
 		Bukkit.getPluginManager().callEvent(new TeamUpdateEvent(this, TeamUpdateEvent.TeamUpdate.UPDATE)); // EVENT
-		this.scoreboardTeam.setDisplayName(name);
 		this.name = name;
 	}
 
@@ -100,16 +96,14 @@ public class Team implements ITeam, Saveable
 
 	public void setColor(@Nullable Color color)
 	{
+		Bukkit.getPluginManager().callEvent(new TeamUpdateEvent(this, TeamUpdateEvent.TeamUpdate.UPDATE)); // EVENT
 		this.color = color == null ? Color.BLANC : color;
-		if(Version.VersionType.V1_13.isHigherOrEqual())
-			scoreboardTeam.setColor(this.color.getBukkitChatColor());
-		else
-			scoreboardTeam.setPrefix(String.valueOf(this.color.getChatColor()));
 	}
 
+	@Deprecated
 	public @NotNull org.bukkit.scoreboard.Team getScoreboardTeam()
 	{
-		return scoreboardTeam;
+		return requireNonNull(FkPI.getInstance().getTeamManager().nametag().scoreboard().getTeam(name), "scoreboard team");
 	}
 
 	public void balance(List<Team> teams, int playerPerTeams)
@@ -152,9 +146,6 @@ public class Team implements ITeam, Saveable
 	@Override
 	public void load(ConfigurationSection config)
 	{
-		for(String entr : config.getStringList("Members"))
-			scoreboardTeam.addEntry(entr);
-
 		players = config.getStringList("Members");
 		setColor(Color.of(config.getString("Color")));
 

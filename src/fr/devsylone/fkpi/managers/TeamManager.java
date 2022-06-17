@@ -82,7 +82,6 @@ public class TeamManager implements Saveable
 			}
 		}
 
-		team.getScoreboardTeam().unregister();
 		teams.remove(team);
 		Fk.getInstance().getWorldManager().invalidateBaseWorldsCache(this);
 	}
@@ -274,8 +273,6 @@ public class TeamManager implements Saveable
 
 	public void teardown()
 	{
-		for(Team team : teams)
-			team.getScoreboardTeam().unregister();
-		this.nametagService.removeHealthObjective();
+		this.nametagService.teardown(this.teams);
 	}
 }
