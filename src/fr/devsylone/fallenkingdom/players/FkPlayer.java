@@ -272,11 +272,7 @@ public class FkPlayer implements Saveable
 	{
 		kills = config.getInt("Kills");
 		deaths = config.getInt("Deaths");
-		state = PlayerState.valueOf(config.getString("State"));
 		knowsSbEdit = config.getBoolean("KnowsSbEdit");
-
-		if(state == PlayerState.EDITING_SCOREBOARD)
-			newSbDisplayer();
 
 		if(config.isConfigurationSection("Portal"))
 			portal = new Location(Bukkit.getWorld(config.getString("Portal.World")), config.getInt("Portal.X"), config.getInt("Portal.Y"), config.getInt("Portal.Z"));
@@ -286,7 +282,6 @@ public class FkPlayer implements Saveable
 	{
 		config.set("Kills", kills);
 		config.set("Deaths", deaths);
-		config.set("State", state.name());
 		config.set("KnowsSbEdit", knowsSbEdit);
 
 		if(portal != null && portal.getWorld() != null)
