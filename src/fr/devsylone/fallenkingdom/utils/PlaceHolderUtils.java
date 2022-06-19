@@ -18,7 +18,7 @@ import static java.util.Objects.requireNonNull;
 
 public class PlaceHolderUtils
 {
-    public static final Supplier<Game> GAME_SUPPLIER = Fk.getInstance()::getGame;
+    public static final Supplier<Game> GAME_SUPPLIER = () -> Fk.getInstance().getGame();
 	private static final double ANGLE_OFFSET = ((double) 360 / 16) * 13;
 
 	private static @Nullable Location getPointingLocation(Player player)
