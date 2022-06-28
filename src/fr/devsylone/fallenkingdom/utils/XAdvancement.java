@@ -62,10 +62,10 @@ public class XAdvancement {
      * @return Si l'association a pu se faire
      */
     public static boolean exist(String name) {
-        if (isAdvancement()) {
-            return Bukkit.getServer().getAdvancement(parseKey(name)) != null;
-        }
         try {
+            if (isAdvancement()) {
+                return Bukkit.getServer().getAdvancement(parseKey(name)) != null;
+            }
             Enum.valueOf(ACHIEVEMENT, name.toUpperCase());
             return true;
         } catch (IllegalArgumentException ignored) {
