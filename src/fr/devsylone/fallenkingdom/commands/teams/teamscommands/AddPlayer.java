@@ -33,8 +33,6 @@ public class AddPlayer extends FkCommand
 		for (String p : players) {
 			ITeam team = plugin.getFkPI().getTeamManager().addPlayer(p, args.get(1));
 			ChatColor color = team.getChatColor();
-			if (player != null)
-				player.setDisplayName(color + player.getName() + ChatColor.WHITE);
 			broadcast(Messages.CMD_TEAM_ADD_PLAYER.getMessage()
 					.replace("%player%", color + p)
 					.replace("%team%", color + args.get(1)),
