@@ -14,15 +14,10 @@ import org.bukkit.scoreboard.ScoreboardManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import static fr.devsylone.fallenkingdom.version.Version.classExists;
-
 /**
  * Adapte les équipes FK en équipes scoreboard.
  */
 public class NametagService implements Saveable {
-
-    // Player#setScoreboard manque d'une implémentation
-    private final boolean TEST_ENV = classExists("be.seeseemelk.mockbukkit.entity.PlayerMock");
 
     private Scoreboard scoreboard;
     private final TeamManager teamManager;
@@ -83,9 +78,7 @@ public class NametagService implements Saveable {
         getOrCreateScoreboardTeam(team).addEntry(playerName);
         if (player != null) {
             player.setDisplayName(team.getChatColor() + player.getName());
-            if (!TEST_ENV) {
-                player.setScoreboard(this.scoreboard);
-            }
+            player.setScoreboard(this.scoreboard);
         }
     }
 
@@ -100,9 +93,7 @@ public class NametagService implements Saveable {
         getOrCreateScoreboardTeam(team).removeEntry(playerName);
         if (player != null) {
             player.setDisplayName(playerName);
-            if (!TEST_ENV) {
-                player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
-            }
+            player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
         }
     }
 
