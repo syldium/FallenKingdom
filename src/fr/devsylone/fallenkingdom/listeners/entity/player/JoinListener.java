@@ -52,8 +52,7 @@ public class JoinListener implements Listener
 				e.getPlayer().sendMessage(s);
 
 		player.refreshScoreboard();
-		if(NON_TESTING_ENV)
-			FkPI.getInstance().getTeamManager().nametag().addEntry(e.getPlayer());
+		FkPI.getInstance().getTeamManager().nametag().addEntry(e.getPlayer());
 
 		e.setJoinMessage(null);
 		Fk.broadcast(Messages.CHAT_JOIN.getMessage().replace("%player%", e.getPlayer().getDisplayName()));

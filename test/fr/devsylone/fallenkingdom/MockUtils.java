@@ -6,6 +6,7 @@ import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import fr.devsylone.fkpi.teams.Team;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.inventory.ItemStack;
 
@@ -22,6 +23,7 @@ public class MockUtils {
         ServerMock serverMock = MockBukkit.mock();
         serverMock.addSimpleWorld("normal");
         serverMock.addSimpleWorld("nether").setEnvironment(Environment.NETHER);
+        serverMock.addSimpleWorld("unaffected_end").setEnvironment(Environment.THE_END);
         return serverMock;
     }
 
@@ -54,5 +56,9 @@ public class MockUtils {
             }
         }
         return blueTeam;
+    }
+
+    public static World getUnaffectedWorld() {
+        return getServerMockSafe().getWorld("unaffected_end");
     }
 }

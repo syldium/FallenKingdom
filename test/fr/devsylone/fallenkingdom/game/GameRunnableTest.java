@@ -68,7 +68,9 @@ public class GameRunnableTest {
         assertEquals(0, game.getDay());
         MockUtils.getServerMockSafe().getScheduler().performTicks(24060L);
         for (World world : Bukkit.getWorlds()) {
-            assertEquals(50L, world.getTime());
+            if (world != MockUtils.getUnaffectedWorld()) {
+                assertEquals(50L, world.getTime());
+            }
         }
         assertEquals(2, game.getDay());
     }
@@ -82,7 +84,9 @@ public class GameRunnableTest {
         MockUtils.getServerMockSafe().getScheduler().performTicks(31L);
         assertEquals(30, game.getTime());
         for (World world : Bukkit.getWorlds()) {
-            assertEquals(30L * 20L, world.getTime());
+            if (world != MockUtils.getUnaffectedWorld()) {
+                assertEquals(30L * 20L, world.getTime());
+            }
         }
     }
 

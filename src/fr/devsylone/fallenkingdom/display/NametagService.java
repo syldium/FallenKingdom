@@ -1,5 +1,7 @@
 package fr.devsylone.fallenkingdom.display;
 
+import fr.devsylone.fallenkingdom.Fk;
+import fr.devsylone.fallenkingdom.manager.WorldManager;
 import fr.devsylone.fallenkingdom.version.Version;
 import fr.devsylone.fkpi.managers.TeamManager;
 import fr.devsylone.fkpi.teams.Team;
@@ -11,6 +13,7 @@ import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -21,12 +24,20 @@ public class NametagService implements Saveable {
 
     private Scoreboard scoreboard;
     private final TeamManager teamManager;
+    private final WorldManager worldManager;
 
     public NametagService(@NotNull TeamManager teamManager) {
         final ScoreboardManager manager = Bukkit.getScoreboardManager();
         final Scoreboard mainScoreboard = manager.getMainScoreboard();
         this.scoreboard = mainScoreboard.getTeams().isEmpty() ? mainScoreboard : manager.getNewScoreboard();
         this.teamManager = teamManager;
+        this.worldManager = Fk.getInstance().getWorldManager();
+    }
+
+    public NametagService(@NotNull TeamManager teamManager, @NotNull WorldManager worldManager, @NotNull Scoreboard scoreboard) {
+        this.scoreboard = scoreboard;
+        this.teamManager = teamManager;
+        this.worldManager = worldManager;
     }
 
     public void createHealthObjective() {
@@ -75,8 +86,10 @@ public class NametagService implements Saveable {
      * @param player Le joueur concerné s'il est connecté
      */
     public void addEntry(@NotNull Team team, @NotNull String playerName, @Nullable Player player) {
-        getOrCreateScoreboardTeam(team).addEntry(playerName);
-        if (player != null) {
+        if (player == null || this.worldManager.isAffected(player.getWorld())) {
+            getOrCreateScoreboardTeam(team).addEntry(playerName);
+        }
+        if (shouldHaveScoreboard(player)) {
             player.setDisplayName(team.getChatColor() + player.getName());
             player.setScoreboard(this.scoreboard);
         }
@@ -173,6 +186,11 @@ public class NametagService implements Saveable {
         team = this.scoreboard.registerNewTeam(fkTeam.getName());
         setTeamColor(team, fkTeam);
         return team;
+    }
+
+    @Contract("null -> false")
+    private boolean shouldHaveScoreboard(@Nullable Player player) {
+        return player != null && this.worldManager.isAffected(player.getWorld());
     }
 
     private static final String USE_MAIN_SCOREBOARD = "use-main-scoreboard";

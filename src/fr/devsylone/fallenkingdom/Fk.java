@@ -149,6 +149,8 @@ public class Fk extends JavaPlugin
 		if (!check())
 			return;
 
+		worldManager = new WorldManager(this);
+
 		/*
 		 * FkPI
 		 */
@@ -179,7 +181,6 @@ public class Fk extends JavaPlugin
 		pauseRestorer = new PauseRestorer();
 		starterInventoryManager = new StarterInventoryManager();
 		scoreboardManager = new ScoreboardManager();
-		worldManager = new WorldManager(this);
 		packetManager = initPacketManager();
 		deepPauseManager = new DeepPauseManager();
 		tipsManager = new TipsManager();
