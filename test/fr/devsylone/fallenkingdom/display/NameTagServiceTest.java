@@ -3,9 +3,7 @@ package fr.devsylone.fallenkingdom.display;
 import fr.devsylone.fallenkingdom.MockUtils;
 import fr.devsylone.fkpi.managers.TeamManager;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 import org.junit.jupiter.api.Test;
@@ -49,9 +47,7 @@ public class NameTagServiceTest {
         assertEquals(Collections.singletonList(player.getName()), fkTeam.getPlayers());
         assertEquals(Collections.singleton(player.getName()), scoreboardTeam.getEntries());
 
-        World currentWorld = player.getWorld();
         player.teleport(new Location(MockUtils.getUnaffectedWorld(), 0, 80, 0));
-        new PlayerChangedWorldEvent(player, currentWorld).callEvent(); // https://github.com/MockBukkit/MockBukkit/pull/519
         assertEquals(Collections.singletonList(player.getName()), fkTeam.getPlayers());
         assertEquals(Collections.emptySet(), scoreboardTeam.getEntries());
     }
