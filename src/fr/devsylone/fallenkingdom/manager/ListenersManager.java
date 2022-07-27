@@ -13,6 +13,7 @@ import fr.devsylone.fallenkingdom.listeners.entity.mob.MobSpawn;
 import fr.devsylone.fallenkingdom.listeners.entity.player.AdvancementListener;
 import fr.devsylone.fallenkingdom.listeners.entity.player.ChangeGamemodeListener;
 import fr.devsylone.fallenkingdom.listeners.entity.player.ChatListener;
+import fr.devsylone.fallenkingdom.listeners.entity.player.ChatPreviewListener;
 import fr.devsylone.fallenkingdom.listeners.entity.player.DisabledPotionsListener;
 import fr.devsylone.fallenkingdom.listeners.entity.player.FoodListener;
 import fr.devsylone.fallenkingdom.listeners.entity.player.GoToNetherListener;
@@ -25,34 +26,43 @@ import fr.devsylone.fallenkingdom.listeners.entity.player.RespawnListener;
 import fr.devsylone.fallenkingdom.listeners.entity.player.ScrollListener;
 import fr.devsylone.fallenkingdom.listeners.entity.player.UsePortalListener;
 import fr.devsylone.fallenkingdom.version.Version;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.plugin.PluginManager;
 
 public class ListenersManager
 {
 	public static void registerListeners(Fk plugin)
 	{
-		plugin.getServer().getPluginManager().registerEvents(new BlockListener(plugin), plugin);
-		plugin.getServer().getPluginManager().registerEvents(new BucketListener(plugin), plugin);
-		plugin.getServer().getPluginManager().registerEvents(new ChatListener(), plugin);
-		plugin.getServer().getPluginManager().registerEvents(new JoinListener(), plugin);
-		plugin.getServer().getPluginManager().registerEvents(new MoveListener(), plugin);
-		plugin.getServer().getPluginManager().registerEvents(new PvpListener(), plugin);
-		plugin.getServer().getPluginManager().registerEvents(new DamageListener(), plugin);
-		plugin.getServer().getPluginManager().registerEvents(new GoToNetherListener(), plugin);
-		plugin.getServer().getPluginManager().registerEvents(new FoodListener(), plugin);
-		plugin.getServer().getPluginManager().registerEvents(new MobSpawn(), plugin);
-		plugin.getServer().getPluginManager().registerEvents(new UsePortalListener(), plugin);
-		plugin.getServer().getPluginManager().registerEvents(new InventoryListener(), plugin);
-		plugin.getServer().getPluginManager().registerEvents(new ScrollListener(), plugin);
-		plugin.getServer().getPluginManager().registerEvents(new LockedChestInteractListener(), plugin);
-		plugin.getServer().getPluginManager().registerEvents(new BlockExplodeListener(), plugin);
-		plugin.getServer().getPluginManager().registerEvents(new PortalCreateListener(), plugin);
-		plugin.getServer().getPluginManager().registerEvents(new ChangeGamemodeListener(), plugin);
-		plugin.getServer().getPluginManager().registerEvents(new RespawnListener(), plugin);
-		plugin.getServer().getPluginManager().registerEvents(new PauseInteractionListener(), plugin);
-		plugin.getServer().getPluginManager().registerEvents(new DisabledPotionsListener(), plugin);
-		plugin.getServer().getPluginManager().registerEvents(new RuleChangeListener(plugin), plugin);
-		plugin.getServer().getPluginManager().registerEvents(new TeamChangeListener(plugin), plugin);
+		final PluginManager pm = plugin.getServer().getPluginManager();
+		pm.registerEvents(new BlockListener(plugin), plugin);
+		pm.registerEvents(new BucketListener(plugin), plugin);
+		pm.registerEvents(new ChatListener(), plugin);
+		pm.registerEvents(new JoinListener(), plugin);
+		pm.registerEvents(new MoveListener(), plugin);
+		pm.registerEvents(new PvpListener(), plugin);
+		pm.registerEvents(new DamageListener(), plugin);
+		pm.registerEvents(new GoToNetherListener(), plugin);
+		pm.registerEvents(new FoodListener(), plugin);
+		pm.registerEvents(new MobSpawn(), plugin);
+		pm.registerEvents(new UsePortalListener(), plugin);
+		pm.registerEvents(new InventoryListener(), plugin);
+		pm.registerEvents(new ScrollListener(), plugin);
+		pm.registerEvents(new LockedChestInteractListener(), plugin);
+		pm.registerEvents(new BlockExplodeListener(), plugin);
+		pm.registerEvents(new PortalCreateListener(), plugin);
+		pm.registerEvents(new ChangeGamemodeListener(), plugin);
+		pm.registerEvents(new RespawnListener(), plugin);
+		pm.registerEvents(new PauseInteractionListener(), plugin);
+		pm.registerEvents(new DisabledPotionsListener(), plugin);
+		pm.registerEvents(new RuleChangeListener(plugin), plugin);
+		pm.registerEvents(new TeamChangeListener(plugin), plugin);
 		if (Version.classExists("org.bukkit.event.player.PlayerAdvancementDoneEvent"))
-			plugin.getServer().getPluginManager().registerEvents(new AdvancementListener(), plugin);
+			pm.registerEvents(new AdvancementListener(), plugin);
+
+		try {
+			if (AsyncPlayerChatEvent.class.isAssignableFrom(Class.forName("org.bukkit.event.player.AsyncPlayerChatPreviewEvent"))) {
+				pm.registerEvents(new ChatPreviewListener(), plugin);
+			}
+		} catch (ClassNotFoundException ignored) {}
 	}
 }
