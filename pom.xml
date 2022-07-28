@@ -139,28 +139,21 @@
         </dependency>
         <!-- Used to check the structure of NMS packets -->
         <!--<dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-server</artifactId>
-            <version>1.18-rc3-R0.1-SNAPSHOT</version>
+            <groupId>io.papermc.paper</groupId>
+            <artifactId>paper-server</artifactId>
+            <version>1.19.1.1-R0.1-SNAPSHOT</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/../../1_18/versions/1.18.1/paper-1.18.1.jar</systemPath>
+            <systemPath>${project.basedir}/../../1_19/versions/1.19.1/paper-1.19.1.jar</systemPath>
         </dependency>-->
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>1.19-R0.1-SNAPSHOT</version>
+            <version>1.19.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-mojangapi</artifactId>
-            <version>1.19-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-        <!-- AsyncPlayerChatPreviewEvent (en attendant Paper 1.19.1) -->
-        <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
             <version>1.19.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>

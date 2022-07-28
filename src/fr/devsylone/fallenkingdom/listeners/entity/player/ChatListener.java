@@ -21,7 +21,7 @@ public class ChatListener implements Listener {
 		handleChat(event, true);
 	}
 
-	public static void handleChat(AsyncPlayerChatEvent event, boolean canResend) {
+	public static void handleChat(AsyncPlayerChatEvent event, boolean canEditRecipients) {
 		if (!Fk.getInstance().getWorldManager().isAffected(event.getPlayer().getWorld())) {
 			return;
 		}
@@ -44,18 +44,16 @@ public class ChatListener implements Listener {
 
 		event.setMessage(message);
 		String format = channel.getMessage() + "%s" + ChatColor.WHITE + " : %s";
+		event.setFormat(format);
 
-		if (canResend && channel == Messages.CHAT_TEAM) {
-			event.setCancelled(true);
-			String formattedMessage = String.format(format, event.getPlayer().getDisplayName(), message);
+		if (canEditRecipients && channel == Messages.CHAT_TEAM) {
+			event.getRecipients().clear();
 			for (String playerName : playerTeam.getPlayers()) {
 				Player player = Bukkit.getPlayer(playerName);
 				if (player != null) {
-					player.sendMessage(formattedMessage);
+					event.getRecipients().add(player);
 				}
 			}
-		} else {
-			event.setFormat(format);
 		}
 	}
 }
