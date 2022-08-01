@@ -491,3 +491,12 @@ Il est conseillé de réinitialiser les fichiers de langue.
 [*] Évite d'utiliser des paquets NMS pour l'affichage de la salle des coffres si possible
 [*] Corrige l'affichage des avertissements pour les versions non supportées
 [*] Retire le nom des portes-armures en 1.17 et 1.18 lors de l'affichage de la salle des coffres
+
+      >> 2.22.4
+[+] Support des serveurs en 1.19 et 1.19.1
+[+] Affiche le type de chat utilisé avec la prévisualisation du chat en 1.19.1 si activé
+[+] Permet de modifier un cap pour le jour courant
+[*] Réutilise les équipes vanilla si elles existent déjà
+[*] Change le jour courant seulement si celui du monde est différent de 0
+[*] Sort les joueurs du mode édition du scoreboard après l'arrêt du serveur
+[*] Affiche la suggestion pour les portails de l'end avec les items également
