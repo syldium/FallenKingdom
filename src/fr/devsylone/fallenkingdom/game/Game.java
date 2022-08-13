@@ -129,9 +129,21 @@ public class Game implements Saveable
 	@Override
 	public void load(ConfigurationSection config)
 	{
-		day = Math.max(0, config.getInt("Day"));
-		time = Math.max(0, config.getInt("Time"));
+		final int savedDay = config.getInt("Day");
+		final int savedTime = config.getInt("Time");
+		if (savedDay < 0) {
+			Fk.getInstance().getLogger().severe("Invalid game day read from config: " + savedDay);
+		}
+		if (savedTime < 0) {
+			Fk.getInstance().getLogger().severe("Invalid game time read from config: " + savedTime);
+		}
+		day = Math.max(0, savedDay);
+		time = Math.max(0, savedTime);
 		state = enumValueOf(GameState.class, config.getString("State"), day > 1 ? GameState.STARTED : GameState.BEFORE_STARTING);
+		if (isPreStart() && day != 0) {
+			Fk.getInstance().getLogger().severe("The game has not started and is on day " + savedDay + " at the same time.");
+			state = GameState.STARTED;
+		}
 
 		pvpEnabled = FkPI.getInstance().getRulesManager().getRule(Rule.PVP_CAP) <= day;
 		assaultsEnabled = FkPI.getInstance().getRulesManager().getRule(Rule.TNT_CAP) <= day;
