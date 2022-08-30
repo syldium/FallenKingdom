@@ -354,7 +354,7 @@ public class Fk extends JavaPlugin
 		deepPauseManager.resetAIs();
 		deepPauseManager.unprotectItems();
 
-		for(FkPlayer p : getPlayerManager().getConnectedPlayers())
+		for(FkPlayer p : getPlayerManager().players())
 		{
 			p.clearDeaths();
 			p.clearKills();

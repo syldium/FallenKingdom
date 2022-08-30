@@ -12,12 +12,12 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
@@ -31,6 +31,10 @@ public class PlayerManager implements Saveable
 	public PlayerManager(@NotNull GlobalDisplayService displayService)
 	{
 		this.displayService = displayService;
+	}
+
+	public @NotNull Collection<@NotNull FkPlayer> players() {
+		return this.playersByString.values();
 	}
 
 	public @NotNull List<@NotNull FkPlayer> getConnectedPlayers()
