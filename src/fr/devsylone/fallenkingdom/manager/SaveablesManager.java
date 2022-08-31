@@ -17,15 +17,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.IdentityHashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
 import java.util.zip.ZipOutputStream;
 
 /**
@@ -38,7 +35,7 @@ public class SaveablesManager {
 
 	private final Fk plugin;
 	private final Map<String, FkConfig> files = new HashMap<>();
-	private final Map<Saveable, FkConfig> saveables = new IdentityHashMap<>();
+	private final Map<Saveable, FkConfig> saveables = new LinkedHashMap<>(); // L'ordre de chargement est important
 	private FilesUpdater filesUpdater;
 	private long lastSave = 0;
 
@@ -47,8 +44,8 @@ public class SaveablesManager {
 
 		FkConfig mainConfig = getFileConfiguration("save.yml");
 
-		registerSaveable(fk.getGame(), "save.yml");
 		registerSaveable(fk.getFkPI(), "save.yml");
+		registerSaveable(fk.getGame(), "save.yml");
 		registerSaveable(fk.getPlayerManager(), "save.yml");
 		registerSaveable(fk.getStarterInventoryManager(), "save.yml");
 
@@ -97,12 +94,18 @@ public class SaveablesManager {
 		}
 
 		List<FkConfig> corrupted = new LinkedList<>();
-		for (Saveable s : sort(saveables.keySet())) {
+		for (Map.Entry<Saveable, FkConfig> entry : saveables.entrySet()) {
+			Saveable saveable = entry.getKey();
+			FkConfig configFile = entry.getValue();
 			try {
-				s.loadNullable(saveables.get(s).contains(s.getClass().getSimpleName()) ? saveables.get(s).getConfigurationSection(s.getClass().getSimpleName()) : saveables.get(s).createSection(s.getClass().getSimpleName()));
+				saveable.loadNullable(
+						configFile.contains(saveable.getClass().getSimpleName())
+								? configFile.getConfigurationSection(saveable.getClass().getSimpleName())
+								: configFile.createSection(saveable.getClass().getSimpleName())
+				);
 			} catch (Throwable throwable) {
 				throwable.printStackTrace();
-				corrupted.add(saveables.get(s));
+				corrupted.add(configFile);
 			}
 		}
 
@@ -114,7 +117,7 @@ public class SaveablesManager {
 
 				try (FileOutputStream fileStream = new FileOutputStream(zip);
 					 ZipOutputStream zipStream = new ZipOutputStream(fileStream)) {
-					ZipUtils.zipFile(plugin.getDataFolder(), "FallenKingdom", zipStream, false);
+					ZipUtils.zipFile(plugin.getDataFolder(), plugin.getName(), zipStream, false);
 					zipStream.flush();
 				}
 
@@ -162,11 +165,6 @@ public class SaveablesManager {
 			ConfigurationSection section = entry.getValue().createSection(saveable.getClass().getSimpleName());
 			saveable.save(section);
 		}
-	}
-
-	public List<Saveable> sort(Set<Saveable> toSort) {
-		Comparator<Saveable> isFkPI = (e1, e2) -> e1.getClass().getSimpleName().equals("FkPI") && !e2.getClass().getSimpleName().equals("FkPI") ? -1 : 0;
-		return toSort.stream().sorted(isFkPI).collect(Collectors.toList());
 	}
 
 	public long getLastSave()
