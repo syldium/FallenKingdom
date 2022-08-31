@@ -37,7 +37,7 @@ public class Game implements Saveable
 	@Getter protected GameState state = GameState.BEFORE_STARTING;
 	@Getter protected int day = 0;
 	@Getter protected int time = FkPI.getInstance().getRulesManager().getRule(Rule.DAY_DURATION) - 10;
-	@Getter protected TickFormatter timeFormat = new CycleTickFormatter();
+	@Getter protected TickFormatter timeFormat = null; // Toujours non null une fois les données chargées
 
 	protected GameRunnable task = null;
 
@@ -262,6 +262,10 @@ public class Game implements Saveable
 		if (dayDuration < 1200) {
 			FkPI.getInstance().getRulesManager().setRule(Rule.DAY_DURATION, TICKS_PER_DAY_NIGHT_CYCLE);
 			dayDuration = TICKS_PER_DAY_NIGHT_CYCLE;
+		}
+		if (timeFormat == null) {
+			timeFormat = new CycleTickFormatter(dayDuration, false, false, 6);
+			return;
 		}
 		long previousTime = timeFormat.worldTime(day, time);
 		timeFormat = timeFormat.withDayDuration(dayDuration);

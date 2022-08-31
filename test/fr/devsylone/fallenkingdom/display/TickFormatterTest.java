@@ -4,6 +4,8 @@ import fr.devsylone.fallenkingdom.display.tick.CycleTickFormatter;
 import fr.devsylone.fallenkingdom.display.tick.TimerTickFormatter;
 import fr.devsylone.fallenkingdom.display.tick.TickFormatter;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static fr.devsylone.fallenkingdom.display.tick.CycleTickFormatter.TICKS_PER_DAY_NIGHT_CYCLE;
 import static fr.devsylone.fallenkingdom.display.tick.TimerTickFormatter.TICKS_PER_SECOND;
@@ -68,5 +70,28 @@ public class TickFormatterTest {
         final TickFormatter format = new TimerTickFormatter(thirtyMinutesInTicks, true);
         assertEquals(22, format.extractHours(8401), "Should be 22:59");
         assertEquals(56, format.extractMinutes(thirtyMinutesInTicks + TICKS_PER_SECOND * 4), "Should be 23:56");
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {0, 6000, 21000})
+    public void cycleRoundTrip(int time) {
+        // Lorsque la durée d'un jour change, on s'attend à ce que le temps de la partie affiché
+        // en jeu reste le même. Hors celui-ci est en réalité basé sur la durée d'un jour pour
+        // notamment permettre le passage des jours pour les coffres et les caps plus ou moins
+        // rapide. Cela a quelques désavantages puisque le jour peut potentiellement brusquement
+        // laisser place à la nuit en jeu et le temps affiché fait un saut.
+
+        // Pour mitiger ce problème, le temps doit être adapté pour que le ratio suivant soit
+        // conservé : temps de la partie / durée d'un jour.
+        // Par exemple, si un jour passe de 24000 ticks à 18000, le milieu de journée n'est plus
+        // à 12000, mais à 9000 ticks.
+        final float threeQuarters = 0.75F;
+        final TickFormatter standardFormat = new CycleTickFormatter();
+        final TickFormatter nonStandardFormat = standardFormat.withDayDuration((int) (TICKS_PER_DAY_NIGHT_CYCLE * threeQuarters));
+        final int day = 3;
+        final long worldTime = standardFormat.worldTime(day, time);
+        assertEquals(TICKS_PER_DAY_NIGHT_CYCLE * day + time, worldTime);
+        assertEquals(day, nonStandardFormat.dayFromWorld(worldTime));
+        assertEquals((int) (time * threeQuarters), nonStandardFormat.timeFromWorld(worldTime));
     }
 }

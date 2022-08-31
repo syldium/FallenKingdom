@@ -65,12 +65,12 @@ public class CycleTickFormatter extends TickFormatter {
 
     @Override
     public int timeFromWorld(long worldTime) {
-        return (int) (worldTime * this.dayTickFactor) % TICKS_PER_DAY_NIGHT_CYCLE;
+        return (int) ((worldTime % TICKS_PER_DAY_NIGHT_CYCLE) * this.dayTickFactor);
     }
 
     @Override
     public int dayFromWorld(long worldTime) {
-        return (int) (worldTime * this.dayTickFactor) / TICKS_PER_DAY_NIGHT_CYCLE;
+        return (int) (worldTime / TICKS_PER_DAY_NIGHT_CYCLE);
     }
 
     @Override
