@@ -17,8 +17,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Collections;
 
-import static fr.devsylone.fallenkingdom.display.tick.CycleTickFormatter.TICKS_PER_DAY_NIGHT_CYCLE;
-
 class GameRunnable extends BukkitRunnable
 {
     protected final Game game;

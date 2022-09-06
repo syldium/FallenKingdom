@@ -1,7 +1,6 @@
 package fr.devsylone.fallenkingdom.game;
 
 import fr.devsylone.fallenkingdom.Fk;
-import fr.devsylone.fallenkingdom.utils.FkSound;
 import fr.devsylone.fallenkingdom.version.Environment;
 import fr.devsylone.fkpi.teams.Team;
 import org.bukkit.Bukkit;

@@ -8,7 +8,6 @@ import fr.devsylone.fkpi.teams.Team;
 import org.bukkit.command.CommandSender;
 
 import fr.devsylone.fallenkingdom.Fk;
-import fr.devsylone.fallenkingdom.exception.FkLightException;
 
 import java.util.List;
 

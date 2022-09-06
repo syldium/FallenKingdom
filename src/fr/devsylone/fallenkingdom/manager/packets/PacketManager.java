@@ -8,7 +8,6 @@ import java.util.function.IntSupplier;
 
 import fr.devsylone.fallenkingdom.version.component.FkBook;
 import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
