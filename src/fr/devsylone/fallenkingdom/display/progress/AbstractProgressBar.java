@@ -51,12 +51,12 @@ abstract class AbstractProgressBar implements ProgressBar {
 
     static abstract class ProviderImpl implements ProgressBar.Provider {
 
-        protected static String TYPE = "type";
-        protected static String TEXT = "text";
+        protected static final String TYPE = "type";
+        protected static final String TEXT = "text";
 
-        protected static String ACTIONBAR = "actionbar";
-        protected static String BOSSBAR = "bossbar";
-        protected static String HOLOGRAM = "hologram";
+        protected static final String ACTIONBAR = "actionbar";
+        protected static final String BOSSBAR = "bossbar";
+        protected static final String HOLOGRAM = "hologram";
 
         private final String text;
 

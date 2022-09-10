@@ -88,6 +88,7 @@ public class TipsManager
 	public void startBroadcasts()
 	{
 		this.task = new BukkitRunnable() {
+			@Override
 			public void run() {
 				if(Fk.getInstance().getGame().isPreStart())
 					sendRandomTip();

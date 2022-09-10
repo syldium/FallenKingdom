@@ -268,6 +268,7 @@ public class FkPlayer implements Saveable
 		}
 	}
 
+	@Override
 	public void load(ConfigurationSection config)
 	{
 		kills = config.getInt("Kills");
@@ -278,6 +279,7 @@ public class FkPlayer implements Saveable
 			portal = new Location(Bukkit.getWorld(config.getString("Portal.World")), config.getInt("Portal.X"), config.getInt("Portal.Y"), config.getInt("Portal.Z"));
 	}
 
+	@Override
 	public void save(ConfigurationSection config)
 	{
 		config.set("Kills", kills);
