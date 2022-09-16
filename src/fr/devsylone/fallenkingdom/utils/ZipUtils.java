@@ -1,54 +1,40 @@
 package fr.devsylone.fallenkingdom.utils;
 
-import java.io.File;
-import java.io.FileInputStream;
+import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.PathMatcher;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-public class ZipUtils
-{
-	public static void zipFile(File fileToZip, String folderName, ZipOutputStream zipOut)
-	{
-		zipFile(fileToZip, folderName, zipOut, true);
-	}
+public final class ZipUtils {
 
-	public static void zipFile(File fileToZip, String folderName, ZipOutputStream zipOut, final boolean zipZipped)
-	{
-		if(fileToZip.isHidden())
-		{
-			return;
-		}
-		if(fileToZip.isDirectory())
-		{
-			File[] children = fileToZip.listFiles((dir, name) -> !name.endsWith(".jar") && (zipZipped || !name.endsWith(".zip")));
-			for(File childFile : children)
-			{
-				zipFile(childFile, folderName + (!folderName.isEmpty() ? File.separator : "") + fileToZip.getName(), zipOut, zipZipped);
-			}
-			return;
-		}
-		if(fileToZip.getName().endsWith(".jar"))
-			return;
+	private ZipUtils() {}
 
-		FileInputStream fis;
-		try
-		{
-			fis = new FileInputStream(fileToZip);
-			ZipEntry zipEntry = new ZipEntry(folderName + File.separator + fileToZip.getName());
-			zipOut.putNextEntry(zipEntry);
-			byte[] bytes = new byte[4096 * 1024];
-			int length;
-			while((length = fis.read(bytes)) > 0)
-			{
-				zipOut.write(bytes, 0, length);
+	public static void zipConfig(@NotNull Path configDirectory, @NotNull ZipOutputStream zipOut) throws IOException {
+		final PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:**.{yaml,yml}");
+		Files.walkFileTree(configDirectory, new SimpleFileVisitor<Path>() {
+			@Override
+			public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
+				return dir.equals(configDirectory) ? FileVisitResult.CONTINUE : FileVisitResult.SKIP_SUBTREE;
 			}
-			zipOut.flush();
-			zipOut.closeEntry();
-			fis.close();
-		} catch(IOException e)
-		{
-			e.printStackTrace();
-		}
+
+			@Override
+			public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+				if (!matcher.matches(file)) {
+					return FileVisitResult.CONTINUE;
+				}
+				zipOut.putNextEntry(new ZipEntry(configDirectory.relativize(file).toString()));
+				Files.copy(file, zipOut);
+				zipOut.closeEntry();
+				return FileVisitResult.CONTINUE;
+			}
+		});
 	}
 }

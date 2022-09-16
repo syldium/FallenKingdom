@@ -117,7 +117,7 @@ public class SaveablesManager {
 
 				try (FileOutputStream fileStream = new FileOutputStream(zip);
 					 ZipOutputStream zipStream = new ZipOutputStream(fileStream)) {
-					ZipUtils.zipFile(plugin.getDataFolder(), plugin.getName(), zipStream, false);
+					ZipUtils.zipConfig(plugin.getDataFolder().toPath(), zipStream);
 					zipStream.flush();
 				}
 
