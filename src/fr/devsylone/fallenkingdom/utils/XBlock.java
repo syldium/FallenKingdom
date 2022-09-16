@@ -154,14 +154,14 @@ public final class XBlock {
         if (ISFLAT) { // 1.13+
             for (Object b : blocks) {
                 Material material = ((BlockState) b).getBlock().getType();
-                if (material.equals(Material.AIR) || material.equals(XMaterial.CAVE_AIR.parseMaterial())) {
+                if (material == Material.AIR || material == XMaterial.CAVE_AIR.parseMaterial()) {
                     return ((BlockState) b).getBlock();
                 }
             }
         } else { // 1.12.2-
             for (Object b : blocks) {
                 Material material = ((Block) b).getType();
-                if (material.equals(Material.AIR)) {
+                if (material == Material.AIR) {
                     return ((Block) b);
                 }
             }

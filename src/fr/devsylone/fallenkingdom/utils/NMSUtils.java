@@ -12,7 +12,7 @@ import org.bukkit.Bukkit;
 
 public class NMSUtils
 {
-	private static final String version = getServerVersion();
+	private static final String SERVER_VERSION = getServerVersion();
 	private static final Set<Class<?>> classes = new HashSet<>();
 
 	private static String getServerVersion()
@@ -31,7 +31,7 @@ public class NMSUtils
 
 	public static void register(String clazz) throws ClassNotFoundException
 	{
-		clazz=clazz.replaceAll("_version_", version);
+		clazz=clazz.replaceAll("_version_", SERVER_VERSION);
 		
 		if(!clazz.contains("$"))
 			classes.add(Class.forName(clazz));
@@ -83,7 +83,7 @@ public class NMSUtils
 	}
 
 	public static String nmsClassName(String className) {
-		return NMS_PACKAGE + '.' + version + '.' + className;
+		return NMS_PACKAGE + '.' + SERVER_VERSION + '.' + className;
 	}
 	public static String nmsClassName(String post1_17package, String className) {
 		if (NMS_REPACKAGED) {
@@ -111,7 +111,7 @@ public class NMSUtils
 	}
 
 	public static String obcClassName(String className) {
-		return OBC_PACKAGE + '.' + version + '.' + className;
+		return OBC_PACKAGE + '.' + SERVER_VERSION + '.' + className;
 	}
 
 	public static Class<?> obcClass(String className) throws ClassNotFoundException {
@@ -125,8 +125,8 @@ public class NMSUtils
 	public static Optional<Class<?>> optionalClass(String className) {
 		try {
 			return Optional.of(Class.forName(className));
-		} catch (NullPointerException|ClassNotFoundException e) {
-			// Vous aimez les trucs bizarres ? Class.forName() déclenche des fois des lang.NullPointerException, alors que ce n'est pas associé à sa signature...
+		} catch (NullPointerException | ClassNotFoundException e) {
+			// Certains serveurs hybrides lèvent une NPE lors de la transformation du nom de la classe.
 			return Optional.empty();
 		}
 	}
@@ -168,6 +168,6 @@ public class NMSUtils
 
 	public static String getVersion()
 	{
-		return version;
+		return SERVER_VERSION;
 	}
 }
