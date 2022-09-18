@@ -1,10 +1,13 @@
 package fr.devsylone.fallenkingdom.manager.packets;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.devsylone.fallenkingdom.utils.XItemStack;
 import fr.devsylone.fallenkingdom.version.component.FkBook;
+import fr.devsylone.fallenkingdom.version.tracker.ChatMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -17,222 +20,209 @@ import fr.devsylone.fallenkingdom.utils.PacketUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-public class PacketManager1_8 extends PacketManager
-{
-	public PacketManager1_8()
-	{
-		try
-		{
-			NMSUtils.register("net.minecraft.server._version_.PacketPlayOutEntityMetadata");
-			NMSUtils.register("net.minecraft.server._version_.PacketPlayOutSpawnEntity");
-			NMSUtils.register("net.minecraft.server._version_.PacketPlayOutEntityDestroy");
-			NMSUtils.register("net.minecraft.server._version_.DataWatcher$WatchableObject");
-			NMSUtils.register("net.minecraft.server._version_.PlayerConnection");
-			NMSUtils.register("net.minecraft.server._version_.PacketPlayOutEntityTeleport");
-			NMSUtils.register("net.minecraft.server._version_.Packet");
-			NMSUtils.register("net.minecraft.server._version_.ItemStack");
-			NMSUtils.register("net.minecraft.server._version_.Block");
-			NMSUtils.register("net.minecraft.server._version_.PacketPlayOutEntityEquipment");
-			NMSUtils.register("net.minecraft.server._version_.BlockPosition");
-			NMSUtils.register("net.minecraft.server._version_.PacketPlayOutBlockChange");
-			NMSUtils.register("net.minecraft.server._version_.World");
-			NMSUtils.register("net.minecraft.server._version_.PacketPlayOutTitle");
-			NMSUtils.register("net.minecraft.server._version_.PacketPlayOutTitle$EnumTitleAction");
-			NMSUtils.register("net.minecraft.server._version_.IChatBaseComponent");
-			NMSUtils.register("net.minecraft.server._version_.IChatBaseComponent$ChatSerializer");
-			NMSUtils.register("net.minecraft.server._version_.PacketPlayOutCustomPayload");
-			NMSUtils.register("net.minecraft.server._version_.PacketDataSerializer");
-			NMSUtils.register("org.bukkit.craftbukkit._version_.inventory.CraftItemStack");
+public class PacketManager1_8 extends PacketManager {
 
-		}catch(Exception e)
-		{
-			e.printStackTrace();
-		}
+    private static final Constructor<?> PACKET_SPAWN_ENTITY;
+    private static final Constructor<?> PACKET_ENTITY_POSITION;
+    private static final Constructor<?> PACKET_ENTITY_METADATA;
+    private static final Constructor<?> PACKET_DESTROY_ENTITY;
+    private static final Constructor<?> PACKET_ENTITY_EQUIPMENT;
+    private static final Constructor<?> PACKET_BLOCK_CHANGE;
+    private static final Constructor<?> PACKET_CUSTOM_PAYLOAD;
 
-	}
+    private static final Constructor<?> PACKET_DATA_SERIALIZER;
+    private static final Constructor<?> WATCHABLE_OBJECT;
+    private static final Method WORLD_GET_BLOCK_TYPE;
 
-	protected int sendSpawn(Player p, Location loc)
-	{
-		if(loc == null && p != null)
-			loc = p.getLocation();
+    private static final Constructor<?> PACKET_TITLE_TIMES;
+    private static final Constructor<?> PACKET_TITLE_TEXT;
+    private static final Class<?> TITLE_ACTION;
 
-		int id = entityIdSupplier.getAsInt();
-		playerById.put(id, p.getUniqueId());
-		try
-		{
-			Object spawn = NMSUtils.getClass("PacketPlayOutSpawnEntity").getDeclaredConstructor().newInstance();
-			PacketUtils.setField("a", id, spawn);
-			PacketUtils.setField("b", (int) (loc.getX() * 32), spawn);
-			PacketUtils.setField("c", (int) (loc.getY() * 32), spawn);
-			PacketUtils.setField("d", (int) (loc.getZ() * 32), spawn);
-			PacketUtils.setField("e", 0, spawn);
-			PacketUtils.setField("f", 0, spawn);
-			PacketUtils.setField("g", 0, spawn);
-			PacketUtils.setField("h", 0, spawn);
-			PacketUtils.setField("i", 0, spawn);
-			PacketUtils.setField("j", 78, spawn);
-			PacketUtils.setField("k", 0, spawn);
+    static {
+        try {
+            final Class<?> worldClass = NMSUtils.nmsClass("world", "World");
 
-			PacketUtils.sendPacket(p, spawn);
+            final String packetsPackage = "network.protocol.game";
+            final Class<?> packetSpawnEntityClass = NMSUtils.nmsClass(packetsPackage, "PacketPlayOutSpawnEntity");
+            final Class<?> packetTeleportEntityClass = NMSUtils.nmsClass(packetsPackage, "PacketPlayOutEntityTeleport");
+            final Class<?> packetEntityMetadataClass = NMSUtils.nmsClass(packetsPackage, "PacketPlayOutEntityMetadata");
+            final Class<?> packetDestroyEntityClass = NMSUtils.nmsClass(packetsPackage, "PacketPlayOutEntityDestroy");
+            final Class<?> packetEntityEquipmentClass = NMSUtils.nmsClass(packetsPackage, "PacketPlayOutEntityEquipment");
+            final Class<?> packetTitleClass = NMSUtils.nmsClass(packetsPackage, "PacketPlayOutTitle");
+            final Class<?> packetBlockChangeClass = NMSUtils.nmsClass(packetsPackage, "PacketPlayOutBlockChange");
+            final Class<?> packetCustomPayloadClass = NMSUtils.nmsClass(packetsPackage, "PacketPlayOutCustomPayload");
+            final Class<?> watchableObjectClass = NMSUtils.nmsClass("network.syncher", "DataWatcher$WatchableObject");
+            final Class<?> packetSerializerClass = NMSUtils.nmsClass("PacketDataSerializer");
+            PACKET_SPAWN_ENTITY = packetSpawnEntityClass.getConstructor();
+            PACKET_ENTITY_POSITION = packetTeleportEntityClass.getConstructor(int.class, int.class, int.class, int.class, byte.class, byte.class, boolean.class);
+            PACKET_ENTITY_METADATA = packetEntityMetadataClass.getConstructor();
+            PACKET_DESTROY_ENTITY = packetDestroyEntityClass.getConstructor(int[].class);
+            PACKET_ENTITY_EQUIPMENT = packetEntityEquipmentClass.getConstructor(int.class, int.class, XItemStack.ITEM_STACK);
+            PACKET_BLOCK_CHANGE = packetBlockChangeClass.getConstructor(worldClass, PacketUtils.MINECRAFT_BLOCK_POSITION);
+            PACKET_CUSTOM_PAYLOAD = packetCustomPayloadClass.getConstructor(String.class, packetSerializerClass);
 
-		}catch(ReflectiveOperationException ex)
-		{
-			ex.printStackTrace();
-		}
-		return id;
-	}
+            PACKET_DATA_SERIALIZER = packetSerializerClass.getConstructor(ByteBuf.class);
+            WATCHABLE_OBJECT = watchableObjectClass.getConstructor(int.class, int.class, Object.class);
+            WORLD_GET_BLOCK_TYPE = worldClass.getMethod("getType", PacketUtils.MINECRAFT_BLOCK_POSITION);
 
-	@Override
-	protected void sendMetadata(int id, boolean visible, String customName)
-	{
-		try
-		{
-			Object metadata = NMSUtils.getClass("PacketPlayOutEntityMetadata").newInstance();
-
-			PacketUtils.setField("a", id, metadata);
-			List<Object> datas = new ArrayList<Object>();
-
-			Constructor<?> woConstructor = NMSUtils.getClass("WatchableObject").getDeclaredConstructor(int.class, int.class, Object.class);
-
-			if(!visible)
-				datas.add(woConstructor.newInstance(0, 0, (byte) 32));
-			if(customName != null && !customName.isEmpty())
-			{
-				datas.add(woConstructor.newInstance(4, 2, customName));
-				datas.add(woConstructor.newInstance(0, 3, (byte) 1));
-			}
-
-			for(Object wo : datas)
-				NMSUtils.getClass("WatchableObject").getMethod("a", boolean.class).invoke(wo, false);
-
-			PacketUtils.setField("b", datas, metadata);
-
-			PacketUtils.sendPacket(getPlayer(id), metadata);
-		}catch(Exception ex)
-		{
-			ex.printStackTrace();
-		}
-	}
-
-	@Override
-	protected void sendTeleport(int id, Location newLoc)
-	{
-		try
-		{
-			Constructor<?> tpConstructor = NMSUtils.getClass("PacketPlayOutEntityTeleport").getDeclaredConstructor(int.class, int.class, int.class, int.class, byte.class, byte.class, boolean.class);
-			int x = (int) (newLoc.getX() * (double) 32);
-			int y = (int) ((newLoc.getY() - (double) 0.6) * (double) 32);
-			int z = (int) (newLoc.getZ() * (double) 32);
-			Object tp = tpConstructor.newInstance(id, x, y, z, (byte) 0, (byte) 0, true);
-
-			PacketUtils.sendPacket(getPlayer(id), tp);
-		}catch(ReflectiveOperationException ex)
-		{
-			ex.printStackTrace();
-		}
-	}
-
-	@Override
-	protected void sendDestroy(int id)
-	{
-		try
-		{
-			Object destroy = NMSUtils.getClass("PacketPlayOutEntityDestroy").newInstance();
-			PacketUtils.setField("a", new int[] {id}, destroy);
-
-			PacketUtils.sendPacket(getPlayer(id), destroy);
-		}catch(ReflectiveOperationException ex)
-		{
-			ex.printStackTrace();
-		}
-	}
-
-	@Override
-	protected void sendEquipment(int id, ItemSlot slot, Material material)
-	{
-		try
-		{
-			ItemStack bukkitItem = new ItemStack(material);
-			Object nmsItem = NMSUtils.getClass("CraftItemStack").getDeclaredMethod("asNMSCopy", ItemStack.class).invoke(null, bukkitItem);
-			Object armors = NMSUtils.getClass("PacketPlayOutEntityEquipment").getConstructor(int.class, int.class, NMSUtils.getClass("ItemStack")).newInstance(id, getItemSlot(slot), nmsItem);
-
-			PacketUtils.sendPacket(getPlayer(id), armors);
-		}catch(ReflectiveOperationException ex)
-		{
-			ex.printStackTrace();
-		}
-	}
-
-	@Override
-	public void sendBlockChange(Player p, Location loc, Material newBlock)
-	{
-		Material oldMat = loc.getWorld().getBlockAt(loc.getBlockX(), 0, loc.getBlockZ()).getType();
-		loc.getWorld().getBlockAt(loc.getBlockX(), 0, loc.getBlockZ()).setType(newBlock);
-		try
-		{
-			Object blockPositionSet = NMSUtils.getClass("BlockPosition").getConstructor(int.class, int.class, int.class).newInstance(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
-			Object blockPositionGet = NMSUtils.getClass("BlockPosition").getConstructor(int.class, int.class, int.class).newInstance(loc.getBlockX(), 0, loc.getBlockZ());
-
-			Object change = NMSUtils.getClass("PacketPlayOutBlockChange").getConstructor(NMSUtils.getClass("World"), NMSUtils.getClass("BlockPosition")).newInstance(PacketUtils.getNMSWorld(p.getWorld()), blockPositionSet);
-			PacketUtils.setField("block", NMSUtils.getClass("World").getDeclaredMethod("getType", NMSUtils.getClass("BlockPosition")).invoke(PacketUtils.getNMSWorld(p.getWorld()), blockPositionGet), change);
-
-			PacketUtils.sendPacket(p, change);
-		}catch(ReflectiveOperationException ex)
-		{
-			ex.printStackTrace();
-		}
-		loc.getWorld().getBlockAt(loc.getBlockX(), 0, loc.getBlockZ()).setType(oldMat);
-	}
+            TITLE_ACTION = NMSUtils.nmsClass(packetsPackage, "PacketPlayOutTitle$EnumTitleAction");
+            PACKET_TITLE_TIMES = packetTitleClass.getConstructor(int.class, int.class, int.class);
+            PACKET_TITLE_TEXT = packetTitleClass.getConstructor(TITLE_ACTION, ChatMessage.CHAT_BASE_COMPONENT);
+        } catch (ReflectiveOperationException e) {
+            throw new ExceptionInInitializerError(e);
+        }
+    }
 
     @Override
-	protected void sendTitlePacket(Player p, TitleType type, String text, int fadeIn, int stay, int fadeOut)
-	{
-		try
-		{
-			Object title = null;
-			if(type == TitleType.TIMES)
-				title = NMSUtils.getClass("PacketPlayOutTitle").getConstructor(int.class, int.class, int.class).newInstance(fadeIn, stay, fadeOut);
-			else
-				title = NMSUtils.getClass("PacketPlayOutTitle").getConstructor(NMSUtils.getClass("EnumTitleAction"), NMSUtils.getClass("IChatBaseComponent")).newInstance(NMSUtils.getClass("EnumTitleAction").getDeclaredField(type.name()).get(null), NMSUtils.getClass("ChatSerializer").getDeclaredMethod("a", String.class).invoke(null, text));
+    protected int sendSpawn(Player p, Location loc) {
+        if (loc == null && p != null)
+            loc = p.getLocation();
 
-			PacketUtils.sendPacket(p, title);
-		}catch(ReflectiveOperationException ex)
-		{
-			ex.printStackTrace();
-		}
+        int id = entityIdSupplier.getAsInt();
+        playerById.put(id, p.getUniqueId());
+        try {
+            Object spawn = PACKET_SPAWN_ENTITY.newInstance();
+            PacketUtils.setField("a", id, spawn);
+            PacketUtils.setField("b", (int) (loc.getX() * 32), spawn);
+            PacketUtils.setField("c", (int) (loc.getY() * 32), spawn);
+            PacketUtils.setField("d", (int) (loc.getZ() * 32), spawn);
+            PacketUtils.setField("e", 0, spawn);
+            PacketUtils.setField("f", 0, spawn);
+            PacketUtils.setField("g", 0, spawn);
+            PacketUtils.setField("h", 0, spawn);
+            PacketUtils.setField("i", 0, spawn);
+            PacketUtils.setField("j", 78, spawn);
+            PacketUtils.setField("k", 0, spawn);
 
-	}
+            PacketUtils.sendPacket(p, spawn);
+        } catch (ReflectiveOperationException ex) {
+            ex.printStackTrace();
+        }
+        return id;
+    }
 
-	@Override
-	public void openBook(final Player p, FkBook book)
-	{
-		final int slot = p.getInventory().getHeldItemSlot();
-		final ItemStack original = p.getInventory().getItem(slot);
+    @Override
+    protected void sendMetadata(int id, boolean visible, String customName) {
+        try {
+            Object metadata = PACKET_ENTITY_METADATA.newInstance();
 
-		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "replaceitem entity " + p.getName() + " slot.hotbar." + slot + " minecraft:written_book 1 0 " + book.nbt());
+            PacketUtils.setField("a", id, metadata);
+            List<Object> datas = new ArrayList<>();
 
-		Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), () -> {
-			try
-			{
-				if(original != null && original.getType() != Material.AIR)
-					p.getWorld().dropItem(p.getLocation(), original).setPickupDelay(0);
+            if (!visible) {
+                datas.add(WATCHABLE_OBJECT.newInstance(0, 0, (byte) 32));
+            }
+            if (customName != null && !customName.isEmpty()) {
+                datas.add(WATCHABLE_OBJECT.newInstance(4, 2, customName));
+                datas.add(WATCHABLE_OBJECT.newInstance(0, 3, (byte) 1));
+            }
 
-				p.getInventory().setHeldItemSlot(slot);
+            PacketUtils.setField("b", datas, metadata);
 
-				ByteBuf buf = Unpooled.buffer(256);
-				buf.setByte(0, (byte) 0);
-				buf.writerIndex(1);
-				Object payload = NMSUtils.getClass("PacketPlayOutCustomPayload").getDeclaredConstructor(String.class, NMSUtils.getClass("PacketDataSerializer")).newInstance("MC|BOpen", NMSUtils.getClass("PacketDataSerializer").getDeclaredConstructor(ByteBuf.class).newInstance(buf));
+            PacketUtils.sendPacket(getPlayer(id), metadata);
+        } catch (ReflectiveOperationException ex) {
+            ex.printStackTrace();
+        }
+    }
 
-				PacketUtils.sendPacket(p, payload);
-			}catch(ReflectiveOperationException ex)
-			{
-				ex.printStackTrace();
-			}
-		}, 5L);
-	}
+    @Override
+    protected void sendTeleport(int id, Location newLoc) {
+        try {
+            int x = (int) (newLoc.getX() * 32D);
+            int y = (int) ((newLoc.getY() - 0.6) * 32D);
+            int z = (int) (newLoc.getZ() * 32D);
+            Object tp = PACKET_ENTITY_POSITION.newInstance(id, x, y, z, (byte) 0, (byte) 0, true);
 
-	private int getItemSlot(ItemSlot slot) {
-		return slot.ordinal() > 0 ? slot.ordinal() - 1 : 0;
-	}
+            PacketUtils.sendPacket(getPlayer(id), tp);
+        } catch (ReflectiveOperationException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void sendDestroy(int id) {
+        try {
+            Object destroy = PACKET_DESTROY_ENTITY.newInstance(new int[]{id});
+            PacketUtils.sendPacket(getPlayer(id), destroy);
+        } catch (ReflectiveOperationException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void sendEquipment(int id, ItemSlot slot, Material material) {
+        try {
+            Object nmsItem = XItemStack.asCraftItem(new ItemStack(material));
+            Object armors = PACKET_ENTITY_EQUIPMENT.newInstance(id, getItemSlot(slot), nmsItem);
+
+            PacketUtils.sendPacket(getPlayer(id), armors);
+        } catch (ReflectiveOperationException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    @Override
+    public void sendBlockChange(Player p, Location loc, Material newBlock) {
+        Material oldMat = loc.getWorld().getBlockAt(loc.getBlockX(), 0, loc.getBlockZ()).getType();
+        loc.getWorld().getBlockAt(loc.getBlockX(), 0, loc.getBlockZ()).setType(newBlock);
+        try {
+            Object blockPositionSet = PacketUtils.getNMSBlockPos(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+            Object blockPositionGet = PacketUtils.getNMSBlockPos(loc.getBlockX(), 0, loc.getBlockZ());
+
+            Object change = PACKET_BLOCK_CHANGE.newInstance(PacketUtils.getNMSWorld(p.getWorld()), blockPositionSet);
+            PacketUtils.setField("block", WORLD_GET_BLOCK_TYPE.invoke(PacketUtils.getNMSWorld(p.getWorld()), blockPositionGet), change);
+
+            PacketUtils.sendPacket(p, change);
+        } catch (ReflectiveOperationException ex) {
+            ex.printStackTrace();
+        }
+        loc.getWorld().getBlockAt(loc.getBlockX(), 0, loc.getBlockZ()).setType(oldMat);
+    }
+
+    @Override
+    protected void sendTitlePacket(Player p, TitleType type, String text, int fadeIn, int stay, int fadeOut) {
+        try {
+            Object title;
+            if (type == TitleType.TIMES) {
+                title = PACKET_TITLE_TIMES.newInstance(fadeIn, stay, fadeOut);
+            } else {
+                title = PACKET_TITLE_TEXT.newInstance(TITLE_ACTION.getDeclaredField(type.name()).get(null), ChatMessage.legacyTextComponentString(text));
+            }
+
+            PacketUtils.sendPacket(p, title);
+        } catch (ReflectiveOperationException ex) {
+            ex.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public void openBook(final Player p, FkBook book) {
+        final int slot = p.getInventory().getHeldItemSlot();
+        final ItemStack original = p.getInventory().getItem(slot);
+
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "replaceitem entity " + p.getName() + " slot.hotbar." + slot + " minecraft:written_book 1 0 " + book.nbt());
+
+        Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), () -> {
+            try {
+                if (original != null && original.getType() != Material.AIR)
+                    p.getWorld().dropItem(p.getLocation(), original).setPickupDelay(0);
+
+                p.getInventory().setHeldItemSlot(slot);
+
+                ByteBuf buf = Unpooled.buffer(256);
+                buf.setByte(0, (byte) 0);
+                buf.writerIndex(1);
+                Object payload = PACKET_CUSTOM_PAYLOAD.newInstance("MC|BOpen", PACKET_DATA_SERIALIZER.newInstance(buf));
+
+                PacketUtils.sendPacket(p, payload);
+            } catch (ReflectiveOperationException ex) {
+                ex.printStackTrace();
+            }
+        }, 5L);
+    }
+
+    private int getItemSlot(ItemSlot slot) {
+        return slot.ordinal() > 0 ? slot.ordinal() - 1 : 0;
+    }
 }

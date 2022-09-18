@@ -31,6 +31,8 @@ public class PacketUtils
 	public static final Class<?> MINECRAFT_WORLD;
 	public static final Class<?> MINECRAFT_CHUNK;
 	public static final Class<?> MINECRAFT_SERVER;
+	public static final Class<?> MINECRAFT_BLOCK_POSITION;
+	private static final MethodHandle NEW_BLOCK_POSITION;
 
 	static
 	{
@@ -63,6 +65,8 @@ public class PacketUtils
 			GET_CHUNK_HANDLE_AT = lookup.unreflect(getChunkAt);
 			MINECRAFT_SERVER = NMSUtils.nmsClass("server", "MinecraftServer");
 			GET_SERVER_HANDLE = MINECRAFT_SERVER.getDeclaredMethod("getServer");
+			MINECRAFT_BLOCK_POSITION = NMSUtils.nmsClass("core", "BlockPosition");
+			NEW_BLOCK_POSITION = lookup.unreflectConstructor(MINECRAFT_BLOCK_POSITION.getConstructor(int.class, int.class, int.class));
 		}catch(ReflectiveOperationException e)
 		{
 			throw new ExceptionInInitializerError(e);
@@ -87,13 +91,12 @@ public class PacketUtils
 		}
 	}
 
-	public static Object getPlayerConnection(Player player)
+	public static Object getPlayerConnection(Player player) throws ReflectiveOperationException
 	{
 		try {
 			return GET_PLAYER_CONNECTION_CRAFT_PLAYER.invoke(GET_PLAYER_HANDLE.invoke(player));
 		} catch (Throwable throwable) {
-			throwable.printStackTrace();
-			return null;
+			throw new ReflectiveOperationException(throwable);
 		}
 	}
 
@@ -102,28 +105,25 @@ public class PacketUtils
 		try {
 			return GET_WORLD_HANDLE.invoke(world);
 		} catch (Throwable throwable) {
-			throwable.printStackTrace();
-			return null;
+			throw new ReflectiveOperationException(throwable);
 		}
 	}
 
-	public static Object getNMSChunk(Chunk chunk)
+	public static Object getNMSBlockPos(int x, int y, int z) throws ReflectiveOperationException
 	{
 		try {
-			return GET_CHUNK_HANDLE_AT.invoke(GET_WORLD_HANDLE.invoke(chunk.getWorld()), chunk.getX(), chunk.getZ());
+			return NEW_BLOCK_POSITION.invoke(x, y, z);
 		} catch (Throwable throwable) {
-			throwable.printStackTrace();
-			return null;
+			throw new ReflectiveOperationException(throwable);
 		}
 	}
 
-	public static Object getNMSServer()
+	public static Object getNMSServer() throws ReflectiveOperationException
 	{
 		try {
 			return GET_SERVER_HANDLE.invoke(null);
 		} catch (Throwable throwable) {
-			throwable.printStackTrace();
-			return null;
+			throw new ReflectiveOperationException(throwable);
 		}
 	}
 

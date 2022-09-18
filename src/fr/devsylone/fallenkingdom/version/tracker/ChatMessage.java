@@ -69,8 +69,24 @@ public final class ChatMessage {
             builder.append(c);
         }
         builder.append("\"}");
+        return legacyTextComponentString(builder.toString());
+    }
+
+    /**
+     * Convertit un message legacy en un composant texte.
+     * <p>
+     * Cela permet de gérer la couleur pour certaines (très) vieilles versions
+     * et ne devrait pas être utilisé sur les serveurs à jour.
+     *
+     * @param message Le message à convertir
+     * @return Le composant de chat NMS
+     */
+    public static @NotNull Object legacyTextComponentString(String message) {
+        if (MESSAGE_FROM_JSON == null) {
+            return fromString(message);
+        }
         try {
-            return MESSAGE_FROM_JSON.invoke(null, builder.toString());
+            return MESSAGE_FROM_JSON.invoke(null, message);
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw new RuntimeException(e);
         }
