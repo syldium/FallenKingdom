@@ -5,6 +5,9 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Formate les durées sur 12 ou 24 heures, synchronisé sur le cycle jour-nuit.
+ * <p>
+ * Un jour Minecraft correspond à un jour en jeu et l'heure en jeu dépend du
+ * temps écoulé par rapport à la durée totale d'un jour pour une partie.
  */
 public class CycleTickFormatter extends TickFormatter {
 
@@ -16,6 +19,9 @@ public class CycleTickFormatter extends TickFormatter {
     private final float dayTickFactor;
     protected final boolean twelveHours;
 
+    /**
+     * Créé un affichage calqué sur la durée d'un jour Minecraft.
+     */
     public CycleTickFormatter() {
         this(TICKS_PER_DAY_NIGHT_CYCLE, false, false, 6);
     }

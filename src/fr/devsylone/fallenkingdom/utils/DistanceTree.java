@@ -19,7 +19,7 @@ import static java.util.Objects.requireNonNull;
  * celle du nœud au dessus, ceux à droite ont une distance strictement
  * supérieure.</p>
  *
- * @param <T> Élement localisable
+ * @param <T> Élément localisable
  */
 public class DistanceTree<T> implements Iterable<T> {
 

@@ -10,6 +10,16 @@ import static fr.devsylone.fallenkingdom.display.tick.CycleTickFormatter.TICKS_P
 
 /**
  * Formate l'affichage de ticks de jeu en heures et minutes.
+ * <p>
+ * Son rôle est d'être l'intermédiaire entre les ticks écoulés dans une partie
+ * de FK et le temps dans les mondes Minecraft, celui qui est vu par les
+ * joueurs.
+ * <p>
+ * Le FK incrémente un compteur de ticks qui une fois dépassé
+ * {@link #dayDuration()} est réinitialisé à 0. Cela a pour effet de passer au
+ * jour suivant. Un monde Minecraft suit la même logique, mais ne permet pas de
+ * changer la durée d'un jour, forcément définie
+ * à {@link CycleTickFormatter#TICKS_PER_DAY_NIGHT_CYCLE}.
  */
 public abstract class TickFormatter {
 
