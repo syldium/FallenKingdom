@@ -10,7 +10,6 @@ public final class KeyHelper {
         throw new IllegalAccessException(this.getClass().getSimpleName() + " cannot be instantiated.");
     }
 
-    @SuppressWarnings("deprecation")
     public static NamespacedKey parseKey(String string, int separatorIndex) {
         String namespace = separatorIndex >= 1 ? string.substring(0, separatorIndex) : MINECRAFT;
         String key = separatorIndex >= 0 ? string.substring(separatorIndex + 1) : string;
@@ -21,7 +20,6 @@ public final class KeyHelper {
         return parseKey(string, string.indexOf(':'));
     }
 
-    @SuppressWarnings("deprecation")
     public static NamespacedKey plugin(String value) {
         return new NamespacedKey("fallenkingdom", value);
     }
