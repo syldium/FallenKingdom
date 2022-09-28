@@ -46,6 +46,7 @@ public enum PlaceHolder
 
 	private final BiFunction<Player, Integer, ?> callable;
 	private final Messages description;
+	private final String rawKey;
 	private final String key;
 	private final String[] legacyKeys;
 
@@ -63,6 +64,7 @@ public enum PlaceHolder
 	{
 		this.callable = callable;
 		this.description = description;
+		this.rawKey = key;
 		this.key = PLACEHOLDER_START + key + PLACEHOLDER_END;
 		this.legacyKeys = legacyKeys;
 	}
@@ -117,6 +119,10 @@ public enum PlaceHolder
 	public @NotNull String getKey()
 	{
 		return this.key;
+	}
+
+	public String getRawKey() {
+		return this.rawKey;
 	}
 
 	public static @NotNull String removeLegacyKeys(@NotNull String message)

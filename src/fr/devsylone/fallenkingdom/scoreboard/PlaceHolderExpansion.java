@@ -31,7 +31,7 @@ public class PlaceHolderExpansion extends PlaceholderExpansion
         if (!player.isOnline())
             return "";
         for (PlaceHolder placeHolder : PlaceHolder.values()) {
-            if (placeHolder.getKey().equalsIgnoreCase(identifier)) {
+            if (placeHolder.getRawKey().equalsIgnoreCase(identifier)) {
                 return String.valueOf(placeHolder.getFunction().apply((Player) player,0));
             }
         }
