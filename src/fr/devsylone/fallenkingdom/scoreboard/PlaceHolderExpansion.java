@@ -4,16 +4,30 @@ import fr.devsylone.fallenkingdom.Fk;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
 
 public class PlaceHolderExpansion extends PlaceholderExpansion
 {
+    private final List<String> placeholders;
+
+    public PlaceHolderExpansion() {
+        this.placeholders = Arrays.stream(PlaceHolder.values())
+                .map(placeholder -> '%' + getIdentifier() + '_' + placeholder.getRawKey().toLowerCase(Locale.ROOT) + '%')
+                .collect(Collectors.toList());
+    }
+
     @Override
-    public String getIdentifier() {
+    public @NotNull String getIdentifier() {
         return "fk";
     }
 
     @Override
-    public String getVersion() {
+    public @NotNull String getVersion() {
         return "2.0.0";
     }
 
@@ -23,11 +37,22 @@ public class PlaceHolderExpansion extends PlaceholderExpansion
     }
 
     @Override
-    public String getAuthor(){
+    public boolean persist() {
+        return true;
+    }
+
+    @Override
+    public @NotNull String getAuthor(){
         return Fk.getInstance().getDescription().getAuthors().toString();
     }
 
-    public String onRequest(OfflinePlayer player, String identifier) {
+    @Override
+    public @NotNull List<String> getPlaceholders() {
+        return this.placeholders;
+    }
+
+    @Override
+    public String onRequest(OfflinePlayer player, @NotNull String identifier) {
         if (!player.isOnline())
             return "";
         for (PlaceHolder placeHolder : PlaceHolder.values()) {
