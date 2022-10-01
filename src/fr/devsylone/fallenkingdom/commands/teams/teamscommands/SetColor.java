@@ -3,6 +3,7 @@ package fr.devsylone.fallenkingdom.commands.teams.teamscommands;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandRole;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
+import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -31,7 +32,7 @@ public class SetColor extends FkCommand
 		Team team = plugin.getFkPI().getTeamManager().getTeamOrThrow(args.get(0));
 
 		try {
-			team.setColor(Color.of(args.get(1)));
+			team.setColor(Color.of(ChatUtils.unquoteString(args.get(1))));
 		} catch (NumberFormatException ex) {
 			// Seulement lors des lectures des couleurs hex
 			invalidColor(sender, args.get(1), ex);

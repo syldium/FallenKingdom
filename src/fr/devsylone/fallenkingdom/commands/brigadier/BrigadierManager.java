@@ -52,8 +52,8 @@ public class BrigadierManager<S>
      * @return Nouveau nœud de commande
      */
     public LiteralCommandNode<S> register(CommandManager commandManager, String literal, Command<S> executor, SuggestionProvider<S> suggestionProvider) {
-        LiteralArgumentBuilder<S> builder = LiteralArgumentBuilder.literal(literal);
-        builder.then(LiteralArgumentBuilder.literal("help"));
+        LiteralArgumentBuilder<S> builder = LiteralArgumentBuilder.<S>literal(literal).executes(executor);
+        builder.then(LiteralArgumentBuilder.<S>literal("help").executes(executor));
 
         for (AbstractCommand command : commandManager.getMainCommands()) {
             if (command.shouldDisplay()) {

@@ -40,9 +40,6 @@ class ArgumentTypeBuilder
             case "advancement":
                 argumentType = MinecraftArgumentTypes.getByKey(NamespacedKey.minecraft("resource_location"));
                 break;
-            case "color":
-                argumentType = MinecraftArgumentTypes.getByKey(NamespacedKey.minecraft("function")); // Type le plus proche autorisant le # // TODO toujours le cas ?
-                break;
             case "entity":
             case "player":
                 argumentType = MinecraftArgumentTypes.constructMinecraftArgumentType(NamespacedKey.minecraft("entity"), new Class[]{boolean.class, boolean.class}, false, "player".equals(arg.getName()));

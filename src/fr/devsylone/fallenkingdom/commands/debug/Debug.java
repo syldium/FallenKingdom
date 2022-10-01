@@ -15,7 +15,7 @@ public class Debug extends FkCommand
 {
     public Debug()
     {
-        super("debug",null, CommandRole.ADMIN);
+        super("debug", "[send]", null, CommandRole.ADMIN);
     }
 
     @Override
@@ -26,11 +26,5 @@ public class Debug extends FkCommand
         sender.sendMessage(result ? Messages.CMD_DEBUG_SUCCESS.getMessage() : Messages.CMD_DEBUG_ERROR.getMessage());
         plugin.getLogger().info("DEBUG DONE - send=" + send + " result=" + result + " username=" + sender.getName());
         return CommandResult.SUCCESS;
-    }
-
-    @Override
-    public boolean shouldDisplay()
-    {
-        return false;
     }
 }
