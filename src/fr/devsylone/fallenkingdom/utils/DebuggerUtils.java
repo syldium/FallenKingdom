@@ -25,70 +25,13 @@ import fr.devsylone.fallenkingdom.commands.FkCommandExecutor;
 import fr.devsylone.fkpi.lockedchests.LockedChest;
 import fr.devsylone.fkpi.rules.Rule;
 
-public class DebuggerUtils
+public final class DebuggerUtils
 {
+    private static final String USER_AGENT = "FallenKingdom/Debug";
+
     private static PrintWriter writer;
 
-    public static String getLastLineStaskTrace(Thread t)
-    {
-        for(StackTraceElement element : t.getStackTrace())
-            if(element.getClassName() != DebuggerUtils.class.getName() && !element.getClassName().contains("Thread"))
-            {
-                return element.toString();
-            }
-        return "";
-    }
-
-    public static String getStackTrace(Thread t)
-    {
-        return getStackTrace(t.getStackTrace());
-    }
-
-    public static String getStackTrace(Throwable throwable)
-    {
-        return getStackTrace(throwable.getStackTrace());
-    }
-
-    public static String getStackTrace(StackTraceElement[] elements)
-    {
-        String totalStackTrace = "";
-
-        for(StackTraceElement element : elements)
-        {
-            if(element.getClassName() == DebuggerUtils.class.getName() || element.getClassName().contains("Thread"))
-                totalStackTrace = "Current trace : \n";
-
-            else if(!element.getClassName().contains("devsylone"))
-            {
-                totalStackTrace += "And more...";
-                break;
-            }
-
-            else
-                totalStackTrace += " |- " + element.toString() + "\n";
-        }
-        return totalStackTrace;
-    }
-
-    public static void printCurrentStackTrace()
-    {
-        Fk.debug(getStackTrace(Thread.currentThread()));
-    }
-
-    public static String getServerFolderName()
-    {
-        String path = Fk.getInstance().getDataFolder().getAbsolutePath();
-        String serverName;
-        try
-        {
-            String[] folders = path.split(File.separator);
-            serverName = folders[folders.length - 3];
-        }catch(Exception e)
-        {
-            serverName = "serverErr";
-        }
-        return serverName;
-    }
+    private DebuggerUtils() {}
 
     public static void log(String msg)
     {
@@ -107,6 +50,7 @@ public class DebuggerUtils
             {
                 newLogConnection = (HttpURLConnection) new URL("https://fklogs.etrenak.ovh/new").openConnection();
                 newLogConnection.setDoOutput(true);
+                newLogConnection.setRequestProperty("User-Agent", USER_AGENT + '/' + Fk.getInstance().getDescription().getVersion());
                 newLogConnection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
                 writer = new PrintWriter(newLogConnection.getOutputStream());
 

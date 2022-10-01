@@ -122,7 +122,7 @@ public class Fk extends JavaPlugin
 			/*
 			 * Mode debug
 			 */
-			debugMode = DebuggerUtils.getServerFolderName().endsWith("-debug") || new File(getDataFolder(), "debug").exists();
+			debugMode = new File(getDataFolder(), "debug").exists();
 			if(debugMode)
 			{
 				debug("##########################");
