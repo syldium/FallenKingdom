@@ -38,7 +38,7 @@ public class UpdateChecker extends BukkitRunnable {
     public void run() {
         try {
             final HttpURLConnection connection = (HttpURLConnection) new URL(LATEST_RELEASE_ENDPOINT).openConnection();
-            connection.setRequestProperty("User-Agent", USER_AGENT);
+            connection.setRequestProperty("User-Agent", USER_AGENT + '/' + this.plugin.getDescription().getVersion());
             connection.connect();
 
             if (connection.getResponseCode() == HttpURLConnection.HTTP_INTERNAL_ERROR || connection.getResponseCode() == HttpURLConnection.HTTP_FORBIDDEN) {
