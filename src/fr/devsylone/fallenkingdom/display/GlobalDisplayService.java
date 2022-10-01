@@ -266,6 +266,10 @@ public class GlobalDisplayService implements DisplayService, Saveable {
         return this.tickFormatter.withDayDuration(dayDuration);
     }
 
+    public @NotNull TickFormatter baseTickFormatter() {
+        return this.tickFormatter;
+    }
+
     public void playDeathSound(@NotNull Player player) {
         this.deathSound.play(player);
     }

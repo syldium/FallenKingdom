@@ -275,6 +275,10 @@ public class Game implements Saveable
 
 	public void updateDayDuration(@NotNull GlobalDisplayService displayService)
 	{
+		if (timeFormat == null) {
+			timeFormat = displayService.baseTickFormatter();
+			return;
+		}
 		timeFormat = displayService.configureTickFormatter(timeFormat.dayDuration());
 	}
 
