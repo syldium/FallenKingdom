@@ -500,3 +500,11 @@ Il est conseillé de réinitialiser les fichiers de langue.
 [*] Change le jour courant seulement si celui du monde est différent de 0
 [*] Sort les joueurs du mode édition du scoreboard après l'arrêt du serveur
 [*] Affiche la suggestion pour les portails de l'end avec les items également
+
+      >> 2.22.5
+[+] Suggestion les placeholders dans la liste de PlaceholderAPI
+[*] Toutes les commandes d'aide sont proposées dans l'autocomplétion (affecte surtout 1.19.1+)
+[*] Correction l'intégration des placeholders avec PlaceholderAPI
+[*] La configuration des règles est toujours chargée avant les données de la partie
+[*] Changer la durée d'un jour après le début de la partie ne change plus de jour
+[*] Log si une sauvegarde de la partie est dans un état incohérent
