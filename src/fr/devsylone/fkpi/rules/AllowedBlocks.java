@@ -13,6 +13,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.utils.Messages;
+import fr.devsylone.fallenkingdom.utils.XBlock;
 import fr.devsylone.fkpi.api.event.RuleChangeEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -39,7 +40,7 @@ public class AllowedBlocks implements RuleValue
 	@SuppressWarnings("deprecation")
 	public boolean isAllowed(Block block)
 	{
-		return isAllowed(block.getType(), XMaterial.isNewVersion() ? 0 : block.getData());
+		return isAllowed(block.getType(), XBlock.isFlat() ? 0 : block.getData());
 	}
 
 	public List<String> reducedList()
@@ -71,7 +72,7 @@ public class AllowedBlocks implements RuleValue
 	public void fillWithDefaultValue()
 	{
 		add(Material.TORCH);
-		if (XMaterial.isNewVersion()) {
+		if (XBlock.isFlat()) {
 			add(Material.WALL_TORCH);
 			add(Material.REDSTONE_TORCH);
 			add(Material.REDSTONE_WALL_TORCH);
@@ -207,7 +208,7 @@ public class AllowedBlocks implements RuleValue
 		} catch (ExceptionInInitializerError ignored) {
 			// test env
 		} catch (ClassNotFoundException | NoSuchFieldException e) {
-			if (XMaterial.isNewVersion()) {
+			if (XBlock.isFlat()) {
 				SIGNS.add(XMaterial.OAK_SIGN.parseMaterial());
 			} else {
 				SIGNS.add(Material.valueOf("SIGN_POST"));

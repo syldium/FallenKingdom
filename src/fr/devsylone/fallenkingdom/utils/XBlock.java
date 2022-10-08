@@ -66,7 +66,7 @@ import com.cryptomorin.xseries.XMaterial;
  */
 @SuppressWarnings("deprecation")
 public final class XBlock {
-    private static final boolean ISFLAT = XMaterial.isNewVersion();
+    private static final boolean ISFLAT = XMaterial.supports(13);
 
     public static final Set<Material> REPLACEABLE = materialSet(
             XMaterial.DANDELION, XMaterial.POPPY, XMaterial.BLUE_ORCHID, XMaterial.ALLIUM, XMaterial.AZURE_BLUET, XMaterial.RED_TULIP,
@@ -167,6 +167,10 @@ public final class XBlock {
             }
         }
         return null;
+    }
+
+    public static boolean isFlat() {
+        return ISFLAT;
     }
 
     public static Set<Material> materialSet(XMaterial... materials) {
