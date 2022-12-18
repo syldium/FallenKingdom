@@ -1,6 +1,5 @@
-package fr.devsylone.fallenkingdom.manager.packets.block;
+package fr.devsylone.fallenkingdom.version.packet.block;
 
-import fr.devsylone.fallenkingdom.Fk;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -11,32 +10,32 @@ import java.util.Set;
 
 class NMSMultiBlockChange implements MultiBlockChange {
 
-    private final Set<BlockChange> changes = new HashSet<>();
+    private final Set<SingleBlockChange> changes = new HashSet<>();
 
     @Override
     public void change(@NotNull Block block, @NotNull Material material) {
-        this.changes.add(new BlockChange(block, material));
+        this.changes.add(new SingleBlockChange(block, material));
     }
 
     @Override
     public void send(@NotNull Player player) {
-        for (BlockChange change : this.changes) {
-            Fk.getInstance().getPacketManager().sendBlockChange(player, change.position.getLocation(), change.material);
+        for (SingleBlockChange change : this.changes) {
+            BlockChange.INSTANCE.send(player, change.position.getLocation(), change.material);
         }
     }
 
     @Override
     public void cancel(@NotNull Player player) {
-        for (BlockChange change : this.changes) {
-            Fk.getInstance().getPacketManager().sendBlockChange(player, change.position.getLocation(), change.position.getType());
+        for (SingleBlockChange change : this.changes) {
+            BlockChange.INSTANCE.send(player, change.position.getLocation(), change.position.getType());
         }
     }
 
-    private static class BlockChange {
+    private static class SingleBlockChange {
         final Block position;
         final Material material; // normalement de type BlockData en 1.13+
 
-        BlockChange(@NotNull Block position, @NotNull Material material) {
+        SingleBlockChange(@NotNull Block position, @NotNull Material material) {
             this.position = position;
             this.material = material;
         }
@@ -45,7 +44,7 @@ class NMSMultiBlockChange implements MultiBlockChange {
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
-            BlockChange that = (BlockChange) o;
+            SingleBlockChange that = (SingleBlockChange) o;
             return this.position.equals(that.position);
         }
 

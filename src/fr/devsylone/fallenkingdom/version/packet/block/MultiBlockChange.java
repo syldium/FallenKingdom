@@ -1,4 +1,4 @@
-package fr.devsylone.fallenkingdom.manager.packets.block;
+package fr.devsylone.fallenkingdom.version.packet.block;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;

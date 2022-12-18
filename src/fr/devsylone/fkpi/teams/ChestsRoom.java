@@ -3,8 +3,9 @@ package fr.devsylone.fkpi.teams;
 import com.cryptomorin.xseries.XMaterial;
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.game.ChestRoomRunnable;
-import fr.devsylone.fallenkingdom.manager.packets.block.MultiBlockChange;
-import fr.devsylone.fallenkingdom.manager.packets.PacketManager;
+import fr.devsylone.fallenkingdom.version.packet.block.MultiBlockChange;
+import fr.devsylone.fallenkingdom.version.packet.entity.Hologram;
+import fr.devsylone.fallenkingdom.version.packet.entity.ItemSlot;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fallenkingdom.utils.XBlock;
@@ -148,10 +149,10 @@ public class ChestsRoom implements Saveable
 					if(inter > 0)
 					{
 						if(inter > 1)
-							id = Fk.getInstance().getPacketManager().displayItem(PacketManager.ItemSlot.HEAD, p, loc.add(0.5, -1, 0.5), Material.CHEST);
+							id = Hologram.INSTANCE.displayItem(ItemSlot.HEAD, p, loc.add(0.5, -1, 0.5), Material.CHEST);
 
 						else if(min.distanceSquared(max) <= 20*20)
-							id = Fk.getInstance().getPacketManager().displayItem(PacketManager.ItemSlot.MAINHAND, p, loc.add(1, 0, 0), Material.CHEST);
+							id = Hologram.INSTANCE.displayItem(ItemSlot.MAINHAND, p, loc.add(1, 0, 0), Material.CHEST);
 
 					}
 
@@ -159,7 +160,7 @@ public class ChestsRoom implements Saveable
 
 					Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), () -> {
 						if (finalid > 0) {
-							Fk.getInstance().getPacketManager().remove(finalid);
+							Hologram.INSTANCE.remove(p, finalid);
 						}
 					}, Math.abs(seetime) * 20L);
 				}

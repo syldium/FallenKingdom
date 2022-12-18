@@ -1,24 +1,18 @@
-package fr.devsylone.fallenkingdom.manager.packets;
+package fr.devsylone.fallenkingdom.version.packet.entity;
 
 import java.util.Objects;
 import java.util.UUID;
 
-import fr.devsylone.fallenkingdom.version.Environment;
-import fr.devsylone.fallenkingdom.version.component.FkBook;
 import fr.devsylone.fallenkingdom.version.tracker.DataTracker;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.utils.NMSUtils;
 import fr.devsylone.fallenkingdom.utils.PacketUtils;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
-public class PacketManager1_9 extends PacketManager
+class NMSHologram1_9 extends NMSHologram
 {
 
 	private static final Class<?> ITEM_SLOT;
@@ -31,7 +25,7 @@ public class PacketManager1_9 extends PacketManager
 		}
 	}
 
-	public PacketManager1_9()
+	public NMSHologram1_9()
 	{
 		try
 		{
@@ -67,6 +61,7 @@ public class PacketManager1_9 extends PacketManager
 
 	}
 
+	@Override
 	protected int sendSpawn(Player p, Location loc)
 	{
 		Objects.requireNonNull(p, "Unable to create an entity for an offline player.");
@@ -75,7 +70,6 @@ public class PacketManager1_9 extends PacketManager
 			loc = p.getLocation();
 
 		int id = entityIdSupplier.getAsInt();
-		playerById.put(id, p.getUniqueId());
 		try
 		{
 			Object spawn = NMSUtils.getClass("PacketPlayOutSpawnEntity").getDeclaredConstructor().newInstance();
@@ -101,7 +95,7 @@ public class PacketManager1_9 extends PacketManager
 	}
 
 	@Override
-	protected void sendMetadata(int id, boolean visible, String customName)
+	protected void sendMetadata(Player p, int id, boolean visible, String customName)
 	{
 		try
 		{
@@ -115,7 +109,7 @@ public class PacketManager1_9 extends PacketManager
 							.customNameVisible(true)
 							.trackedValues(),
 					metadata);
-			PacketUtils.sendPacket(getPlayer(id), metadata);
+			PacketUtils.sendPacket(p, metadata);
 		}catch(ReflectiveOperationException ex)
 		{
 			ex.printStackTrace();
@@ -123,7 +117,7 @@ public class PacketManager1_9 extends PacketManager
 	}
 
 	@Override
-	protected void sendTeleport(int id, Location newLoc)
+	protected void sendTeleport(Player p, int id, Location newLoc)
 	{
 		try
 		{
@@ -136,7 +130,7 @@ public class PacketManager1_9 extends PacketManager
 			PacketUtils.setField("f", (byte) 0, tp);
 			PacketUtils.setField("g", true, tp);
 
-			PacketUtils.sendPacket(getPlayer(id), tp);
+			PacketUtils.sendPacket(p, tp);
 		}catch(ReflectiveOperationException ex)
 		{
 			ex.printStackTrace();
@@ -144,14 +138,14 @@ public class PacketManager1_9 extends PacketManager
 	}
 
 	@Override
-	protected void sendDestroy(int id)
+	protected void sendDestroy(Player p, int id)
 	{
 		try
 		{
 			Object destroy = NMSUtils.getClass("PacketPlayOutEntityDestroy").getDeclaredConstructor().newInstance();
 			PacketUtils.setField("a", new int[] {id}, destroy);
 
-			PacketUtils.sendPacket(getPlayer(id), destroy);
+			PacketUtils.sendPacket(p, destroy);
 		}catch(ReflectiveOperationException ex)
 		{
 			ex.printStackTrace();
@@ -159,7 +153,7 @@ public class PacketManager1_9 extends PacketManager
 	}
 
 	@Override
-	protected void sendEquipment(int id, ItemSlot slot, Material material)
+	protected void sendEquipment(Player p, int id, ItemSlot slot, Material material)
 	{
 		try
 		{
@@ -168,14 +162,14 @@ public class PacketManager1_9 extends PacketManager
 			Object itemSlot = getEnumItemSlot(slot);
 
 			Object armors = NMSUtils.getClass("PacketPlayOutEntityEquipment").getConstructor(int.class, itemSlot.getClass(), NMSUtils.getClass("ItemStack")).newInstance(id, itemSlot, nmsItem);
-			PacketUtils.sendPacket(getPlayer(id), armors);
+			PacketUtils.sendPacket(p, armors);
 		}catch(ReflectiveOperationException ex)
 		{
 			ex.printStackTrace();
 		}
 	}
 
-	@Override
+	/*@Override
 	public void sendBlockChange(Player p, Location loc, Material newBlock)
 	{
 		Material oldMat = loc.getWorld().getBlockAt(loc.getBlockX(), 0, loc.getBlockZ()).getType();
@@ -194,9 +188,9 @@ public class PacketManager1_9 extends PacketManager
 			ex.printStackTrace();
 		}
 		loc.getWorld().getBlockAt(loc.getBlockX(), 0, loc.getBlockZ()).setType(oldMat);
-	}
+	}*/
 
-    @Override
+    /*@Override
 	protected void sendTitlePacket(Player p, TitleType type, String text, int fadeIn, int stay, int fadeOut)
 	{
 		try
@@ -212,9 +206,9 @@ public class PacketManager1_9 extends PacketManager
 		{
 			ex.printStackTrace();
 		}
-	}
+	}*/
 
-	@Override
+	/*@Override
 	public void openBook(final Player p, FkBook book)
 	{
 		final int slot = p.getInventory().getHeldItemSlot();
@@ -245,7 +239,7 @@ public class PacketManager1_9 extends PacketManager
 				ex.printStackTrace();
 			}
 		}, 5L);
-	}
+	}*/
 
 	protected static Object getEnumItemSlot(ItemSlot slot) {
 		return NMSUtils.enumValueOf(ITEM_SLOT, slot.name());

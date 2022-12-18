@@ -1,6 +1,7 @@
 package fr.devsylone.fallenkingdom.listeners.entity.player;
 
 import fr.devsylone.fallenkingdom.utils.Messages;
+import fr.devsylone.fallenkingdom.version.title.TitleSender;
 import org.bukkit.GameMode;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -17,7 +18,7 @@ public class ChangeGamemodeListener implements Listener
 			return;
 		if(e.getNewGameMode() == GameMode.CREATIVE)
 		{
-			Fk.getInstance().getPacketManager().sendTitle(e.getPlayer(), Messages.PLAYER_CREATIVE_TITLE.getMessage(), Messages.PLAYER_CREATIVE_SUBTITLE.getMessage(), 20, 100,20);
+			TitleSender.INSTANCE.sendTitle(e.getPlayer(), Messages.PLAYER_CREATIVE_TITLE.getMessage(), Messages.PLAYER_CREATIVE_SUBTITLE.getMessage(), 20, 100,20);
 			Fk.getInstance().getPlayerManager().getPlayer(e.getPlayer()).sendMessage(Messages.PLAYER_CREATIVE_CHAT);
 		}
 	}

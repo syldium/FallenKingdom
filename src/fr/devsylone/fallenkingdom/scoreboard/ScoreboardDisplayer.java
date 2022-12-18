@@ -1,7 +1,7 @@
 package fr.devsylone.fallenkingdom.scoreboard;
 
 import fr.devsylone.fallenkingdom.Fk;
-import fr.devsylone.fallenkingdom.manager.packets.PacketManager;
+import fr.devsylone.fallenkingdom.version.packet.entity.Hologram;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fallenkingdom.utils.Messages;
 
@@ -21,7 +21,7 @@ public class ScoreboardDisplayer
 	private final FkPlayer fkPlayer;
 	private final WeakReference<Player> player;
 
-	private final PacketManager packetManager;
+	private final Hologram packetManager;
 
 	private BukkitRunnable runnable;
 	private final List<Integer> entities = new ArrayList<>();
@@ -30,7 +30,7 @@ public class ScoreboardDisplayer
 	{
 		this.fkPlayer = fkPlayer;
 		this.player = new WeakReference<>(Bukkit.getPlayer(fkPlayer.getName()));
-		this.packetManager = Fk.getInstance().getPacketManager();
+		this.packetManager = Hologram.INSTANCE;
 	}
 
 	public void display()
@@ -65,7 +65,7 @@ public class ScoreboardDisplayer
 		loc.setY(loc.getY() + 0.25 * ((float) entities.size() / 2) - 1);
 
 		for (int entity : entities) {
-			Fk.getInstance().getPacketManager().updateFloatingText(entity, loc);
+			Hologram.INSTANCE.updateFloatingText(player, entity, loc);
 			loc.add(0, -0.25, 0);
 		}
 	}
@@ -95,7 +95,7 @@ public class ScoreboardDisplayer
 		}
 
 		for(int id : entities)
-			packetManager.remove(id);
+			packetManager.remove(this.player.get(), id);
 		entities.clear();
 
 		fkPlayer.setUseFormattedText(true);

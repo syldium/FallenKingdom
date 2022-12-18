@@ -8,7 +8,6 @@ import fr.devsylone.fallenkingdom.manager.ListenersManager;
 import fr.devsylone.fallenkingdom.manager.PlayerManagerMock;
 import fr.devsylone.fallenkingdom.manager.TipsManager;
 import fr.devsylone.fallenkingdom.manager.WorldManager;
-import fr.devsylone.fallenkingdom.manager.packets.PacketManager;
 import fr.devsylone.fallenkingdom.manager.saveable.DeepPauseManager;
 import fr.devsylone.fallenkingdom.manager.saveable.PortalsManager;
 import fr.devsylone.fallenkingdom.manager.saveable.ScoreboardManager;
@@ -57,7 +56,6 @@ public class FkMock extends Fk {
         pauseRestorer = mock(PauseRestorer.class);
         starterInventoryManager = new StarterInventoryManager();
         scoreboardManager = new ScoreboardManager();
-        packetManager = mock(PacketManager.class);
         deepPauseManager = mock(DeepPauseManager.class);
         tipsManager = new TipsManager();
         tipsManager.startBroadcasts();
