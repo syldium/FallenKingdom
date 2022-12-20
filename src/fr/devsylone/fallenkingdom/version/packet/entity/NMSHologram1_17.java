@@ -29,6 +29,7 @@ class NMSHologram1_17 extends NMSHologram {
     private static final Constructor<?> PACKET_SPAWN_ENTITY;
     private static final Constructor<?> PACKET_DESTROY_ENTITY;
     private static final Constructor<?> PACKET_ENTITY_EQUIPMENT;
+    private static final @Nullable Constructor<?> PACKET_ENTITY_METADATA_CONSTRUCTOR;
     private static final Class<?> PACKET_ENTITY_METADATA;
     private static final Class<?> PACKET_ENTITY_POSITION;
 
@@ -68,6 +69,11 @@ class NMSHologram1_17 extends NMSHologram {
             PACKET_ENTITY_EQUIPMENT = packetEntityEquipment.getConstructor(int.class, List.class);
             PACKET_ENTITY_POSITION = NMSUtils.nmsClass(packetsPackage, "PacketPlayOutEntityTeleport");
             PACKET_ENTITY_METADATA = NMSUtils.nmsClass(packetsPackage, "PacketPlayOutEntityMetadata");
+            Constructor<?> entityMetadataConstructor = null;
+            try {
+                entityMetadataConstructor = PACKET_ENTITY_METADATA.getConstructor(int.class, List.class);
+            } catch (NoSuchMethodException ignored) {} // < 1.19.3
+            PACKET_ENTITY_METADATA_CONSTRUCTOR = entityMetadataConstructor;
         } catch (ReflectiveOperationException e) {
             throw new ExceptionInInitializerError(e);
         }
@@ -115,9 +121,14 @@ class NMSHologram1_17 extends NMSHologram {
                     .invisible()
                     .customName(customName)
                     .customNameVisible(true);
-            Object packet = Unsafety.allocateInstance(PACKET_ENTITY_METADATA);
-            PacketUtils.setField("a", id, packet);
-            PacketUtils.setField("b", tracker.trackedValues(), packet);
+            Object packet;
+            if (PACKET_ENTITY_METADATA_CONSTRUCTOR == null) {
+                packet = Unsafety.allocateInstance(PACKET_ENTITY_METADATA);
+                PacketUtils.setField("a", id, packet);
+                PacketUtils.setField("b", tracker.trackedValues(), packet);
+            } else {
+                packet = PACKET_ENTITY_METADATA_CONSTRUCTOR.newInstance(id, tracker.serializedTrackedValues());
+            }
             PacketUtils.sendPacket(p, packet);
         } catch (ReflectiveOperationException ex) {
             ex.printStackTrace();
