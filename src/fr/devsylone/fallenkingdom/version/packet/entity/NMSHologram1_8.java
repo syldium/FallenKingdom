@@ -30,10 +30,6 @@ class NMSHologram1_8 extends NMSHologram {
     private static final Constructor<?> WATCHABLE_OBJECT;
     private static final Method WORLD_GET_BLOCK_TYPE;
 
-    private static final Constructor<?> PACKET_TITLE_TIMES;
-    private static final Constructor<?> PACKET_TITLE_TEXT;
-    private static final Class<?> TITLE_ACTION;
-
     static {
         try {
             final Class<?> worldClass = NMSUtils.nmsClass("world", "World");
@@ -60,10 +56,6 @@ class NMSHologram1_8 extends NMSHologram {
             PACKET_DATA_SERIALIZER = packetSerializerClass.getConstructor(ByteBuf.class);
             WATCHABLE_OBJECT = watchableObjectClass.getConstructor(int.class, int.class, Object.class);
             WORLD_GET_BLOCK_TYPE = worldClass.getMethod("getType", PacketUtils.MINECRAFT_BLOCK_POSITION);
-
-            TITLE_ACTION = NMSUtils.nmsClass(packetsPackage, "PacketPlayOutTitle$EnumTitleAction");
-            PACKET_TITLE_TIMES = packetTitleClass.getConstructor(int.class, int.class, int.class);
-            PACKET_TITLE_TEXT = packetTitleClass.getConstructor(TITLE_ACTION, ChatMessage.CHAT_BASE_COMPONENT);
         } catch (ReflectiveOperationException e) {
             throw new ExceptionInInitializerError(e);
         }
@@ -155,41 +147,6 @@ class NMSHologram1_8 extends NMSHologram {
             ex.printStackTrace();
         }
     }
-
-    /*@Override
-    public void sendBlockChange(Player p, Location loc, Material newBlock) {
-        Material oldMat = loc.getWorld().getBlockAt(loc.getBlockX(), 0, loc.getBlockZ()).getType();
-        loc.getWorld().getBlockAt(loc.getBlockX(), 0, loc.getBlockZ()).setType(newBlock);
-        try {
-            Object blockPositionSet = PacketUtils.getNMSBlockPos(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
-            Object blockPositionGet = PacketUtils.getNMSBlockPos(loc.getBlockX(), 0, loc.getBlockZ());
-
-            Object change = PACKET_BLOCK_CHANGE.newInstance(PacketUtils.getNMSWorld(p.getWorld()), blockPositionSet);
-            PacketUtils.setField("block", WORLD_GET_BLOCK_TYPE.invoke(PacketUtils.getNMSWorld(p.getWorld()), blockPositionGet), change);
-
-            PacketUtils.sendPacket(p, change);
-        } catch (ReflectiveOperationException ex) {
-            ex.printStackTrace();
-        }
-        loc.getWorld().getBlockAt(loc.getBlockX(), 0, loc.getBlockZ()).setType(oldMat);
-    }*/
-
-    /*@Override
-    protected void sendTitlePacket(Player p, TitleType type, String text, int fadeIn, int stay, int fadeOut) {
-        try {
-            Object title;
-            if (type == TitleType.TIMES) {
-                title = PACKET_TITLE_TIMES.newInstance(fadeIn, stay, fadeOut);
-            } else {
-                title = PACKET_TITLE_TEXT.newInstance(TITLE_ACTION.getDeclaredField(type.name()).get(null), ChatMessage.legacyTextComponentString(text));
-            }
-
-            PacketUtils.sendPacket(p, title);
-        } catch (ReflectiveOperationException ex) {
-            ex.printStackTrace();
-        }
-
-    }*/
 
     /*@Override
     public void openBook(final Player p, FkBook book) {
