@@ -2,9 +2,8 @@ package fr.devsylone.fallenkingdom.game;
 
 import fr.devsylone.fallenkingdom.MockUtils;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -25,7 +24,7 @@ public class GameHelper {
 
     public static void assertGameRunnableStarted() {
         Game game = MockUtils.getPluginMockSafe().getGame();
-        assertThat("Game runnable should be known.", game.task, instanceOf(GameRunnable.class));
+        assertInstanceOf(GameRunnable.class, game.task, "Game runnable should be known.");
         assertTrue(MockUtils.getServerMockSafe().getScheduler().isQueued(game.task.getTaskId()), "Game runnable should be scheduled.");
         assertEquals(Game.GameState.STARTED, game.state, "Game state should be started.");
     }
