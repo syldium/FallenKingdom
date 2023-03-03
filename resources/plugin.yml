@@ -50,6 +50,7 @@ permissions:
    fallenkingdom.commands.rules.globalChatPrefix: true
    fallenkingdom.commands.rules.healthBelowName: true
    fallenkingdom.commands.rules.netherCap: true
+   fallenkingdom.commands.rules.placeBlockInCave: true
    fallenkingdom.commands.rules.placeBlockInCave.set: true
    fallenkingdom.commands.rules.pvpCap: true
    fallenkingdom.commands.rules.respawnAtHome: true
@@ -69,6 +70,7 @@ permissions:
    fallenkingdom.commands.team.random: true
    fallenkingdom.commands.team.remove: true
    fallenkingdom.commands.team.removePlayer: true
+   fallenkingdom.commands.team.rename: true
    fallenkingdom.commands.team.tp: true
    fallenkingdom.commands.team.setBase: true
    fallenkingdom.commands.team.setColor: true
@@ -88,7 +90,6 @@ permissions:
    fallenkingdom.commands.chests.list: true
    fallenkingdom.commands.game.starterInv: true
    fallenkingdom.commands.rules.list: true
-   fallenkingdom.commands.rules.placeBlockInCave: true
    fallenkingdom.commands.team.chestsRoom: true
    fallenkingdom.commands.team.list: true
    fallenkingdom.commands.chestsRoom.show: true

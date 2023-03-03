@@ -23,7 +23,7 @@ public class PlaceBlockInCave extends FkCommand
 
   public PlaceBlockInCave()
   {
-    super("placeBlockInCave", "<true|false|info> [i1:blocks]", Messages.CMD_MAP_RULES_PLACE_BLOCK_IN_CAVE, CommandRole.PLAYER);
+    super("placeBlockInCave", "<true|false|info> [i1:blocks]", Messages.CMD_MAP_RULES_PLACE_BLOCK_IN_CAVE, CommandRole.ADMIN);
   }
 
   @Override
