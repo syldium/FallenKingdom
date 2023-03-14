@@ -14,7 +14,7 @@ public abstract class CommandTest {
 
     public void assertRun(CommandSender sender, String literal, CommandResult excepted) {
         CommandResult result = commandManager.executeCommand(MockUtils.getPluginMockSafe(), sender, literal);
-        String message = CommandResult.SUCCESS.equals(excepted) ? "Command should be executed successfully." : "Command should fail at runtime.";
+        String message = CommandResult.SUCCESS.equals(excepted) ? "Command `" + literal + "` should be executed successfully." : "Command `" + literal + "` should fail at runtime.";
         assertEquals(excepted, result, message);
     }
 
