@@ -508,3 +508,9 @@ Il est conseillé de réinitialiser les fichiers de langue.
 [*] La configuration des règles est toujours chargée avant les données de la partie
 [*] Changer la durée d'un jour après le début de la partie ne change plus de jour
 [*] Log si une sauvegarde de la partie est dans un état incohérent
+
+      >> 2.22.6
+[+] Support des serveurs en 1.19.3 et 1.19.4
+[*] Corrige l'affichage du nom des portes armures en 1.17+
+[*] Réserve l'accès à la commande /fk rules placeBlockInCave aux opérateurs
+[*] Anonymise en amont les adresses IP avec /fk debug send
