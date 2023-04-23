@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -400,5 +401,15 @@ public class Fk extends JavaPlugin
 			this.getLogger().log(Level.SEVERE, "Unable to download the update.", ex);
 			return false;
 		}
+	}
+
+	public @NotNull Path getPluginFolder() {
+		return this.getDataFolder().toPath();
+	}
+
+	public @NotNull Path getRunDir() {
+		File pluginsDir = getDataFolder().getParentFile().getAbsoluteFile();
+		File runDir = pluginsDir.getParentFile().getAbsoluteFile();
+		return runDir.toPath();
 	}
 }
