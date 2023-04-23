@@ -1,6 +1,6 @@
 package fr.devsylone.fallenkingdom.display.progress;
 
-import fr.devsylone.fallenkingdom.Fk;
+import fr.devsylone.fallenkingdom.version.packet.entity.Hologram;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -12,17 +12,17 @@ class HologramProgress extends AbstractProgressBar {
 
     HologramProgress(AbstractProgressBar.@NotNull ProviderImpl provider, @NotNull Player player, @NotNull Location location) {
         super(provider);
-        this.entityId = Fk.getInstance().getPacketManager().createFloatingText(this.formatText(0D), player, location);
+        this.entityId = Hologram.INSTANCE.createFloatingText(this.formatText(0D), player, location);
     }
 
     @Override
     public void progress(@NotNull Player player, @NotNull Location location, double progress) {
-        Fk.getInstance().getPacketManager().updateFloatingText(this.entityId, this.formatText(progress));
+        Hologram.INSTANCE.updateFloatingText(player, this.entityId, this.formatText(progress));
     }
 
     @Override
     public void remove(@NotNull Player player) {
-        Fk.getInstance().getPacketManager().remove(this.entityId);
+        Hologram.INSTANCE.remove(player, this.entityId);
     }
 
     static class ProviderImpl extends AbstractProgressBar.ProviderImpl {

@@ -1,16 +1,16 @@
-package fr.devsylone.fallenkingdom.manager.packets;
+package fr.devsylone.fallenkingdom.version.packet.entity;
 
 import com.mojang.datafixers.util.Pair;
 import fr.devsylone.fallenkingdom.utils.NMSUtils;
 import fr.devsylone.fallenkingdom.utils.PacketUtils;
 import fr.devsylone.fallenkingdom.utils.Unsafety;
 import fr.devsylone.fallenkingdom.utils.XItemStack;
-import fr.devsylone.fallenkingdom.version.component.FkBook;
 import fr.devsylone.fallenkingdom.version.tracker.DataTracker;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
@@ -19,9 +19,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static fr.devsylone.fallenkingdom.manager.packets.PacketManager1_9.getEnumItemSlot;
+import static fr.devsylone.fallenkingdom.version.packet.entity.NMSHologram1_9.getEnumItemSlot;
 
-public class PacketManager1_17 extends PacketManager {
+class NMSHologram1_17 extends NMSHologram {
 
     private static final Object ARMOR_STAND;
     private static final Object ZERO_VEC3D;
@@ -29,6 +29,7 @@ public class PacketManager1_17 extends PacketManager {
     private static final Constructor<?> PACKET_SPAWN_ENTITY;
     private static final Constructor<?> PACKET_DESTROY_ENTITY;
     private static final Constructor<?> PACKET_ENTITY_EQUIPMENT;
+    private static final @Nullable Constructor<?> PACKET_ENTITY_METADATA_CONSTRUCTOR;
     private static final Class<?> PACKET_ENTITY_METADATA;
     private static final Class<?> PACKET_ENTITY_POSITION;
 
@@ -68,6 +69,11 @@ public class PacketManager1_17 extends PacketManager {
             PACKET_ENTITY_EQUIPMENT = packetEntityEquipment.getConstructor(int.class, List.class);
             PACKET_ENTITY_POSITION = NMSUtils.nmsClass(packetsPackage, "PacketPlayOutEntityTeleport");
             PACKET_ENTITY_METADATA = NMSUtils.nmsClass(packetsPackage, "PacketPlayOutEntityMetadata");
+            Constructor<?> entityMetadataConstructor = null;
+            try {
+                entityMetadataConstructor = PACKET_ENTITY_METADATA.getConstructor(int.class, List.class);
+            } catch (NoSuchMethodException ignored) {} // < 1.19.3
+            PACKET_ENTITY_METADATA_CONSTRUCTOR = entityMetadataConstructor;
         } catch (ReflectiveOperationException e) {
             throw new ExceptionInInitializerError(e);
         }
@@ -76,7 +82,6 @@ public class PacketManager1_17 extends PacketManager {
     @Override
     protected int sendSpawn(Player p, Location loc) {
         int id = entityIdSupplier.getAsInt();
-        playerById.put(id, p.getUniqueId());
 
         try {
             Object packet;
@@ -110,79 +115,58 @@ public class PacketManager1_17 extends PacketManager {
     }
 
     @Override
-    protected void sendMetadata(int id, boolean visible, String customName) {
+    protected void sendMetadata(Player p, int id, boolean visible, String customName) {
         try {
-            Object packet = Unsafety.allocateInstance(PACKET_ENTITY_METADATA);
-            PacketUtils.setField("a", id, packet);
-            PacketUtils.setField("b", new DataTracker()
-                            .invisible()
-                            .customName(customName)
-                            .customNameVisible(visible)
-                            .trackedValues(),
-                    packet);
-            PacketUtils.sendPacket(getPlayer(id), packet);
+            DataTracker tracker = new DataTracker()
+                    .invisible()
+                    .customName(customName)
+                    .customNameVisible(true);
+            Object packet;
+            if (PACKET_ENTITY_METADATA_CONSTRUCTOR == null) {
+                packet = Unsafety.allocateInstance(PACKET_ENTITY_METADATA);
+                PacketUtils.setField("a", id, packet);
+                PacketUtils.setField("b", tracker.trackedValues(), packet);
+            } else {
+                packet = PACKET_ENTITY_METADATA_CONSTRUCTOR.newInstance(id, tracker.serializedTrackedValues());
+            }
+            PacketUtils.sendPacket(p, packet);
         } catch (ReflectiveOperationException ex) {
             ex.printStackTrace();
         }
     }
 
     @Override
-    protected void sendTeleport(int id, Location newLoc) {
+    protected void sendTeleport(Player p, int id, Location newLoc) {
         try {
             Object packet = Unsafety.allocateInstance(PACKET_ENTITY_POSITION);
             PacketUtils.setField("a", id, packet);
             PacketUtils.setField("b", newLoc.getX(), packet);
             PacketUtils.setField("c", newLoc.getY(), packet);
             PacketUtils.setField("d", newLoc.getZ(), packet);
-            PacketUtils.sendPacket(getPlayer(id), packet);
+            PacketUtils.sendPacket(p, packet);
         } catch (ReflectiveOperationException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    protected void sendDestroy(int id) {
+    protected void sendDestroy(Player p, int id) {
         try {
             final Object packet = PACKET_DESTROY_ENTITY_LIST ? PACKET_DESTROY_ENTITY.newInstance(new int[]{id}) : PACKET_DESTROY_ENTITY.newInstance(id);
-            PacketUtils.sendPacket(getPlayer(id), packet);
+            PacketUtils.sendPacket(p, packet);
         } catch (ReflectiveOperationException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    protected void sendEquipment(int id, ItemSlot slot, Material material) {
+    protected void sendEquipment(Player p, int id, ItemSlot slot, Material material) {
         try {
             ItemStack bukkitItem = new ItemStack(material);
             Object armors = PACKET_ENTITY_EQUIPMENT.newInstance(id, Collections.singletonList(Pair.of(getEnumItemSlot(slot), XItemStack.asCraftItem(bukkitItem))));
-            PacketUtils.sendPacket(getPlayer(id), armors);
+            PacketUtils.sendPacket(p, armors);
         } catch (ReflectiveOperationException ex) {
             ex.printStackTrace();
         }
-    }
-
-    @Override
-    public void sendBlockChange(Player player, Location loc, Material newBlock) {
-        player.sendBlockChange(loc, newBlock.createBlockData());
-    }
-
-    @Override
-    public void sendTitle(Player player, String title, String subtitle) {
-        player.sendTitle(title, subtitle, 20, 20, 20);
-    }
-
-    @Override
-    public void sendTitle(Player player, String title, String subtitle, int fadeIn, int stay, int fadeOut) {
-        player.sendTitle(title, subtitle, fadeIn, stay, fadeOut);
-    }
-
-    @Override
-    protected void sendTitlePacket(Player player, TitleType type, String text, int fadeIn, int stay, int fadeOut) {
-        throw new UnsupportedOperationException("PacketManager#sendTitle should not use NMS with modern versions.");
-    }
-
-    @Override
-    public void openBook(Player p, FkBook book) {
-        book.open(p);
     }
 }

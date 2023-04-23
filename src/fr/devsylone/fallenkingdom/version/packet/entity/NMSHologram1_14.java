@@ -1,17 +1,16 @@
-package fr.devsylone.fallenkingdom.manager.packets;
+package fr.devsylone.fallenkingdom.version.packet.entity;
 
 import fr.devsylone.fallenkingdom.utils.NMSUtils;
 import fr.devsylone.fallenkingdom.utils.PacketUtils;
-import fr.devsylone.fallenkingdom.version.component.FkBook;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.Objects;
 import java.util.UUID;
 
-public class PacketManager1_14 extends PacketManager1_13 {
+class NMSHologram1_14 extends NMSHologram1_13 {
 
-    public PacketManager1_14()
+    public NMSHologram1_14()
     {
         try
         {
@@ -58,7 +57,6 @@ public class PacketManager1_14 extends PacketManager1_13 {
             loc = p.getLocation();
 
         int id = entityIdSupplier.getAsInt();
-        playerById.put(id, p.getUniqueId());
         try
         {
             Object spawn = NMSUtils.getClass("PacketPlayOutSpawnEntity").getDeclaredConstructor().newInstance();
@@ -80,11 +78,5 @@ public class PacketManager1_14 extends PacketManager1_13 {
             ex.printStackTrace();
         }
         return id;
-    }
-
-    @Override
-    public void openBook(final Player p, FkBook book)
-    {
-        book.open(p);
     }
 }

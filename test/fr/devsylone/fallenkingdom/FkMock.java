@@ -8,7 +8,6 @@ import fr.devsylone.fallenkingdom.manager.ListenersManager;
 import fr.devsylone.fallenkingdom.manager.PlayerManagerMock;
 import fr.devsylone.fallenkingdom.manager.TipsManager;
 import fr.devsylone.fallenkingdom.manager.WorldManager;
-import fr.devsylone.fallenkingdom.manager.packets.PacketManager;
 import fr.devsylone.fallenkingdom.manager.saveable.DeepPauseManager;
 import fr.devsylone.fallenkingdom.manager.saveable.PortalsManager;
 import fr.devsylone.fallenkingdom.manager.saveable.ScoreboardManager;
@@ -17,10 +16,7 @@ import fr.devsylone.fallenkingdom.pause.PauseRestorer;
 import fr.devsylone.fkpi.FkPI;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.java.JavaPluginLoader;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -29,12 +25,6 @@ import static org.mockito.Mockito.mock;
 public class FkMock extends Fk {
 
     public FkMock() {
-        super();
-        instance = this;
-    }
-
-    protected FkMock(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
-        super(loader, description, dataFolder, file);
         instance = this;
     }
 
@@ -57,7 +47,6 @@ public class FkMock extends Fk {
         pauseRestorer = mock(PauseRestorer.class);
         starterInventoryManager = new StarterInventoryManager();
         scoreboardManager = new ScoreboardManager();
-        packetManager = mock(PacketManager.class);
         deepPauseManager = mock(DeepPauseManager.class);
         tipsManager = new TipsManager();
         tipsManager.startBroadcasts();

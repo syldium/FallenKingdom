@@ -24,7 +24,7 @@ public class RuleCommandTest extends CommandTest {
                 if (rule == Rule.DAY_DURATION) {
                     continue;
                 }
-                otherValue = (int) value == 1 ? 2 : 1;
+                otherValue = (int) value == 10 ? 20 : 10;
             }
 
             if (otherValue != null) {

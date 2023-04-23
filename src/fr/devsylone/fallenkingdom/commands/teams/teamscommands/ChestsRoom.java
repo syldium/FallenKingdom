@@ -54,7 +54,7 @@ public class ChestsRoom extends FkParentCommand
 			if (this.book == null) {
 				this.book = this.book();
 			}
-			plugin.getPacketManager().openBook((Player) sender, this.book);
+			this.book.open((Player) sender);
 		}
 		return CommandResult.SUCCESS;
 	}

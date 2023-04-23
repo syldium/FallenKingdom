@@ -1,20 +1,10 @@
-package fr.devsylone.fallenkingdom.manager.packets;
+package fr.devsylone.fallenkingdom.version.packet.entity;
 
-import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.utils.NMSUtils;
-import fr.devsylone.fallenkingdom.utils.PacketUtils;
-import fr.devsylone.fallenkingdom.version.component.FkBook;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
-public class PacketManager1_13 extends PacketManager1_9 {
+class NMSHologram1_13 extends NMSHologram1_9 {
 
-    public PacketManager1_13()
+    public NMSHologram1_13()
     {
         try
         {
@@ -51,55 +41,5 @@ public class PacketManager1_13 extends PacketManager1_9 {
             e.printStackTrace();
         }
 
-    }
-
-    @Override
-    public void sendBlockChange(Player p, Location loc, Material newBlock)
-    {
-        p.sendBlockChange(loc, newBlock.createBlockData());
-    }
-
-    @Override
-    public void openBook(final Player p, FkBook book)
-    {
-        final int slot = p.getInventory().getHeldItemSlot();
-        final ItemStack original = p.getInventory().getItem(slot);
-
-        p.getInventory().setItemInMainHand(book.asItemStack());
-
-        Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), () -> {
-            try
-            {
-                if(original != null && original.getType() != Material.AIR)
-                    p.getWorld().dropItem(p.getLocation(), original).setPickupDelay(0);
-
-                p.getInventory().setHeldItemSlot(slot);
-
-                ByteBuf buf = Unpooled.buffer(256);
-                buf.setByte(0, (byte) 0);
-                buf.writerIndex(1);
-
-                Object minecraftKey = NMSUtils.getClass("MinecraftKey").getDeclaredConstructor(String.class).newInstance("minecraft:book_open");
-                Object packetDataSerializer = NMSUtils.getClass("PacketDataSerializer").getDeclaredConstructor(ByteBuf.class).newInstance(buf);
-
-                Object packet = NMSUtils.getClass("PacketPlayOutCustomPayload").getDeclaredConstructor(NMSUtils.getClass("MinecraftKey"), NMSUtils.getClass("PacketDataSerializer")).newInstance(minecraftKey, packetDataSerializer);
-                PacketUtils.sendPacket(p, packet);
-            }catch(ReflectiveOperationException ex)
-            {
-                ex.printStackTrace();
-            }
-        }, 5L);
-    }
-
-    @Override
-    public void sendTitle(Player p, String title, String subtitle)
-    {
-        p.sendTitle(title, subtitle, 20, 20, 20);
-    }
-
-    @Override
-    public void sendTitle(Player p, String title, String subtitle, int fadeIn, int stay, int fadeOut)
-    {
-        p.sendTitle(title, subtitle, fadeIn, stay, fadeOut);
     }
 }

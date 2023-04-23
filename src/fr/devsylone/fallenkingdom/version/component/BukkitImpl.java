@@ -2,6 +2,7 @@ package fr.devsylone.fallenkingdom.version.component;
 
 import com.google.gson.Gson;
 import fr.devsylone.fallenkingdom.version.Environment;
+import fr.devsylone.fallenkingdom.version.packet.book.BookViewer;
 import net.md_5.bungee.api.chat.ClickEvent;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -76,7 +77,11 @@ class BukkitImpl {
 
         @Override
         public void open(@NotNull Player player) {
-            player.openBook(this.itemStack);
+            if (BookViewer.INSTANCE == null) {
+                player.openBook(this.itemStack);
+            } else {
+                BookViewer.INSTANCE.openBook(player, this);
+            }
         }
 
         @Override

@@ -6,9 +6,13 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Gère une liste de métadonnées sur une entité pour les paquets.
@@ -19,6 +23,7 @@ public class DataTracker {
 
     private static final Class<?> TRACKED_DATA_TYPE;
     private static final Constructor<?> TRACKED_DATA;
+    private static final @Nullable Method SERIALIZE_TRACKED_DATA;
     private static final Class<?> TRACKED_ENTRY_TYPE;
     private static final Constructor<?> TRACKED_ENTRY;
 
@@ -29,6 +34,15 @@ public class DataTracker {
             TRACKED_DATA = TRACKED_DATA_TYPE.getConstructor(int.class, TrackedDataHandler.HANDLER_TYPE);
             TRACKED_ENTRY_TYPE = NMSUtils.nmsClass(package1_17, "DataWatcher$Item");
             TRACKED_ENTRY = TRACKED_ENTRY_TYPE.getConstructor(TRACKED_DATA_TYPE, Object.class);
+
+            Method serialize = null;
+            try {
+                final Class<?> serializedType = NMSUtils.nmsClass(package1_17, "DataWatcher$b");
+                serialize = Arrays.stream(TRACKED_ENTRY_TYPE.getMethods())
+                        .filter(method -> method.getParameterCount() == 0 && serializedType.equals(method.getReturnType()))
+                        .findFirst().orElseThrow(NoSuchMethodException::new);
+            } catch (ReflectiveOperationException ignored) {} // < 1.19.3
+            SERIALIZE_TRACKED_DATA = serialize;
         } catch (ReflectiveOperationException ex) {
             throw new ExceptionInInitializerError(ex);
         }
@@ -89,5 +103,25 @@ public class DataTracker {
      */
     public List<Object> trackedValues() {
         return this.trackedValues;
+    }
+
+    /**
+     * Liste les valeurs traquées.
+     *
+     * @return Une liste de DataWatcherObject ou DataWatcher$SerializedEntry selon la version.
+     */
+    public List<Object> serializedTrackedValues() {
+        if (SERIALIZE_TRACKED_DATA == null) {
+            return this.trackedValues;
+        }
+        return this.trackedValues.stream()
+                .map(value -> {
+                    try {
+                        return SERIALIZE_TRACKED_DATA.invoke(value);
+                    } catch (IllegalAccessException | InvocationTargetException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .collect(Collectors.toList());
     }
 }

@@ -14,12 +14,18 @@ import java.util.Arrays;
 public class InternalRegistry<T> {
 
     private static final Class<?> REGISTRY;
+    private static final Class<?> BUILT_IN_REGISTRIES;
     private static final Method REGISTRY_GET_RESOURCE_KEY;
     private static final Method REGISTRY_VALUE_BY_KEY;
 
     static {
         try {
             REGISTRY = NMSUtils.nmsClass("core", "IRegistry");
+            Class<?> builtInRegistries = REGISTRY;
+            try {
+                builtInRegistries = NMSUtils.nmsClass("core.registries", "BuiltInRegistries");
+            } catch (ClassNotFoundException ignored) {} // < 1.19.3
+            BUILT_IN_REGISTRIES = builtInRegistries;
             REGISTRY_GET_RESOURCE_KEY = Arrays.stream(REGISTRY.getMethods())
                     .filter(m -> m.getParameterCount() == 0 && m.getReturnType().equals(MinecraftKey.RESOURCE))
                     .findFirst().orElseThrow(NoSuchMethodException::new);
@@ -44,7 +50,7 @@ public class InternalRegistry<T> {
 
     private static @NotNull Object registryByResourceKey(@NotNull NamespacedKey key) throws IllegalAccessException, InvocationTargetException {
         Object registryKey = MinecraftKey.registry(key);
-        for (Field field : REGISTRY.getFields()) {
+        for (Field field : BUILT_IN_REGISTRIES.getFields()) {
             if (!Modifier.isStatic(field.getModifiers()) || !REGISTRY.isAssignableFrom(field.getType())) {
                 continue;
             }

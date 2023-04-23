@@ -2,6 +2,7 @@ package fr.devsylone.fallenkingdom.game;
 
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.utils.Messages;
+import fr.devsylone.fallenkingdom.version.title.TitleSender;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.api.ITeam;
 import fr.devsylone.fkpi.api.event.TeamCaptureEvent;
@@ -50,7 +51,7 @@ public class ChestRoomRunnable extends BukkitRunnable {
                     continue;
                 }
 
-                Fk.getInstance().getPacketManager().sendTitle(
+                TitleSender.INSTANCE.sendTitle(
                         player,
                         Messages.BROADCAST_CHEST_ROOM_TITLE.getMessage().replace("%defenders%", defenders.toString()).replace("%assailants%", assailants.toString()),
                         Messages.BROADCAST_CHEST_ROOM_SUBTITLE.getMessage(),
@@ -74,7 +75,7 @@ public class ChestRoomRunnable extends BukkitRunnable {
                     continue;
                 }
 
-                Fk.getInstance().getPacketManager().sendTitle(p, Messages.BROADCAST_VICTORY_TITLE.getMessage(), Messages.BROADCAST_VICTORY_SUBTITLE.getMessage().replace("%assailants%", assailants.toString()), 10, 10 * 20, 10);
+                TitleSender.INSTANCE.sendTitle(p, Messages.BROADCAST_VICTORY_TITLE.getMessage(), Messages.BROADCAST_VICTORY_SUBTITLE.getMessage().replace("%assailants%", assailants.toString()), 10, 10 * 20, 10);
             }
 
             new BukkitRunnable()
@@ -113,7 +114,7 @@ public class ChestRoomRunnable extends BukkitRunnable {
                 if (!chestsRoom.contains(player.getLocation()) || player.isDead())
                     outsidePlayers.add(player);
 
-                Fk.getInstance().getPacketManager().sendTitle(player, "", "§b" + (int) ((System.currentTimeMillis() - startCaptureTimestamp) / 1000.0d / (double) FkPI.getInstance().getChestsRoomsManager().getCaptureTime() * 100) + "%", 0, 20, 20);
+                TitleSender.INSTANCE.sendTitle(player, "", "§b" + (int) ((System.currentTimeMillis() - startCaptureTimestamp) / 1000.0d / (double) FkPI.getInstance().getChestsRoomsManager().getCaptureTime() * 100) + "%", 0, 20, 20);
             }
             for (Player player : outsidePlayers) {
                 chestsRoom.removeEnemyInside(player);

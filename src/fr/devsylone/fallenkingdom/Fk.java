@@ -5,13 +5,13 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
 
 import fr.devsylone.fallenkingdom.display.GlobalDisplayService;
-import fr.devsylone.fallenkingdom.manager.packets.PacketManager1_17;
 import fr.devsylone.fallenkingdom.updater.GitHubAssetInfo;
 import fr.devsylone.fallenkingdom.updater.UpdateChecker;
 import fr.devsylone.fallenkingdom.utils.FkConfig;
@@ -23,9 +23,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.plugin.java.JavaPluginLoader;
 
 import fr.devsylone.fallenkingdom.commands.FkAsyncCommandExecutor;
 import fr.devsylone.fallenkingdom.commands.FkAsyncRegisteredCommandExecutor;
@@ -38,12 +36,6 @@ import fr.devsylone.fallenkingdom.manager.ListenersManager;
 import fr.devsylone.fallenkingdom.manager.SaveablesManager;
 import fr.devsylone.fallenkingdom.manager.TipsManager;
 import fr.devsylone.fallenkingdom.manager.WorldManager;
-import fr.devsylone.fallenkingdom.manager.packets.PacketManager;
-import fr.devsylone.fallenkingdom.manager.packets.PacketManager1_13;
-import fr.devsylone.fallenkingdom.manager.packets.PacketManager1_14;
-import fr.devsylone.fallenkingdom.manager.packets.PacketManager1_16;
-import fr.devsylone.fallenkingdom.manager.packets.PacketManager1_8;
-import fr.devsylone.fallenkingdom.manager.packets.PacketManager1_9;
 import fr.devsylone.fallenkingdom.manager.saveable.DeepPauseManager;
 import fr.devsylone.fallenkingdom.manager.saveable.PlayerManager;
 import fr.devsylone.fallenkingdom.manager.saveable.PortalsManager;
@@ -53,7 +45,6 @@ import fr.devsylone.fallenkingdom.pause.PauseRestorer;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fallenkingdom.scoreboard.PlaceHolderExpansion;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
-import fr.devsylone.fallenkingdom.utils.DebuggerUtils;
 import fr.devsylone.fallenkingdom.utils.FkSound;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fallenkingdom.version.Version;
@@ -62,7 +53,6 @@ import fr.devsylone.fkpi.rules.Rule;
 import fr.devsylone.fkpi.teams.Team;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.TestOnly;
 
 @Getter
 public class Fk extends JavaPlugin
@@ -78,7 +68,6 @@ public class Fk extends JavaPlugin
 	protected StarterInventoryManager starterInventoryManager;
 	protected ScoreboardManager scoreboardManager;
 	protected GlobalDisplayService displayService;
-	protected PacketManager packetManager;
 	protected DeepPauseManager deepPauseManager;
 	protected TipsManager tipsManager;
 	protected SaveablesManager saveableManager;
@@ -98,11 +87,6 @@ public class Fk extends JavaPlugin
 	public Fk()
 	{
 		instance = this;
-	}
-
-	@TestOnly
-	public Fk(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
-		super(loader, description, dataFolder, file);
 	}
 
 	@Override
@@ -181,7 +165,7 @@ public class Fk extends JavaPlugin
 		pauseRestorer = new PauseRestorer();
 		starterInventoryManager = new StarterInventoryManager();
 		scoreboardManager = new ScoreboardManager();
-		packetManager = initPacketManager();
+		//packetManager = initPacketManager();
 		deepPauseManager = new DeepPauseManager();
 		tipsManager = new TipsManager();
 		tipsManager.startBroadcasts();
@@ -391,26 +375,6 @@ public class Fk extends JavaPlugin
 		return pluginError.isEmpty();
 	}
 
-	public PacketManager initPacketManager() {
-		switch (Version.VERSION_TYPE) {
-			case V1_8:
-				return new PacketManager1_8();
-			case V1_9_V1_12:
-				return new PacketManager1_9();
-			case V1_13:
-				return new PacketManager1_13();
-			case V1_14_V1_15:
-				return new PacketManager1_14();
-			case V1_16:
-				return new PacketManager1_16();
-			case V1_17:
-			case V1_19:
-				return new PacketManager1_17();
-			default:
-				throw new RuntimeException("Could not get packet manager by version!");
-		}
-	}
-
 	private void metrics() throws NoClassDefFoundError // gson en 1.8.0
 	{
 		Metrics metrics = new Metrics(this, 6738);
@@ -437,5 +401,15 @@ public class Fk extends JavaPlugin
 			this.getLogger().log(Level.SEVERE, "Unable to download the update.", ex);
 			return false;
 		}
+	}
+
+	public @NotNull Path getPluginFolder() {
+		return this.getDataFolder().toPath();
+	}
+
+	public @NotNull Path getRunDir() {
+		File pluginsDir = getDataFolder().getParentFile().getAbsoluteFile();
+		File runDir = pluginsDir.getParentFile().getAbsoluteFile();
+		return runDir.toPath();
 	}
 }
