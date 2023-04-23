@@ -16,10 +16,7 @@ import fr.devsylone.fallenkingdom.pause.PauseRestorer;
 import fr.devsylone.fkpi.FkPI;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.java.JavaPluginLoader;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -28,12 +25,6 @@ import static org.mockito.Mockito.mock;
 public class FkMock extends Fk {
 
     public FkMock() {
-        super();
-        instance = this;
-    }
-
-    protected FkMock(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
-        super(loader, description, dataFolder, file);
         instance = this;
     }
 

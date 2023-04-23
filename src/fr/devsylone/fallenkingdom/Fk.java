@@ -22,9 +22,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.plugin.java.JavaPluginLoader;
 
 import fr.devsylone.fallenkingdom.commands.FkAsyncCommandExecutor;
 import fr.devsylone.fallenkingdom.commands.FkAsyncRegisteredCommandExecutor;
@@ -54,7 +52,6 @@ import fr.devsylone.fkpi.rules.Rule;
 import fr.devsylone.fkpi.teams.Team;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.TestOnly;
 
 @Getter
 public class Fk extends JavaPlugin
@@ -89,11 +86,6 @@ public class Fk extends JavaPlugin
 	public Fk()
 	{
 		instance = this;
-	}
-
-	@TestOnly
-	public Fk(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
-		super(loader, description, dataFolder, file);
 	}
 
 	@Override
