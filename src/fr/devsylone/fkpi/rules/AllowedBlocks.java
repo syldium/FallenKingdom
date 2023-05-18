@@ -3,6 +3,7 @@ package fr.devsylone.fkpi.rules;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +26,7 @@ import com.cryptomorin.xseries.XMaterial;
 
 public class AllowedBlocks implements RuleValue
 {
-	private final Map<Material, Set<Byte>> allowed = new EnumMap<>(Material.class);
+	private final Map<Material, Set<Byte>> allowed = Material.class.isEnum() ? new EnumMap<>(Material.class) : new HashMap<>();
 	private final List<String> reducedList = new ArrayList<>();
 
 	public boolean isAllowed(Material material, byte data)
