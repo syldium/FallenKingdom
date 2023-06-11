@@ -62,7 +62,9 @@ public class DisplayText implements Saveable {
     }
 
     private @NotNull String defaultArrows() {
-        if (Version.VersionType.V1_16.isHigherOrEqual() && !Version.VersionType.V1_20.isHigherOrEqual()) {
+        if (Version.VersionType.V1_20.isHigherOrEqual()) {
+            return "⇧↗⇨↘⇩↙⇦↖";
+        } else if (Version.VersionType.V1_16.isHigherOrEqual()) {
             return "⇑⇗⇛⇙⇓⇘⇐⇖"; // Workaround https://bugs.mojang.com/browse/MC-179867
         } else if (Version.VersionType.V1_13.isHigherOrEqual()) {
             return "⇑⇗⇒⇘⇓⇙⇐⇖";
