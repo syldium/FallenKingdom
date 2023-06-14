@@ -32,7 +32,7 @@ final class Provider {
         try {
             hologram = initVersion();
         } catch (Throwable throwable) {
-            hologram = new BukkitHolograms();
+            hologram = Version.VersionType.V1_20.isHigherOrEqual() ? new DisplayBukkitHologram() : new BukkitHolograms();
         }
         HOLOGRAM = hologram;
     }
