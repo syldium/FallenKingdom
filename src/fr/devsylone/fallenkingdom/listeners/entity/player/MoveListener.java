@@ -15,20 +15,34 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.util.BoundingBox;
+import org.bukkit.util.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Random;
+import java.util.UUID;
 
 import static fr.devsylone.fallenkingdom.listeners.entity.player.PauseInteractionListener.isCancelledDueToPause;
 import static fr.devsylone.fallenkingdom.version.Environment.getMinHeight;
 
 public class MoveListener implements Listener
 {
+	private final Map<UUID, Location> onTnt = new HashMap<>();
+
 	@EventHandler(ignoreCancelled = true)
 	public void move(PlayerMoveEvent e)
 	{
@@ -42,14 +56,14 @@ public class MoveListener implements Listener
 		FkPlayer fkp = Fk.getInstance().getPlayerManager().getPlayer(e.getPlayer());
 		fkp.updateDisplay(e.getPlayer(), PlaceHolder.LOCATION_RELATIVE);
 
+		checkTnt(e);
+
 		if(e.getFrom().getBlockX() == e.getTo().getBlockX() && e.getFrom().getBlockZ() == e.getTo().getBlockZ() && e.getFrom().getBlockY() == e.getTo().getBlockY())
 			return;
 
 		/*
 		 * A partir de maintenant, juste si le fromXYZ != toXYZ
 		 */
-
-		checkTnt(e);
 
 		if(Fk.getInstance().getGame().isPaused() && FkPI.getInstance().getRulesManager().getRule(Rule.DEEP_PAUSE) && e.getFrom().getBlockY() == e.getTo().getBlockY())
 		{
@@ -109,45 +123,44 @@ public class MoveListener implements Listener
 		}
 	}
 
-	// SURTOUT PAS DE EVENTHANDLER
-	private void checkTnt(PlayerMoveEvent e)
+	private void checkTnt(PlayerMoveEvent event)
 	{
-		if(!FkPI.getInstance().getRulesManager().getRule(Rule.TNT_JUMP))
-		{
-			if(e.getTo().clone().add(0, -1, 0).getBlock().getType() != Material.AIR && !e.getTo().clone().add(0, -1, 0).getBlock().getType().equals(Material.TNT) && Fk.getInstance().getPlayerManager().wasOnTnt(e.getPlayer().getUniqueId()))
-				Fk.getInstance().getPlayerManager().removeOnTnt(e.getPlayer().getUniqueId());
-
-			else if(e.getTo().clone().add(0, -1, 0).getBlock().getType() == Material.TNT)
-				for(Team t : FkPI.getInstance().getTeamManager().getTeams())
-					if(FkPI.getInstance().getTeamManager().getPlayerTeam(e.getPlayer()) != null && !FkPI.getInstance().getTeamManager().getPlayerTeam(e.getPlayer()).equals(t) && t.getBase() != null)
-						if(e.getTo().getBlockY() + 3 > t.getBase().getCenter().getBlockY())
-						{
-							if(t.getBase().contains(e.getTo(), -3))
-							{
-								if(Fk.getInstance().getPlayerManager().wasOnTnt(e.getPlayer().getUniqueId()))
-									Fk.getInstance().getPlayerManager().removeOnTnt(e.getPlayer().getUniqueId());
-								break;
-							}
-
-							else
-							{
-								if(Fk.getInstance().getPlayerManager().wasOnTnt(e.getPlayer().getUniqueId()) && t.getBase().contains(e.getTo(), 3))
-								{
-									Location tp = Fk.getInstance().getPlayerManager().getTntLoc(e.getPlayer().getUniqueId()).clone().add(0.5, 0.1, 0.5);
-									tp.setPitch(e.getFrom().getPitch());
-									tp.setYaw(e.getFrom().getYaw());
-									e.getPlayer().teleport(tp);
-									ChatUtils.sendMessage(e.getPlayer(), Messages.PLAYER_TNT_JUMP_DENIED);
-									break;
-								}
-								else
-								{
-									Fk.getInstance().getPlayerManager().putOnTnt(e.getPlayer().getUniqueId(), e.getTo().getBlock().getLocation());
-									break;
-								}
-							}
-						}
+		if (FkPI.getInstance().getRulesManager().getRule(Rule.TNT_JUMP) || !Version.VersionType.V1_13.isHigherOrEqual()) {
+			return;
 		}
+		final Player player = event.getPlayer();
+		if (player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR) {
+			return;
+		}
+		final Location tntLocation = player.getLocation();
+		final TntState state = isStandingOnTnt(player, tntLocation);
+		if (state == TntState.OTHER_SUPPORT) {
+			this.onTnt.remove(player.getUniqueId());
+			return;
+		}
+		if (state == TntState.UNDEFINED) {
+			return;
+		}
+		final Location previousTntLocation = this.onTnt.put(player.getUniqueId(), tntLocation);
+		if (previousTntLocation == null || previousTntLocation.equals(tntLocation)) {
+			return;
+		}
+
+		final Optional<Base> surroundingBase = FkPI.getInstance().getTeamManager().getBase(tntLocation, 8);
+		if (!surroundingBase.isPresent()) {
+			return;
+		}
+		final Team team = surroundingBase.get().getTeam();
+		if (Objects.equals(team, FkPI.getInstance().getTeamManager().getPlayerTeam(player))) {
+			return;
+		}
+		this.onTnt.remove(player.getUniqueId());
+
+		previousTntLocation.add(0.5, 1, 0.5);
+		previousTntLocation.setPitch(event.getFrom().getPitch());
+		previousTntLocation.setYaw(event.getFrom().getYaw());
+		event.setTo(previousTntLocation);
+		ChatUtils.sendMessage(player, Messages.PLAYER_TNT_JUMP_DENIED);
 	}
 
 	@EventHandler(ignoreCancelled = true)
@@ -208,5 +221,48 @@ public class MoveListener implements Listener
 			return true;
 		}
 		return false;
+	}
+
+	private static @NotNull List<Block> getBlocksBelow(@NotNull Entity entity) {
+		final BoundingBox aabb = entity.getBoundingBox();
+		final Location min = new Location(entity.getWorld(), aabb.getMinX(), aabb.getMinY() - 0.2, aabb.getMinZ());
+		final List<Block> blocks = new ArrayList<>(4);
+		blocks.add(min.getBlock());
+		blocks.add(min.clone().add(aabb.getWidthX(), 0, 0).getBlock());
+		blocks.add(min.clone().add(0, 0, aabb.getWidthZ()).getBlock());
+		blocks.add(min.clone().add(aabb.getWidthX(), 0, aabb.getWidthZ()).getBlock());
+		return blocks;
+	}
+
+	private static boolean isStandingOn(@NotNull BoundingBox blockAABB, @NotNull BoundingBox playerAABB) {
+		return playerAABB.overlaps(blockAABB.shift(0, 0.1, 0));
+	}
+
+	public static @NotNull TntState isStandingOnTnt(@NotNull Entity entity, @NotNull Location tntLocation) {
+		TntState state = TntState.UNDEFINED;
+		for (Block block : getBlocksBelow(entity)) {
+			if (block.isPassable()) {
+				continue;
+			}
+			final VoxelShape collisionShape = block.getCollisionShape();
+			for (BoundingBox aabb : collisionShape.getBoundingBoxes()) {
+				aabb.shift(block.getX(), block.getY(), block.getZ());
+				if (isStandingOn(aabb, entity.getBoundingBox())) {
+					if (block.getType() == Material.TNT) {
+						block.getLocation(tntLocation);
+						state = TntState.ON_TNT;
+					} else {
+						state = TntState.OTHER_SUPPORT;
+					}
+				}
+			}
+		}
+		return state;
+	}
+
+	private enum TntState {
+		UNDEFINED,
+		OTHER_SUPPORT,
+		ON_TNT
 	}
 }
