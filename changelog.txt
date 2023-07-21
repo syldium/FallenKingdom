@@ -514,3 +514,9 @@ Il est conseillé de réinitialiser les fichiers de langue.
 [*] Corrige l'affichage du nom des portes armures en 1.17+
 [*] Réserve l'accès à la commande /fk rules placeBlockInCave aux opérateurs
 [*] Anonymise en amont les adresses IP avec /fk debug send
+
+      >> 2.22.7
+[+] Support des serveurs en 1.20 et 1.20.1
+[*] Détecte les joueurs sur de la TNT pour la règle tntJump avec les boîtes de collisions (1.13+)
+[*] Active par défaut la vérification des permissions pour les commandes
+[-] Retire la règle `tntJump` pour les versions antérieures à la 1.13
