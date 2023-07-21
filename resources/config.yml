@@ -1,5 +1,5 @@
 #Activer ou non la vérification des permissions lorsqu'une commande est exécutée
-enable-permissions: false
+enable-permissions: true
 
 #Activer ou non le support des .mcfunction personnalisées (à partir de la 1.12)
 enable-mcfunction-support: false

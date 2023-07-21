@@ -27,7 +27,7 @@ public class FkCommandExecutor extends CommandManager implements TabExecutor
     private int i = 0;
 
     public FkCommandExecutor(Fk plugin, PluginCommand command) {
-        super(plugin.getConfig().getBoolean("enable-permissions", false));
+        super(plugin.getConfig().getBoolean("enable-permissions", true));
         this.plugin = plugin;
         this.pluginCommand = command;
         command.setExecutor(this);
