@@ -1,5 +1,6 @@
 package fr.devsylone.fallenkingdom.commands.rules.rulescommands;
 
+import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.MockUtils;
 import fr.devsylone.fallenkingdom.commands.CommandTest;
 import fr.devsylone.fkpi.managers.RulesManager;
@@ -13,6 +14,7 @@ public class RuleCommandTest extends CommandTest {
     @SuppressWarnings({"unchecked", "rawtypes"})
     @Test
     public void test() {
+        Fk.getInstance().getGame().stop();
         RulesManager manager = MockUtils.getPluginMockSafe().getFkPI().getRulesManager();
         for (Rule<?> rule : Rule.values()) {
             Class<?> type = rule.getDefaultValue().getClass();

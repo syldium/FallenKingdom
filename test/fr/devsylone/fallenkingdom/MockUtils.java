@@ -34,6 +34,7 @@ public class MockUtils {
     public static PlayerMock getConstantPlayer() {
         if (playerMock == null) {
             playerMock = getServerMockSafe().addPlayer(RandomStringUtils.random(6, true, true));
+            playerMock.setOp(true);
             playerMock.getInventory().setItemInMainHand(new ItemStack(Material.AIR));
         }
         return playerMock;
