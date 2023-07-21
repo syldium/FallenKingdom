@@ -1,10 +1,12 @@
 package fr.devsylone.fallenkingdom;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -388,19 +390,16 @@ public class Fk extends JavaPlugin
 	}
 
 	public boolean updatePlugin(@NotNull GitHubAssetInfo assetInfo) {
-		try (BufferedInputStream in = new BufferedInputStream(new URL(assetInfo.browserDownloadUrl()).openStream());
+		try (ReadableByteChannel readableByteChannel = Channels.newChannel(new URI(assetInfo.browserDownloadUrl()).toURL().openStream());
 			 FileOutputStream fileOutputStream = new FileOutputStream(this.getDataFolder().getParentFile().getName() + '/' + assetInfo.name())) {
-			byte[] dataBuffer = new byte[1024];
-			int bytesRead;
-			while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
-				fileOutputStream.write(dataBuffer, 0, bytesRead);
-			}
-
+			fileOutputStream.getChannel().transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
 			return this.getFile().delete();
 		} catch (IOException ex) {
 			this.getLogger().log(Level.SEVERE, "Unable to download the update.", ex);
-			return false;
+		} catch (URISyntaxException ex) {
+			this.getLogger().log(Level.SEVERE, "Invalid URL to download from.", ex);
 		}
+		return false;
 	}
 
 	public @NotNull Path getPluginFolder() {
