@@ -3,6 +3,8 @@ package fr.devsylone.fallenkingdom.utils;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
@@ -92,7 +94,7 @@ public final class DebuggerUtils
         if (complete) {
             try {
                 complete = upload(log, username);
-            } catch (IOException ex) {
+            } catch (IOException | URISyntaxException ex) {
                 Fk.getInstance().getLogger().log(Level.SEVERE, "Unable to upload the log", ex);
                 complete = false;
             }
@@ -101,9 +103,9 @@ public final class DebuggerUtils
         return complete;
     }
 
-    private static boolean upload(@NotNull PluginLog log, String username) throws IOException {
+    private static boolean upload(@NotNull PluginLog log, String username) throws IOException, URISyntaxException {
         final String boundary = Long.toHexString(System.currentTimeMillis());
-        final URL url = new URL("https://fklogs.etrenak.ovh/new");
+        final URL url = new URI("https://fklogs.etrenak.ovh/new").toURL();
         final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         try {
             connection.setRequestMethod("POST");

@@ -14,7 +14,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,7 +38,7 @@ public class UpdateChecker extends BukkitRunnable {
     @Override
     public void run() {
         try {
-            final HttpURLConnection connection = (HttpURLConnection) new URL(LATEST_RELEASE_ENDPOINT).openConnection();
+            final HttpURLConnection connection = (HttpURLConnection) new URI(LATEST_RELEASE_ENDPOINT).toURL().openConnection();
             connection.setRequestProperty("User-Agent", USER_AGENT + '/' + this.plugin.getDescription().getVersion());
             connection.connect();
 
@@ -80,6 +81,8 @@ public class UpdateChecker extends BukkitRunnable {
             }
         } catch (IOException ex) {
             this.logger.log(Level.WARNING, "Failed to get release info from api.github.com.", ex);
+        } catch (URISyntaxException ex) {
+            this.logger.log(Level.SEVERE, "Invalid updater URI syntax.", ex);
         }
     }
 
