@@ -133,7 +133,7 @@ public class MoveListener implements Listener
 			return;
 		}
 		final Location tntLocation = player.getLocation();
-		final TntState state = isStandingOnTnt(player, tntLocation);
+		final TntState state = TntListener.isStandingOnTnt(player, tntLocation);
 		if (state == TntState.OTHER_SUPPORT) {
 			this.onTnt.remove(player.getUniqueId());
 			return;
@@ -223,46 +223,49 @@ public class MoveListener implements Listener
 		return false;
 	}
 
-	private static @NotNull List<Block> getBlocksBelow(@NotNull Entity entity) {
-		final BoundingBox aabb = entity.getBoundingBox();
-		final Location min = new Location(entity.getWorld(), aabb.getMinX(), aabb.getMinY() - 0.2, aabb.getMinZ());
-		final List<Block> blocks = new ArrayList<>(4);
-		blocks.add(min.getBlock());
-		blocks.add(min.clone().add(aabb.getWidthX(), 0, 0).getBlock());
-		blocks.add(min.clone().add(0, 0, aabb.getWidthZ()).getBlock());
-		blocks.add(min.clone().add(aabb.getWidthX(), 0, aabb.getWidthZ()).getBlock());
-		return blocks;
-	}
-
-	private static boolean isStandingOn(@NotNull BoundingBox blockAABB, @NotNull BoundingBox playerAABB) {
-		return playerAABB.overlaps(blockAABB.shift(0, 0.1, 0));
-	}
-
-	public static @NotNull TntState isStandingOnTnt(@NotNull Entity entity, @NotNull Location tntLocation) {
-		TntState state = TntState.UNDEFINED;
-		for (Block block : getBlocksBelow(entity)) {
-			if (block.isPassable()) {
-				continue;
-			}
-			final VoxelShape collisionShape = block.getCollisionShape();
-			for (BoundingBox aabb : collisionShape.getBoundingBoxes()) {
-				aabb.shift(block.getX(), block.getY(), block.getZ());
-				if (isStandingOn(aabb, entity.getBoundingBox())) {
-					if (block.getType() == Material.TNT) {
-						block.getLocation(tntLocation);
-						state = TntState.ON_TNT;
-					} else {
-						state = TntState.OTHER_SUPPORT;
-					}
-				}
-			}
-		}
-		return state;
-	}
-
 	private enum TntState {
 		UNDEFINED,
 		OTHER_SUPPORT,
 		ON_TNT
+	}
+
+	// In a separate class to avoid loading it if the server version is not supported
+	private static class TntListener {
+		private static @NotNull List<Block> getBlocksBelow(@NotNull Entity entity) {
+			final BoundingBox aabb = entity.getBoundingBox();
+			final Location min = new Location(entity.getWorld(), aabb.getMinX(), aabb.getMinY() - 0.2, aabb.getMinZ());
+			final List<Block> blocks = new ArrayList<>(4);
+			blocks.add(min.getBlock());
+			blocks.add(min.clone().add(aabb.getWidthX(), 0, 0).getBlock());
+			blocks.add(min.clone().add(0, 0, aabb.getWidthZ()).getBlock());
+			blocks.add(min.clone().add(aabb.getWidthX(), 0, aabb.getWidthZ()).getBlock());
+			return blocks;
+		}
+
+		private static boolean isStandingOn(@NotNull BoundingBox blockAABB, @NotNull BoundingBox playerAABB) {
+			return playerAABB.overlaps(blockAABB.shift(0, 0.1, 0));
+		}
+
+		public static @NotNull TntState isStandingOnTnt(@NotNull Entity entity, @NotNull Location tntLocation) {
+			TntState state = TntState.UNDEFINED;
+			for (Block block : getBlocksBelow(entity)) {
+				if (block.isPassable()) {
+					continue;
+				}
+				final VoxelShape collisionShape = block.getCollisionShape();
+				for (BoundingBox aabb : collisionShape.getBoundingBoxes()) {
+					aabb.shift(block.getX(), block.getY(), block.getZ());
+					if (isStandingOn(aabb, entity.getBoundingBox())) {
+						if (block.getType() == Material.TNT) {
+							block.getLocation(tntLocation);
+							state = TntState.ON_TNT;
+						} else {
+							state = TntState.OTHER_SUPPORT;
+						}
+					}
+				}
+			}
+			return state;
+		}
 	}
 }

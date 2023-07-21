@@ -75,5 +75,29 @@ public class Version {
         public boolean isHigherOrEqual() {
             return VERSION_TYPE.ordinal() >= ordinal();
         }
+
+        @Override
+        public String toString() {
+            switch (this) {
+                case V1_8:
+                    return "1.8.3";
+                case V1_9_V1_12:
+                    return "1.9.4";
+                case V1_13:
+                    return "1.13.2";
+                case V1_14_V1_15:
+                    return "1.14.4";
+                case V1_16:
+                    return "1.16.5";
+                case V1_17:
+                    return "1.17.1";
+                case V1_19:
+                    return "1.19.4";
+                case V1_20:
+                    return "1.20.1";
+                default:
+                    return "Unknown";
+            }
+        }
     }
 }

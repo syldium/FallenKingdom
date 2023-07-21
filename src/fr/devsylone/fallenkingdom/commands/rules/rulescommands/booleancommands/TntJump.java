@@ -1,8 +1,10 @@
 package fr.devsylone.fallenkingdom.commands.rules.rulescommands.booleancommands;
 
+import fr.devsylone.fallenkingdom.exception.FkLightException;
 import fr.devsylone.fallenkingdom.utils.Messages;
 
 import fr.devsylone.fallenkingdom.commands.rules.FkBooleanRuleCommand;
+import fr.devsylone.fallenkingdom.version.Version;
 import fr.devsylone.fkpi.rules.Rule;
 
 public class TntJump extends FkBooleanRuleCommand
@@ -14,6 +16,9 @@ public class TntJump extends FkBooleanRuleCommand
 
 	@Override
 	protected void sendMessage(boolean newValue) {
+		if (!Version.VersionType.V1_13.isHigherOrEqual()) {
+			throw new FkLightException(Messages.CMD_ERROR_VERSION_TOO_OLD.getMessage().replace("%version%", Version.VersionType.V1_13.toString()));
+		}
 		broadcastPossibleImpossible(newValue, Messages.CMD_RULES_TNT_JUMP);
 	}
 }

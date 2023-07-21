@@ -87,6 +87,7 @@ public enum Messages
     CMD_ERROR_TIME_FORMAT("cmd.error.format.time"),
     CMD_ERROR_UNKNOWN_BLOCK("cmd.error.unknown.block"),
     CMD_ERROR_UNKNOWN_TEAM("cmd.error.unknown.team"),
+    CMD_ERROR_VERSION_TOO_OLD("cmd.error.version-too-old"),
     CMD_ERROR_LANG_SET_LANG_LANG_NOT_FOUND("cmd.error.lang.setLang.lang-not-found"),
 
     CMD_GAME_PAUSE("cmd.game.pause"),
