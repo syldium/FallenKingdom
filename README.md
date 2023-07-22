@@ -1,6 +1,6 @@
 FallenKingdom
 ===
-- [Téléchargez le plugin ici](https://www.spigotmc.org/resources/fallenkingdom.38878/)
+- [Téléchargez le plugin ici](https://modrinth.com/plugin/fallenkingdom)
 - [Lisez le wiki](https://github.com/syldium/FallenKingdom/wiki)
 - [Rejoignez le discord](https://discord.gg/SmAAFxh)
 
