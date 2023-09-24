@@ -48,7 +48,13 @@ public class PacketUtils
 			GET_PLAYER_CONNECTION_CRAFT_PLAYER = lookup.unreflectGetter(playerConnectionField);
 
 			final Class<?> packet = NMSUtils.nmsClass("network.protocol", "Packet");
-			SEND_PACKET = lookup.unreflect(NMSUtils.getMethod(playerConnection, void.class, packet));
+			Method sendPacket;
+			try {
+				sendPacket = NMSUtils.getMethod(playerConnection, void.class, packet);
+			} catch (NoSuchMethodException v1_20_2) {
+				sendPacket = NMSUtils.getMethod(playerConnection.getSuperclass(), void.class, packet);
+			}
+			SEND_PACKET = lookup.unreflect(sendPacket);
 
 			CRAFT_WORLD = NMSUtils.obcClass("CraftWorld");
 			final Method getWorldHandle = CRAFT_WORLD.getMethod("getHandle");
