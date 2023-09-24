@@ -29,6 +29,7 @@ public class NMSUtils
 		}
 	}
 
+	@Deprecated
 	public static void register(String clazz) throws ClassNotFoundException
 	{
 		clazz=clazz.replaceAll("_version_", SERVER_VERSION);
@@ -52,6 +53,7 @@ public class NMSUtils
 		}
 	}
 
+	@Deprecated
 	public static Class<?> getClass(String givenName) throws ClassNotFoundException
 	{
 		boolean composedName=givenName.contains("$");
@@ -72,7 +74,7 @@ public class NMSUtils
 	}
 
 
-	public static final String OBC_PACKAGE = "org.bukkit.craftbukkit";
+	public static final String OBC_PACKAGE = Bukkit.getServer().getClass().getPackage().getName();
 	public static final String NMS_PACKAGE = "net.minecraft.server";
 	public static final String NM_PACKAGE = "net.minecraft";
 
@@ -85,6 +87,7 @@ public class NMSUtils
 	public static String nmsClassName(String className) {
 		return NMS_PACKAGE + '.' + SERVER_VERSION + '.' + className;
 	}
+
 	public static String nmsClassName(String post1_17package, String className) {
 		if (NMS_REPACKAGED) {
 			String classPackage = post1_17package == null ? NM_PACKAGE : NM_PACKAGE + '.' + post1_17package;
@@ -111,7 +114,7 @@ public class NMSUtils
 	}
 
 	public static String obcClassName(String className) {
-		return OBC_PACKAGE + '.' + SERVER_VERSION + '.' + className;
+		return OBC_PACKAGE + '.' + className;
 	}
 
 	public static Class<?> obcClass(String className) throws ClassNotFoundException {
@@ -164,10 +167,5 @@ public class NMSUtils
 			}
 		}
 		throw new NoSuchMethodException("On " + holder.getCanonicalName());
-	}
-
-	public static String getVersion()
-	{
-		return SERVER_VERSION;
 	}
 }
