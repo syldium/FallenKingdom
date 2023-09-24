@@ -1,9 +1,15 @@
 package fr.devsylone.fallenkingdom.utils;
 
+import com.cryptomorin.xseries.SkullUtils;
+import com.destroystokyo.paper.profile.PlayerProfile;
+import com.destroystokyo.paper.profile.ProfileProperty;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
+import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
@@ -11,9 +17,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static fr.devsylone.fallenkingdom.version.Version.classExists;
 import static fr.devsylone.fallenkingdom.version.tracker.ChatMessage.CHAT_BASE_COMPONENT;
 
 public class XItemStack {
@@ -29,6 +37,7 @@ public class XItemStack {
     private final static Field LORE;
 
     private final static boolean HAS_COMPONENT_API;
+    private final static boolean HAS_PLAYER_PROFILE_API;
     private final static boolean SERIALIZED_VIEW; // Spigot en 2021
 
     static {
@@ -59,6 +68,7 @@ public class XItemStack {
                 hasComponentApi = false;
             }
             HAS_COMPONENT_API = hasComponentApi;
+            HAS_PLAYER_PROFILE_API = classExists("com.destroystokyo.paper.profile.PlayerProfile");
 
             Class<?> craftMeta = NMSUtils.obcClass("inventory.CraftMetaItem");
             DISPLAY_NAME = craftMeta.getDeclaredField("displayName");
@@ -125,5 +135,17 @@ public class XItemStack {
             }
         }
         throw new RuntimeException("Text component field not found");
+    }
+
+    @Contract("_, _ -> param1")
+    public static @NotNull SkullMeta applyBase64Texture(@NotNull SkullMeta meta, @NotNull String texture) {
+        if (HAS_PLAYER_PROFILE_API) {
+            final PlayerProfile profile = Bukkit.createProfile(UUID.randomUUID(), "");
+            profile.setProperty(new ProfileProperty("textures", texture));
+            meta.setPlayerProfile(profile);
+        } else {
+            SkullUtils.applySkin(meta, texture);
+        }
+        return meta;
     }
 }

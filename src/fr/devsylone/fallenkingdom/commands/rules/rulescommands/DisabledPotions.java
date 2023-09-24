@@ -8,6 +8,7 @@ import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkPlayerCommand;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fallenkingdom.utils.Messages;
+import fr.devsylone.fallenkingdom.utils.XItemStack;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.rules.Rule;
 import org.bukkit.Bukkit;
@@ -22,7 +23,6 @@ import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.potion.PotionType;
 
-import com.cryptomorin.xseries.SkullUtils;
 import com.cryptomorin.xseries.XMaterial;
 
 import fr.devsylone.fallenkingdom.Fk;
@@ -37,7 +37,7 @@ public class DisabledPotions extends FkPlayerCommand implements Listener
 	static
 	{
 		DISABLE_AMPLIFIED_POTIONS_ITEM = XMaterial.PLAYER_HEAD.parseItem();
-		SkullMeta meta = SkullUtils.applySkin(DISABLE_AMPLIFIED_POTIONS_ITEM.getItemMeta(), "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTZmYWI5OTFkMDgzOTkzY2I4M2U0YmNmNDRhMGI2Y2VmYWM2NDdkNDE4OWVlOWNiODIzZTljYzE1NzFlMzgifX19");
+		SkullMeta meta = XItemStack.applyBase64Texture((SkullMeta) DISABLE_AMPLIFIED_POTIONS_ITEM.getItemMeta(), "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTZmYWI5OTFkMDgzOTkzY2I4M2U0YmNmNDRhMGI2Y2VmYWM2NDdkNDE4OWVlOWNiODIzZTljYzE1NzFlMzgifX19");
 		meta.setDisplayName(Messages.INVENTORY_POTION_LEVEL_II.getMessage());
 		DISABLE_AMPLIFIED_POTIONS_ITEM.setItemMeta(meta);
 	}
