@@ -520,3 +520,6 @@ Il est conseillé de réinitialiser les fichiers de langue.
 [*] Détecte les joueurs sur de la TNT pour la règle tntJump avec les boîtes de collisions (1.13+)
 [*] Active par défaut la vérification des permissions pour les commandes
 [-] Retire la règle `tntJump` pour les versions antérieures à la 1.13
+
+      >> 2.22.8
+[+] Support des serveurs en 1.20.2
