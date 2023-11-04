@@ -55,8 +55,12 @@ public class DeepPauseManager implements Saveable
                 NMS_ENTITY_F = entity.getDeclaredMethod("f", nbtTagCompound);
             }
 			Class<?> craftItem = NMSUtils.obcClass("entity.CraftItem");
-            FIELD_ITEM = craftItem.getDeclaredField("item");
-            FIELD_ITEM.setAccessible(true);
+            try {
+                FIELD_ITEM = craftItem.getDeclaredField("item");
+            } catch (NoSuchFieldException e) {
+                FIELD_ITEM = craftItem.getSuperclass().getDeclaredField("entity");
+            }
+			FIELD_ITEM.setAccessible(true);
 
             Class<?> nmsItem = FIELD_ITEM.getType();
             FIELD_AGE = NMSUtils.getField(nmsItem, Integer.TYPE, field -> !Modifier.isStatic(field.getModifiers()));
