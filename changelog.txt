@@ -523,3 +523,7 @@ Il est conseillé de réinitialiser les fichiers de langue.
 
       >> 2.22.8
 [+] Support des serveurs en 1.20.2
+
+      >> 2.22.9
+[*] Corrige l'activation du plugin sur les récents builds 1.20.2
+[*] Enregistre la commande /fk comme une commande "raw" à l'exécution
