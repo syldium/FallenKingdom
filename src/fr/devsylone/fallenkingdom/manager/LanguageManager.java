@@ -46,7 +46,7 @@ public class LanguageManager
         langPrefix = plugin.getConfig().getString("lang", "unknown");
 
         // Copie des fichiers de langue par défaut pour permettre d'éditer
-    String[] locales = new String[] {"fr", "en"/*, "de"*/};
+        String[] locales = new String[]{"fr", "en"/*, "de"*/};
         for (String locale : locales) {
             String path = "locales" + File.separator + locale + ".properties";
             if (!new File(plugin.getDataFolder(), File.separator + path).exists())
@@ -81,6 +81,9 @@ public class LanguageManager
                 @Override
                 public void run() {
                     for (Player player : Bukkit.getOnlinePlayers()) {
+                        if (!plugin.getCommandManager().hasPermission(player, "fallenkingdom.commands.lang.set")) {
+                            continue;
+                        }
                         ChatUtils.sendMessage(player, message);
                         player.spigot().sendMessage(finalMessage);
                     }
