@@ -13,6 +13,8 @@ import org.bukkit.event.EventHandler;
  */
 public class FkAsyncRegisteredCommandExecutor extends FkAsyncCommandExecutor {
 
+    private static final boolean SET_RAW_COMMAND;
+
     private final BrigadierManager<BukkitBrigadierCommandSource> builder = new BrigadierManager<>(BukkitBrigadierCommandSource::getBukkitSender);
 
     public FkAsyncRegisteredCommandExecutor(Fk plugin, PluginCommand command) {
@@ -23,6 +25,18 @@ public class FkAsyncRegisteredCommandExecutor extends FkAsyncCommandExecutor {
     public void onCommandRegister(CommandRegisteredEvent<BukkitBrigadierCommandSource> event) {
         if (event.getCommandLabel().equals(pluginCommand.getLabel())) {
             event.setLiteral(builder.register(this, event.getLiteral(), event.getBrigadierCommand()));
+            if (SET_RAW_COMMAND) {
+                event.setRawCommand(true);
+            }
         }
+    }
+
+    static {
+        boolean setRawCommand = false;
+        try {
+            CommandRegisteredEvent.class.getMethod("setRawCommand", boolean.class);
+            setRawCommand = true;
+        } catch (NoSuchMethodException ignored) {}
+        SET_RAW_COMMAND = setRawCommand;
     }
 }
