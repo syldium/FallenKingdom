@@ -1,5 +1,6 @@
 package fr.devsylone.fallenkingdom.commands.chests.chestscommands;
 
+import com.cryptomorin.xseries.XMaterial;
 import com.google.common.collect.Sets;
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.commands.ArgumentParser;
@@ -94,7 +95,7 @@ public class ChestLock extends FkPlayerCommand implements Listener {
 
     private void buildAchievementRepresentation() {
         // Simple listing des achievements
-        ItemStack itemStack = new ItemStack(Material.GRASS);
+        ItemStack itemStack = new ItemStack(XMaterial.GRASS_BLOCK.parseMaterial());
         ItemMeta meta = itemStack.getItemMeta();
         meta.setDisplayName(ChatColor.RESET.toString() + ChatColor.YELLOW + "Minecraft");
         meta.setLore(Collections.singletonList(ChatColor.RESET.toString() + ChatColor.GRAY + "Achievements"));
