@@ -56,7 +56,7 @@ public final class PaperAdvancement {
 
             final Advancement root = advancement.getRoot();
             final ItemStack icon = asItemStack(advancement.getKey(), display);
-            if (advancement == root) {
+            if (advancement.getKey().equals(root.getKey())) {
                 categories.add(icon);
             } else {
                 representations.computeIfAbsent(root.getKey().toString(), s -> new ArrayList<>()).add(icon);
