@@ -85,8 +85,7 @@ class AdventureImpl implements FkComponent {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof AdventureImpl)) return false;
         AdventureImpl adventure = (AdventureImpl) o;
         return this.component.equals(adventure.component);
     }
@@ -215,8 +214,7 @@ class AdventureImpl implements FkComponent {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (!(o instanceof BookImpl)) return true;
             BookImpl book1 = (BookImpl) o;
             return this.book.equals(book1.book);
         }

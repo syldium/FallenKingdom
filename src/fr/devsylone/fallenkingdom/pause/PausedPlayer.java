@@ -109,8 +109,7 @@ public class PausedPlayer implements Saveable
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
+		if (!(o instanceof PausedPlayer)) return false;
 		PausedPlayer that = (PausedPlayer) o;
 		return player.equals(that.player);
 	}

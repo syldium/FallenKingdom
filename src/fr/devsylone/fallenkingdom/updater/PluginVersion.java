@@ -45,8 +45,7 @@ public class PluginVersion implements Comparable<PluginVersion> {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof PluginVersion)) return false;
         return this.compareTo((PluginVersion) o) == 0;
     }
 

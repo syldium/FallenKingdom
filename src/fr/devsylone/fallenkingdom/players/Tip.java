@@ -52,8 +52,7 @@ public class Tip
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
+		if (!(o instanceof Tip)) return false;
 		Tip tip1 = (Tip) o;
 		return Objects.equals(command, tip1.command) && tip == tip1.tip;
 	}

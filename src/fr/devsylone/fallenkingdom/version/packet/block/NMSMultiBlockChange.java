@@ -42,8 +42,7 @@ class NMSMultiBlockChange implements MultiBlockChange {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (!(o instanceof SingleBlockChange)) return false;
             SingleBlockChange that = (SingleBlockChange) o;
             return this.position.equals(that.position);
         }

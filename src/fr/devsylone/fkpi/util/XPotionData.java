@@ -75,10 +75,7 @@ public final class XPotionData
 	@Override
 	public boolean equals(Object obj)
 	{
-		if(this == obj)
-			return true;
-		if(obj == null || getClass() != obj.getClass())
-			return false;
+		if (!(obj instanceof XPotionData)) return false;
 		XPotionData other = (XPotionData) obj;
 		return(this.upgraded == other.upgraded && this.extended == other.extended && this.type == other.type);
 	}

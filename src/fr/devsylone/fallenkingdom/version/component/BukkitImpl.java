@@ -94,8 +94,7 @@ class BukkitImpl {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (!(o instanceof BookImpl)) return false;
             BookImpl book = (BookImpl) o;
             return this.title.equals(book.title) &&
                     this.author.equals(book.author) &&
