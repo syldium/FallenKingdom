@@ -32,6 +32,7 @@ public class ChatListener implements Listener {
 		}
 
 		Messages channel = Messages.CHAT_GLOBAL;
+        String displayColor = ChatColor.WHITE.toString(); 
 		Team playerTeam = FkPI.getInstance().getTeamManager().getPlayerTeam(event.getPlayer());
 		if (playerTeam != null) {
 			char globalChat = FkPI.getInstance().getRulesManager().getRule(Rule.GLOBAL_CHAT_PREFIX);
@@ -40,6 +41,7 @@ public class ChatListener implements Listener {
 			} else {
 				channel = Messages.CHAT_TEAM;
 			}
+            displayColor = playerTeam.getChatColor().toString();
 		}
 
 		event.setMessage(message);

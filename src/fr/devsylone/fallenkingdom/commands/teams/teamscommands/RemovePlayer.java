@@ -26,10 +26,6 @@ public class RemovePlayer extends FkCommand
 		List<String> players = ArgumentParser.parsePlayers(sender, args.get(0));
 		for (String p : players) {
 			plugin.getFkPI().getTeamManager().removePlayerOfHisTeam(p);
-			Player player = Bukkit.getPlayer(p);
-			if (player != null)
-				player.setDisplayName(player.getName());
-
 			broadcast(Messages.CMD_TEAM_REMOVE_PLAYER.getMessage().replace("%player%", p), 1, args);
 		}
 		if (!players.isEmpty())

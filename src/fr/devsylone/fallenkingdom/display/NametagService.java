@@ -90,7 +90,6 @@ public class NametagService implements Saveable {
             getOrCreateScoreboardTeam(team).addEntry(playerName);
         }
         if (shouldHaveScoreboard(player)) {
-            player.setDisplayName(team.getChatColor() + player.getName());
             player.setScoreboard(this.scoreboard);
         }
     }
@@ -105,7 +104,6 @@ public class NametagService implements Saveable {
     public void removeEntry(@NotNull Team team, @NotNull String playerName, @Nullable Player player) {
         getOrCreateScoreboardTeam(team).removeEntry(playerName);
         if (player != null) {
-            player.setDisplayName(playerName);
             player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
         }
     }
