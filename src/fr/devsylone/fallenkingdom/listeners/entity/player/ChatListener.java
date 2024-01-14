@@ -45,7 +45,7 @@ public class ChatListener implements Listener {
 		}
 
 		event.setMessage(message);
-		String format = channel.getMessage() + "%s" + ChatColor.WHITE + " : %s";
+		String format = channel.getMessage() + displayColor + "%s" + ChatColor.WHITE + " : %s";
 		event.setFormat(format);
 
 		if (canEditRecipients && channel == Messages.CHAT_TEAM) {
