@@ -1,5 +1,6 @@
 package fr.devsylone.fallenkingdom;
 
+import fr.devsylone.fallenkingdom.chat.ChatKind;
 import fr.devsylone.fallenkingdom.commands.FkCommandExecutor;
 import fr.devsylone.fallenkingdom.display.GlobalDisplayService;
 import fr.devsylone.fallenkingdom.game.Game;
@@ -30,6 +31,7 @@ public class FkMock extends Fk {
 
     @Override
     public void onEnable() {
+        chatKind = ChatKind.BUILT_IN;
         ListenersManager.registerListeners(this);
         getConfig().set("lang", "fr");
         getConfig().set("world-check", true);
