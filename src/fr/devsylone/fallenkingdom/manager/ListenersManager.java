@@ -12,7 +12,6 @@ import fr.devsylone.fallenkingdom.listeners.entity.DamageListener;
 import fr.devsylone.fallenkingdom.listeners.entity.mob.MobSpawn;
 import fr.devsylone.fallenkingdom.listeners.entity.player.AdvancementListener;
 import fr.devsylone.fallenkingdom.listeners.entity.player.ChangeGamemodeListener;
-import fr.devsylone.fallenkingdom.listeners.entity.player.ChatListener;
 import fr.devsylone.fallenkingdom.listeners.entity.player.ChatPreviewListener;
 import fr.devsylone.fallenkingdom.listeners.entity.player.DisabledPotionsListener;
 import fr.devsylone.fallenkingdom.listeners.entity.player.FoodListener;
@@ -36,7 +35,10 @@ public class ListenersManager
 		final PluginManager pm = plugin.getServer().getPluginManager();
 		pm.registerEvents(new BlockListener(plugin), plugin);
 		pm.registerEvents(new BucketListener(plugin), plugin);
-		pm.registerEvents(new ChatListener(), plugin);
+
+        // Chat-dependent listener
+		pm.registerEvents(Fk.getInstance().getChatKind().getListener(), plugin);
+
 		pm.registerEvents(new JoinListener(), plugin);
 		pm.registerEvents(new MoveListener(), plugin);
 		pm.registerEvents(new PvpListener(), plugin);

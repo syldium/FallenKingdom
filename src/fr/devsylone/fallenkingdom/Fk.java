@@ -26,7 +26,7 @@ import org.bukkit.World;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-
+import fr.devsylone.fallenkingdom.chat.ChatKind;
 import fr.devsylone.fallenkingdom.commands.FkAsyncCommandExecutor;
 import fr.devsylone.fallenkingdom.commands.FkAsyncRegisteredCommandExecutor;
 import fr.devsylone.fallenkingdom.commands.FkCommandExecutor;
@@ -61,6 +61,8 @@ public class Fk extends JavaPlugin
 {
 	@Getter
 	private static boolean debugMode;
+    @Getter
+    protected ChatKind chatKind;
 
 	protected Game game;
 	protected CommandManager commandManager;
@@ -119,6 +121,12 @@ public class Fk extends JavaPlugin
 		{
 			debugMode = false;
 		}
+
+        /*
+         * Dependencies
+         */
+        setChatDependency();
+
 
 		/*
 		 * Random
@@ -383,6 +391,17 @@ public class Fk extends JavaPlugin
 		metrics.addCustomChart(new SingleLineChart("server_running_1-8_version", () -> Bukkit.getVersion().contains("1.8") ? 1 : 0));
 		metrics.addCustomChart(new SimplePie("lang_used", languageManager::getLocalePrefix));
 	}
+
+    private void setChatDependency() {
+        // Check CarbonChat plugin
+        if (Bukkit.getPluginManager().isPluginEnabled("CarbonChat")) {
+            this.getLogger().log(Level.INFO, "CarbonChat found! Using CarbonChat system.");
+            this.chatKind = ChatKind.CARBON;
+        } else {
+            this.getLogger().log(Level.INFO, "No chat system found, fallback to plugin default.");
+            this.chatKind = ChatKind.BUILT_IN;
+        }
+    }
 
 	public void addOnConnectWarning(String warning)
 	{

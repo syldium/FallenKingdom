@@ -80,6 +80,7 @@ public class Game implements Saveable
 					Bukkit.getPluginManager().callEvent(new GameEvent(GameEvent.Type.START_EVENT));
 				else
 					Bukkit.getPluginManager().callEvent(new GameEvent(GameEvent.Type.RESUME_EVENT));
+            default:
 		}
 
 		this.state = state;
@@ -164,6 +165,7 @@ public class Game implements Saveable
 				break;
 			case STARTED:
 				startTimer();
+            default:
 		}
 	}
 

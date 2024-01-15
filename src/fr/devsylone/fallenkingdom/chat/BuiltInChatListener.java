@@ -1,4 +1,4 @@
-package fr.devsylone.fallenkingdom.listeners.entity.player;
+package fr.devsylone.fallenkingdom.chat;
 
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.utils.Messages;
@@ -12,7 +12,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
-public class ChatListener implements Listener {
+public class BuiltInChatListener implements Listener {
 
 	private static final char GLOBAL_CHAT_ONLY = ' ';
 
@@ -21,7 +21,7 @@ public class ChatListener implements Listener {
 		handleChat(event, true);
 	}
 
-	public static void handleChat(AsyncPlayerChatEvent event, boolean canEditRecipients) {
+	public void handleChat(AsyncPlayerChatEvent event, boolean canEditRecipients) {
 		if (!Fk.getInstance().getWorldManager().isAffected(event.getPlayer().getWorld())) {
 			return;
 		}
