@@ -56,6 +56,7 @@ public enum Messages
     CMD_ERROR_DAY_PASSED("cmd.error.rules.day.passed"),
     CMD_ERROR_GAME_ALREADY_STARTED("cmd.game.already-started"),
     CMD_ERROR_GAME_NOT_STARTED("cmd.game.not-started"),
+    CMD_ERROR_FILE_DOESNT_EXIST("cmd.game.file.notexists"),
 
     CMD_ERROR_INVALID_PLAYER("cmd.error.invalid.player"),
     CMD_ERROR_MUST_BE_PLAYER("cmd.error.must-be-player"),
@@ -103,6 +104,7 @@ public enum Messages
     CMD_GAME_STARTER_INV_SAVED("cmd.game.starterInv.saved"),
     CMD_GAME_STARTER_INV_UNDO("cmd.game.starterInv.undo"),
     CMD_GAME_STOP("cmd.game.stop"),
+    CMD_GAME_LOAD("cmd.game.load"),
 
     CMD_LANG_SET("cmd.lang.set"),
     CMD_LANG_TRY_LOAD("cmd.lang.tryLoad"),
@@ -134,6 +136,7 @@ public enum Messages
     CMD_MAP_GAME_STARTER_INV("cmd.map.game.starterInv"),
     CMD_MAP_GAME_STARTER_INV_INVENTORY("cmd.map.game.starterInv.inventory"),
     CMD_MAP_GAME_STOP("cmd.map.game.stop"),
+    CMD_MAP_GAME_LOAD("cmd.map.game.load"),
 
     CMD_MAP_LANG("cmd.map.lang"),
     CMD_MAP_LANG_SET("cmd.map.lang.set"),
