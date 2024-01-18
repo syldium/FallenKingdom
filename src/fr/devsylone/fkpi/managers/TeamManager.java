@@ -216,7 +216,6 @@ public class TeamManager implements Saveable
 			if(getPlayerTeam(p) != null)
 				removePlayerOfHisTeam(p);
 
-			teams.get(0).addPlayer(p);
             addPlayer(p, teams.get(0).getName());
 			players.remove(rdmi);
 		}
