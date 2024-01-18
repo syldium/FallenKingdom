@@ -6,7 +6,7 @@
 
     <groupId>fr.devsylone</groupId>
     <artifactId>fallenkingdom</artifactId>
-    <version>2.22.10</version>
+    <version>3.0.0</version>
     <packaging>jar</packaging>
     <name>FallenKingdom</name>
 

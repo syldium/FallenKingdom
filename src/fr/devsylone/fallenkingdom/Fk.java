@@ -26,6 +26,7 @@ import org.bukkit.World;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import fr.devsylone.fallenkingdom.chat.ChatKind;
 import fr.devsylone.fallenkingdom.commands.FkAsyncCommandExecutor;
 import fr.devsylone.fallenkingdom.commands.FkAsyncRegisteredCommandExecutor;
@@ -190,12 +191,12 @@ public class Fk extends JavaPlugin
 		 * Update & load
 		 */
 
-		if(!saveableManager.getFileConfiguration("save.yml").contains("last_version"))
-			saveableManager.getFileConfiguration("save.yml").set("last_version", "2.5.0");
+        FkConfig save = saveableManager.loadFile("save.yml");
+		if(!save.contains("last_version"))
+			save.set("last_version", getPreviousVersion());
+		previousVersion = save.getString("last_version");
 
-		previousVersion = saveableManager.getFileConfiguration("save.yml").getString("last_version");
-
-		saveableManager.loadAll();
+		saveableManager.loadAll(save);
 		game.updateDayDuration(displayService);
 
 		saveDefaultConfig();
@@ -246,7 +247,8 @@ public class Fk extends JavaPlugin
 			updater.runTaskAsynchronously(this);
 		}
 
-		getServer().getScheduler().runTaskTimer(this, saveableManager::delayedSaveAll, 5L * 60L * 20L, 5L * 60L * 20L);
+		getServer().getScheduler().runTaskTimer(this, () -> 
+            saveableManager.delayedSaveAll(saveableManager.loadFile("save.yml")), 5L * 60L * 20L, 5L * 60L * 20L);
 	}
 
 	@Override
@@ -260,7 +262,7 @@ public class Fk extends JavaPlugin
 		}
 		this.fkPI.teardown();
 
-		this.saveableManager.delayedSaveAll();
+		this.saveableManager.delayedSaveAll(saveableManager.loadFile("save.yml"));
 		FkConfig.awaitSaveEnd();
 
 		if (this.game.isPaused()) {
@@ -326,9 +328,6 @@ public class Fk extends JavaPlugin
 		deepPauseManager.resetAIs();
 
 		// Reset saveFile & Restorer
-
-		saveableManager.reset();
-
 		pauseRestorer = new PauseRestorer();
 
 		displayService.loadNullable(null);

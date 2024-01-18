@@ -7,16 +7,17 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.logging.Level;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
 import fr.devsylone.fallenkingdom.display.GlobalDisplayService;
 import fr.devsylone.fallenkingdom.scoreboard.PlaceHolder;
 import fr.devsylone.fallenkingdom.utils.FkConfig;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-
 import com.cryptomorin.xseries.XMaterial;
 
 import fr.devsylone.fallenkingdom.Fk;
@@ -40,7 +41,7 @@ public class FilesUpdater
     {
         if(isGrowing(lastv, "2.6.0"))
         {
-            file = Fk.getInstance().getSaveableManager().getFileConfiguration("save.yml");
+            file = Fk.getInstance().getSaveableManager().loadFile("save.yml");
 
             /*
              * RulesManager
@@ -122,10 +123,10 @@ public class FilesUpdater
 
         if(isGrowing(lastv, "2.11.0"))
         {
-            file = Fk.getInstance().getSaveableManager().getFileConfiguration("locked_chests.yml");
+            file = Fk.getInstance().getSaveableManager().loadFile("locked_chests.yml");
 
             getSection = file.getConfigurationSection("LockedChestsManager");
-            file = Fk.getInstance().getSaveableManager().getFileConfiguration("save.yml");
+            file = Fk.getInstance().getSaveableManager().loadFile("save.yml");
             setSection = file.createSection("FkPI.LockedChestsManager");
 
             if(getSection != null)
@@ -143,7 +144,7 @@ public class FilesUpdater
 
         if(isGrowing(lastv, "2.16.0"))
         {
-            file = Fk.getInstance().getSaveableManager().getFileConfiguration("save.yml");
+            file = Fk.getInstance().getSaveableManager().loadFile("save.yml");
 
             //			setSection = file.createSection("FkPI.RulesManager.Rules.HealthBelowName");
             //
@@ -155,7 +156,7 @@ public class FilesUpdater
             for(String team : getSection.getKeys(false))
                 set(team + ".Color", Color.of(team));
 
-            file = Fk.getInstance().getSaveableManager().getFileConfiguration("scoreboard.yml");
+            file = Fk.getInstance().getSaveableManager().loadFile("scoreboard.yml");
 
             List<String> lines = file.getStringList("ScoreboardManager.Sidebar");
             for(int i = 0; i < lines.size(); i++)
@@ -207,8 +208,8 @@ public class FilesUpdater
 
         if(isGrowing(lastv, "2.22.0"))
         {
-            final FkConfig displayConfig = Fk.getInstance().getSaveableManager().getFileConfiguration(GlobalDisplayService.FILENAME);
-            final FkConfig scoreboardConfig = Fk.getInstance().getSaveableManager().getTempFileConfiguration("scoreboard.yml");
+            final FkConfig displayConfig = Fk.getInstance().getSaveableManager().loadFile(GlobalDisplayService.FILENAME);
+            final FkConfig scoreboardConfig = Fk.getInstance().getSaveableManager().loadFile("scoreboard.yml");
             if (!displayConfig.fileExists() && scoreboardConfig.fileExists()) {
                 scoreboardConfig.load();
                 final String oldClass = "ScoreboardManager";
@@ -225,6 +226,28 @@ public class FilesUpdater
                 displayConfig.saveSync();
                 // Les flèches n'étaient pas prises en compte au chargement
             }
+        }
+
+        // My version moves all misc configs to save. This moves all old configs to it.
+        if (isGrowing(lastv, "3.0.0")) {
+            Fk.getInstance().getLogger().log(Level.INFO, "Updating config to version 3.0.0");
+            Function<String, FkConfig> loadFile = Fk.getInstance().getSaveableManager()::loadFile;
+            final FkConfig config = loadFile.apply("save.yml");
+            config.load();
+            
+            // Move all old files to save.yml
+            String[] oldFiles = new String[] {GlobalDisplayService.FILENAME, "deep_pause.yml", "pause_restorer.yml", "portals.yml"};
+            for (String fp: oldFiles) {
+                FkConfig oldConf = loadFile.apply(fp);
+                if (!oldConf.fileExists()) {
+                    continue;
+                }
+                oldConf.load();
+                for (Map.Entry<String, Object> e: oldConf.getValues(false).entrySet()) {
+                    config.set(e.getKey(), e.getValue());
+                }
+            }
+            config.saveSync();
         }
     }
 

@@ -18,10 +18,12 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.zip.ZipOutputStream;
 
@@ -34,28 +36,24 @@ import java.util.zip.ZipOutputStream;
 public class SaveablesManager {
 
 	private final Fk plugin;
-	private final Map<String, FkConfig> files = new HashMap<>();
-	private final Map<Saveable, FkConfig> saveables = new LinkedHashMap<>(); // L'ordre de chargement est important
+	private final Set<Saveable> saveables =  new HashSet<>(); // L'ordre de chargement est important
 	private FilesUpdater filesUpdater;
 	private long lastSave = 0;
 
 	public SaveablesManager(@NotNull Fk fk) {
 		this.plugin = fk;
 
-		FkConfig mainConfig = getFileConfiguration("save.yml");
+		FkConfig mainConfig = loadFile("save.yml");
 
-		registerSaveable(fk.getFkPI(), "save.yml");
-		registerSaveable(fk.getGame(), "save.yml");
-		registerSaveable(fk.getPlayerManager(), "save.yml");
-		registerSaveable(fk.getStarterInventoryManager(), "save.yml");
-
-		registerSaveable(fk.getPauseRestorer(), "pause_restorer.yml");
-
-		registerSaveable(fk.getDisplayService(), GlobalDisplayService.FILENAME);
-
-		registerSaveable(fk.getDeepPauseManager(), "deep_pause.yml");
-
-		registerSaveable(fk.getPortalsManager(), "portals.yml");
+        // Register all required saveables
+		registerSaveable(fk.getFkPI());
+		registerSaveable(fk.getGame());
+		registerSaveable(fk.getPlayerManager());
+		registerSaveable(fk.getStarterInventoryManager());
+		registerSaveable(fk.getPauseRestorer());
+		registerSaveable(fk.getDisplayService());
+		registerSaveable(fk.getDeepPauseManager());
+		registerSaveable(fk.getPortalsManager());
 
 		mainConfig.load();
 		this.filesUpdater = new FilesUpdater(mainConfig.getString("last_version", fk.getDescription().getVersion()));
@@ -75,11 +73,9 @@ public class SaveablesManager {
 	 * <p>Au niveau de {@link Plugin#onDisable()}, appeler {@link FkConfig#awaitSaveEnd()} permet d'éviter que les
 	 * données soit écrites à moitié.</p>
 	 */
-	public void delayedSaveAll() {
-		updateMemoryConfig();
-		for (FkConfig config : files.values()) {
-			config.delayedSave();
-		}
+	public void delayedSaveAll(FkConfig config) {
+		updateMemoryConfig(config);
+        config.delayedSave();
 	}
 
 	/**
@@ -88,28 +84,24 @@ public class SaveablesManager {
 	 * <p>Si un fichier pose problème, il est réinitialisé. Noter que les classes {@link Saveable} devraient vérifier en
 	 * amont les données, pour capturer le plus tôt possible la moindre exception.</p>
 	 */
-	public void loadAll() {
-		for (FkConfig config : files.values()) {
-			config.load();
-		}
+	public void loadAll(@NotNull FkConfig config) {
+        config.load();
 
-		List<FkConfig> corrupted = new LinkedList<>();
-		for (Map.Entry<Saveable, FkConfig> entry : saveables.entrySet()) {
-			Saveable saveable = entry.getKey();
-			FkConfig configFile = entry.getValue();
+        boolean corrupted = false;
+		for (Saveable saveable : saveables) {
 			try {
 				saveable.loadNullable(
-						configFile.contains(saveable.getClass().getSimpleName())
-								? configFile.getConfigurationSection(saveable.getClass().getSimpleName())
-								: configFile.createSection(saveable.getClass().getSimpleName())
+						config.contains(saveable.getClass().getSimpleName())
+								? config.getConfigurationSection(saveable.getClass().getSimpleName())
+								: config.createSection(saveable.getClass().getSimpleName())
 				);
 			} catch (Throwable throwable) {
 				throwable.printStackTrace();
-				corrupted.add(configFile);
+                corrupted = true;
 			}
 		}
 
-		if (!corrupted.isEmpty()) {
+		if (corrupted) {
 			plugin.getOnConnectWarnings().add(Messages.CORRUPT_CONFIG_FILES.getMessage());
 			File zip = new File(plugin.getDataFolder(), "invalid-" + new SimpleDateFormat("yyyy-MM-dd HH-mm-ss").format(Calendar.getInstance().getTimeInMillis()) + ".zip");
 			try {
@@ -120,10 +112,7 @@ public class SaveablesManager {
 					ZipUtils.zipConfig(plugin.getDataFolder().toPath(), zipStream);
 					zipStream.flush();
 				}
-
-				for (FkConfig file : corrupted) {
-					file.delete();
-				}
+                config.delete();
 			} catch (IOException e) {
 				plugin.getLogger().log(Level.SEVERE, Messages.CONSOLE_UNABLE_TO_MAKE_BACKUP.getMessage(), e);
 			}
@@ -132,37 +121,18 @@ public class SaveablesManager {
 		plugin.getDisplayService().updateAll();
 	}
 
-	private void registerSaveable(Saveable o, String file) {
-		saveables.put(o, getFileConfiguration(file));
+	private void registerSaveable(Saveable o) {
+		saveables.add(o);
 	}
 
-	public void reset() {
-		for(FileConfiguration file : saveables.values())
-			for(String key : file.getKeys(false))
-				file.set(key, null);
-	}
-
-	public @NotNull FkConfig getFileConfiguration(@NotNull String path) {
-		return this.files.computeIfAbsent(path, this::loadFile);
-	}
-
-	public @NotNull FkConfig getTempFileConfiguration(@NotNull String path) {
-		FkConfig config = this.files.get(path);
-		if (config == null) {
-			return this.loadFile(path);
-		}
-		return config;
-	}
-
-	private @NotNull FkConfig loadFile(@NotNull String filename) {
+	public @NotNull FkConfig loadFile(@NotNull String filename) {
 		return new FkConfig(new File(plugin.getDataFolder(), filename));
 	}
 
-	private void updateMemoryConfig() {
+	private void updateMemoryConfig(FkConfig config) {
 		lastSave = System.currentTimeMillis();
-		for (Map.Entry<Saveable, FkConfig> entry : saveables.entrySet()) {
-			Saveable saveable = entry.getKey();
-			ConfigurationSection section = entry.getValue().createSection(saveable.getClass().getSimpleName());
+		for (Saveable saveable: saveables) {
+			ConfigurationSection section = config.createSection(saveable.getClass().getSimpleName());
 			saveable.save(section);
 		}
 	}
