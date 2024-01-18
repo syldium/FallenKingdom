@@ -38,12 +38,15 @@ public class FkPI implements Saveable
 
     public void teardown()
     {
-        teamManager.teardown();
+        if (teamManager != null) {
+            teamManager.teardown();
+        }
     }
 
     @Override
     public void load(ConfigurationSection config)
     {
+        reset();
         chestsRoomsManager.loadNullable(config.getConfigurationSection("ChestsRoomsManager")); //AVANT TEAMMANAGER
         rulesManager.loadNullable(config.getConfigurationSection("RulesManager"));
         teamManager.loadNullable(config.getConfigurationSection("TeamManager"));
