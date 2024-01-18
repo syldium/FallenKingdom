@@ -1,8 +1,6 @@
 package fr.devsylone.fallenkingdom.chat;
 
-import java.util.HashMap;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -51,9 +49,10 @@ public class CarbonChatListener implements Listener {
         final ITeam who = event.getTeam();
         final Player player = Fk.getInstance().getServer().getPlayer(event.getPlayerName());
 
-        if (from != null) {
+        if (from != null && parties.containsKey(from)) {
             um.party(parties.get(from)).thenAcceptAsync(party -> {
                 party.removeMember(player.getUniqueId());
+                
                 if (party.members().isEmpty()) {
                     parties.remove(from);
                 }
