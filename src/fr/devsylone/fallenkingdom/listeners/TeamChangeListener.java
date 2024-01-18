@@ -2,6 +2,7 @@ package fr.devsylone.fallenkingdom.listeners;
 
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.display.NametagService;
+import fr.devsylone.fallenkingdom.utils.PlayerColorUtil;
 import fr.devsylone.fkpi.api.event.PlayerTeamChangeEvent;
 import fr.devsylone.fkpi.api.event.TeamUpdateEvent;
 import fr.devsylone.fkpi.teams.Team;
@@ -30,12 +31,14 @@ public class TeamChangeListener implements Listener {
                 break;
             case DELETION:
                 service.removeScoreboardTeam(team);
+                PlayerColorUtil.resetPlayerColors(team);
                 break;
             case UPDATE:
                 final String previousName = team.getName();
                 scheduler.runTask(this.plugin, () -> {
                     if (previousName.equals(team.getName())) {
                         service.updateColor(team);
+                        PlayerColorUtil.updatePlayerColors(team);
                     } else {
                         service.renameTeam(team, previousName);
                     }
@@ -51,9 +54,11 @@ public class TeamChangeListener implements Listener {
         final Player player = this.plugin.getServer().getPlayer(event.getPlayerName());
         if (from != null) {
             service.removeEntry(from, event.getPlayerName(), player);
+            PlayerColorUtil.resetPlayerColor(event.getPlayerName());
         }
         if (to != null) {
             service.addEntry(to, event.getPlayerName(), player);
+            PlayerColorUtil.setPlayerColorFromTeam(event.getPlayerName(), to);
         }
     }
 }

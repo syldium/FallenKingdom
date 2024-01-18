@@ -23,6 +23,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -208,7 +209,7 @@ public class TeamManager implements Saveable
 
 		Random rdm = new Random();
 		final int originalSize = players.size();
-		for(int i = 0; i < originalSize; i++)
+		for (int i = 0; i < originalSize; i++)
 		{
 			int rdmi = rdm.nextInt(players.size());
 			String p = players.get(rdmi);
@@ -216,12 +217,13 @@ public class TeamManager implements Saveable
 				removePlayerOfHisTeam(p);
 
 			teams.get(0).addPlayer(p);
+            addPlayer(p, teams.get(0).getName());
 			players.remove(rdmi);
 		}
 
 		int playerPerTeams = getTotalPlayers() / teams.size();
 
-		for(Team t : teams)
+		for(Team t : teams) 
 			t.balance(teams, playerPerTeams);
 	}
 

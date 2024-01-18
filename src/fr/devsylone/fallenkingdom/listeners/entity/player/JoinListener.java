@@ -10,8 +10,10 @@ import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fallenkingdom.players.FkPlayer.PlayerState;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fallenkingdom.utils.NMSUtils;
+import fr.devsylone.fallenkingdom.utils.PlayerColorUtil;
 import fr.devsylone.fallenkingdom.utils.XItemStack;
 import fr.devsylone.fkpi.FkPI;
+import fr.devsylone.fkpi.teams.Team;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
@@ -53,6 +55,11 @@ public class JoinListener implements Listener
 
 		player.refreshScoreboard();
 		FkPI.getInstance().getTeamManager().nametag().addEntry(e.getPlayer());
+
+        Team team = FkPI.getInstance().getTeamManager().getPlayerTeam(e.getPlayer());
+        if (team != null) {
+            PlayerColorUtil.setPlayerColorFromTeam(e.getPlayer(), team);
+        }
 
 		e.setJoinMessage(null);
 		Fk.broadcast(Messages.CHAT_JOIN.getMessage().replace("%player%", e.getPlayer().getDisplayName()));
