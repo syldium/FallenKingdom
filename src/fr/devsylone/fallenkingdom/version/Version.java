@@ -8,25 +8,42 @@ public class Version {
     public static final VersionType VERSION_TYPE;
 
     static {
-        if (classExists("org.bukkit.block.data.BlockData")) {
-            if (classExists("org.bukkit.event.inventory.TradeSelectEvent")) {
-                if (classExists("org.bukkit.entity.Goat")) {
-                    if (classExists("org.bukkit.entity.Sniffer")) {
-                        VERSION_TYPE = VersionType.V1_20;
-                    } else {
-                        VERSION_TYPE = classExists("org.bukkit.block.SculkCatalyst") ? VersionType.V1_19 : VersionType.V1_17;
-                    }
-                } else {
-                    VERSION_TYPE = classExists("org.bukkit.entity.Hoglin") ? VersionType.V1_16 : VersionType.V1_14_V1_15;
-                }
-            } else {
+        switch (getVersionShortstring(Bukkit.getBukkitVersion())) {
+            case "1.9": 
+            case "1.10":
+            case "1.11":
+            case "1.12":
+                VERSION_TYPE = VersionType.V1_9_V1_12;
+                break;
+            case "1.13":
                 VERSION_TYPE = VersionType.V1_13;
-            }
-        } else if (Bukkit.getVersion().contains("1.8")) {
-            VERSION_TYPE = VersionType.V1_8;
-        } else {
-            VERSION_TYPE = VersionType.V1_9_V1_12;
-        }
+                break;
+            case "1.14":
+            case "1.15": 
+                VERSION_TYPE = VersionType.V1_14_V1_15;
+                break;
+            case "1.16":
+                VERSION_TYPE = VersionType.V1_16;
+                break;
+            case "1.17":
+            case "1.18":
+                VERSION_TYPE = VersionType.V1_17;
+            break;
+            case "1.19":
+                VERSION_TYPE = VersionType.V1_19;
+                break;
+            case "1.20":
+                VERSION_TYPE = VersionType.V1_20;
+                break;
+            default:
+            case "1.8":
+                VERSION_TYPE = VersionType.V1_8;
+        };
+    }
+
+    private static String getVersionShortstring(String bukkitVersion) {
+        String res = bukkitVersion.split("-")[0].split("\\.[0-9]$")[0];
+        return res;
     }
 
     public static boolean hasSpigotApi() {
