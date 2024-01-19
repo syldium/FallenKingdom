@@ -17,7 +17,7 @@ import fr.devsylone.fallenkingdom.utils.Messages;
  */
 public class Load extends FkCommand {
     private final static String NAME = "load";
-    private final static String USAGE = "save";
+    private final static String USAGE = "<save>";
 
     public Load() {
         super(NAME, USAGE, Messages.CMD_MAP_GAME_LOAD, CommandRole.ADMIN);
@@ -30,7 +30,7 @@ public class Load extends FkCommand {
         }
         // Check if config name legal
         if (args.get(0).equals("config")) {
-            throw new FkLightException(Messages.CMD_ERROR_CONFIG_NAME);
+            throw new FkLightException(Messages.CMD_ERROR_CONFIG_NAME.getMessage().replaceAll("%save%", args.get(0) + ".yml"));
         }
 
         // Load new save

@@ -21,6 +21,7 @@ public class FkGameCommand extends FkParentCommand
 				.add(new StarterInv())
 				.add(new Stop())
                 .add(new Load())
+                .add(new Save())
 				.build()
 		, Messages.CMD_MAP_GAME);
 	}
