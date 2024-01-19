@@ -15,7 +15,7 @@ import fr.devsylone.fallenkingdom.utils.Messages;
 /**
  * Load a savefile, setting up the instance.
  */
-public class Load extends FkCommand implements Confirmable {
+public class Load extends FkCommand {
     private final static String NAME = "load";
     private final static String USAGE = "save";
 
