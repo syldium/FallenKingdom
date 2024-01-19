@@ -28,21 +28,21 @@ public class Load extends FkCommand implements Confirmable {
         if (args.isEmpty() || args.size() > 1) {
             throw new FkLightException(Messages.CMD_ERROR_UNKNOWN_ARG);
         }
-        if (isConfirmed(sender)) {
-            // Load new save
-            FkConfig save = new FkConfig(new File(plugin.getDataFolder(), args.get(0) + ".yml"));
-            if (!save.fileExists()) {
-                throw new FkLightException(Messages.CMD_ERROR_FILE_DOESNT_EXIST.getMessage()
-                        .replaceAll("%save%", args.get(0) + ".yml"));
-            }
-            save.load();
-            plugin.getSaveableManager().loadAll(save);
-            plugin.getDisplayService().updateAll();
-            broadcast(Messages.CMD_GAME_LOAD.getMessage().replaceAll("%save%", args.get(0) + ".yml"));
-            return CommandResult.SUCCESS;
+        // Check if config name legal
+        if (args.get(0).equals("config")) {
+            throw new FkLightException(Messages.CMD_ERROR_CONFIG_NAME);
         }
-        sender.sendMessage(createWarning(Messages.WARNING_GAME_RESET, true));
-        addConfirmed(sender);
+
+        // Load new save
+        FkConfig save = new FkConfig(new File(plugin.getDataFolder(), args.get(0) + ".yml"));
+        if (!save.fileExists()) {
+            throw new FkLightException(Messages.CMD_ERROR_FILE_DOESNT_EXIST.getMessage()
+                    .replaceAll("%save%", args.get(0) + ".yml"));
+        }
+        save.load();
+        plugin.getSaveableManager().loadAll(save);
+        plugin.getDisplayService().updateAll();
+        broadcast(Messages.CMD_GAME_LOAD.getMessage().replaceAll("%save%", args.get(0) + ".yml"));
         return CommandResult.SUCCESS;
     }
 }

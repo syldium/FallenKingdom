@@ -57,6 +57,7 @@ public enum Messages
     CMD_ERROR_GAME_ALREADY_STARTED("cmd.game.already-started"),
     CMD_ERROR_GAME_NOT_STARTED("cmd.game.not-started"),
     CMD_ERROR_FILE_DOESNT_EXIST("cmd.game.file.notexists"),
+    CMD_ERROR_CONFIG_NAME("cmd.error.game.bad-config-name"),
 
     CMD_ERROR_INVALID_PLAYER("cmd.error.invalid.player"),
     CMD_ERROR_MUST_BE_PLAYER("cmd.error.must-be-player"),
