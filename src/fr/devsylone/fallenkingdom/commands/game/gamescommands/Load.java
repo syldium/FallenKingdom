@@ -30,15 +30,15 @@ public class Load extends FkCommand implements Confirmable {
         }
         if (isConfirmed(sender)) {
             // Load new save
-            FkConfig save = new FkConfig(new File(plugin.getDataFolder(), args.get(0)));
+            FkConfig save = new FkConfig(new File(plugin.getDataFolder(), args.get(0) + ".yml"));
             if (!save.fileExists()) {
                 throw new FkLightException(Messages.CMD_ERROR_FILE_DOESNT_EXIST.getMessage()
-                        .replaceAll("%save%", args.get(0)));
+                        .replaceAll("%save%", args.get(0) + ".yml"));
             }
             save.load();
             plugin.getSaveableManager().loadAll(save);
             plugin.getDisplayService().updateAll();
-            broadcast(Messages.CMD_GAME_LOAD.getMessage().replaceAll("%save%", args.get(0)));
+            broadcast(Messages.CMD_GAME_LOAD.getMessage().replaceAll("%save%", args.get(0) + ".yml"));
             return CommandResult.SUCCESS;
         }
         sender.sendMessage(createWarning(Messages.WARNING_GAME_RESET, true));
