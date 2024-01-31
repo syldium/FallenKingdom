@@ -31,7 +31,8 @@ public class LockedChestTest {
     @BeforeEach
     public void init() {
         chest.setType(Material.CHEST);
-        lockedChest = new LockedChest(chestLocation, 10, 2, "Super cool content");
+        lockedChest = new LockedChest(chestLocation, "Super cool content");
+        lockedChest.addChestLoadout(2, 10, -1, null, new ItemStack[]{});
         MockUtils.getPluginMockSafe().getFkPI().getLockedChestsManager().addOrEdit(lockedChest);
     }
 
@@ -46,12 +47,24 @@ public class LockedChestTest {
     @Test
     public void unlock_Start() {
         GameHelper.setDay(2);
+        assertEquals(lockedChest.getUnlockDay(), 2);
         fireInteractEvent();
         assertEventFired(LockedChest.ChestState.UNLOCKING, MockUtils.getConstantPlayer().getUniqueId());
         setLastInteractionTime(600L);
         MockUtils.getServerMockSafe().getScheduler().performOneTick();
         assertEquals(LockedChest.ChestState.UNLOCKING, lockedChest.getState());
         assertEquals(MockUtils.getConstantPlayer().getUniqueId(), lockedChest.getUnlocker());
+    }
+
+    @Test
+    public void legacyChestsUnlock() {
+        GameHelper.setDay(3);
+        assertEquals(2, lockedChest.getUnlockDay());
+        lockedChest.startUnlocking(MockUtils.getConstantPlayer());
+        assertEventFired(LockedChest.ChestState.UNLOCKING, MockUtils.getConstantPlayer().getUniqueId());
+        setStartUnlockingTime(20001L);
+        MockUtils.getServerMockSafe().getScheduler().performOneTick();
+        assertEventFired(LockedChest.ChestState.UNLOCKED, MockUtils.getConstantPlayer().getUniqueId());
     }
 
     @Test

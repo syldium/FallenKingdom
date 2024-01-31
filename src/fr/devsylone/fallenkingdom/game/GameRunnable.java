@@ -106,6 +106,7 @@ class GameRunnable extends BukkitRunnable
 
     private void updateLockedChests() {
         for (LockedChest chest : Fk.getInstance().getFkPI().getLockedChestsManager().getChests()) {
+            chest.updateActiveLoadout();
             if (chest.getUnlockDay() != game.day) {
                 continue;
             }

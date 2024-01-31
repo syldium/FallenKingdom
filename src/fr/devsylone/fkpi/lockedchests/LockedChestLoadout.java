@@ -2,9 +2,11 @@ package fr.devsylone.fkpi.lockedchests;
 
 import static fr.devsylone.fallenkingdom.utils.KeyHelper.parseKey;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -15,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import fr.devsylone.fallenkingdom.version.Version.VersionType;
 import fr.devsylone.fkpi.util.Saveable;
 import lombok.Getter;
+import lombok.Setter;
 
 public class LockedChestLoadout implements Saveable {
     @Getter
@@ -22,6 +25,7 @@ public class LockedChestLoadout implements Saveable {
     private List<ItemStack> inventory = new ArrayList<>();
     private String lootTable;
     @Getter
+    @Setter
     private String advancement = new String();
 
     enum ChestKind {
@@ -59,6 +63,16 @@ public class LockedChestLoadout implements Saveable {
         return loadout;
     }
 
+    private LockedChestLoadout() {}
+
+    public LockedChestLoadout(int unlockTime, int expiry, @Nullable String advancement,
+            ItemStack[] inventory) {
+        this.time = unlockTime * 1000;
+        this.advancement = advancement == null ? new String() : advancement;
+        this.inventory = Arrays.asList(inventory);
+        kind = ChestKind.SET_INVENTORY;
+    }
+
 
     // -- Saveable -- //
 
@@ -71,12 +85,10 @@ public class LockedChestLoadout implements Saveable {
         if (config.isString("Advancement")) {
             advancement = config.getString("Advancement");
         }
-        switch (config.getString("kind")) {
-            case "LootTable":
-                kind = ChestKind.LOOT_TABLE;
-                break;
-            default:
-                kind = ChestKind.SET_INVENTORY;
+        if (!config.isString("Kind")) {
+            kind = ChestKind.SET_INVENTORY;
+        } else {
+            kind = ChestKind.valueOf(config.getString("Kind"));
         }
 
         // Loot table
@@ -108,6 +120,7 @@ public class LockedChestLoadout implements Saveable {
     public void save(ConfigurationSection config) {
         config.set("time", time);
         config.set("Advancement", advancement);
+        config.set("Kind", kind.name());
 
         if (kind == ChestKind.SET_INVENTORY) {
             ConfigurationSection invConfig = config.createSection("inventory");
@@ -117,5 +130,24 @@ public class LockedChestLoadout implements Saveable {
         } else {
             config.set("LootTable", lootTable);
         }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Unlock Time: " + (time / 1000));
+        if (advancement != null && !advancement.isEmpty()) {
+            sb.append(",Required advancement: " + advancement);
+        }
+        switch (kind) {
+            case SET_INVENTORY:
+                sb.append(",Items: ");
+                sb.append(inventory.toString());
+                break;
+            case LOOT_TABLE:
+            sb.append(",Loot table: " + lootTable);
+                break;
+        }
+        return sb.toString();
     }
 }

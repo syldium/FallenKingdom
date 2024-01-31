@@ -48,16 +48,19 @@ public class LockedChestsManager implements Saveable
 	}
 
 	@Override
-	public void load(ConfigurationSection config)
-	{
-		if(config.isConfigurationSection("LockedChests"))
-			for(String chest : config.getConfigurationSection("LockedChests").getKeys(false))
-			{
-				LockedChest c = new LockedChest(null, 0, 0, "Empty");
-				c.load(config.getConfigurationSection("LockedChests." + chest));
-				if(c.getLocation().getWorld() != null)
-					addOrEdit(c);
-			}
+	public void load(ConfigurationSection config) {
+		if(!config.isConfigurationSection("LockedChests")) {
+            return;
+        }
+        ConfigurationSection lockedChestsConfig = config.getConfigurationSection("LockedChests");
+        for(String chest : lockedChestsConfig.getKeys(false)) {
+            if (!lockedChestsConfig.isConfigurationSection(chest)) {
+                continue;
+            }
+            LockedChest c = new LockedChest(lockedChestsConfig.getConfigurationSection(chest));
+            if(c.getLocation().getWorld() != null)
+                addOrEdit(c);
+        }
 	}
 
 	@Override

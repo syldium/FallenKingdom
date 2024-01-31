@@ -3,257 +3,363 @@ package fr.devsylone.fkpi.lockedchests;
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.display.progress.ProgressBar;
 import fr.devsylone.fallenkingdom.utils.Messages;
-import fr.devsylone.fallenkingdom.version.Version;
 import fr.devsylone.fallenkingdom.utils.XAdvancement;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.api.event.PlayerLockedChestInteractEvent;
 import fr.devsylone.fkpi.teams.Team;
 import fr.devsylone.fkpi.util.Saveable;
 import net.md_5.bungee.api.ChatColor;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
-import org.bukkit.loot.LootTable;
-
+import org.bukkit.inventory.ItemStack;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
-
+import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 import static fr.devsylone.fallenkingdom.utils.KeyHelper.parseKey;
 
-public class LockedChest implements Saveable
-{
-	public enum ChestState
-	{
-		LOCKED,
-		UNLOCKING,
-		UNLOCKED
-	}
+public class LockedChest implements Saveable {
+    public enum ChestState {
+        DONE, LOCKED, UNLOCKING, UNLOCKED
+    }
 
-	private UUID unlocker;
-	private ChatColor chatColor = ChatColor.RESET;
-	private Location loc;
-	private int day;
-	private ChestState state = ChestState.LOCKED;
-	private long time;
-	private long lastInteract;
-	private long startUnlocking;
-	private float yFix = -0.5F;
-	private String requiredAdvancement;
-	private String lootTable;
+    private UUID unlocker;
+    private ChatColor chatColor = ChatColor.RESET;
+    private Location loc;
+    private ChestState state = ChestState.LOCKED;
+    private long lastInteract;
+    private long startUnlocking;
+    private float yFix = -0.5F;
 
-	private int task = -1;
+    private int task = -1;
 
-	private String name;
+    private List<LockedChestLoadout> loadouts = new ArrayList<>();
 
-	public LockedChest(Location loc, int timeSecs, int day, String name)
-	{
-		this.loc = loc;
-		this.time = timeSecs * 1000L;
-		this.day = day;
-		this.lastInteract = System.currentTimeMillis();
-		this.name = name;
-	}
+    private LockedChestLoadout activeLoadout;
+    private int activeDay;
 
-	public Location getLocation()
-	{
-		return loc.clone();
-	}
+    private String name;
 
-	public UUID getUnlocker()
-	{
-		return unlocker;
-	}
+    public LockedChest(Location loc, String name) {
+        this.loc = loc;
+        this.lastInteract = System.currentTimeMillis();
+        this.name = name;
+        this.state = ChestState.DONE;
+    }
 
-	public int getUnlockDay()
-	{
-		return day;
-	}
+    public LockedChest(ConfigurationSection config) {
+        load(config);
+    }
 
-	/**
-	 * @deprecated {@link #getUnlockingTimeSecs()}
-	 */
-	@Deprecated
-	public int getUnlockingTime()
-	{
-		return getUnlockingTimeSecs();
-	}
+    public Location getLocation() {
+        return loc.clone();
+    }
 
-	public int getUnlockingTimeSecs()
-	{
-		return (int) (time / 1000);
-	}
+    public UUID getUnlocker() {
+        return unlocker;
+    }
 
-	public long getUnlockingTimeMillis()
-	{
-		return time;
-	}
+    /**
+     * @deprecated {@link #getUnlockingTimeSecs()}
+     */
+    @Deprecated
+    public int getUnlockingTime() {
+        return getUnlockingTimeSecs();
+    }
 
-	public String getName()
-	{
-		return name;
-	}
+    public int getUnlockingTimeSecs() {
+        if (state == ChestState.DONE) {
+            return 0;
+        }
+        return activeLoadout.getTime() / 1000;
+    }
 
-	public void changeUnlocker(Player newPlayer)
-	{
-		unlocker = newPlayer == null ? null : newPlayer.getUniqueId();
-		startUnlocking = System.currentTimeMillis();
+    public String getName() {
+        return name;
+    }
 
-		if(newPlayer == null)
-			setState(ChestState.LOCKED);
-		else
-			setState(ChestState.UNLOCKING);
+    public void changeUnlocker(Player newPlayer) {
+        unlocker = newPlayer == null ? null : newPlayer.getUniqueId();
+        startUnlocking = System.currentTimeMillis();
 
-		Team team = FkPI.getInstance().getTeamManager().getPlayerTeam(newPlayer);
-		chatColor = team == null ? ChatColor.RESET : team.getChatColor();
-	}
+        if (newPlayer == null)
+            setState(ChestState.LOCKED);
+        else
+            setState(ChestState.UNLOCKING);
 
-	public ChestState getState()
-	{
-		return state;
-	}
+        Team team = FkPI.getInstance().getTeamManager().getPlayerTeam(newPlayer);
+        chatColor = team == null ? ChatColor.RESET : team.getChatColor();
+    }
 
-	public void setState(ChestState state)
-	{
-		this.state = state;
-	}
+    public ChestState getState() {
+        return state;
+    }
 
-	public void updateLastInteract()
-	{
-		lastInteract = System.currentTimeMillis();
-	}
+    public void setState(ChestState state) {
+        this.state = state;
+    }
 
-	public void setYFixByBlockFace(BlockFace blockFace)
-	{
-		switch (blockFace)
-		{
-			case UP:
-				yFix = -1.25F;
-				break;
-			case DOWN:
-				yFix = 0;
-				break;
-			default:
-				yFix = -0.5F;
-		}
-	}
+    public void updateLastInteract() {
+        lastInteract = System.currentTimeMillis();
+    }
 
-	public void startUnlocking(Player player)
-	{
-		PlayerLockedChestInteractEvent event = new PlayerLockedChestInteractEvent(player, this); // EVENT
-		Bukkit.getPluginManager().callEvent(event);
-		if(event.isCancelled())
-			return;
+    public void setYFixByBlockFace(BlockFace blockFace) {
+        switch (blockFace) {
+            case UP:
+                yFix = -1.25F;
+                break;
+            case DOWN:
+                yFix = 0;
+                break;
+            default:
+                yFix = -0.5F;
+        }
+    }
 
-		if(unlocker != null)
-			Fk.broadcast(Messages.BROADCAST_LOCKED_CHEST_ABORT.getMessage().replace("%name%", name).replace("%player%", chatColor.toString() + Bukkit.getOfflinePlayer(unlocker).getName()));
+    public void setRequiredAdvancement(String advancement) {
+        for (LockedChestLoadout l : loadouts) {
+            if (l == null) {
+                continue;
+            }
+            l.setAdvancement(advancement);
+        }
+    }
 
-		changeUnlocker(player);
-		Fk.broadcast(Messages.BROADCAST_LOCKED_CHEST_START.getMessage().replace("%name%", name).replace("%player%", chatColor + player.getName()));
+    private Runnable unlockPerTickUpdate(Player player) {
+        final Location loc = this.loc.clone().add(0.5, this.yFix, 0.5);
+        final ProgressBar bar = Fk.getInstance().getDisplayService().initProgressBar(player, loc);
+        final LockedChestLoadout loadout = activeLoadout;
 
-		if(task > 0)
-			Bukkit.getScheduler().cancelTask(task);
+        return () -> {
+            double progress =
+                    (double) (System.currentTimeMillis() - this.startUnlocking) / loadout.getTime();
+            loc.setY(this.loc.getY() + this.yFix);
+            if (player.isOnline())
+                bar.progress(player, loc, progress);
 
-		lastInteract = System.currentTimeMillis();
+            if (lastInteract + 1000 < System.currentTimeMillis()) {
+                if (!getState().equals(ChestState.UNLOCKED))
+                    Fk.broadcast(Messages.BROADCAST_LOCKED_CHEST_ABORT.getMessage()
+                            .replace("%name%", name)
+                            .replace("%player%", chatColor + player.getName()));
+                Bukkit.getScheduler().cancelTask(task);
+                changeUnlocker(null);
+                if (player.isOnline())
+                    bar.remove(player);
+            }
 
-		final Location loc = this.loc.clone().add(0.5, this.yFix, 0.5);
-		final ProgressBar bar = Fk.getInstance().getDisplayService().initProgressBar(player, loc);
+            if (startUnlocking + loadout.getTime() <= System.currentTimeMillis()) {
+                PlayerLockedChestInteractEvent endEvent =
+                        new PlayerLockedChestInteractEvent(player, this); // EVENT
+                Bukkit.getPluginManager().callEvent(endEvent); // EVENT
+                if (!endEvent.isCancelled()) {
+                    setState(ChestState.UNLOCKED);
+                    Fk.broadcast(Messages.BROADCAST_LOCKED_CHEST_UNLOCKED.getMessage()
+                            .replace("%name%", name)
+                            .replace("%player%", chatColor + player.getName()));
+                }
+                Bukkit.getScheduler().cancelTask(task);
+                if (player.isOnline())
+                    bar.remove(player);
+            }
+        };
+    }
 
-		task = Bukkit.getScheduler().runTaskTimer(Fk.getInstance(), () -> {
-			double progress = (double) (System.currentTimeMillis() - this.startUnlocking) / this.time;
-			loc.setY(this.loc.getY() + this.yFix);
-			if(player.isOnline())
-				bar.progress(player, loc, progress);
+    public void startUnlocking(Player player) {
+        if (state == ChestState.DONE || state == ChestState.UNLOCKED) {
+            return;
+        }
+        PlayerLockedChestInteractEvent event = new PlayerLockedChestInteractEvent(player, this); // EVENT
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled())
+            return;
 
-			if(lastInteract + 1000 < System.currentTimeMillis())
-			{
-				if(!getState().equals(ChestState.UNLOCKED))
-					Fk.broadcast(Messages.BROADCAST_LOCKED_CHEST_ABORT.getMessage().replace("%name%", name).replace("%player%", chatColor + player.getName()));
-				Bukkit.getScheduler().cancelTask(task);
-				changeUnlocker(null);
-				if(player.isOnline())
-					bar.remove(player);
-			}
+        if (unlocker != null)
+            Fk.broadcast(Messages.BROADCAST_LOCKED_CHEST_ABORT.getMessage().replace("%name%", name)
+                    .replace("%player%",
+                            chatColor.toString() + Bukkit.getOfflinePlayer(unlocker).getName()));
 
-			if(startUnlocking + time <= System.currentTimeMillis())
-			{
-				PlayerLockedChestInteractEvent endEvent = new PlayerLockedChestInteractEvent(player, this); // EVENT
-				Bukkit.getPluginManager().callEvent(endEvent); // EVENT
-				if(!endEvent.isCancelled())
-				{
-					setState(ChestState.UNLOCKED);
-					Fk.broadcast(Messages.BROADCAST_LOCKED_CHEST_UNLOCKED.getMessage().replace("%name%", name).replace("%player%", chatColor + player.getName()));
-				}
-				Bukkit.getScheduler().cancelTask(task);
-				if(player.isOnline())
-					bar.remove(player);
-			}
-		}, 1L, 1L).getTaskId();
-	}
+        changeUnlocker(player);
+        Fk.broadcast(Messages.BROADCAST_LOCKED_CHEST_START.getMessage().replace("%name%", name)
+                .replace("%player%", chatColor + player.getName()));
 
-	@Override
-	public void load(ConfigurationSection config)
-	{
-		loc = new Location(Bukkit.getWorld(config.getString("Loc.World")), config.getInt("Loc.x"), config.getInt("Loc.y"), config.getInt("Loc.z"));
-		state = ChestState.valueOf(config.getString("State"));
-		time = config.getInt("Time") * 1000L;
-		day = config.getInt("Day");
-		name = config.getString("Name");
-		lootTable = config.getString("LootTable");
-		requiredAdvancement = config.getString("Advancement");
-	}
+        if (task > 0)
+            Bukkit.getScheduler().cancelTask(task);
 
-	public Advancement getRequiredAdvancement()
-	{
-		if (requiredAdvancement == null || requiredAdvancement.isEmpty()) {
-			return null;
-		}
-		return Bukkit.getAdvancement(parseKey(requiredAdvancement));
-	}
+        lastInteract = System.currentTimeMillis();
+        task = Bukkit.getScheduler()
+                .runTaskTimer(Fk.getInstance(), unlockPerTickUpdate(player), 1L, 1L).getTaskId();
+    }
 
-	public void setRequiredAdvancement(String advancement)
-	{
-		this.requiredAdvancement = advancement;
-	}
+    /**
+     * Add a chest loadout to the chest. Overwrites the loadout set on that day if there is one.
+     * 
+     * @param day The day for which the loadout is active.
+     * @param unlockTime The time taken to unlock the chest with this loadout active.
+     * @param expiry How long it takes before the loadout expires
+     * @param advancements Required advancements for the chest
+     * @param items The inventory with which to fill the chest.
+     */
+    public void addChestLoadout(int day, int unlockTime, int expiry, @Nullable String advancements,
+            ItemStack[] items) {
+        while (loadouts.size() <= day) {
+            loadouts.add(null);
+        }
+        loadouts.set(day, new LockedChestLoadout(unlockTime, expiry, advancements, items));
+        if (activeLoadout == null || day <= activeDay) {
+            activeLoadout = loadouts.get(day);
+            activeDay = day;
+            setState(ChestState.LOCKED);
+        }
+    }
 
-	public boolean hasAccess(Player player)
-	{
-		if (requiredAdvancement == null || requiredAdvancement.isEmpty()) {
-			return true;
-		}
-		return XAdvancement.hasAdvancement(player, requiredAdvancement);
-	}
+    /**
+     * Get the chest loadout on a given day.
+     *
+     * @param day Day index.
+     * @return {@link LockedChestLoadout} for the day. Null if no loadout on that day.
+     */
+    @Nullable
+    public LockedChestLoadout getLoadout(int day) {
+        return day < loadouts.size() && day >= 0 ? loadouts.get(day) : null;
+    }
 
-	public LootTable getLootTable()
-	{
-		if (lootTable == null || lootTable.isEmpty()) {
-			return null;
-		}
-		if (Version.VersionType.V1_13.isHigherOrEqual())
-			return Bukkit.getLootTable(parseKey(lootTable));
-		throw new UnsupportedOperationException("Loot tables api don't exist in versions prior to 1.13.");
-	}
+    /**
+     * Expire the current loadout, and set next active loadout, or set chest to done if none left.
+     */
+    public void expireLoadout() {
+        int newDay = Fk.getInstance().getGame().getDay() + 1;
+        LockedChestLoadout newLoadout = getLoadout(newDay);
+        while (newLoadout == null && newDay + 1 < loadouts.size())
+            newLoadout = getLoadout(++newDay);
+        if (newLoadout == null) {
+            setState(ChestState.DONE);
+            return;
+        }
+        activeLoadout = newLoadout;
+        activeDay = newDay;
+        setState(ChestState.LOCKED);
+    }
 
-	@Override
-	public void save(ConfigurationSection config)
-	{
-		config.set("Loc.World", loc.getWorld().getName());
-		config.set("Loc.x", loc.getBlockX());
-		config.set("Loc.y", loc.getBlockY());
-		config.set("Loc.z", loc.getBlockZ());
+    /**
+     * Update the chest's active loadout for the next days.
+     */
+    public void updateActiveLoadout() {
+        int newDay = Fk.getInstance().getGame().getDay();
+        LockedChestLoadout newLoadout = getLoadout(newDay);
+        if (newLoadout != null) {
+            activeLoadout = newLoadout;
+            activeDay = newDay;
+            setState(ChestState.LOCKED);
+        }
+    }
 
-		config.set("State", state.name());
-		config.set("Time", getUnlockingTimeSecs());
-		config.set("Day", day);
-		config.set("Name", name);
-		config.set("LootTable", lootTable);
-		config.set("Advancement", requiredAdvancement);
-	}
+    public int getUnlockDay() {
+        return state == ChestState.DONE ? -1 : activeDay;
+    }
 
-	@Override
-	public String toString()
-	{
-		return (unlocker == null ? "" : unlocker) + " / " + loc.getBlockX() + "|" + loc.getBlockY() + "|" + loc.getBlockZ() + " / " + time + " / " + day + " / " + state.name() + " / " + lastInteract + " / " + startUnlocking;
-	}
+    public LockedChestLoadout getUnlockLoadout() {
+        return activeLoadout;
+    }
+
+    public Advancement getRequiredAdvancement() {
+        if (state == ChestState.DONE || activeLoadout.getAdvancement() == null
+                || activeLoadout.getAdvancement().isEmpty()) {
+            return null;
+        }
+        return Bukkit.getAdvancement(parseKey(activeLoadout.getAdvancement()));
+    }
+
+    public boolean hasAccess(Player player) {
+        if (state == ChestState.DONE) {
+            return false;
+        }
+        if (activeLoadout.getAdvancement() == null || activeLoadout.getAdvancement().isEmpty()) {
+            return true;
+        }
+        return XAdvancement.hasAdvancement(player, activeLoadout.getAdvancement());
+    }
+
+    private void reset() {
+        for (int i = 0; i < loadouts.size(); i++) {
+            if (loadouts.get(i) != null) {
+                activeLoadout = loadouts.get(i);
+                activeDay = i;
+                return;
+            }
+        }
+        setState(ChestState.LOCKED);
+    }
+
+    @Override
+    public void save(ConfigurationSection config) {
+        config.set("Name", name);
+        config.set("Loc.World", loc.getWorld().getName());
+        config.set("Loc.x", loc.getBlockX());
+        config.set("Loc.y", loc.getBlockY());
+        config.set("Loc.z", loc.getBlockZ());
+
+        config.set("State", state.name());
+        ConfigurationSection loadoutsCfg = config.createSection("Loadouts");
+        for (Integer i = 0; i < loadouts.size(); i++) {
+            if (loadouts.get(i) == null) {
+                continue;
+            }
+            loadouts.get(i).save(loadoutsCfg.createSection(i.toString()));
+        }
+    }
+
+    @Override
+    public void load(ConfigurationSection config) {
+        name = config.getString("Name");
+        loc = new Location(Bukkit.getWorld(config.getString("Loc.World")), config.getInt("Loc.x"),
+                config.getInt("Loc.y"), config.getInt("Loc.z"));
+        state = ChestState.valueOf(config.getString("State"));
+
+        // Get loadouts
+        if (!config.isConfigurationSection("Loadouts")) {
+            return;
+        }
+        ConfigurationSection loadoutCfg = config.getConfigurationSection("Loadouts");
+        List<Integer> days =
+                loadoutCfg.getKeys(false).stream().filter(key -> StringUtils.isNumeric(key))
+                        .map(key -> Integer.parseInt(key)).collect(Collectors.toList());
+        loadouts = new ArrayList<LockedChestLoadout>();
+        for (Integer day : days) {
+            while (loadouts.size() <= day) {
+                loadouts.add(null);
+            }
+            loadouts.set(day,
+                    LockedChestLoadout.from(loadoutCfg.getConfigurationSection(day.toString())));
+        }
+        reset();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Name: " + name);
+        sb.append(",State: " + state);
+        if (state == ChestState.UNLOCKING) {
+            sb.append(",Unlocker: " + unlocker);
+            sb.append(",Unlocking start time: " + startUnlocking);
+        }
+        sb.append(",Location: (" + loc.getWorld() + "," + loc.getBlockX() + "," + loc.getBlockY()
+                + "," + loc.getBlockZ() + ")");
+        sb.append(",Loadouts: [");
+        for (Integer i = 0; i < loadouts.size(); i++) {
+            if (loadouts.get(i) == null) {
+                continue;
+            }
+            sb.append("Day " + (i) + ":{" + loadouts.get(i).toString() + "}");
+        }
+        sb.append("],Last interaction: " + lastInteract);
+        return sb.toString();
+    }
 }
