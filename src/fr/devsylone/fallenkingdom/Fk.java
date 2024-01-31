@@ -52,6 +52,8 @@ import fr.devsylone.fallenkingdom.utils.FkSound;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fallenkingdom.version.Version;
 import fr.devsylone.fkpi.FkPI;
+import fr.devsylone.fkpi.lockedchests.LockedChest;
+import fr.devsylone.fkpi.lockedchests.LockedChest.ChestState;
 import fr.devsylone.fkpi.rules.Rule;
 import fr.devsylone.fkpi.teams.Team;
 import lombok.Getter;
@@ -360,6 +362,11 @@ public class Fk extends JavaPlugin
 		}
 		displayService.hideAll();
 		displayService.updateAll();
+
+        // Update Locked chest states to avoid default state unlocked on next game.
+        for (LockedChest chest: getFkPI().getLockedChestsManager().getChests()) {
+            chest.setState(ChestState.LOCKED);
+        }
 	}
 
 	private boolean check()
