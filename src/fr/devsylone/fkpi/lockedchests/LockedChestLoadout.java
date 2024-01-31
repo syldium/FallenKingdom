@@ -73,6 +73,19 @@ public class LockedChestLoadout implements Saveable {
         kind = ChestKind.SET_INVENTORY;
     }
 
+    public LockedChestLoadout(int unlockTime, int expiry, @Nullable String advancement,
+            String lootTable) {
+        this.time = unlockTime * 1000;
+        this.advancement = advancement == null ? new String() : advancement;
+        if (!VersionType.V1_13.isHigherOrEqual()) {
+            kind = ChestKind.SET_INVENTORY;
+            inventory = Arrays.asList(new ItemStack[0]); 
+        } else {
+            this.lootTable = lootTable;
+            kind = ChestKind.LOOT_TABLE;
+        }
+    }
+
 
     // -- Saveable -- //
 
