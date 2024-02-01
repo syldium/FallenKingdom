@@ -118,6 +118,9 @@ public enum Messages
     CMD_LOCKED_CHEST_LOCKED("cmd.chests.locked"),
     CMD_LOCKED_CHEST_REMOVED("cmd.chests.removed"),
     CMD_LOCKED_CHEST_UNLOCKED("cmd.chests.unlocked"),
+    CMD_LOCKED_CHEST_LOADOUT_CREATED("cmd.chests.loadout.created"),
+    CMD_LOCKED_CHEST_LOADOUT_REMOVED("cmd.chests.loadout.removed"),
+    CMD_LOCKED_CHEST_LOADOUT_LOADED("cmd.chests.loadout.loaded"),
 
     CMD_MAP_BUG("cmd.map.bug"),
     CMD_MAP_BUG_BUG("cmd.map.bug.bug"),
@@ -128,6 +131,9 @@ public enum Messages
     CMD_MAP_CHEST_LOCK("cmd.map.chests.lock"),
     CMD_MAP_CHEST_REMOVE("cmd.map.chests.remove"),
     CMD_MAP_CHEST_UNLOCK("cmd.map.chests.unlock"),
+    CMD_MAP_CHEST_ADD_LOADOUT("cmd.map.chests.addloadout"),
+    CMD_MAP_CHEST_REMOVE_LOADOUT("cmd.map.chests.removeloadout"),
+    CMD_MAP_CHEST_LOAD_LOADOUT("cmd.map.chests.loadloadout"),
 
     CMD_MAP_GAME("cmd.map.game"),
     CMD_MAP_GAME_PAUSE("cmd.map.game.pause"),
