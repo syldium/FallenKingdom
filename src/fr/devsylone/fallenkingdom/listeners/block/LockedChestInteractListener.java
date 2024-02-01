@@ -33,12 +33,11 @@ public class LockedChestInteractListener implements Listener {
         LockedChestsManager manager = Fk.getInstance().getFkPI().getLockedChestsManager();
         if (manager.getChestAt(chestBlock.getLocation()) == null)
             return;
-        if (!e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
-            e.setCancelled(true);
-            return;
-        }
+
         final LockedChest chest = manager.getChestAt(e.getClickedBlock().getLocation());
-        if (chest.getState() == ChestState.DONE) {
+        if (chest.getState() == ChestState.DONE
+                || !e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+            e.setCancelled(true);
             return;
         }
 
@@ -48,8 +47,7 @@ public class LockedChestInteractListener implements Listener {
 
         // Players in creative mode bypass chest lock
         if (e.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
-            e.getPlayer().sendMessage(ChatUtils.ALERT + Messages.PLAYER_OPEN_LOCKED_CHEST_CREATIVE);
-            setChestInventory(chestBlock, loadout);
+            openLockedChestCreativeMode(e);
             return;
         }
         if (unlockDay > Fk.getInstance().getGame().getDay()) {
@@ -82,6 +80,19 @@ public class LockedChestInteractListener implements Listener {
                 break;
         }
 
+    }
+
+    // If game has started, load active loadout. Else, don't modify.
+    private void openLockedChestCreativeMode(PlayerInteractEvent e) {
+        e.getPlayer().sendMessage(ChatUtils.ALERT + Messages.PLAYER_OPEN_LOCKED_CHEST_CREATIVE);
+        if (!Fk.getInstance().getGame().hasStarted()) {
+            return;
+        }
+        final Chest chestBlock = (Chest) e.getClickedBlock().getState();
+        final LockedChest chest = Fk.getInstance().getFkPI().getLockedChestsManager()
+                .getChestAt(e.getClickedBlock().getLocation());
+        LockedChestLoadout loadout = chest.getUnlockLoadout();
+        setChestInventory(chestBlock, loadout);
     }
 
     private void setChestInventory(Chest chest, LockedChestLoadout loadout) {
