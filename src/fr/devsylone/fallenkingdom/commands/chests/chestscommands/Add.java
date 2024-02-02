@@ -35,7 +35,7 @@ public class Add extends FkPlayerCommand {
 
         LockedChest chest = new LockedChest(target.getLocation(), name);
         chest.addChestLoadout(day, time, 10000, null,
-                target.getBlockInventory().getContents());
+                target.getSnapshotInventory().getContents());
         Fk.getInstance().getFkPI().getLockedChestsManager().addOrEdit(chest);
 
         broadcast(Messages.CMD_LOCKED_CHEST_CREATED.getMessage().replace("%name%", name)

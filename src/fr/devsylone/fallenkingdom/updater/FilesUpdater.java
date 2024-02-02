@@ -266,7 +266,7 @@ public class FilesUpdater {
                         ItemStack[] inventory = new ItemStack[0];
                         if (chestBlock.getType().equals(Material.CHEST)) {
                             inventory =
-                                    ((Chest) chestBlock.getState()).getInventory().getContents();
+                                    ((Chest) chestBlock.getState()).getSnapshotInventory().getContents();
                         }
                         loadout = new LockedChestLoadout(chest.getInt("Time"), 1000,
                                 chest.getString("Advancement"), inventory);

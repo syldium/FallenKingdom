@@ -47,7 +47,7 @@ public class AddLoadout extends FkPlayerCommand {
         if (args.size() == 4) {
             advancement = args.get(3);
         }
-        chest.addChestLoadout(day, time, expiry, advancement, target.getInventory().getContents());
+        chest.addChestLoadout(day, time, expiry, advancement, target.getSnapshotInventory().getContents());
 
         broadcast(Messages.CMD_LOCKED_CHEST_LOADOUT_CREATED.getMessage()
                 .replace("%name%", name)
