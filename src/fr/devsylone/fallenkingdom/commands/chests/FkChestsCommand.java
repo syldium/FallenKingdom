@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkParentCommand;
 import fr.devsylone.fallenkingdom.commands.chests.chestscommands.Add;
+import fr.devsylone.fallenkingdom.commands.chests.chestscommands.AddLoadout;
 import fr.devsylone.fallenkingdom.commands.chests.chestscommands.ChestLock;
 import fr.devsylone.fallenkingdom.commands.chests.chestscommands.ChestUnlock;
 import fr.devsylone.fallenkingdom.commands.chests.chestscommands.ChestsList;
@@ -24,6 +25,7 @@ public class FkChestsCommand extends FkParentCommand
 	{
 		super("chests", ImmutableList.<FkCommand>builder()
 				.add(new Add())
+                .add(new AddLoadout())
 				.add(new ChestsList())
 				.add(new ChestLock())
 				.add(new ChestUnlock())
