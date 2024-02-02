@@ -39,7 +39,7 @@ public class LockedChest implements Saveable {
 
     private int task = -1;
 
-    private List<LockedChestLoadout> loadouts = new ArrayList<>();
+    private ArrayList<LockedChestLoadout> loadouts = new ArrayList<>();
 
     private LockedChestLoadout activeLoadout;
     private int activeDay;
@@ -217,6 +217,39 @@ public class LockedChest implements Saveable {
             activeDay = day;
             setState(ChestState.LOCKED);
         }
+    }
+
+    /**
+     * Removes the chest loadout set at the given day
+     * @param day The day
+     * @return Whether there was a loadout on that day.
+     */
+    public boolean removeLoadout(int day) {
+        LockedChestLoadout rmLoadout = getLoadout(day);
+        if (rmLoadout == null) {
+            return false;
+        }
+        loadouts.set(day, null);
+        while (!loadouts.isEmpty() && loadouts.get(loadouts.size() - 1) == null) {
+            loadouts.remove(loadouts.size() - 1);
+        }
+        if (!activeLoadout.equals(rmLoadout)) {
+            return true;
+        }
+        rmLoadout = getLoadout(++day);
+        while (day < loadouts.size() && getLoadout(day) == null) {
+            day += 1;
+        }
+        if (rmLoadout != null) {
+            activeLoadout = rmLoadout;
+            activeDay = day;
+            setState(ChestState.LOCKED);
+        } else {
+            activeLoadout = null;
+            activeDay = -1;
+            setState(ChestState.DONE);
+        }
+        return true;
     }
 
     /**

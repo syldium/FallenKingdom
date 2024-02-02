@@ -4,6 +4,7 @@ import fr.devsylone.fallenkingdom.MockUtils;
 import fr.devsylone.fallenkingdom.game.GameHelper;
 import fr.devsylone.fkpi.api.event.PlayerLockedChestInteractEvent;
 import fr.devsylone.fkpi.lockedchests.LockedChest;
+import fr.devsylone.fkpi.lockedchests.LockedChest.ChestState;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -19,6 +20,7 @@ import java.lang.reflect.Field;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class LockedChestTest {
@@ -82,6 +84,32 @@ public class LockedChestTest {
         setStartUnlockingTime(20001L);
         MockUtils.getServerMockSafe().getScheduler().performOneTick();
         assertEventFired(LockedChest.ChestState.UNLOCKED, MockUtils.getConstantPlayer().getUniqueId());
+    }
+
+    @Test
+    public void addLoadoutTest() {
+        lockedChest.addChestLoadout(3, 10, -1, null, new ItemStack[0]);
+        assertNotEquals(null, lockedChest.getLoadout(2));
+        assertNotEquals(null, lockedChest.getLoadout(3));
+        assertEquals(lockedChest.getUnlockLoadout(), lockedChest.getLoadout(2));
+        lockedChest.addChestLoadout(1, 10, -1, null, new ItemStack[0]);
+        assertNotEquals(null, lockedChest.getLoadout(1));
+        assertEquals(lockedChest.getUnlockLoadout(), lockedChest.getLoadout(1));
+    }
+
+    @Test
+    public void removeLoadoutTest() {
+        assertEquals(ChestState.LOCKED, lockedChest.getState());
+        lockedChest.addChestLoadout(3, 10, -1, null, new ItemStack[0]);
+        lockedChest.removeLoadout(2);
+        assertEquals(null, lockedChest.getLoadout(2));
+        assertEquals(lockedChest.getLoadout(3), lockedChest.getUnlockLoadout());
+        assertEquals(ChestState.LOCKED, lockedChest.getState());
+        lockedChest.removeLoadout(3);
+        assertEquals(null, lockedChest.getUnlockLoadout());
+        assertEquals(ChestState.DONE, lockedChest.getState());
+        lockedChest.addChestLoadout(1, 10, -1, null, new ItemStack[0]);
+        assertEquals(ChestState.LOCKED, lockedChest.getState());
     }
 
     private void fireInteractEvent() {

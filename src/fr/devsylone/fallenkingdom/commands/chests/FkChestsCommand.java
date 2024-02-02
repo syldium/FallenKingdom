@@ -9,6 +9,7 @@ import fr.devsylone.fallenkingdom.commands.chests.chestscommands.ChestLock;
 import fr.devsylone.fallenkingdom.commands.chests.chestscommands.ChestUnlock;
 import fr.devsylone.fallenkingdom.commands.chests.chestscommands.ChestsList;
 import fr.devsylone.fallenkingdom.commands.chests.chestscommands.Remove;
+import fr.devsylone.fallenkingdom.commands.chests.chestscommands.RemoveLoadout;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
@@ -30,6 +31,7 @@ public class FkChestsCommand extends FkParentCommand
 				.add(new ChestLock())
 				.add(new ChestUnlock())
 				.add(new Remove())
+                .add(new RemoveLoadout())
 				.build()
 		, Messages.CMD_MAP_CHEST);
 	}

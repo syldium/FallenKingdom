@@ -66,6 +66,7 @@ public enum Messages
     CMD_ERROR_NOT_CHEST("cmd.error.chests.look-at-chest"),
     CMD_ERROR_NOT_IN_PAUSE("cmd.error.not-in-pause"),
     CMD_ERROR_NOT_LOCKED_CHEST("cmd.error.chests.look-at-locked-chest"),
+    CMD_ERROR_NOT_LOCKED_CHEST_LOADOUT("cmd.error.chests.not-locked-chest-loadout"),
     CMD_ERROR_NO_PERMISSION("cmd.error.no-permission"),
     CMD_ERROR_NOT_AFFECTED_WORLD("cmd.error.not-affected-world"),
     CMD_ERROR_NO_TEAM("cmd.error.team.no-team"),
