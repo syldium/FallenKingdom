@@ -28,7 +28,7 @@ public class AddLoadout extends FkPlayerCommand {
     public CommandResult execute(Fk plugin, Player sender, FkPlayer fkp, List<String> args,
             String label) {
         Chest target = FkChestsCommand.getCommandChest(sender);
-        LockedChest chest = Fk.getInstance().getFkPI().getLockedChestsManager().getChestAt(target.getLocation());
+        LockedChest chest = plugin.getFkPI().getLockedChestsManager().getChestAt(target.getLocation());
         if (chest == null) {
             throw new FkLightException(Messages.CMD_ERROR_NOT_LOCKED_CHEST);
         }
