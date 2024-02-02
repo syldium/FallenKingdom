@@ -3,13 +3,7 @@ package fr.devsylone.fallenkingdom.commands.chests;
 import com.google.common.collect.ImmutableList;
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkParentCommand;
-import fr.devsylone.fallenkingdom.commands.chests.chestscommands.Add;
-import fr.devsylone.fallenkingdom.commands.chests.chestscommands.AddLoadout;
-import fr.devsylone.fallenkingdom.commands.chests.chestscommands.ChestLock;
-import fr.devsylone.fallenkingdom.commands.chests.chestscommands.ChestUnlock;
-import fr.devsylone.fallenkingdom.commands.chests.chestscommands.ChestsList;
-import fr.devsylone.fallenkingdom.commands.chests.chestscommands.Remove;
-import fr.devsylone.fallenkingdom.commands.chests.chestscommands.RemoveLoadout;
+import fr.devsylone.fallenkingdom.commands.chests.chestscommands.*;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
@@ -32,6 +26,7 @@ public class FkChestsCommand extends FkParentCommand
 				.add(new ChestUnlock())
 				.add(new Remove())
                 .add(new RemoveLoadout())
+                .add(new LoadLoadout())
 				.build()
 		, Messages.CMD_MAP_CHEST);
 	}
