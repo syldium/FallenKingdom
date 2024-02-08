@@ -24,21 +24,30 @@ public final class XPotionData
 	private final boolean upgraded;
 
 	private static final boolean VERSION1_8 = Bukkit.getBukkitVersion().contains("1.8");
+	private static final boolean SEPARATE_POTION_TYPES;
+
+	static {
+		boolean separatePotionTypes = false;
+		try {
+			PotionMeta.class.getMethod("setBasePotionType", PotionType.class);
+			separatePotionTypes = true;
+		} catch (NoSuchMethodException e) {
+			// ignore
+		}
+		SEPARATE_POTION_TYPES = separatePotionTypes;
+	}
 
 	public XPotionData(PotionType type, boolean extended, boolean upgraded)
 	{
 		Preconditions.checkNotNull(type, "Potion Type must not be null");
-		Preconditions.checkArgument(!(upgraded && type.getMaxLevel() == 1), "Potion Type is not upgradable");
-		Preconditions.checkArgument(!(extended && type.isInstant()), "Potion Type is not extendable");
+		if (!SEPARATE_POTION_TYPES) {
+			Preconditions.checkArgument(!(upgraded && type.getMaxLevel() == 1), "Potion Type is not upgradable");
+		}
+		Preconditions.checkArgument(!(extended && type.isInstant()), "Potion Type is not extendable" + type);
 		Preconditions.checkArgument(!(upgraded && extended), "Potion cannot be both extended and upgraded");
 		this.type = type;
 		this.extended = extended;
 		this.upgraded = upgraded;
-	}
-
-	public XPotionData(PotionType type)
-	{
-		this(type, false, false);
 	}
 
 	public PotionType getType()
@@ -90,8 +99,23 @@ public final class XPotionData
 			Potion potion = Potion.fromItemStack(potionItem);
 			return potion.getType() == null ? null : new XPotionData(potion.getType(), potion.hasExtendedDuration(), potion.getType().getMaxLevel() > 1 && potion.getLevel() > 1);
 		}
-		else
-			return fromPotionData(((PotionMeta) potionItem.getItemMeta()).getBasePotionData());
+		else {
+			final PotionMeta meta = (PotionMeta) potionItem.getItemMeta();
+			if (SEPARATE_POTION_TYPES) {
+				final PotionType type = meta.getBasePotionType();
+				return fromModernPotionType(type);
+			} else {
+				return fromPotionData(meta.getBasePotionData());
+			}
+		}
+	}
+
+	/**
+	 * Crée des données de potion à partir de la version 1.20.4.
+	 */
+	public static XPotionData fromModernPotionType(PotionType type)
+	{
+		return new XPotionData(type, type.getKey().getKey().startsWith("long_"), type.getKey().getKey().startsWith("strong_"));
 	}
 
 	public static XPotionData fromPotionData(PotionData data)
@@ -127,7 +151,11 @@ public final class XPotionData
 		else
 		{
 			PotionMeta meta = (PotionMeta) potionItem.getItemMeta();
-			meta.setBasePotionData(new PotionData(type, extended, upgraded));
+			if (SEPARATE_POTION_TYPES) {
+				meta.setBasePotionType(type);
+			} else {
+				meta.setBasePotionData(new PotionData(type, extended, upgraded));
+			}
 			potionItem.setItemMeta(meta);
 		}
 	}

@@ -1,6 +1,7 @@
 package fr.devsylone.fallenkingdom.commands.rules.rulescommands;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandRole;
@@ -9,6 +10,7 @@ import fr.devsylone.fallenkingdom.commands.abstraction.FkPlayerCommand;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fallenkingdom.utils.XItemStack;
+import fr.devsylone.fallenkingdom.version.potion.PotionIterator;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.rules.Rule;
 import org.bukkit.Bukkit;
@@ -105,39 +107,17 @@ public class DisabledPotions extends FkPlayerCommand implements Listener
 		for(int i = 5; i < 9; i++)
 			potionsInv.setItem(i, XMaterial.CYAN_STAINED_GLASS_PANE.parseItem());
 
-		for(PotionType type : PotionType.values())
-		{
-			if(type.getEffectType() == null)
-				continue;
-			
+		Iterator<XPotionData> iterator = PotionIterator.create(PotionType.values());
+
+		while (iterator.hasNext()) {
+			XPotionData potionData = iterator.next();
 			ItemStack potionItem = XMaterial.POTION.parseItem();
 			PotionMeta potionMeta = (PotionMeta) potionItem.getItemMeta();
-			XPotionData potionData = new XPotionData(type);
 			potionMeta.setLore(Collections.singletonList(getRule().isDisabled(potionData) ? LORE_DISABLED : LORE_ENABLED));
 			potionItem.setItemMeta(potionMeta);
 			potionData.applyTo(potionItem);
 			potionItem.setAmount(getRule().isDisabled(potionData) ? Bukkit.getVersion().contains("1.8") ? 0 : 64 : 1);
 			potionsInv.addItem(potionItem);
-
-			if(XPotionData.isUpgradable(type))
-			{
-				potionData = new XPotionData(type, false, true);
-				potionMeta.setLore(Collections.singletonList(getRule().isDisabled(potionData) ? LORE_DISABLED : LORE_ENABLED));
-				potionItem.setItemMeta(potionMeta);
-				potionData.applyTo(potionItem);
-				potionItem.setAmount(getRule().isDisabled(potionData) ? Bukkit.getVersion().contains("1.8") ? 0 : 64 : 1);
-				potionsInv.addItem(potionItem);
-			}
-
-			if(XPotionData.isExtendable(type))
-			{
-				potionData = new XPotionData(type, true, false);
-				potionMeta.setLore(Collections.singletonList(getRule().isDisabled(potionData) ? LORE_DISABLED : LORE_ENABLED));
-				potionItem.setItemMeta(potionMeta);
-				potionData.applyTo(potionItem);
-				potionItem.setAmount(getRule().isDisabled(potionData) ? Bukkit.getVersion().contains("1.8") ? 0 : 64 : 1);
-				potionsInv.addItem(potionItem);
-			}
 		}
 		return potionsInv;
 	}
