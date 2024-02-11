@@ -79,19 +79,23 @@ public class DisabledPotions extends FkPlayerCommand implements Listener
 
 		XPotionData data = XPotionData.fromItemStack(potionItem);
 
+		String potionName = data.getType().name();
+		if (!PotionIterator.USE_SEPARATE_POTION_TYPES) {
+			potionName += data.isExtended() ? " + redstone" : data.isUpgraded() ? " + glowstone" : "";
+		}
+
 		/*
 		 * amount = 1 -> potion actuellement autorisée
 		 * amount = 0 ou 64 -> potion actuellement désactivée
 		 */
-		if(potionItem.getAmount() != 1)
-		{
-			if(getRule().enablePotion(data))
-				broadcast(Messages.INVENTORY_POTION_ENABLE_CLICK.getMessage().replace("%potion%", data.getType().name() + (data.isExtended() ? " + redstone" : data.isUpgraded() ? " + glowstone" : "")));
-		}
-		else
-		{
-			if(getRule().disablePotion(data))
-				broadcast(Messages.INVENTORY_POTION_DISABLE_CLICK.getMessage().replace("%potion%", data.getType().name() + (data.isExtended() ? " + redstone" : data.isUpgraded() ? " + glowstone" : "")));
+		if (potionItem.getAmount() != 1) {
+			if (getRule().enablePotion(data)) {
+				broadcast(Messages.INVENTORY_POTION_ENABLE_CLICK.getMessage().replace("%potion%", potionName));
+			}
+		} else {
+			if (getRule().disablePotion(data)) {
+				broadcast(Messages.INVENTORY_POTION_DISABLE_CLICK.getMessage().replace("%potion%", potionName));
+			}
 		}
 	}
 
@@ -111,6 +115,10 @@ public class DisabledPotions extends FkPlayerCommand implements Listener
 
 		while (iterator.hasNext()) {
 			XPotionData potionData = iterator.next();
+			if (potionData.getType().getEffectType() == null) {
+				continue;
+			}
+
 			ItemStack potionItem = XMaterial.POTION.parseItem();
 			PotionMeta potionMeta = (PotionMeta) potionItem.getItemMeta();
 			potionMeta.setLore(Collections.singletonList(getRule().isDisabled(potionData) ? LORE_DISABLED : LORE_ENABLED));
