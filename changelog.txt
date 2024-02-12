@@ -532,3 +532,6 @@ Il est conseillé de réinitialiser les fichiers de langue.
 [+] Support des serveurs en 1.20.3 et 1.20.4
 [+] Désactive l'affichage des nombres sur le scoreboard (1.20.3+)
 [*] Corrige l'affichage de `/fk chests lock`
+
+      >> 2.22.11
+[*] Corrige la commande `/fk rules disabledPotions` sur les récents builds 1.20.4
