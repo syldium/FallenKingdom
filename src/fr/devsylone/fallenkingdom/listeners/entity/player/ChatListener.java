@@ -18,10 +18,6 @@ public class ChatListener implements Listener {
 
 	@EventHandler
 	public void event(AsyncPlayerChatEvent event) {
-		handleChat(event, true);
-	}
-
-	public static void handleChat(AsyncPlayerChatEvent event, boolean canEditRecipients) {
 		if (!Fk.getInstance().getWorldManager().isAffected(event.getPlayer().getWorld())) {
 			return;
 		}
@@ -46,7 +42,7 @@ public class ChatListener implements Listener {
 		String format = channel.getMessage() + "%s" + ChatColor.WHITE + " : %s";
 		event.setFormat(format);
 
-		if (canEditRecipients && channel == Messages.CHAT_TEAM) {
+		if (channel == Messages.CHAT_TEAM) {
 			event.getRecipients().clear();
 			for (String playerName : playerTeam.getPlayers()) {
 				Player player = Bukkit.getPlayer(playerName);

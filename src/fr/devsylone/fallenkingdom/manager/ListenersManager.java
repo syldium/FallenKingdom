@@ -13,7 +13,6 @@ import fr.devsylone.fallenkingdom.listeners.entity.mob.MobSpawn;
 import fr.devsylone.fallenkingdom.listeners.entity.player.AdvancementListener;
 import fr.devsylone.fallenkingdom.listeners.entity.player.ChangeGamemodeListener;
 import fr.devsylone.fallenkingdom.listeners.entity.player.ChatListener;
-import fr.devsylone.fallenkingdom.listeners.entity.player.ChatPreviewListener;
 import fr.devsylone.fallenkingdom.listeners.entity.player.DisabledPotionsListener;
 import fr.devsylone.fallenkingdom.listeners.entity.player.FoodListener;
 import fr.devsylone.fallenkingdom.listeners.entity.player.GoToNetherListener;
@@ -26,7 +25,6 @@ import fr.devsylone.fallenkingdom.listeners.entity.player.RespawnListener;
 import fr.devsylone.fallenkingdom.listeners.entity.player.ScrollListener;
 import fr.devsylone.fallenkingdom.listeners.entity.player.UsePortalListener;
 import fr.devsylone.fallenkingdom.version.Version;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.plugin.PluginManager;
 
 public class ListenersManager
@@ -58,11 +56,5 @@ public class ListenersManager
 		pm.registerEvents(new TeamChangeListener(plugin), plugin);
 		if (Version.classExists("org.bukkit.event.player.PlayerAdvancementDoneEvent"))
 			pm.registerEvents(new AdvancementListener(), plugin);
-
-		try {
-			if (AsyncPlayerChatEvent.class.isAssignableFrom(Class.forName("org.bukkit.event.player.AsyncPlayerChatPreviewEvent"))) {
-				pm.registerEvents(new ChatPreviewListener(), plugin);
-			}
-		} catch (ClassNotFoundException ignored) {}
 	}
 }
