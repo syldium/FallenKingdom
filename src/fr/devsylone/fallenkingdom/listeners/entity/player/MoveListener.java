@@ -82,42 +82,52 @@ public class MoveListener implements Listener
 
 		Team pTeam = FkPI.getInstance().getTeamManager().getPlayerTeam(e.getPlayer());
 
-		for(Team team : FkPI.getInstance().getTeamManager().getTeams())
-		{
-			if(team.getBase() != null)
-			{
-				if(team.getBase().contains(e.getTo()) && !team.getBase().contains(e.getFrom()))
-					if(team.equals(pTeam))
-						fkp.sendMessage(Messages.PLAYER_SELF_BASE_ENTER);
-					else
-						fkp.sendMessage(Messages.PLAYER_BASE_ENTER.getMessage().replace("%team%", team.toString()));
+		for (Team team : FkPI.getInstance().getTeamManager().getTeams()) {
+			Base base = team.getBase();
+			if (base == null) {
+				continue;
+			}
+			boolean wasInside = base.contains(e.getFrom());
+			boolean isInside = base.contains(e.getTo());
+			if (!wasInside && isInside) {
+				if (team.equals(pTeam)) {
+					fkp.sendMessage(Messages.PLAYER_SELF_BASE_ENTER);
+				} else {
+					fkp.sendMessage(Messages.PLAYER_BASE_ENTER.getMessage().replace("%team%", team.toString()));
+				}
+			} else if (wasInside && !isInside) {
+				if (team.equals(pTeam)) {
+					fkp.sendMessage(Messages.PLAYER_SELF_BASE_EXIT);
+				} else {
+					fkp.sendMessage(Messages.PLAYER_BASE_EXIT.getMessage().replace("%team%", team.toString()));
+				}
+			}
 
-				else if(team.getBase().contains(e.getFrom()) && !team.getBase().contains(e.getTo()))
-					if(team.equals(pTeam))
-						fkp.sendMessage(Messages.PLAYER_SELF_BASE_EXIT);
-					else
-						fkp.sendMessage(Messages.PLAYER_BASE_EXIT.getMessage().replace("%team%", team.toString()));
-
-				if(team.getBase().getChestsRoom() != null && FkPI.getInstance().getChestsRoomsManager().isEnabled() && e.getPlayer().getGameMode() != GameMode.SPECTATOR)
-				{
-					if(team.getBase().getChestsRoom().contains(e.getTo()) && !team.getBase().getChestsRoom().contains(e.getFrom()))
-						if(team.equals(pTeam))
+			if (base.getChestsRoom() != null && FkPI.getInstance().getChestsRoomsManager().isEnabled() && e.getPlayer().getGameMode() != GameMode.SPECTATOR) {
+				if (base.getChestsRoom().contains(e.getTo()) && !base.getChestsRoom().contains(e.getFrom())) {
+					if (team.equals(pTeam)) {
+						if (wasInside == isInside) {
 							fkp.sendMessage(Messages.PLAYER_SELF_CHEST_ROOM_ENTER);
-						else
-						{
-							fkp.sendMessage(Messages.PLAYER_CHEST_ROOM_ENTER.getMessage().replace("%team%", team.toString()));
-							if(Fk.getInstance().getGame().isAssaultsEnabled())
-								team.getBase().getChestsRoom().addEnemyInside(e.getPlayer());
 						}
-
-					else if(team.getBase().getChestsRoom().contains(e.getFrom()) && !team.getBase().getChestsRoom().contains(e.getTo()))
-						if(team.equals(pTeam))
+					} else {
+						if (wasInside == isInside) {
+							fkp.sendMessage(Messages.PLAYER_CHEST_ROOM_ENTER.getMessage().replace("%team%", team.toString()));
+						}
+						if (Fk.getInstance().getGame().isAssaultsEnabled()) {
+							base.getChestsRoom().addEnemyInside(e.getPlayer());
+						}
+					}
+				} else if (base.getChestsRoom().contains(e.getFrom()) && !base.getChestsRoom().contains(e.getTo())) {
+					if (team.equals(pTeam)) {
+						if (wasInside == isInside) {
 							fkp.sendMessage(Messages.PLAYER_SELF_CHEST_ROOM_EXIT);
-						else
-						{
-							team.getBase().getChestsRoom().removeEnemyInside(e.getPlayer());
+						}
+					} else {
+						base.getChestsRoom().removeEnemyInside(e.getPlayer());
+						if (wasInside == isInside) {
 							fkp.sendMessage(Messages.PLAYER_CHEST_ROOM_EXIT.getMessage().replace("%team%", team.toString()));
 						}
+					}
 				}
 			}
 		}

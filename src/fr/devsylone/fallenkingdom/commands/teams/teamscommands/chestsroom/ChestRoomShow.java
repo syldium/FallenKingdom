@@ -25,8 +25,10 @@ public class ChestRoomShow extends FkPlayerCommand {
             throw new FkLightException(Messages.CMD_ERROR_CHEST_ROOM_DISABLED);
 
         Team team = plugin.getFkPI().getTeamManager().getPlayerTeam(sender);
-        if(team == null || team.getBase() == null || team.getBase().getChestsRoom() == null || !team.getBase().getChestsRoom().exists())
+        if(team == null || team.getBase() == null || team.getBase().getChestsRoom() == null)
             throw new FkLightException(Messages.CMD_ERROR_CHEST_ROOM_NONE);
+        if(!team.getBase().getChestsRoom().exists())
+            throw new FkLightException(Messages.CMD_ERROR_NO_CHEST_ROOM);
 
         team.getBase().getChestsRoom().show(sender, ArgumentParser.parseViewTime(args.get(0), Messages.CMD_ERROR_CHEST_ROOM_INVALID_TIME));
         return CommandResult.SUCCESS;

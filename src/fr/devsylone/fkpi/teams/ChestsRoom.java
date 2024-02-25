@@ -58,6 +58,9 @@ public class ChestsRoom implements Saveable
 
 	public boolean contains(Location test)
 	{
+		if (min == null || max == null) {
+			return base.contains(test);
+		}
 		return isIn(test, min, max, 0);
 	}
 
@@ -121,7 +124,7 @@ public class ChestsRoom implements Saveable
 	public void show(final Player p, final int seetime)
 	{
 		if(chests.isEmpty() || min == null)
-			throw new IllegalStateException(Messages.CMD_ERROR_NO_CHEST_ROOM.getMessage());
+			throw new IllegalStateException("Cannot show a chest room without any chest.");
 
 		final Location initLoc = p.getLocation().clone();
 
