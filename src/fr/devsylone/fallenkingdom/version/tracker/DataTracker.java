@@ -37,7 +37,11 @@ public class DataTracker {
 
             Method serialize = null;
             try {
-                final Class<?> serializedType = NMSUtils.nmsClass(package1_17, "DataWatcher$b");
+                Class<?> serializedTypeOpt = NMSUtils.nmsOptionalClass(package1_17, "DataWatcher$c").orElse(null);
+                if (serializedTypeOpt == null) {
+                    serializedTypeOpt = NMSUtils.nmsClass(package1_17, "DataWatcher$b");
+                }
+                Class<?> serializedType = serializedTypeOpt;
                 serialize = Arrays.stream(TRACKED_ENTRY_TYPE.getMethods())
                         .filter(method -> method.getParameterCount() == 0 && serializedType.equals(method.getReturnType()))
                         .findFirst().orElseThrow(NoSuchMethodException::new);

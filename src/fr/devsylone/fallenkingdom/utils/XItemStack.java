@@ -15,8 +15,10 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -28,6 +30,7 @@ public class XItemStack {
 
     private final static Method CHAT_COMPONENT_FROM_JSON;
     private final static Method CHAT_COMPONENT_TO_JSON;
+    private static final Object EMPTY_REGISTRY;
 
     public final static Class<?> ITEM_STACK;
     private final static Method AS_NMS_COPY;
@@ -44,15 +47,38 @@ public class XItemStack {
         try {
             Class<?> chatSerializer = NMSUtils.nmsClass("network.chat", "IChatBaseComponent$ChatSerializer");
 
-            CHAT_COMPONENT_FROM_JSON = Arrays.stream(chatSerializer.getDeclaredMethods())
+            Optional<Class<?>> registryAccess = NMSUtils.nmsOptionalClass("core", "IRegistryCustom");
+            Optional<Method> parseFromJson = Arrays.stream(chatSerializer.getDeclaredMethods())
                     .filter(m -> CHAT_BASE_COMPONENT.isAssignableFrom(m.getReturnType()))
                     .filter(m -> Arrays.equals(m.getParameterTypes(), new Class[]{String.class}))
-                    .findFirst().orElseThrow(RuntimeException::new);
-
-            CHAT_COMPONENT_TO_JSON = Arrays.stream(chatSerializer.getDeclaredMethods())
-                    .filter(m -> m.getReturnType().equals(String.class))
-                    .filter(m -> Arrays.equals(m.getParameterTypes(), new Class[]{CHAT_BASE_COMPONENT}))
-                    .findAny().orElseThrow(RuntimeException::new);
+                    .findFirst();
+            if (parseFromJson.isPresent()) {
+                CHAT_COMPONENT_FROM_JSON = parseFromJson.get();
+                CHAT_COMPONENT_TO_JSON = Arrays.stream(chatSerializer.getDeclaredMethods())
+                        .filter(m -> m.getReturnType().equals(String.class))
+                        .filter(m -> Arrays.equals(m.getParameterTypes(), new Class[]{CHAT_BASE_COMPONENT}))
+                        .findAny().orElseThrow(RuntimeException::new);
+                EMPTY_REGISTRY = null;
+            } else {
+                CHAT_COMPONENT_FROM_JSON = Arrays.stream(chatSerializer.getDeclaredMethods())
+                        .filter(m -> CHAT_BASE_COMPONENT.isAssignableFrom(m.getReturnType()))
+                        .filter(m -> {
+                            Class<?>[] params = m.getParameterTypes();
+                            return params.length == 2 && params[0].equals(String.class) && params[1].isAssignableFrom(registryAccess.get());
+                        })
+                        .findAny().orElseThrow(RuntimeException::new);
+                CHAT_COMPONENT_TO_JSON = Arrays.stream(chatSerializer.getDeclaredMethods())
+                        .filter(m -> m.getReturnType().equals(String.class))
+                        .filter(m -> {
+                            Class<?>[] params = m.getParameterTypes();
+                            return params.length == 2 && params[0].equals(CHAT_BASE_COMPONENT) && params[1].isAssignableFrom(registryAccess.get());
+                        })
+                        .findAny().orElseThrow(RuntimeException::new);
+                EMPTY_REGISTRY = Arrays.stream(registryAccess.get().getFields())
+                        .filter(field -> Modifier.isStatic(field.getModifiers()) && registryAccess.get().isAssignableFrom(field.getType()))
+                        .findAny().orElseThrow(RuntimeException::new)
+                        .get(null);
+            }
 
             ITEM_STACK = NMSUtils.nmsClass("world.item", "ItemStack");
             AS_NMS_COPY = NMSUtils.obcClass("inventory.CraftItemStack")
@@ -131,7 +157,13 @@ public class XItemStack {
         for (Field field : obj.getClass().getDeclaredFields()) {
             if (field.getType().equals(CHAT_BASE_COMPONENT) && i++ == count) {
                 field.setAccessible(true);
-                return ComponentSerializer.parse((String) CHAT_COMPONENT_TO_JSON.invoke(null, field.get(obj)));
+                String json;
+                if (EMPTY_REGISTRY != null) {
+                    json = (String) CHAT_COMPONENT_TO_JSON.invoke(null, field.get(obj), EMPTY_REGISTRY);
+                } else {
+                    json = (String) CHAT_COMPONENT_TO_JSON.invoke(null, field.get(obj));
+                }
+                return ComponentSerializer.parse(json);
             }
         }
         throw new RuntimeException("Text component field not found");

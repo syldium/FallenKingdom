@@ -13,7 +13,9 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +34,7 @@ class NMSHologram1_17 extends NMSHologram {
     private static final @Nullable Constructor<?> PACKET_ENTITY_METADATA_CONSTRUCTOR;
     private static final Class<?> PACKET_ENTITY_METADATA;
     private static final Class<?> PACKET_ENTITY_POSITION;
+    private static final Field[] PACKET_ENTITY_POSITION_FIELDS;
 
     private static final boolean PACKET_DESTROY_ENTITY_LIST;
     private static final boolean PACKET_SPAWN_ENTITY_HEAD_YAW;
@@ -68,7 +71,13 @@ class NMSHologram1_17 extends NMSHologram {
             PACKET_DESTROY_ENTITY = entityDestroy;
             PACKET_ENTITY_EQUIPMENT = packetEntityEquipment.getConstructor(int.class, List.class);
             PACKET_ENTITY_POSITION = NMSUtils.nmsClass(packetsPackage, "PacketPlayOutEntityTeleport");
+            PACKET_ENTITY_POSITION_FIELDS = Arrays.stream(PACKET_ENTITY_POSITION.getDeclaredFields())
+                    .filter(field -> !Modifier.isStatic(field.getModifiers()))
+                    .toArray(Field[]::new);
             PACKET_ENTITY_METADATA = NMSUtils.nmsClass(packetsPackage, "PacketPlayOutEntityMetadata");
+            for (Field field : PACKET_ENTITY_POSITION_FIELDS) {
+                field.setAccessible(true);
+            }
             Constructor<?> entityMetadataConstructor = null;
             try {
                 entityMetadataConstructor = PACKET_ENTITY_METADATA.getConstructor(int.class, List.class);
@@ -139,10 +148,10 @@ class NMSHologram1_17 extends NMSHologram {
     protected void sendTeleport(Player p, int id, Location newLoc) {
         try {
             Object packet = Unsafety.allocateInstance(PACKET_ENTITY_POSITION);
-            PacketUtils.setField("a", id, packet);
-            PacketUtils.setField("b", newLoc.getX(), packet);
-            PacketUtils.setField("c", newLoc.getY(), packet);
-            PacketUtils.setField("d", newLoc.getZ(), packet);
+            PACKET_ENTITY_POSITION_FIELDS[0].set(packet, id);
+            PACKET_ENTITY_POSITION_FIELDS[1].set(packet, newLoc.getX());
+            PACKET_ENTITY_POSITION_FIELDS[2].set(packet, newLoc.getY());
+            PACKET_ENTITY_POSITION_FIELDS[3].set(packet, newLoc.getZ());
             PacketUtils.sendPacket(p, packet);
         } catch (ReflectiveOperationException e) {
             e.printStackTrace();
