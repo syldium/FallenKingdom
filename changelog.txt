@@ -535,3 +535,10 @@ Il est conseillé de réinitialiser les fichiers de langue.
 
       >> 2.22.11
 [*] Corrige la commande `/fk rules disabledPotions` sur les récents builds 1.20.4
+--------
+
+      >> 2.23.0
+[+] Support des serveurs en 1.20.5
+[*] Lorsque aucun coffre n'est présent dans la base, toute la base est attaquable
+[*] Conserve le premier caractère des messages lorsque le chat d'équipe est désactivé
+[-] Retire la prévisualisation du chat (1.19-1.19.2)
