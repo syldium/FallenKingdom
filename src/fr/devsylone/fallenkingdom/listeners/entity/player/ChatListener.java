@@ -29,9 +29,9 @@ public class ChatListener implements Listener {
 
 		Messages channel = Messages.CHAT_GLOBAL;
 		Team playerTeam = FkPI.getInstance().getTeamManager().getPlayerTeam(event.getPlayer());
-		if (playerTeam != null) {
-			char globalChat = FkPI.getInstance().getRulesManager().getRule(Rule.GLOBAL_CHAT_PREFIX);
-			if (globalChat == GLOBAL_CHAT_ONLY || message.charAt(0) == globalChat) {
+		char globalChat = FkPI.getInstance().getRulesManager().getRule(Rule.GLOBAL_CHAT_PREFIX);
+		if (playerTeam != null && globalChat != GLOBAL_CHAT_ONLY) {
+			if (message.charAt(0) == globalChat) {
 				message = message.substring(1);
 			} else {
 				channel = Messages.CHAT_TEAM;
