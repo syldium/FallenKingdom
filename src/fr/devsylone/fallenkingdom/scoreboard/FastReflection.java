@@ -6,6 +6,7 @@ import fr.devsylone.fallenkingdom.utils.Unsafety;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 @SuppressWarnings("unused")
@@ -18,6 +19,14 @@ public final class FastReflection extends NMSUtils {
             }
         }
         throw new ClassNotFoundException("No class in " + parentClass.getCanonicalName() + " matches the predicate.");
+    }
+
+    static Optional<MethodHandle> optionalConstructor(Class<?> declaringClass, MethodHandles.Lookup lookup, MethodType methodTypes) throws IllegalAccessException {
+        try {
+            return Optional.of(lookup.findConstructor(declaringClass, methodTypes));
+        } catch (NoSuchMethodException e) {
+            return Optional.empty();
+        }
     }
 
     public static PacketConstructor findPacketConstructor(Class<?> packetClass, MethodHandles.Lookup lookup) {
