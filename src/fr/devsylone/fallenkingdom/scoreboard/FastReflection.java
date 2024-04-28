@@ -21,9 +21,9 @@ public final class FastReflection extends NMSUtils {
         throw new ClassNotFoundException("No class in " + parentClass.getCanonicalName() + " matches the predicate.");
     }
 
-    static Optional<MethodHandle> optionalConstructor(Class<?> declaringClass, MethodHandles.Lookup lookup, MethodType methodTypes) throws IllegalAccessException {
+    static Optional<MethodHandle> optionalConstructor(Class<?> declaringClass, MethodHandles.Lookup lookup, MethodType type) throws IllegalAccessException {
         try {
-            return Optional.of(lookup.findConstructor(declaringClass, methodTypes));
+            return Optional.of(lookup.findConstructor(declaringClass, type));
         } catch (NoSuchMethodException e) {
             return Optional.empty();
         }
