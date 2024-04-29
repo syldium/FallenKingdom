@@ -6,6 +6,7 @@ import com.destroystokyo.paper.profile.ProfileProperty;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -23,7 +24,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static fr.devsylone.fallenkingdom.version.Version.classExists;
 import static fr.devsylone.fallenkingdom.version.tracker.ChatMessage.CHAT_BASE_COMPONENT;
 
 public class XItemStack {
@@ -94,7 +94,15 @@ public class XItemStack {
                 hasComponentApi = false;
             }
             HAS_COMPONENT_API = hasComponentApi;
-            HAS_PLAYER_PROFILE_API = classExists("com.destroystokyo.paper.profile.PlayerProfile");
+            boolean hasPlayerProfileApi;
+            try {
+                Class.forName("com.destroystokyo.paper.profile.PlayerProfile");
+                Player.class.getMethod("setPlayerProfile", PlayerProfile.class);
+                hasPlayerProfileApi = true;
+            } catch (ReflectiveOperationException e) {
+                hasPlayerProfileApi = false;
+            }
+            HAS_PLAYER_PROFILE_API = hasPlayerProfileApi;
 
             Class<?> craftMeta = NMSUtils.obcClass("inventory.CraftMetaItem");
             DISPLAY_NAME = craftMeta.getDeclaredField("displayName");
