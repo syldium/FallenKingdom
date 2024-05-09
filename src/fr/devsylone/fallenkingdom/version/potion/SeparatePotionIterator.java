@@ -14,6 +14,7 @@ class SeparatePotionIterator implements Iterator<XPotionData> {
         this.types = types;
     }
 
+    @Override
     public boolean hasNext() {
         return this.index < this.types.length;
     }

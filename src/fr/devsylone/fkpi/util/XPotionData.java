@@ -11,6 +11,8 @@ import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import static fr.devsylone.fallenkingdom.version.Version.VersionType.V1_16;
 
@@ -113,7 +115,7 @@ public final class XPotionData
 	/**
 	 * Crée des données de potion à partir de la version 1.20.4.
 	 */
-	public static XPotionData fromModernPotionType(PotionType type)
+	public static @NotNull XPotionData fromModernPotionType(@NotNull PotionType type)
 	{
 		return new XPotionData(type, type.getKey().getKey().startsWith("long_"), type.getKey().getKey().startsWith("strong_"));
 	}
@@ -123,14 +125,22 @@ public final class XPotionData
 		return data == null ? null : new XPotionData(data.getType(), data.isExtended(), data.isUpgraded());
 	}
 
-	public static XPotionData fromProjectile(Projectile projectile)
-	{
-		if(projectile instanceof ThrownPotion)
+	public static @Nullable XPotionData fromProjectile(@NotNull Projectile projectile) {
+		if (projectile instanceof ThrownPotion) {
 			return fromItemStack(((ThrownPotion) projectile).getItem());
-		else if(projectile instanceof TippedArrow)
+		} else if (projectile instanceof TippedArrow) {
 			return fromPotionData(((TippedArrow) projectile).getBasePotionData());
-		else if(projectile instanceof Arrow)
-			return V1_16.isHigherOrEqual() ? fromPotionData(((Arrow) projectile).getBasePotionData()) : null;
+		} else if (projectile instanceof Arrow) {
+			if (SEPARATE_POTION_TYPES) {
+				final PotionType type = ((Arrow) projectile).getBasePotionType();
+				// noinspection ConstantValue it is nullable if the arrow is not tipped
+				if (type != null) {
+					return fromModernPotionType(type);
+				}
+			} else if (V1_16.isHigherOrEqual()) {
+				return fromPotionData(((Arrow) projectile).getBasePotionData());
+			}
+		}
 		return null;
 	}
 
