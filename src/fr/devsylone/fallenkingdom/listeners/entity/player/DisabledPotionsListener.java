@@ -13,8 +13,8 @@ import fr.devsylone.fkpi.util.XPotionData;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Arrow;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Projectile;
+import org.bukkit.entity.ThrownPotion;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
@@ -125,7 +125,7 @@ public class DisabledPotionsListener implements Listener
 	@EventHandler
 	public void event(ProjectileLaunchEvent e)
 	{
-		if(e.getEntityType() == EntityType.SPLASH_POTION || Version.VersionType.V1_9_V1_12.isHigherOrEqual() && e.getEntity() instanceof Arrow)
+		if(e.getEntity() instanceof ThrownPotion || Version.VersionType.V1_9_V1_12.isHigherOrEqual() && e.getEntity() instanceof Arrow)
 		{
 			Projectile projectile = e.getEntity();
 			XPotionData potionData = XPotionData.fromProjectile(e.getEntity());

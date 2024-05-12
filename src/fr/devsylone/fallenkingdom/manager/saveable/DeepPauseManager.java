@@ -18,7 +18,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -95,12 +94,12 @@ public class DeepPauseManager implements Saveable
                 if (!Fk.getInstance().getWorldManager().isAffected(world)) {
                     continue;
                 }
-                world.getEntities().stream()
-                    .filter(entity -> entity.getType().equals(EntityType.DROPPED_ITEM))
-                    .forEach(item -> {
-                        setItemAge((Item) item, Short.MIN_VALUE);
-                        unDespawnable.add(item);
-                    });
+                for (Entity entity : world.getEntities()) {
+                    if (entity instanceof Item) {
+                        setItemAge((Item) entity, Short.MIN_VALUE);
+                        unDespawnable.add(entity);
+                    }
+                }
             }
         }
     }

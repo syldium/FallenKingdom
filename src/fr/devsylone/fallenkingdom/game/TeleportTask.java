@@ -1,5 +1,6 @@
 package fr.devsylone.fallenkingdom.game;
 
+import com.cryptomorin.xseries.XPotion;
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.version.Environment;
 import fr.devsylone.fkpi.teams.Team;
@@ -30,7 +31,7 @@ class TeleportTask implements Runnable {
             }
 
             Environment.teleportAsync(player, team.getBase().getTpPoint());
-            player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20 * 5, 4));
+            player.addPotionEffect(new PotionEffect(XPotion.DAMAGE_RESISTANCE.getPotionEffectType(), 20 * 5, 4));
             player.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, 20 * 30, 4));
             player.setGameMode(GameMode.SURVIVAL);
             player.setHealth(20);

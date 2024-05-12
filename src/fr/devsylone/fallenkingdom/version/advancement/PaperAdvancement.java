@@ -35,7 +35,6 @@ public final class PaperAdvancement {
         meta.displayName(display.title().style(BLUE_DARK_AQUA));
         meta.lore(Arrays.asList(text(key.asString(), GRAY_ITALIC), display.description().style(BLUE_ITALIC)));
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        meta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
         itemStack.setItemMeta(meta);
         return itemStack;
     }

@@ -7,8 +7,8 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.entity.ThrownPotion;
 import org.bukkit.entity.TippedArrow;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
 import org.jetbrains.annotations.NotNull;
@@ -91,24 +91,24 @@ public final class XPotionData
 		return(this.upgraded == other.upgraded && this.extended == other.extended && this.type == other.type);
 	}
 
-	public static XPotionData fromItemStack(ItemStack potionItem)
-	{
-		if(potionItem == null || !(potionItem.getItemMeta() instanceof PotionMeta))
+	public static @Nullable XPotionData fromItemStack(ItemStack potionItem) {
+		if (potionItem == null) {
 			return null;
-
-		if(VERSION1_8)
-		{
-			Potion potion = Potion.fromItemStack(potionItem);
-			return potion.getType() == null ? null : new XPotionData(potion.getType(), potion.hasExtendedDuration(), potion.getType().getMaxLevel() > 1 && potion.getLevel() > 1);
 		}
-		else {
-			final PotionMeta meta = (PotionMeta) potionItem.getItemMeta();
-			if (SEPARATE_POTION_TYPES) {
-				final PotionType type = meta.getBasePotionType();
-				return fromModernPotionType(type);
-			} else {
-				return fromPotionData(meta.getBasePotionData());
-			}
+		final ItemMeta itemMeta = potionItem.getItemMeta();
+		if (!(itemMeta instanceof PotionMeta)) {
+			return null;
+		}
+
+		final PotionMeta meta = (PotionMeta) itemMeta;
+		if (SEPARATE_POTION_TYPES) {
+			final PotionType type = meta.getBasePotionType();
+			return type == null ? null : fromModernPotionType(type);
+		} else if (VERSION1_8) {
+			Potion1_8 potion = Potion1_8.fromItemStack(potionItem);
+			return potion.getType() == null ? null : new XPotionData(potion.getType(), potion.hasExtendedDuration(), potion.getType().getMaxLevel() > 1 && potion.getLevel() > 1);
+		} else {
+			return fromPotionData(meta.getBasePotionData());
 		}
 	}
 
@@ -133,7 +133,6 @@ public final class XPotionData
 		} else if (projectile instanceof Arrow) {
 			if (SEPARATE_POTION_TYPES) {
 				final PotionType type = ((Arrow) projectile).getBasePotionType();
-				// noinspection ConstantValue it is nullable if the arrow is not tipped
 				if (type != null) {
 					return fromModernPotionType(type);
 				}
@@ -146,21 +145,19 @@ public final class XPotionData
 
 	public void applyTo(ItemStack potionItem)
 	{
-		if(potionItem == null || !(potionItem.getItemMeta() instanceof PotionMeta))
+		if (potionItem == null) {
 			return;
-
-		if(VERSION1_8)
-		{
-			Potion potion = Potion.fromItemStack(potionItem);
-			potion.setType(type);
-			if(!type.isInstant())
-				potion.setHasExtendedDuration(extended);
-			potion.setLevel(upgraded ? 2 : 1);
-			potion.apply(potionItem);
 		}
-		else
-		{
-			PotionMeta meta = (PotionMeta) potionItem.getItemMeta();
+		final ItemMeta itemMeta = potionItem.getItemMeta();
+		if (!(itemMeta instanceof PotionMeta)) {
+			return;
+		}
+
+		if (VERSION1_8) {
+			Potion1_8 potion = new Potion1_8(type, upgraded ? 2 : 1, false, type.isInstant() && extended);
+			potion.apply(potionItem);
+		} else {
+			PotionMeta meta = (PotionMeta) itemMeta;
 			if (SEPARATE_POTION_TYPES) {
 				meta.setBasePotionType(type);
 			} else {
