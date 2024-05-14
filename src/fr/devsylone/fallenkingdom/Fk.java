@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
 
+import fr.devsylone.fallenkingdom.commands.FkLifecycleRegisteredExecutor;
 import fr.devsylone.fallenkingdom.display.GlobalDisplayService;
 import fr.devsylone.fallenkingdom.updater.GitHubAssetInfo;
 import fr.devsylone.fallenkingdom.updater.UpdateChecker;
@@ -55,6 +56,8 @@ import fr.devsylone.fkpi.rules.Rule;
 import fr.devsylone.fkpi.teams.Team;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
+
+import static fr.devsylone.fallenkingdom.version.Version.classExists;
 
 @Getter
 public class Fk extends JavaPlugin
@@ -150,7 +153,9 @@ public class Fk extends JavaPlugin
 		PluginCommand command = Objects.requireNonNull(getCommand("fk"), "Unable to register /fk command");
 		if (Version.isAsyncTabCompleteSupported())
 			if (Version.isAsyncPlayerSendCommandsEventSupported())
-				this.commandManager = new FkAsyncRegisteredCommandExecutor(this, command);
+				this.commandManager = classExists("io.papermc.paper.command.brigadier.Commands")
+						? new FkLifecycleRegisteredExecutor(this, command)
+						: new FkAsyncRegisteredCommandExecutor(this, command);
 			else
 				this.commandManager = new FkAsyncCommandExecutor(this, command);
 		else
