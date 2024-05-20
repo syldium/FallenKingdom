@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.teams.Team;
+import io.papermc.paper.ServerBuildInfo;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.plugin.Plugin;
@@ -30,6 +31,7 @@ import static fr.devsylone.fallenkingdom.version.Version.classExists;
 public final class DebuggerUtils
 {
     private static final String USER_AGENT = "FallenKingdom/Debug";
+    private static final boolean HAS_SERVER_BUILD_INFO = classExists("io.papermc.paper.ServerBuildInfo");
 
     private DebuggerUtils() {}
 
@@ -140,7 +142,7 @@ public final class DebuggerUtils
     }
 
     private static @NotNull String getRawServerSoftwareName() {
-        if (classExists("io.papermc.paper.threadedregions.scheduler.AsyncScheduler")) {
+        if (classExists("io.papermc.paper.threadedregions.RegionizedServerInitEvent")) {
             return "Folia";
         } else if (classExists("com.destroystokyo.paper.PaperConfig") || classExists("io.papermc.paper.configuration.Configuration")) {
             return "Paper";
@@ -153,6 +155,14 @@ public final class DebuggerUtils
 
     private static @NotNull String getServerSoftwareName() {
         final String deducedName = getRawServerSoftwareName();
+        if (HAS_SERVER_BUILD_INFO) {
+            final ServerBuildInfo buildInfo = ServerBuildInfo.buildInfo();
+            if (buildInfo.brandName().equals(deducedName)) {
+                return deducedName;
+            } else {
+                return deducedName + " fork (" + buildInfo.brandName() + ')';
+            }
+        }
         if (Bukkit.getVersion().contains(deducedName)) {
             return deducedName;
         } else {
