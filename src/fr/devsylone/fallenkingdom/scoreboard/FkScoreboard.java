@@ -10,6 +10,7 @@ import fr.devsylone.fallenkingdom.version.Version;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.rules.Rule;
 import fr.mrmicky.fastboard.FastBoard;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -43,7 +44,14 @@ public class FkScoreboard
 	public void updateLines(@NotNull Collection<@NotNull String> lines)
 	{
 		if (Version.VersionType.V1_13.isHigherOrEqual()) {
-			this.sidebarBoard.updateLines(lines);
+			List<String> scores = null;
+			if (this.fkPlayer.getState() == PlayerState.EDITING_SCOREBOARD) {
+				scores = new ArrayList<>(lines.size());
+				for (int line = lines.size() - 1; line >= 0; line--) {
+					scores.add(ChatColor.RED + String.valueOf(line));
+				}
+			}
+			this.sidebarBoard.updateLines(lines, scores);
 		} else {
 			final List<String> truncated = new ArrayList<>(lines.size());
 			for (String line : lines) {
@@ -56,7 +64,11 @@ public class FkScoreboard
 	public void updateLine(int line, @NotNull String text)
 	{
 		if (Version.VersionType.V1_13.isHigherOrEqual()) {
-			this.sidebarBoard.updateLine(line, text);
+			String score = null;
+			if (this.fkPlayer.getState() == PlayerState.EDITING_SCOREBOARD) {
+				score = ChatColor.RED + String.valueOf(this.displayService.scoreboard().reverseIndex(line));
+			}
+			this.sidebarBoard.updateLine(line, text, score);
 		} else {
 			this.sidebarBoard.updateLine(line, text.substring(0, Math.min(30, text.length())));
 		}
