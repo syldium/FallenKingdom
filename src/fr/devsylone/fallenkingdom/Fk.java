@@ -398,6 +398,10 @@ public class Fk extends JavaPlugin
 		try (ReadableByteChannel readableByteChannel = Channels.newChannel(new URI(assetInfo.browserDownloadUrl()).toURL().openStream());
 			 FileOutputStream fileOutputStream = new FileOutputStream(this.getDataFolder().getParentFile().getName() + '/' + assetInfo.name())) {
 			fileOutputStream.getChannel().transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
+			final File parent = new File(this.getFile().getParentFile().getParentFile(), this.getFile().getName());
+			if (parent.exists()) {
+				return parent.delete() && this.getFile().delete();
+			}
 			return this.getFile().delete();
 		} catch (IOException ex) {
 			this.getLogger().log(Level.SEVERE, "Unable to download the update.", ex);
