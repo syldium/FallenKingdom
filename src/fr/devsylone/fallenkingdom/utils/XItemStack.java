@@ -1,6 +1,6 @@
 package fr.devsylone.fallenkingdom.utils;
 
-import com.cryptomorin.xseries.SkullUtils;
+import com.cryptomorin.xseries.XSkull;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -184,7 +184,7 @@ public class XItemStack {
             profile.setProperty(new ProfileProperty("textures", texture));
             meta.setPlayerProfile(profile);
         } else {
-            SkullUtils.applySkin(meta, texture);
+            XSkull.of(meta).profile(texture).apply();
         }
         return meta;
     }

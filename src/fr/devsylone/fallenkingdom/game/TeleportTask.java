@@ -31,7 +31,7 @@ class TeleportTask implements Runnable {
             }
 
             Environment.teleportAsync(player, team.getBase().getTpPoint());
-            player.addPotionEffect(new PotionEffect(XPotion.DAMAGE_RESISTANCE.getPotionEffectType(), 20 * 5, 4));
+            player.addPotionEffect(new PotionEffect(XPotion.RESISTANCE.getPotionEffectType(), 20 * 5, 4));
             player.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, 20 * 30, 4));
             player.setGameMode(GameMode.SURVIVAL);
             player.setHealth(20);

@@ -31,7 +31,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.12.1</version>
+                <version>3.13.0</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
@@ -43,7 +43,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.5.3</version>
+                <version>3.6.0</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -88,7 +88,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.2.5</version>
+                <version>3.3.0</version>
                 <configuration>
                     <trimStackTrace>false</trimStackTrace>
                 </configuration>
@@ -136,7 +136,7 @@
         <dependency> <!-- Units tests - seems like it needs to be before paper-api -->
             <groupId>com.github.seeseemelk</groupId>
             <artifactId>MockBukkit-v1.20</artifactId>
-            <version>3.86.1</version>
+            <version>3.89.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -165,6 +165,12 @@
             <version>1.0.20</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.mojang</groupId>
+            <artifactId>authlib</artifactId>
+            <version>6.0.54</version>
+            <scope>provided</scope>
+        </dependency>
         <!-- Structure of 1.8 NMS packets -->
 <!--          <dependency> -->
 <!--             <groupId>org.spigotmc</groupId> -->
@@ -181,7 +187,7 @@
         <dependency>
             <groupId>com.github.cryptomorin</groupId>
             <artifactId>XSeries</artifactId>
-            <version>9.10.0</version>
+            <version>11.0.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -226,7 +232,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>5.11.0</version>
+            <version>5.12.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
