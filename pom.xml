@@ -77,7 +77,7 @@
                                     <artifact>*:*</artifact>
                                     <excludes>
                                         <exclude>META-INF/**</exclude>
-                                        <exclude>org/bukkit/**</exclude>
+                                        <exclude>fr/devsylone/fkpi/util/Potion1_8.class</exclude>
                                     </excludes>
                                 </filter>
                             </filters>
