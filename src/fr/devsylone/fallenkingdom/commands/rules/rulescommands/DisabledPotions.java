@@ -9,18 +9,16 @@ import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkPlayerCommand;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fallenkingdom.utils.Messages;
+import fr.devsylone.fallenkingdom.utils.PluginInventory;
 import fr.devsylone.fallenkingdom.utils.XItemStack;
 import fr.devsylone.fallenkingdom.version.potion.PotionIterator;
-import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.rules.Rule;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.potion.PotionType;
@@ -29,115 +27,124 @@ import com.cryptomorin.xseries.XMaterial;
 
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fkpi.util.XPotionData;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class DisabledPotions extends FkPlayerCommand implements Listener
-{
-	private static final String DISABLED_POTIONS_INVENTORY_TITLE = Messages.INVENTORY_POTION_TITLE.getMessage();
-	private static final String LORE_ENABLED = Messages.INVENTORY_POTION_ENABLE.getMessage();
-	private static final String LORE_DISABLED = Messages.INVENTORY_POTION_DISABLE.getMessage();
-	private static final ItemStack DISABLE_AMPLIFIED_POTIONS_ITEM;
-	static
-	{
-		DISABLE_AMPLIFIED_POTIONS_ITEM = XMaterial.PLAYER_HEAD.parseItem();
-		SkullMeta meta = XItemStack.applyBase64Texture((SkullMeta) DISABLE_AMPLIFIED_POTIONS_ITEM.getItemMeta(), "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTZmYWI5OTFkMDgzOTkzY2I4M2U0YmNmNDRhMGI2Y2VmYWM2NDdkNDE4OWVlOWNiODIzZTljYzE1NzFlMzgifX19");
-		meta.setDisplayName(Messages.INVENTORY_POTION_LEVEL_II.getMessage());
-		DISABLE_AMPLIFIED_POTIONS_ITEM.setItemMeta(meta);
-	}
+public class DisabledPotions extends FkPlayerCommand {
 
-	public DisabledPotions()
-	{
-		super("disabledPotions", Messages.CMD_MAP_RULES_DISABLED_POTIONS, CommandRole.ADMIN);
-		Bukkit.getPluginManager().registerEvents(this, Fk.getInstance());
-	}
+    private static final String DISABLED_POTIONS_INVENTORY_TITLE = Messages.INVENTORY_POTION_TITLE.getMessage();
+    private static final String LORE_ENABLED = Messages.INVENTORY_POTION_ENABLE.getMessage();
+    private static final String LORE_DISABLED = Messages.INVENTORY_POTION_DISABLE.getMessage();
+    private static final ItemStack DISABLE_AMPLIFIED_POTIONS_ITEM;
 
-	@EventHandler
-	public void onInvClick(InventoryClickEvent event)
-	{
-		if(!event.getView().getTitle().equals(DISABLED_POTIONS_INVENTORY_TITLE) || event.getClickedInventory() instanceof PlayerInventory || event.getCurrentItem() == null)
-			return;
+    static {
+        DISABLE_AMPLIFIED_POTIONS_ITEM = XMaterial.PLAYER_HEAD.parseItem();
+        SkullMeta meta = XItemStack.applyBase64Texture((SkullMeta) DISABLE_AMPLIFIED_POTIONS_ITEM.getItemMeta(), "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTZmYWI5OTFkMDgzOTkzY2I4M2U0YmNmNDRhMGI2Y2VmYWM2NDdkNDE4OWVlOWNiODIzZTljYzE1NzFlMzgifX19");
+        meta.setDisplayName(Messages.INVENTORY_POTION_LEVEL_II.getMessage());
+        DISABLE_AMPLIFIED_POTIONS_ITEM.setItemMeta(meta);
+    }
 
-		event.setCancelled(true);
+    private @Nullable Editor editor;
 
-		if(event.getCurrentItem().getType() == XMaterial.POTION.parseMaterial())
-			click(event.getCurrentItem());
+    public DisabledPotions() {
+        super("disabledPotions", Messages.CMD_MAP_RULES_DISABLED_POTIONS, CommandRole.ADMIN);
+    }
 
-		else if(event.getCurrentItem().getType() == DISABLE_AMPLIFIED_POTIONS_ITEM.getType())
-		{
-			for(ItemStack item : event.getClickedInventory().getContents())
-				if(item != null && item.getAmount() == 1 && item.getItemMeta() instanceof PotionMeta && XPotionData.fromItemStack(item).isUpgraded())
-					click(item);
-		}
+    @Override
+    public CommandResult execute(Fk plugin, Player sender, FkPlayer fkp, List<String> args, String label) {
+        if (this.editor == null) {
+            this.editor = new Editor(plugin);
+        }
+        sender.openInventory(this.editor.getInventory());
+        return CommandResult.SUCCESS;
+    }
 
-		event.getWhoClicked().openInventory(createInventory());
+    private class Editor implements PluginInventory {
 
-	}
+		private final fr.devsylone.fkpi.rules.DisabledPotions rule;
+        private final Inventory inventory;
 
-	private void click(ItemStack potionItem)
-	{
-		if(potionItem.getType() != XMaterial.POTION.parseMaterial())
-			return;
+        public Editor(@NotNull Fk plugin) {
+			this.rule = plugin.getFkPI().getRulesManager().getRule(Rule.DISABLED_POTIONS);
+            this.inventory = plugin.getServer().createInventory(this, 6 * 9, DISABLED_POTIONS_INVENTORY_TITLE);
 
-		XPotionData data = XPotionData.fromItemStack(potionItem);
+            final ItemStack glassPane = XMaterial.CYAN_STAINED_GLASS_PANE.parseItem();
+            for (int i = 0; i < 9; i++) {
+                this.inventory.setItem(i, glassPane);
+            }
+            this.inventory.setItem(4, DISABLE_AMPLIFIED_POTIONS_ITEM);
 
-		String potionName = data.getType().name();
-		if (!PotionIterator.USE_SEPARATE_POTION_TYPES) {
-			potionName += data.isExtended() ? " + redstone" : data.isUpgraded() ? " + glowstone" : "";
-		}
+            Iterator<XPotionData> iterator = PotionIterator.create(PotionType.values());
 
-		/*
-		 * amount = 1 -> potion actuellement autorisée
-		 * amount = 0 ou 64 -> potion actuellement désactivée
-		 */
-		if (potionItem.getAmount() != 1) {
-			if (getRule().enablePotion(data)) {
-				broadcast(Messages.INVENTORY_POTION_ENABLE_CLICK.getMessage().replace("%potion%", potionName));
-			}
-		} else {
-			if (getRule().disablePotion(data)) {
-				broadcast(Messages.INVENTORY_POTION_DISABLE_CLICK.getMessage().replace("%potion%", potionName));
-			}
-		}
-	}
+            while (iterator.hasNext()) {
+                XPotionData potionData = iterator.next();
+                if (potionData.getType().getEffectType() == null) {
+                    continue;
+                }
 
-	private Inventory createInventory()
-	{
-		Inventory potionsInv = Bukkit.createInventory(null, 6 * 9, DISABLED_POTIONS_INVENTORY_TITLE);
+                ItemStack potionItem = XMaterial.POTION.parseItem();
+                PotionMeta potionMeta = (PotionMeta) potionItem.getItemMeta();
+                potionMeta.setLore(Collections.singletonList(this.rule.isDisabled(potionData) ? LORE_DISABLED : LORE_ENABLED));
+                potionItem.setItemMeta(potionMeta);
+                potionData.applyTo(potionItem);
+                potionItem.setAmount(this.rule.isDisabled(potionData) ? Bukkit.getVersion().contains("1.8") ? 0 : 64 : 1);
+                this.inventory.addItem(potionItem);
+            }
+        }
 
-		for(int i = 0; i < 4; i++)
-			potionsInv.setItem(i, XMaterial.CYAN_STAINED_GLASS_PANE.parseItem());
+        @Override
+        public void onInventoryClick(@NotNull InventoryClickEvent event) {
+            if (event.getCurrentItem() == null) {
+                return;
+            }
+            event.setCancelled(true);
 
-		potionsInv.setItem(4, DISABLE_AMPLIFIED_POTIONS_ITEM);
+            XPotionData potionData = XPotionData.fromItemStack(event.getCurrentItem());
+            if (potionData != null) {
+                click(event.getCurrentItem(), potionData);
+            } else if (event.getCurrentItem().getType() == DISABLE_AMPLIFIED_POTIONS_ITEM.getType()) {
+                final ItemStack[] contents = this.inventory.getContents();
+                for (final ItemStack item : contents) {
+                    if (item != null && item.getAmount() == 1 && (potionData = XPotionData.fromItemStack(item)) != null && potionData.isUpgraded()) {
+                        click(item, potionData);
+                    }
+                }
+            }
+        }
 
-		for(int i = 5; i < 9; i++)
-			potionsInv.setItem(i, XMaterial.CYAN_STAINED_GLASS_PANE.parseItem());
+        private @NotNull ItemStack click(@NotNull ItemStack potionItem, @NotNull XPotionData data) {
+            String potionName = data.getType().name();
+            if (!PotionIterator.USE_SEPARATE_POTION_TYPES) {
+                potionName += data.isExtended() ? " + redstone" : data.isUpgraded() ? " + glowstone" : "";
+            }
 
-		Iterator<XPotionData> iterator = PotionIterator.create(PotionType.values());
+            /*
+             * amount = 1 -> potion actuellement autorisée
+             * amount = 0 ou 64 -> potion actuellement désactivée
+             */
+            if (potionItem.getAmount() != 1) {
+                if (this.rule.enablePotion(data)) {
+                    broadcast(Messages.INVENTORY_POTION_ENABLE_CLICK.getMessage().replace("%potion%", potionName));
+                    potionItem.setAmount(1);
+                    ItemMeta meta = potionItem.getItemMeta();
+                    meta.setLore(Collections.singletonList(LORE_ENABLED));
+                    potionItem.setItemMeta(meta);
+                }
+            } else {
+                if (this.rule.disablePotion(data)) {
+                    broadcast(Messages.INVENTORY_POTION_DISABLE_CLICK.getMessage().replace("%potion%", potionName));
+                    potionItem.setAmount(Bukkit.getVersion().contains("1.8") ? 0 : 64);
+                    ItemMeta meta = potionItem.getItemMeta();
+                    meta.setLore(Collections.singletonList(LORE_DISABLED));
+                    potionItem.setItemMeta(meta);
+                }
+            }
+            return potionItem;
+        }
 
-		while (iterator.hasNext()) {
-			XPotionData potionData = iterator.next();
-			if (potionData.getType().getEffectType() == null) {
-				continue;
-			}
-
-			ItemStack potionItem = XMaterial.POTION.parseItem();
-			PotionMeta potionMeta = (PotionMeta) potionItem.getItemMeta();
-			potionMeta.setLore(Collections.singletonList(getRule().isDisabled(potionData) ? LORE_DISABLED : LORE_ENABLED));
-			potionItem.setItemMeta(potionMeta);
-			potionData.applyTo(potionItem);
-			potionItem.setAmount(getRule().isDisabled(potionData) ? Bukkit.getVersion().contains("1.8") ? 0 : 64 : 1);
-			potionsInv.addItem(potionItem);
-		}
-		return potionsInv;
-	}
-
-	private fr.devsylone.fkpi.rules.DisabledPotions getRule()
-	{
-		return FkPI.getInstance().getRulesManager().getRule(Rule.DISABLED_POTIONS);
-	}
-
-	@Override
-	public CommandResult execute(Fk plugin, Player sender, FkPlayer fkp, List<String> args, String label) {
-		sender.openInventory(createInventory());
-		return CommandResult.SUCCESS;
-	}
+        @Override
+        public @NotNull Inventory getInventory() {
+            return this.inventory;
+        }
+    }
 }

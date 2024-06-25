@@ -10,7 +10,11 @@ import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.meta.BookMeta;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.UUID;
@@ -25,6 +29,7 @@ public class Environment {
     private static final boolean HAS_ADVENTURE_API;
     private static final boolean HAS_MIN_HEIGHT;
     private static final boolean HAS_SPIGOT_BOOK_PAGES;
+    private static final boolean HAS_DIRECT_INVENTORY_HOLDER;
 
     static {
         boolean hasAsyncTeleport = false;
@@ -75,6 +80,13 @@ public class Environment {
             spigotPages = true;
         } catch (ReflectiveOperationException ignored) { }
         HAS_SPIGOT_BOOK_PAGES = spigotPages;
+
+        boolean hasDirectInventoryHolder = false;
+        try {
+            Inventory.class.getMethod("getHolder", boolean.class);
+            hasDirectInventoryHolder = true;
+        } catch (NoSuchMethodException ignored) { }
+        HAS_DIRECT_INVENTORY_HOLDER = hasDirectInventoryHolder;
     }
 
     public static CompletableFuture<Boolean> teleportAsync(Entity entity, Location location) {
@@ -127,5 +139,12 @@ public class Environment {
 
     public static boolean hasSpigotBookPages() {
         return HAS_SPIGOT_BOOK_PAGES;
+    }
+
+    public static @Nullable InventoryHolder getInventoryHolder(@NotNull Inventory inventory) {
+        if (HAS_DIRECT_INVENTORY_HOLDER) {
+            return inventory.getHolder(false);
+        }
+        return inventory.getHolder();
     }
 }

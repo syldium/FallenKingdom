@@ -1,14 +1,17 @@
 package fr.devsylone.fallenkingdom.manager.saveable;
 
+import fr.devsylone.fallenkingdom.utils.PluginInventory;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fkpi.util.Saveable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
@@ -47,9 +50,11 @@ public class StarterInventoryManager implements Saveable
 		p.updateInventory();
 	}
 
-	public void show(Player p)
+	public @NotNull PluginInventory show(Player p)
 	{
-		Inventory inv = Bukkit.createInventory(null, 6 * 9, Messages.CMD_MAP_GAME_STARTER_INV_INVENTORY.getMessage());
+		StarterInventory pluginInv = new StarterInventory();
+		Inventory inv = Bukkit.createInventory(pluginInv, 6 * 9, Messages.CMD_MAP_GAME_STARTER_INV_INVENTORY.getMessage());
+		pluginInv.inventory = inv;
 
 		for(int i = 0; i < armors.length; i++)
 			inv.setItem(i, armors[i]);
@@ -63,6 +68,7 @@ public class StarterInventoryManager implements Saveable
 				inv.setItem(9 + i, inventory[i]);
 
 		p.openInventory(inv);
+		return pluginInv;
 	}
 
 	@Override
@@ -91,5 +97,20 @@ public class StarterInventoryManager implements Saveable
 		for(int i = 0; i < inventory.length; i++)
 			if(inventory[i] != null)
 				config.set("inventory." + i, inventory[i]);
+	}
+
+	private static class StarterInventory implements PluginInventory {
+
+		private Inventory inventory;
+
+		@Override
+		public void onInventoryClick(@NotNull InventoryClickEvent event) {
+			event.setCancelled(true);
+		}
+
+		@Override
+		public @NotNull Inventory getInventory() {
+			return this.inventory;
+		}
 	}
 }
