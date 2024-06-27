@@ -1,6 +1,8 @@
 package fr.devsylone.fallenkingdom.utils;
 
-import com.cryptomorin.xseries.XSkull;
+import com.cryptomorin.xseries.profiles.builder.XSkull;
+import com.cryptomorin.xseries.profiles.objects.ProfileInputType;
+import com.cryptomorin.xseries.profiles.objects.Profileable;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -184,7 +186,7 @@ public class XItemStack {
             profile.setProperty(new ProfileProperty("textures", texture));
             meta.setPlayerProfile(profile);
         } else {
-            XSkull.of(meta).profile(texture).apply();
+            XSkull.of(meta).profile(Profileable.of(ProfileInputType.BASE64, texture)).apply();
         }
         return meta;
     }

@@ -1,7 +1,9 @@
 package fr.devsylone.fallenkingdom.utils;
 
 import com.cryptomorin.xseries.XMaterial;
-import com.cryptomorin.xseries.XSkull;
+import com.cryptomorin.xseries.profiles.builder.XSkull;
+import com.cryptomorin.xseries.profiles.objects.ProfileInputType;
+import com.cryptomorin.xseries.profiles.objects.Profileable;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -130,7 +132,7 @@ public class XAdvancement {
             for (EntityType entityType : EntityType.values()) {
                 if (entityType.name().equalsIgnoreCase(word)) {
                     ItemStack skull = new ItemStack(XMaterial.PLAYER_HEAD.parseItem());
-                    ItemMeta skullMeta = XSkull.of(skull.getItemMeta()).profile("MHF_" + word.substring(0, 1).toUpperCase(Locale.ROOT) + word.substring(1)).apply();
+                    ItemMeta skullMeta = XSkull.of(skull.getItemMeta()).profile(Profileable.of(ProfileInputType.USERNAME, "MHF_" + word.substring(0, 1).toUpperCase(Locale.ROOT) + word.substring(1))).apply();
                     skull.setItemMeta(skullMeta);
                     return build(skull, name, achievement.toString());
                 }
