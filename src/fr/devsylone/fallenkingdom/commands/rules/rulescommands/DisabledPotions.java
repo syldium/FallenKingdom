@@ -101,14 +101,16 @@ public class DisabledPotions extends FkPlayerCommand {
 
             XPotionData potionData = XPotionData.fromItemStack(event.getCurrentItem());
             if (potionData != null) {
-                click(event.getCurrentItem(), potionData);
+                event.setCurrentItem(click(event.getCurrentItem(), potionData));
             } else if (event.getCurrentItem().getType() == DISABLE_AMPLIFIED_POTIONS_ITEM.getType()) {
                 final ItemStack[] contents = this.inventory.getContents();
-                for (final ItemStack item : contents) {
+                for (int i = 0; i < contents.length; i++) {
+                    final ItemStack item = contents[i];
                     if (item != null && item.getAmount() == 1 && (potionData = XPotionData.fromItemStack(item)) != null && potionData.isUpgraded()) {
-                        click(item, potionData);
+                        contents[i] = click(item, potionData);
                     }
                 }
+                this.inventory.setContents(contents);
             }
         }
 
@@ -125,18 +127,22 @@ public class DisabledPotions extends FkPlayerCommand {
             if (potionItem.getAmount() != 1) {
                 if (this.rule.enablePotion(data)) {
                     broadcast(Messages.INVENTORY_POTION_ENABLE_CLICK.getMessage().replace("%potion%", potionName));
-                    potionItem.setAmount(1);
+                    potionItem = XMaterial.POTION.parseItem();
                     ItemMeta meta = potionItem.getItemMeta();
                     meta.setLore(Collections.singletonList(LORE_ENABLED));
                     potionItem.setItemMeta(meta);
+                    data.applyTo(potionItem);
+                    potionItem.setAmount(1);
                 }
             } else {
                 if (this.rule.disablePotion(data)) {
                     broadcast(Messages.INVENTORY_POTION_DISABLE_CLICK.getMessage().replace("%potion%", potionName));
-                    potionItem.setAmount(Bukkit.getVersion().contains("1.8") ? 0 : 64);
+                    potionItem = XMaterial.POTION.parseItem();
                     ItemMeta meta = potionItem.getItemMeta();
                     meta.setLore(Collections.singletonList(LORE_DISABLED));
                     potionItem.setItemMeta(meta);
+                    data.applyTo(potionItem);
+                    potionItem.setAmount(Bukkit.getVersion().contains("1.8") ? 0 : 64);
                 }
             }
             return potionItem;
