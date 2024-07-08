@@ -20,7 +20,7 @@ public class InternalRegistry<T> {
 
     static {
         try {
-            REGISTRY = NMSUtils.nmsClass("core", "IRegistry");
+            REGISTRY = NMSUtils.nmsClass("core", "IRegistry", "Registry");
             Class<?> builtInRegistries = REGISTRY;
             try {
                 builtInRegistries = NMSUtils.nmsClass("core.registries", "BuiltInRegistries");

@@ -31,7 +31,7 @@ class CommandBuildContextSupplier {
                         .findFirst()
                         .orElseThrow(() -> new NoSuchMethodException("Could not find CommandBuildContext.configurable"));
 
-                final Class<?> worldDataCls = NMSUtils.nmsClass("world.level.storage", "SaveData");
+                final Class<?> worldDataCls = NMSUtils.nmsClass("world.level.storage", "SaveData", "WorldData");
                 GET_WORLD_DATA_METHOD = Arrays.stream(PacketUtils.MINECRAFT_SERVER.getDeclaredMethods())
                         .filter(method -> method.getParameterCount() == 0 && !Modifier.isStatic(method.getModifiers())
                                 && method.getReturnType().equals(worldDataCls))

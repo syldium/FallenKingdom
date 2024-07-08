@@ -47,9 +47,9 @@ public class XItemStack {
 
     static {
         try {
-            Class<?> chatSerializer = NMSUtils.nmsClass("network.chat", "IChatBaseComponent$ChatSerializer");
+            Class<?> chatSerializer = NMSUtils.nmsClass("network.chat", "IChatBaseComponent$ChatSerializer", "Component$Serializer");
 
-            Optional<Class<?>> registryAccess = NMSUtils.nmsOptionalClass("core", "IRegistryCustom");
+            Optional<Class<?>> registryAccess = NMSUtils.nmsOptionalClass("core", "IRegistryCustom", "RegistryAccess");
             Optional<Method> parseFromJson = Arrays.stream(chatSerializer.getDeclaredMethods())
                     .filter(m -> CHAT_BASE_COMPONENT.isAssignableFrom(m.getReturnType()))
                     .filter(m -> Arrays.equals(m.getParameterTypes(), new Class[]{String.class}))

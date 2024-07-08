@@ -30,14 +30,14 @@ public class DataTracker {
     static {
         try {
             String package1_17 = "network.syncher";
-            TRACKED_DATA_TYPE = NMSUtils.nmsClass(package1_17, "DataWatcherObject");
+            TRACKED_DATA_TYPE = NMSUtils.nmsClass(package1_17, "DataWatcherObject", "EntityDataAccessor");
             TRACKED_DATA = TRACKED_DATA_TYPE.getConstructor(int.class, TrackedDataHandler.HANDLER_TYPE);
-            TRACKED_ENTRY_TYPE = NMSUtils.nmsClass(package1_17, "DataWatcher$Item");
+            TRACKED_ENTRY_TYPE = NMSUtils.nmsClass(package1_17, "DataWatcher$Item", "SynchedEntityData$DataItem");
             TRACKED_ENTRY = TRACKED_ENTRY_TYPE.getConstructor(TRACKED_DATA_TYPE, Object.class);
 
             Method serialize = null;
             try {
-                Class<?> serializedTypeOpt = NMSUtils.nmsOptionalClass(package1_17, "DataWatcher$c").orElse(null);
+                Class<?> serializedTypeOpt = NMSUtils.nmsOptionalClass(package1_17, "DataWatcher$c", "SynchedEntityData$DataValue").orElse(null);
                 if (serializedTypeOpt == null) {
                     serializedTypeOpt = NMSUtils.nmsClass(package1_17, "DataWatcher$b");
                 }

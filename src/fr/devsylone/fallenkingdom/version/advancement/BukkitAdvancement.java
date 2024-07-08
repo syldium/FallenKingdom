@@ -34,7 +34,7 @@ public final class BukkitAdvancement {
             final Class<?> nmsAdvancement = GET_HANDLE.getReturnType();
             GET_PARENT = NMSUtils.getMethod(nmsAdvancement, nmsAdvancement);
             BUKKIT_ADVANCEMENT = NMSUtils.getField(nmsAdvancement, Advancement.class, f -> true);
-            final Class<?> nmsDisplay = NMSUtils.nmsClass("advancements", "AdvancementDisplay");
+            final Class<?> nmsDisplay = NMSUtils.nmsClass("advancements", "AdvancementDisplay", "DisplayInfo");
             GET_DISPLAY = NMSUtils.getMethod(nmsAdvancement, nmsDisplay);
             final Class<?> craftItemStack = NMSUtils.obcClass("inventory.CraftItemStack");
             final Class<?> nmsItemStackClass = craftItemStack.getMethod("asNMSCopy", ItemStack.class).getReturnType();

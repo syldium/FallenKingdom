@@ -22,7 +22,7 @@ public final class ChatMessage {
         try {
             CRAFT_CHAT_MESSAGE = NMSUtils.obcClass("util.CraftChatMessage");
             MESSAGE_FROM_STRING = CRAFT_CHAT_MESSAGE.getMethod("fromString", String.class);
-            CHAT_BASE_COMPONENT = NMSUtils.nmsClass("network.chat", "IChatBaseComponent");
+            CHAT_BASE_COMPONENT = NMSUtils.nmsClass("network.chat", "IChatBaseComponent", "Component");
         } catch (ReflectiveOperationException ex) {
             throw new ExceptionInInitializerError(ex);
         }

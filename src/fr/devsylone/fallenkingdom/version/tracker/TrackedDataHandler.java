@@ -19,8 +19,8 @@ class TrackedDataHandler<T> {
     static {
         try {
             String package1_17 = "network.syncher";
-            HANDLER_TYPE = NMSUtils.nmsClass(package1_17, "DataWatcherSerializer");
-            HANDLERS = NMSUtils.nmsClass(package1_17, "DataWatcherRegistry").getFields();
+            HANDLER_TYPE = NMSUtils.nmsClass(package1_17, "DataWatcherSerializer", "EntityDataSerializer");
+            HANDLERS = NMSUtils.nmsClass(package1_17, "DataWatcherRegistry", "EntityDataSerializers").getFields();
         } catch (ClassNotFoundException ex) {
             throw new ExceptionInInitializerError(ex);
         }

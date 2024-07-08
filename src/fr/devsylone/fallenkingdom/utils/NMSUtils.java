@@ -79,6 +79,7 @@ public class NMSUtils
 	public static final String NM_PACKAGE = "net.minecraft";
 
 	private static final boolean NMS_REPACKAGED = optionalClass(NM_PACKAGE + ".network.protocol.Packet").isPresent();
+	private static final boolean MOJANG_MAPPINGS = optionalClass(NM_PACKAGE + ".network.chat.Component").isPresent();
 
 	public static boolean isRepackaged() {
 		return NMS_REPACKAGED;
@@ -105,12 +106,20 @@ public class NMSUtils
 		return Class.forName(nmsClassName(post1_17package, className));
 	}
 
+	public static Class<?> nmsClass(String post1_17package, String spigotClass, String mojangClass) throws ClassNotFoundException {
+		return nmsClass(post1_17package, MOJANG_MAPPINGS ? mojangClass : spigotClass);
+	}
+
 	public static Optional<Class<?>> nmsOptionalClass(String className) {
 		return optionalClass(nmsClassName(className));
 	}
 
 	public static Optional<Class<?>> nmsOptionalClass(String post1_17package, String className) {
 		return optionalClass(nmsClassName(post1_17package, className));
+	}
+
+	public static Optional<Class<?>> nmsOptionalClass(String post1_17package, String spigotClass, String mojangClass) {
+		return optionalClass(nmsClassName(post1_17package, MOJANG_MAPPINGS ? mojangClass : spigotClass));
 	}
 
 	public static String obcClassName(String className) {

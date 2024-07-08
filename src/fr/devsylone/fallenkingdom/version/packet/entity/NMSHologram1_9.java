@@ -19,7 +19,7 @@ class NMSHologram1_9 extends NMSHologram
 
 	static {
 		try {
-			ITEM_SLOT = NMSUtils.nmsClass("world.entity", "EnumItemSlot");
+			ITEM_SLOT = NMSUtils.nmsClass("world.entity", "EnumItemSlot", "EquipmentSlot");
 		} catch (ReflectiveOperationException e) {
 			throw new ExceptionInInitializerError(e);
 		}

@@ -41,7 +41,7 @@ public class PacketUtils
 			CRAFT_PLAYER = NMSUtils.obcClass("entity.CraftPlayer");
 			final Method getPlayerHandle = CRAFT_PLAYER.getMethod("getHandle");
 			GET_PLAYER_HANDLE = lookup.unreflect(getPlayerHandle);
-			final Class<?> playerConnection = NMSUtils.nmsClass("server.network", "PlayerConnection");
+			final Class<?> playerConnection = NMSUtils.nmsClass("server.network", "PlayerConnection", "ServerGamePacketListenerImpl");
 			final Field playerConnectionField = Arrays.stream(getPlayerHandle.getReturnType().getFields())
 					.filter(field -> field.getType().isAssignableFrom(playerConnection))
 					.findFirst().orElseThrow(() -> new NoSuchFieldException("Cannot find ServerPlayer#connection"));
@@ -60,7 +60,7 @@ public class PacketUtils
 			final Method getWorldHandle = CRAFT_WORLD.getMethod("getHandle");
 			GET_WORLD_HANDLE = lookup.unreflect(getWorldHandle);
 			MINECRAFT_WORLD = getWorldHandle.getReturnType();
-			MINECRAFT_CHUNK = NMSUtils.nmsClass("world.level.chunk", "Chunk");
+			MINECRAFT_CHUNK = NMSUtils.nmsClass("world.level.chunk", "Chunk", "LevelChunk");
 			Method getChunkAt;
 			try {
 				getChunkAt = MINECRAFT_WORLD.getMethod("getChunkAt", int.class, int.class);
@@ -70,7 +70,7 @@ public class PacketUtils
 			GET_CHUNK_HANDLE_AT = lookup.unreflect(getChunkAt);
 			MINECRAFT_SERVER = NMSUtils.nmsClass("server", "MinecraftServer");
 			GET_SERVER_HANDLE = MINECRAFT_SERVER.getDeclaredMethod("getServer");
-			MINECRAFT_BLOCK_POSITION = NMSUtils.nmsClass("core", "BlockPosition");
+			MINECRAFT_BLOCK_POSITION = NMSUtils.nmsClass("core", "BlockPosition", "BlockPos");
 			NEW_BLOCK_POSITION = lookup.unreflectConstructor(MINECRAFT_BLOCK_POSITION.getConstructor(int.class, int.class, int.class));
 		}catch(ReflectiveOperationException e)
 		{

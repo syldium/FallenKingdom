@@ -41,15 +41,15 @@ class NMSHologram1_17 extends NMSHologram {
 
     static {
         try {
-            final Class<?> entityTypesClass = NMSUtils.nmsClass("world.entity", "EntityTypes");
-            final Class<?> vec3dClass = NMSUtils.nmsClass("world.phys", "Vec3D");
+            final Class<?> entityTypesClass = NMSUtils.nmsClass("world.entity", "EntityTypes", "EntityType");
+            final Class<?> vec3dClass = NMSUtils.nmsClass("world.phys", "Vec3D", "Vec3");
             ARMOR_STAND = ((Optional<?>) NMSUtils.getMethod(entityTypesClass, Optional.class, String.class).invoke(null, "armor_stand")).get();
             ZERO_VEC3D = NMSUtils.getField(vec3dClass, vec3dClass, field -> Modifier.isStatic(field.getModifiers())).get(null);
 
             final String packetsPackage = "network.protocol.game";
-            final Class<?> packetSpawnEntityClass = NMSUtils.nmsClass(packetsPackage, "PacketPlayOutSpawnEntity");
-            final Class<?> packetDestroyEntityClass = NMSUtils.nmsClass(packetsPackage, "PacketPlayOutEntityDestroy");
-            final Class<?> packetEntityEquipment = NMSUtils.nmsClass(packetsPackage, "PacketPlayOutEntityEquipment");
+            final Class<?> packetSpawnEntityClass = NMSUtils.nmsClass(packetsPackage, "PacketPlayOutSpawnEntity", "ClientboundAddEntityPacket");
+            final Class<?> packetDestroyEntityClass = NMSUtils.nmsClass(packetsPackage, "PacketPlayOutEntityDestroy", "ClientboundRemoveEntitiesPacket");
+            final Class<?> packetEntityEquipment = NMSUtils.nmsClass(packetsPackage, "PacketPlayOutEntityEquipment", "ClientboundSetEquipmentPacket");
 
             Constructor<?> entityDestroy;
             try {
@@ -70,11 +70,11 @@ class NMSHologram1_17 extends NMSHologram {
 
             PACKET_DESTROY_ENTITY = entityDestroy;
             PACKET_ENTITY_EQUIPMENT = packetEntityEquipment.getConstructor(int.class, List.class);
-            PACKET_ENTITY_POSITION = NMSUtils.nmsClass(packetsPackage, "PacketPlayOutEntityTeleport");
+            PACKET_ENTITY_POSITION = NMSUtils.nmsClass(packetsPackage, "PacketPlayOutEntityTeleport", "ClientboundTeleportEntityPacket");
             PACKET_ENTITY_POSITION_FIELDS = Arrays.stream(PACKET_ENTITY_POSITION.getDeclaredFields())
                     .filter(field -> !Modifier.isStatic(field.getModifiers()))
                     .toArray(Field[]::new);
-            PACKET_ENTITY_METADATA = NMSUtils.nmsClass(packetsPackage, "PacketPlayOutEntityMetadata");
+            PACKET_ENTITY_METADATA = NMSUtils.nmsClass(packetsPackage, "PacketPlayOutEntityMetadata", "ClientboundSetEntityDataPacket");
             for (Field field : PACKET_ENTITY_POSITION_FIELDS) {
                 field.setAccessible(true);
             }
