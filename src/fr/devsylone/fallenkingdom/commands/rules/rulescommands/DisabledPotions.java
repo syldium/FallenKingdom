@@ -35,14 +35,6 @@ public class DisabledPotions extends FkPlayerCommand {
     private static final String DISABLED_POTIONS_INVENTORY_TITLE = Messages.INVENTORY_POTION_TITLE.getMessage();
     private static final String LORE_ENABLED = Messages.INVENTORY_POTION_ENABLE.getMessage();
     private static final String LORE_DISABLED = Messages.INVENTORY_POTION_DISABLE.getMessage();
-    private static final ItemStack DISABLE_AMPLIFIED_POTIONS_ITEM;
-
-    static {
-        DISABLE_AMPLIFIED_POTIONS_ITEM = XMaterial.PLAYER_HEAD.parseItem();
-        SkullMeta meta = XItemStack.applyBase64Texture((SkullMeta) DISABLE_AMPLIFIED_POTIONS_ITEM.getItemMeta(), "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTZmYWI5OTFkMDgzOTkzY2I4M2U0YmNmNDRhMGI2Y2VmYWM2NDdkNDE4OWVlOWNiODIzZTljYzE1NzFlMzgifX19");
-        meta.setDisplayName(Messages.INVENTORY_POTION_LEVEL_II.getMessage());
-        DISABLE_AMPLIFIED_POTIONS_ITEM.setItemMeta(meta);
-    }
 
     private @Nullable Editor editor;
 
@@ -61,18 +53,24 @@ public class DisabledPotions extends FkPlayerCommand {
 
     private class Editor implements PluginInventory {
 
-		private final fr.devsylone.fkpi.rules.DisabledPotions rule;
+        private final fr.devsylone.fkpi.rules.DisabledPotions rule;
         private final Inventory inventory;
+        private final ItemStack disableAmplifiedPotionsItem;
 
         public Editor(@NotNull Fk plugin) {
-			this.rule = plugin.getFkPI().getRulesManager().getRule(Rule.DISABLED_POTIONS);
+            this.rule = plugin.getFkPI().getRulesManager().getRule(Rule.DISABLED_POTIONS);
             this.inventory = plugin.getServer().createInventory(this, 6 * 9, DISABLED_POTIONS_INVENTORY_TITLE);
+
+            this.disableAmplifiedPotionsItem = XMaterial.PLAYER_HEAD.parseItem();
+            SkullMeta meta = XItemStack.applyBase64Texture((SkullMeta) disableAmplifiedPotionsItem.getItemMeta(), "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTZmYWI5OTFkMDgzOTkzY2I4M2U0YmNmNDRhMGI2Y2VmYWM2NDdkNDE4OWVlOWNiODIzZTljYzE1NzFlMzgifX19");
+            meta.setDisplayName(Messages.INVENTORY_POTION_LEVEL_II.getMessage());
+            disableAmplifiedPotionsItem.setItemMeta(meta);
 
             final ItemStack glassPane = XMaterial.CYAN_STAINED_GLASS_PANE.parseItem();
             for (int i = 0; i < 9; i++) {
                 this.inventory.setItem(i, glassPane);
             }
-            this.inventory.setItem(4, DISABLE_AMPLIFIED_POTIONS_ITEM);
+            this.inventory.setItem(4, this.disableAmplifiedPotionsItem);
 
             Iterator<XPotionData> iterator = PotionIterator.create(PotionType.values());
 
@@ -102,7 +100,7 @@ public class DisabledPotions extends FkPlayerCommand {
             XPotionData potionData = XPotionData.fromItemStack(event.getCurrentItem());
             if (potionData != null) {
                 event.setCurrentItem(click(event.getCurrentItem(), potionData));
-            } else if (event.getCurrentItem().getType() == DISABLE_AMPLIFIED_POTIONS_ITEM.getType()) {
+            } else if (event.getCurrentItem().getType() == this.disableAmplifiedPotionsItem.getType()) {
                 final ItemStack[] contents = this.inventory.getContents();
                 for (int i = 0; i < contents.length; i++) {
                     final ItemStack item = contents[i];

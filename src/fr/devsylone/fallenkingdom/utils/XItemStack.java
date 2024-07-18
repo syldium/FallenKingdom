@@ -1,10 +1,9 @@
 package fr.devsylone.fallenkingdom.utils;
 
-import com.cryptomorin.xseries.profiles.builder.XSkull;
-import com.cryptomorin.xseries.profiles.objects.ProfileInputType;
-import com.cryptomorin.xseries.profiles.objects.Profileable;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.Bukkit;
@@ -40,9 +39,9 @@ public class XItemStack {
 
     private final static Field DISPLAY_NAME;
     private final static Field LORE;
+    private final static Field SKULL_META_PROFILE;
 
     private final static boolean HAS_COMPONENT_API;
-    private final static boolean HAS_PLAYER_PROFILE_API;
     private final static boolean SERIALIZED_VIEW; // Spigot en 2021
 
     static {
@@ -96,15 +95,15 @@ public class XItemStack {
                 hasComponentApi = false;
             }
             HAS_COMPONENT_API = hasComponentApi;
-            boolean hasPlayerProfileApi;
+            Field skullMetaProfile = null;
             try {
                 Class.forName("com.destroystokyo.paper.profile.PlayerProfile");
                 Player.class.getMethod("setPlayerProfile", PlayerProfile.class);
-                hasPlayerProfileApi = true;
             } catch (ReflectiveOperationException e) {
-                hasPlayerProfileApi = false;
+                skullMetaProfile = NMSUtils.obcClass("inventory.CraftMetaSkull").getDeclaredField("profile");
+                skullMetaProfile.setAccessible(true);
             }
-            HAS_PLAYER_PROFILE_API = hasPlayerProfileApi;
+            SKULL_META_PROFILE = skullMetaProfile;
 
             Class<?> craftMeta = NMSUtils.obcClass("inventory.CraftMetaItem");
             DISPLAY_NAME = craftMeta.getDeclaredField("displayName");
@@ -181,12 +180,18 @@ public class XItemStack {
 
     @Contract("_, _ -> param1")
     public static @NotNull SkullMeta applyBase64Texture(@NotNull SkullMeta meta, @NotNull String texture) {
-        if (HAS_PLAYER_PROFILE_API) {
+        if (SKULL_META_PROFILE == null) {
             final PlayerProfile profile = Bukkit.createProfile(UUID.randomUUID(), "");
             profile.setProperty(new ProfileProperty("textures", texture));
             meta.setPlayerProfile(profile);
         } else {
-            XSkull.of(meta).profile(Profileable.of(ProfileInputType.BASE64, texture)).apply();
+            final GameProfile profile = new GameProfile(UUID.randomUUID(), "");
+            profile.getProperties().put("textures", new Property("textures", texture));
+            try {
+                SKULL_META_PROFILE.set(meta, profile);
+            } catch (IllegalAccessException ex) {
+                throw new RuntimeException(ex);
+            }
         }
         return meta;
     }
