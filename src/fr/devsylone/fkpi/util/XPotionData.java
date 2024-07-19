@@ -143,11 +143,8 @@ public final class XPotionData
 		return null;
 	}
 
-	public void applyTo(ItemStack potionItem)
+	public void applyTo(@NotNull ItemStack potionItem)
 	{
-		if (potionItem == null) {
-			return;
-		}
 		final ItemMeta itemMeta = potionItem.getItemMeta();
 		if (!(itemMeta instanceof PotionMeta)) {
 			return;

@@ -7,12 +7,15 @@ import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,6 +33,7 @@ public class Environment {
     private static final boolean HAS_MIN_HEIGHT;
     private static final boolean HAS_SPIGOT_BOOK_PAGES;
     private static final boolean HAS_DIRECT_INVENTORY_HOLDER;
+    private static final boolean HAS_ENCHANTMENT_GLINT_OVERRIDE;
 
     static {
         boolean hasAsyncTeleport = false;
@@ -87,6 +91,13 @@ public class Environment {
             hasDirectInventoryHolder = true;
         } catch (NoSuchMethodException ignored) { }
         HAS_DIRECT_INVENTORY_HOLDER = hasDirectInventoryHolder;
+
+        boolean hasEnchantmentGlintOverride = false;
+        try {
+            ItemMeta.class.getMethod("setEnchantmentGlintOverride", Boolean.class);
+            hasEnchantmentGlintOverride = true;
+        } catch (ReflectiveOperationException ignored) { }
+        HAS_ENCHANTMENT_GLINT_OVERRIDE = hasEnchantmentGlintOverride;
     }
 
     public static CompletableFuture<Boolean> teleportAsync(Entity entity, Location location) {
@@ -146,5 +157,19 @@ public class Environment {
             return inventory.getHolder(false);
         }
         return inventory.getHolder();
+    }
+
+    public static void setEnchantmentGlintOverride(@NotNull ItemMeta itemMeta, boolean overrideGlint) {
+        if (HAS_ENCHANTMENT_GLINT_OVERRIDE) {
+            itemMeta.setEnchantmentGlintOverride(overrideGlint ? true : null);
+            return;
+        }
+        if (overrideGlint) {
+            itemMeta.addEnchant(Enchantment.LURE, 1, true);
+            itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        } else {
+            itemMeta.removeEnchant(Enchantment.LURE);
+            itemMeta.removeItemFlags(ItemFlag.HIDE_ENCHANTS);
+        }
     }
 }
