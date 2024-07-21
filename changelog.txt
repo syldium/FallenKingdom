@@ -547,3 +547,10 @@ Il est conseillé de réinitialiser les fichiers de langue.
 [*] Modifie l'enregistrement des commandes Brigadier (1.20.6)
 [*] Affiche les numéros de ligne lors de l'édition du scoreboard (1.20.3+)
 [*] Workaround pour Mohist 1.16
+
+      >> 2.23.2
+[+] Supporte les serveurs en 1.21
+[+] Supporte nativement les serveurs mappés Mojang
+[+] Ajoute un reflet sur les potions désactivées pour les différencier des activées en 1.21
+[*] Rend le plugin plus résilient à des erreurs de configuration
+[*] Corrige l'initialisation du plugin pour certaines versions intermédiaires du jeu (1.19)
