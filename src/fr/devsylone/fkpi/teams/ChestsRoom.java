@@ -257,7 +257,7 @@ public class ChestsRoom implements Saveable
 			}
 		}
 
-		captureTask = new ChestRoomRunnable(this, team, base.getTeam()).runTaskTimer(Fk.getInstance(), 5L, 5L);
+		captureTask = new ChestRoomRunnable(this, team, base.getTeam()).runTaskTimer(Fk.getInstance(), ChestRoomRunnable.PERIOD_TICKS, ChestRoomRunnable.PERIOD_TICKS);
 	}
 
 	public ChestRoomState getState()

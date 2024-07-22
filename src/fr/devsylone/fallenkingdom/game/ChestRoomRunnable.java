@@ -7,6 +7,7 @@ import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.api.ITeam;
 import fr.devsylone.fkpi.api.event.TeamCaptureEvent;
 import fr.devsylone.fkpi.teams.ChestsRoom;
+import net.kyori.adventure.util.Ticks;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
@@ -21,12 +22,13 @@ import java.util.UUID;
 
 public class ChestRoomRunnable extends BukkitRunnable {
 
+    public static final int PERIOD_TICKS = 5;
+
     private final ChestsRoom chestsRoom;
     private final ITeam assailants;
     private final ITeam defenders;
 
-    private final long startCaptureTimestamp = System.currentTimeMillis();
-    private final long captureTime = FkPI.getInstance().getChestsRoomsManager().getCaptureTime() * 1000;
+    private int elapsedRuns;
 
     public ChestRoomRunnable(ChestsRoom chestsRoom, ITeam assailants, ITeam defenders) {
         this.chestsRoom = chestsRoom;
@@ -37,7 +39,11 @@ public class ChestRoomRunnable extends BukkitRunnable {
     @Override
     public void run()
     {
-        if (System.currentTimeMillis() >= startCaptureTimestamp + captureTime) {
+        int captureTime = FkPI.getInstance().getChestsRoomsManager().getCaptureTime() * (Ticks.TICKS_PER_SECOND / PERIOD_TICKS);
+        if (Fk.getInstance().getGame().isPaused()) {
+            return;
+        }
+        if (++elapsedRuns == captureTime) {
             Fk.broadcast("");
             Fk.broadcast(
                     Messages.BROADCAST_CHEST_ROOM_CAPTURED.getMessage()
@@ -114,7 +120,8 @@ public class ChestRoomRunnable extends BukkitRunnable {
                 if (!chestsRoom.contains(player.getLocation()) || player.isDead())
                     outsidePlayers.add(player);
 
-                TitleSender.INSTANCE.sendTitle(player, "", "§b" + (int) ((System.currentTimeMillis() - startCaptureTimestamp) / 1000.0d / (double) FkPI.getInstance().getChestsRoomsManager().getCaptureTime() * 100) + "%", 0, 20, 20);
+                int progressionPercentage = elapsedRuns * 100 / captureTime;
+                TitleSender.INSTANCE.sendTitle(player, "", "§b" + progressionPercentage + "%", 0, 20, 20);
             }
             for (Player player : outsidePlayers) {
                 chestsRoom.removeEnemyInside(player);
