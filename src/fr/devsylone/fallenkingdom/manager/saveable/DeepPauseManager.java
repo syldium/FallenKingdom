@@ -26,6 +26,7 @@ import fr.devsylone.fallenkingdom.utils.NMSUtils;
 import fr.devsylone.fallenkingdom.utils.PacketUtils;
 import fr.devsylone.fkpi.util.Saveable;
 import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.Nullable;
 
 public class DeepPauseManager implements Saveable
 {
@@ -39,7 +40,8 @@ public class DeepPauseManager implements Saveable
     private static Method NMS_NBTTAG_INT;
     private static Method NMS_ENTITY_F;
 
-    private static Field FIELD_ITEM;
+    private static @Nullable Field FIELD_ITEM;
+    private static @Nullable Method GET_ITEM_HANDLE;
     private static Field FIELD_AGE;
 
     protected static void init()
@@ -55,14 +57,16 @@ public class DeepPauseManager implements Saveable
                 NMS_ENTITY_F = entity.getDeclaredMethod("f", nbtTagCompound);
             }
             Class<?> craftItem = NMSUtils.obcClass("entity.CraftItem");
+            Class<?> nmsItem;
             try {
-                FIELD_ITEM = craftItem.getDeclaredField("item");
+                Field field = craftItem.getDeclaredField("item");
+                nmsItem = field.getType();
+                FIELD_ITEM = field;
             } catch (NoSuchFieldException e) {
-                FIELD_ITEM = craftItem.getSuperclass().getDeclaredField("entity");
+                Method getHandle = craftItem.getMethod("getHandle");
+                nmsItem = getHandle.getReturnType();
+                GET_ITEM_HANDLE = getHandle;
             }
-            FIELD_ITEM.setAccessible(true);
-
-            Class<?> nmsItem = FIELD_ITEM.getType();
             FIELD_AGE = NMSUtils.getField(nmsItem, Integer.TYPE, field -> !Modifier.isStatic(field.getModifiers()));
         } catch (ReflectiveOperationException e) {
             throw new ExceptionInInitializerError(e);
@@ -206,7 +210,7 @@ public class DeepPauseManager implements Saveable
     private void setItemAge(Item item, int age)
     {
         try {
-            Object entityItem = FIELD_ITEM.get(item);
+            Object entityItem = GET_ITEM_HANDLE != null ? GET_ITEM_HANDLE.invoke(item) : FIELD_ITEM.get(item);
             FIELD_AGE.set(entityItem, age);
         } catch(ReflectiveOperationException e) {
             e.printStackTrace();
