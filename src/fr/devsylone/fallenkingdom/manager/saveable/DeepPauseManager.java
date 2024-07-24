@@ -60,6 +60,7 @@ public class DeepPauseManager implements Saveable
             Class<?> nmsItem;
             try {
                 Field field = craftItem.getDeclaredField("item");
+                field.setAccessible(true);
                 nmsItem = field.getType();
                 FIELD_ITEM = field;
             } catch (NoSuchFieldException e) {
