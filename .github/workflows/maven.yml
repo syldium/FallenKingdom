@@ -20,3 +20,8 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: mvn -B package --file pom.xml -DskipTests
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: FallenKingdom-${{ github.sha }}
+        path: target/FallenKingdom-*.jar
