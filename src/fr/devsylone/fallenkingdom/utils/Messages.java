@@ -275,6 +275,9 @@ public enum Messages
 
     CMD_TEAMS_AND_CHESTS_LIST("cmd.teams.and.chests.list"),
 
+    CMD_VERSION_UNKNOWN_LATEST("cmd.version.unknown-latest"),
+    CMD_VERSION_UP_TO_DATE("cmd.version.up-to-date"),
+
     CMD_DEBUG_SUCCESS("cmd.debug-success"),
     CMD_DEBUG_ERROR("cmd.debug-error"),
 

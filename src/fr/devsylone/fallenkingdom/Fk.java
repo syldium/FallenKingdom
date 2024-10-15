@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import fr.devsylone.fallenkingdom.commands.FkLifecycleRegisteredExecutor;
 import fr.devsylone.fallenkingdom.display.GlobalDisplayService;
 import fr.devsylone.fallenkingdom.updater.GitHubAssetInfo;
+import fr.devsylone.fallenkingdom.updater.PluginVersion;
 import fr.devsylone.fallenkingdom.updater.UpdateChecker;
 import fr.devsylone.fallenkingdom.utils.FkConfig;
 import fr.devsylone.fallenkingdom.version.LuckPermsContext;
@@ -78,6 +79,7 @@ public class Fk extends JavaPlugin
 	protected SaveablesManager saveableManager;
 	protected PortalsManager portalsManager;
 	protected LanguageManager languageManager;
+	protected UpdateChecker updater;
 
 	@Getter
 	protected static Fk instance;
@@ -238,9 +240,9 @@ public class Fk extends JavaPlugin
 		 * Updater
 		 */
 
-		UpdateChecker updater = new UpdateChecker(this);
-		if (updater.getCurrentVersion().isRelease()) {
-			updater.runTaskAsynchronously(this);
+		this.updater = new UpdateChecker(new PluginVersion(getDescription().getVersion()), getLogger());
+		if (this.updater.getCurrentVersion().isRelease() && this.getConfig().getBoolean("update-checker", true)) {
+			this.getServer().getScheduler().runTaskTimerAsynchronously(this, this.updater, 5L, 20L * 60L * 60L * 24L);
 		}
 
 		getServer().getScheduler().runTaskTimer(this, saveableManager::delayedSaveAll, 5L * 60L * 20L, 5L * 60L * 20L);

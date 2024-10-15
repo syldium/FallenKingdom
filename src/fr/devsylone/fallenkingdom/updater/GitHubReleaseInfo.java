@@ -11,7 +11,7 @@ public class GitHubReleaseInfo {
 
     boolean prerelease;
 
-    @Nullable GitHubAssetInfo platformAsset;
+    public @Nullable GitHubAssetInfo platformAsset;
 
     List<GitHubAssetInfo> assets;
 

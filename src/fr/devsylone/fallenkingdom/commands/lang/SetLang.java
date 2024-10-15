@@ -28,7 +28,7 @@ public class SetLang extends FkCommand
 
     @Override
     public CommandResult execute(Fk plugin, CommandSender sender, List<String> args, String label) {
-        File[] files = Objects.requireNonNull(new File(plugin.getDataFolder(), File.separator + "locales").listFiles(), Messages.CONSOLE_LANG_COULD_NOT_LIST_FILES.getMessage());
+        File[] files = Objects.requireNonNull(new File(plugin.getDataFolder(), "locales").listFiles(), Messages.CONSOLE_LANG_COULD_NOT_LIST_FILES.getMessage());
 
         boolean isDefaultScoreboard = plugin.getDisplayService().scoreboard().isDefaultSidebar();
         String lang = Arrays.stream(files)

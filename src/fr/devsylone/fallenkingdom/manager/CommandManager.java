@@ -7,6 +7,7 @@ import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.chests.FkChestsCommand;
 import fr.devsylone.fallenkingdom.commands.debug.Bug;
 import fr.devsylone.fallenkingdom.commands.debug.Debug;
+import fr.devsylone.fallenkingdom.commands.debug.Version;
 import fr.devsylone.fallenkingdom.commands.game.FkGameCommand;
 import fr.devsylone.fallenkingdom.commands.lang.FkLangCommand;
 import fr.devsylone.fallenkingdom.commands.rules.FkRuleCommand;
@@ -43,6 +44,7 @@ public class CommandManager
 				.add(new FkRuleCommand())
 				.add(new FkScoreboardCommand())
 				.add(new FkTeamCommand())
+				.add(new Version())
 				.build();
 		this.permissions = permissions;
 	}
