@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import static fr.devsylone.fallenkingdom.version.packet.entity.NMSHologram1_9.getEnumItemSlot;
@@ -28,10 +29,13 @@ class NMSHologram1_17 extends NMSHologram {
     private static final Object ARMOR_STAND;
     private static final Object ZERO_VEC3D;
 
+    private static final Constructor<?> VEC3D;
     private static final Constructor<?> PACKET_SPAWN_ENTITY;
     private static final Constructor<?> PACKET_DESTROY_ENTITY;
     private static final Constructor<?> PACKET_ENTITY_EQUIPMENT;
     private static final @Nullable Constructor<?> PACKET_ENTITY_METADATA_CONSTRUCTOR;
+    private static final @Nullable Constructor<?> PACKET_ENTITY_POSITION_CONSTRUCTOR;
+    private static final @Nullable Constructor<?> DELTA_MOVEMENT_CONSTRUCTOR;
     private static final Class<?> PACKET_ENTITY_METADATA;
     private static final Class<?> PACKET_ENTITY_POSITION;
     private static final Field[] PACKET_ENTITY_POSITION_FIELDS;
@@ -45,6 +49,7 @@ class NMSHologram1_17 extends NMSHologram {
             final Class<?> vec3dClass = NMSUtils.nmsClass("world.phys", "Vec3D", "Vec3");
             ARMOR_STAND = ((Optional<?>) NMSUtils.getMethod(entityTypesClass, Optional.class, String.class).invoke(null, "armor_stand")).get();
             ZERO_VEC3D = NMSUtils.getField(vec3dClass, vec3dClass, field -> Modifier.isStatic(field.getModifiers())).get(null);
+            VEC3D = vec3dClass.getConstructor(double.class, double.class, double.class);
 
             final String packetsPackage = "network.protocol.game";
             final Class<?> packetSpawnEntityClass = NMSUtils.nmsClass(packetsPackage, "PacketPlayOutSpawnEntity", "ClientboundAddEntityPacket");
@@ -71,6 +76,15 @@ class NMSHologram1_17 extends NMSHologram {
             PACKET_DESTROY_ENTITY = entityDestroy;
             PACKET_ENTITY_EQUIPMENT = packetEntityEquipment.getConstructor(int.class, List.class);
             PACKET_ENTITY_POSITION = NMSUtils.nmsClass(packetsPackage, "PacketPlayOutEntityTeleport", "ClientboundTeleportEntityPacket");
+            Constructor<?> entityPositionConstructor = null;
+            Constructor<?> deltaMovementConstructor = null;
+            try {
+                Class<?> deltaMovement = NMSUtils.nmsClass("world.entity", "PositionMoveRotation", "PositionMoveRotation");
+                deltaMovementConstructor = deltaMovement.getConstructor(vec3dClass, vec3dClass, float.class, float.class);
+                entityPositionConstructor = PACKET_ENTITY_POSITION.getConstructor(int.class, deltaMovement, Set.class, boolean.class);
+            } catch (NoSuchMethodException ignored) {} // < 1.21.2
+            PACKET_ENTITY_POSITION_CONSTRUCTOR = entityPositionConstructor;
+            DELTA_MOVEMENT_CONSTRUCTOR = deltaMovementConstructor;
             PACKET_ENTITY_POSITION_FIELDS = Arrays.stream(PACKET_ENTITY_POSITION.getDeclaredFields())
                     .filter(field -> !Modifier.isStatic(field.getModifiers()))
                     .toArray(Field[]::new);
@@ -147,6 +161,22 @@ class NMSHologram1_17 extends NMSHologram {
     @Override
     protected void sendTeleport(Player p, int id, Location newLoc) {
         try {
+            if (DELTA_MOVEMENT_CONSTRUCTOR != null && PACKET_ENTITY_POSITION_CONSTRUCTOR != null) {
+                Object movement = DELTA_MOVEMENT_CONSTRUCTOR.newInstance(
+                        VEC3D.newInstance(newLoc.getX(), newLoc.getY(), newLoc.getZ()),
+                        ZERO_VEC3D,
+                        newLoc.getYaw(),
+                        newLoc.getPitch()
+                );
+                Object packet = PACKET_ENTITY_POSITION_CONSTRUCTOR.newInstance(
+                        id,
+                        movement,
+                        Collections.emptySet(),
+                        false
+                );
+                PacketUtils.sendPacket(p, packet);
+                return;
+            }
             Object packet = Unsafety.allocateInstance(PACKET_ENTITY_POSITION);
             PACKET_ENTITY_POSITION_FIELDS[0].set(packet, id);
             PACKET_ENTITY_POSITION_FIELDS[1].set(packet, newLoc.getX());

@@ -13,7 +13,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -40,6 +42,7 @@ public class XItemStack {
     private final static Field DISPLAY_NAME;
     private final static Field LORE;
     private final static Field SKULL_META_PROFILE;
+    private final static @Nullable Constructor<?> RESOLVABLE_PROFILE_CONSTRUCTOR;
 
     private final static boolean HAS_COMPONENT_API;
     private final static boolean SERIALIZED_VIEW; // Spigot en 2021
@@ -104,6 +107,13 @@ public class XItemStack {
                 skullMetaProfile.setAccessible(true);
             }
             SKULL_META_PROFILE = skullMetaProfile;
+            Constructor<?> resolvableProfileConstructor = null;
+            try {
+                if (skullMetaProfile != null) {
+                    resolvableProfileConstructor = skullMetaProfile.getType().getConstructor(GameProfile.class);
+                }
+            } catch (NoSuchMethodException ignored) {}
+            RESOLVABLE_PROFILE_CONSTRUCTOR = resolvableProfileConstructor;
 
             Class<?> craftMeta = NMSUtils.obcClass("inventory.CraftMetaItem");
             DISPLAY_NAME = craftMeta.getDeclaredField("displayName");
@@ -188,8 +198,12 @@ public class XItemStack {
             final GameProfile profile = new GameProfile(UUID.randomUUID(), "");
             profile.getProperties().put("textures", new Property("textures", texture));
             try {
-                SKULL_META_PROFILE.set(meta, profile);
-            } catch (IllegalAccessException ex) {
+                if (RESOLVABLE_PROFILE_CONSTRUCTOR != null) {
+                    SKULL_META_PROFILE.set(meta, RESOLVABLE_PROFILE_CONSTRUCTOR.newInstance(profile));
+                } else {
+                    SKULL_META_PROFILE.set(meta, profile);
+                }
+            } catch (ReflectiveOperationException ex) {
                 throw new RuntimeException(ex);
             }
         }
