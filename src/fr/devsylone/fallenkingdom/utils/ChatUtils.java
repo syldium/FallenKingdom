@@ -7,15 +7,15 @@ import org.bukkit.command.CommandSender;
 public final class ChatUtils
 {
 	public static final String DEVSYLONE = "§1§odevsylone";
-	public static final String PREFIX = "§7[§5Fk§7] ";
-	public static final String TEAM = "§7[§bTeams§7] ";
-	public static final String RULES = "§7[§bRules§7] ";
-	public static final String GAME = "§7[§bGame§7] ";
-	public static final String CHESTS = "§7[§bChests§7] ";
-	public static final String SCOREBOARD = "§7[§bScoreboard§7] ";
+	public static final String PREFIX = "§8[§6FK§8] ";
+	public static final String TEAM = "§8[§bTeams§8] ";
+	public static final String RULES = "§8[§bRules§8] ";
+	public static final String GAME = "§8[§bGame§8] ";
+	public static final String CHESTS = "§8[§bChests§8] ";
+	public static final String SCOREBOARD = "§8[§bScoreboard§8] ";
 	public static final String ALERT = "§4§l[§c§lAlert§4§l] ";
-	public static final String DEBUG = "§7[§cDebug§7] ";
-	public static final String TIP = "§r[§2Tip§r] ";
+	public static final String DEBUG = "§8[§cDebug§8] ";
+	public static final String TIP = "§8[§2Tip§8] ";
 
 	private ChatUtils() throws IllegalAccessException {
 		throw new IllegalAccessException(this.getClass().getSimpleName() + " cannot be instantiated.");
