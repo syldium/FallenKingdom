@@ -44,7 +44,7 @@ public class LockedChestInteractListener implements Listener
 
 			if(e.getPlayer().getGameMode().equals(GameMode.CREATIVE))
 			{
-				e.getPlayer().sendMessage(ChatUtils.ALERT + Messages.PLAYER_OPEN_LOCKED_CHEST_CREATIVE);
+				e.getPlayer().sendMessage(Messages.PREFIX_ALERT.getMessage() + Messages.PLAYER_OPEN_LOCKED_CHEST_CREATIVE);
 				return;
 			}
 			

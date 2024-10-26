@@ -7,6 +7,16 @@ import java.util.Arrays;
 
 public enum Messages
 {
+    PREFIX_FK("prefix.fk"),
+    PREFIX_TEAMS("prefix.teams"),
+    PREFIX_RULES("prefix.rules"),
+    PREFIX_GAME("prefix.game"),
+    PREFIX_CHESTS("prefix.chests"),
+    PREFIX_SCOREBOARD("prefix.scoreboard"),
+    PREFIX_ALERT("prefix.alert"),
+    PREFIX_DEBUG("prefix.debug"),
+    PREFIX_TIP("prefix.tip"),
+
     BROADCAST_CHEST_ROOM_CAPTURED("broadcast.chest-room.captured"),
     BROADCAST_CHEST_ROOM_TITLE("broadcast.chest-room.title"),
     BROADCAST_CHEST_ROOM_SUBTITLE("broadcast.chest-room.subtitle"),

@@ -30,7 +30,7 @@ public class TryLoad extends FkCommand
             return msg == null;
         }).count();
         plugin.getLogger().info("End of lang report");
-        sender.sendMessage(ChatUtils.PREFIX + Messages.CMD_LANG_TRY_LOAD);
+        ChatUtils.sendMessage(sender, Messages.CMD_LANG_TRY_LOAD);
         if (missingTranslations > 0)
             ChatUtils.sendMessage(sender, ChatColor.RED + Messages.CMD_LANG_TRY_LOAD_MISSING.getMessage().replace("%nb%", String.valueOf(missingTranslations)));
         return CommandResult.SUCCESS;

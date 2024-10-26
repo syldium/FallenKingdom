@@ -74,7 +74,7 @@ public class LanguageManager
                 localeComponents.addAll(Arrays.asList(localeComponent));
             }
 
-            localeComponents.addAll(0, Arrays.asList(TextComponent.fromLegacyText(ChatUtils.PREFIX)));
+            localeComponents.addAll(0, Arrays.asList(TextComponent.fromLegacyText(Messages.PREFIX_FK.getMessage())));
             TextComponent finalMessage = new TextComponent(localeComponents.toArray(new BaseComponent[0]));
             Bukkit.getConsoleSender().sendMessage(message);
             taskId = new BukkitRunnable() {
@@ -122,7 +122,7 @@ public class LanguageManager
     {
         String prop = locale.getProperty(path);
         if (prop == null && !strict) {
-            if (untranslatedKeys.add(path)) {
+            if (untranslatedKeys.add(path) && !path.startsWith("prefix.")) {
                 Fk.getInstance().getLogger().warning("Key " + path + " not translated in your language; using of default value"); // À ne pas traduire !
             }
             return defaultLocale.getProperty(path);

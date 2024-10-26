@@ -59,6 +59,6 @@ public class AllowBlock extends FkCommand
 	private static void makeSuggestionIf(String haystack, String needle, String message, CommandSender sender)
 	{
 		if (haystack.toLowerCase().contains(needle.toLowerCase()))
-			sender.sendMessage(ChatUtils.PREFIX + message);
+			ChatUtils.sendMessage(sender, message);
 	}
 }

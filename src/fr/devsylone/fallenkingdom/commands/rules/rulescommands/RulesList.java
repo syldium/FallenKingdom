@@ -19,10 +19,10 @@ public class RulesList extends FkCommand
 
 	@Override
 	public CommandResult execute(Fk plugin, CommandSender sender, java.util.List<String> args, String label) {
-		sender.sendMessage(ChatUtils.PREFIX + "§7§m--------§b " + Messages.CMD_RULES_LIST + " §7§m--------\n");
+		ChatUtils.sendMessage(sender, "§7§m--------§b " + Messages.CMD_RULES_LIST + " §7§m--------\n");
 		for(String s : RulesFormatter.formatRules())
-			sender.sendMessage(ChatUtils.PREFIX + s);
-		sender.sendMessage(ChatUtils.PREFIX + "§7§m------------------------------\n");
+			ChatUtils.sendMessage(sender, s);
+		ChatUtils.sendMessage(sender, "§7§m------------------------------\n");
 		return CommandResult.SUCCESS;
 	}
 }

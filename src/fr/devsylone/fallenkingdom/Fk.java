@@ -47,7 +47,6 @@ import fr.devsylone.fallenkingdom.manager.saveable.StarterInventoryManager;
 import fr.devsylone.fallenkingdom.pause.PauseRestorer;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fallenkingdom.scoreboard.PlaceHolderExpansion;
-import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fallenkingdom.utils.FkSound;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fallenkingdom.version.Version;
@@ -296,9 +295,9 @@ public class Fk extends JavaPlugin
 		if(debugMode)
 		{
 			if(!Fk.getInstance().isEnabled())
-				Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), () -> Bukkit.broadcastMessage(ChatUtils.DEBUG + (message == null ? "null" : message.toString())));
+				Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), () -> Bukkit.broadcastMessage(Messages.PREFIX_DEBUG.getMessage() + (message == null ? "null" : message.toString())));
 			else
-				Bukkit.broadcastMessage(ChatUtils.DEBUG + (message == null ? "null" : message.toString()));
+				Bukkit.broadcastMessage(Messages.PREFIX_DEBUG.getMessage() + (message == null ? "null" : message.toString()));
 		}
 
 	}

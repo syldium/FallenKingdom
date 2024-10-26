@@ -5,7 +5,6 @@ import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.commands.abstraction.AbstractCommand;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkParentCommand;
 import fr.devsylone.fallenkingdom.commands.teams.teamscommands.*;
-import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import org.bukkit.ChatColor;
 
@@ -30,6 +29,6 @@ public class FkTeamCommand extends FkParentCommand
 
     @Override
     protected void broadcast(String message) {
-        Fk.broadcast(ChatColor.GOLD + message, ChatUtils.TEAM);
+        Fk.broadcast(ChatColor.GOLD + message, Messages.PREFIX_TEAMS.getMessage());
     }
 }

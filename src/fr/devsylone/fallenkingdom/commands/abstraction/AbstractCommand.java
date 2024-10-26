@@ -125,7 +125,7 @@ public abstract class AbstractCommand
             return;
         }
         getParent().broadcast(message);
-        Bukkit.getConsoleSender().sendMessage(ChatUtils.PREFIX + message);
+        Bukkit.getConsoleSender().sendMessage(Messages.PREFIX_FK.getMessage() + message);
     }
 
     protected void broadcast(String message, int noBroadcastPos, List<String> args) {

@@ -62,7 +62,7 @@ public class ScoreboardDisplayService implements DisplayService {
     public static @NotNull ScoreboardDisplayService createDefault() {
         final List<String> lines = new ArrayList<>(Arrays.asList(Messages.SCOREBOARD_DEFAULT.getMessage().split("\n")));
         lines.add(ChatUtils.DEVSYLONE);
-        return new ScoreboardDisplayService(ChatUtils.PREFIX, lines);
+        return new ScoreboardDisplayService(Messages.PREFIX_FK.getMessage(), lines);
     }
 
     @Override

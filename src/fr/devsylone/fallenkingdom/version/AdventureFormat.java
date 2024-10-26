@@ -1,6 +1,6 @@
 package fr.devsylone.fallenkingdom.version;
 
-import fr.devsylone.fallenkingdom.utils.ChatUtils;
+import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fkpi.teams.Team;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
@@ -21,7 +21,7 @@ class AdventureFormat {
     static void setDeathMessage(PlayerDeathEvent event, Team playerTeam, Team killerTeam) {
         Component deathMessage = event.deathMessage();
         if (deathMessage == null) return;
-        Component prefix = LegacyComponentSerializer.legacySection().deserialize(ChatUtils.PREFIX);
+        Component prefix = LegacyComponentSerializer.legacySection().deserialize(Messages.PREFIX_FK.getMessage());
         deathMessage = deathMessage.color(NamedTextColor.GRAY);
         if (deathMessage instanceof TranslatableComponent) {
             List<Component> args = new ArrayList<>(((TranslatableComponent) deathMessage).args());

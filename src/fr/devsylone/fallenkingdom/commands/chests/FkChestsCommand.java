@@ -9,7 +9,6 @@ import fr.devsylone.fallenkingdom.commands.chests.chestscommands.ChestUnlock;
 import fr.devsylone.fallenkingdom.commands.chests.chestscommands.ChestsList;
 import fr.devsylone.fallenkingdom.commands.chests.chestscommands.Remove;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
-import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import org.bukkit.ChatColor;
 
@@ -30,6 +29,6 @@ public class FkChestsCommand extends FkParentCommand
 	@Override
 	protected void broadcast(String message)
 	{
-		Fk.broadcast(ChatColor.GOLD + message, ChatUtils.CHESTS);
+		Fk.broadcast(ChatColor.GOLD + message, Messages.PREFIX_CHESTS.getMessage());
 	}
 }

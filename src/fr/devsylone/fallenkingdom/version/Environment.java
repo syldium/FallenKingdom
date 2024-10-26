@@ -1,6 +1,6 @@
 package fr.devsylone.fallenkingdom.version;
 
-import fr.devsylone.fallenkingdom.utils.ChatUtils;
+import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fkpi.teams.Team;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -130,7 +130,7 @@ public class Environment {
 
         String deathMessage = event.getDeathMessage();
         if (deathMessage == null) return;
-        deathMessage = ChatUtils.PREFIX + deathMessage;
+        deathMessage = Messages.PREFIX_FK.getMessage() + deathMessage;
         if (playerTeam != null) {
             deathMessage = deathMessage.replace(event.getEntity().getName(), event.getEntity().getDisplayName() + ChatColor.GRAY);
         }

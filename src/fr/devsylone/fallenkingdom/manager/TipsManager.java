@@ -26,7 +26,6 @@ import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.commands.chests.chestscommands.Add;
 import fr.devsylone.fallenkingdom.commands.chests.chestscommands.ChestLock;
 import fr.devsylone.fallenkingdom.players.Tip;
-import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fallenkingdom.utils.FkSound;
 
 public class TipsManager
@@ -78,7 +77,7 @@ public class TipsManager
 		if(!tip.getTip().isEmpty())
 		{
 			Fk.broadcast(" ");
-			Fk.broadcast(tip.getChatFormatted(), ChatUtils.TIP, FkSound.NOTE_PLING);
+			Fk.broadcast(tip.getChatFormatted(), Messages.PREFIX_TIP.getMessage(), FkSound.NOTE_PLING);
 			Fk.broadcast(" ");
 		}
 		if(displayed.size()+used.size() >= tips.size())

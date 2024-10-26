@@ -90,7 +90,7 @@ public class DisabledPotionsListener implements Listener
 		if(isForbiddenBrewing(potions, ingredient))
 		{
 			if(!Bukkit.getVersion().contains("1.8") && newItem.getType() == XMaterial.BLAZE_POWDER.parseMaterial() && e.isShiftClick())
-				e.getWhoClicked().sendMessage(ChatUtils.PREFIX + Messages.PLAYER_DISABLED_POTION_BLAZE_POWDER_SHIFT.getMessage());
+				ChatUtils.sendMessage(e.getWhoClicked(), Messages.PLAYER_DISABLED_POTION_BLAZE_POWDER_SHIFT);
 			else
 				ChatUtils.sendMessage(e.getWhoClicked(), Messages.PLAYER_DISABLED_POTION_CRAFT);
 			e.setCancelled(true);

@@ -47,6 +47,6 @@ public class FkRuleCommand extends FkParentCommand
 
 	@Override
 	protected void broadcast(String message) {
-		Fk.broadcast(ChatColor.GOLD + message, ChatUtils.RULES);
+		Fk.broadcast(ChatColor.GOLD + message, Messages.PREFIX_RULES.getMessage());
 	}
 }
