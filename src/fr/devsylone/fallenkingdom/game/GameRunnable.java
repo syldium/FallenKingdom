@@ -2,6 +2,7 @@ package fr.devsylone.fallenkingdom.game;
 
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.commands.game.gamescommands.Pause;
+import fr.devsylone.fallenkingdom.display.tick.CycleTickFormatter;
 import fr.devsylone.fallenkingdom.scoreboard.PlaceHolder;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fallenkingdom.utils.FkSound;
@@ -80,7 +81,7 @@ class GameRunnable extends BukkitRunnable
             w.setFullTime(worldTime);
         }
 
-        if(worldTime == 23000)
+        if(game.time == game.timeFormat.dayDuration() - game.timeFormat.dayDuration() / CycleTickFormatter.HOURS_PER_DAY)
             Fk.broadcast(Messages.BROADCAST_SUN_WILL_RISE.getMessage());
     }
 
