@@ -13,6 +13,8 @@ import org.bukkit.configuration.ConfigurationSection;
 
 import fr.devsylone.fallenkingdom.utils.XBlock;
 import fr.devsylone.fkpi.util.Saveable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
 import java.util.Objects;
@@ -73,9 +75,9 @@ public class Base implements Saveable
 	 * @param material Matière dans laquelle sera construite la première couche de la muraille, si null ou n'existe pas <br>
 	 *        il sera remplacé par de l'air.
 	 */
-	public Base(Team team, Location center, int radius, Material material, byte data)
+	public Base(Team team, @Nullable Location center, int radius, Material material, byte data)
 	{
-		this.center = adjustLoc(center);
+		this.center = center != null ? adjustLoc(center) : null;
 		this.radius = radius;
 		this.team = team;
 		this.material = material;
@@ -312,11 +314,9 @@ public class Base implements Saveable
 	 * @param loc La Location à modifier.
 	 * @return La Location modifiée.
 	 */
-	private Location adjustLoc(Location loc)
+	private @NotNull Location adjustLoc(@NotNull Location loc)
 	{
-		if(loc == null)
-			return null;
-
+		loc = new Location(loc.getWorld(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
 		World world = loc.getWorld();
 		if(world == null)
 			return loc;
@@ -327,13 +327,14 @@ public class Base implements Saveable
 		while(!XBlock.isReplaceable(loc.getBlock()))
 			loc.add(0, 1, 0);
 
+		loc.add(.5D, .5D, .5D);
 		return loc;
 	}
 
 	@Override
 	public void load(ConfigurationSection config)
 	{
-		center = new Location(Bukkit.getWorld(config.getString("Center.World")), config.getInt("Center.X"), config.getInt("Center.Y"), config.getInt("Center.Z"));
+		center = new Location(Bukkit.getWorld(config.getString("Center.World")), config.getInt("Center.X") + .5D, config.getInt("Center.Y") + .5D, config.getInt("Center.Z") + .5D);
 		tp = getCenter().clone().add(0, 1, 1);
 		material = Material.matchMaterial(config.getString("Material"));
 		radius = config.getInt("Radius");

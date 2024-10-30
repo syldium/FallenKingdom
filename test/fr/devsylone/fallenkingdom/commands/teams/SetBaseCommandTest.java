@@ -25,7 +25,7 @@ public class SetBaseCommandTest extends CommandTest {
         assertNotNull(MockUtils.getBlueTeam().getBase());
         assertEquals(5, MockUtils.getBlueTeam().getBase().getRadius());
         assertEquals(MockUtils.getBlueTeam(), MockUtils.getBlueTeam().getBase().getTeam());
-        assertEquals(MockUtils.getConstantPlayer().getLocation(), MockUtils.getBlueTeam().getBase().getCenter());
+        assertEquals(MockUtils.getConstantPlayer().getLocation().toCenterLocation(), MockUtils.getBlueTeam().getBase().getCenter());
     }
 
     @Test
