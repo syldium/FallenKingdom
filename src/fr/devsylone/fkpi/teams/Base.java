@@ -13,6 +13,7 @@ import org.bukkit.configuration.ConfigurationSection;
 
 import fr.devsylone.fallenkingdom.utils.XBlock;
 import fr.devsylone.fkpi.util.Saveable;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -314,9 +315,10 @@ public class Base implements Saveable
 	 * @param loc La Location à modifier.
 	 * @return La Location modifiée.
 	 */
+	@Contract("_ -> param1")
 	private @NotNull Location adjustLoc(@NotNull Location loc)
 	{
-		loc = new Location(loc.getWorld(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+		loc.set(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
 		World world = loc.getWorld();
 		if(world == null)
 			return loc;
