@@ -7,6 +7,7 @@ import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.teams.Base;
 import fr.devsylone.fkpi.teams.Team;
+import fr.devsylone.fallenkingdom.display.notification.RegionChange;
 import fr.devsylone.fkpi.util.Saveable;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -16,7 +17,6 @@ import org.bukkit.entity.Player;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
 import fr.devsylone.fallenkingdom.scoreboard.FkScoreboard;
 import fr.devsylone.fallenkingdom.scoreboard.ScoreboardDisplayer;
-import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fallenkingdom.utils.FkSound;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -34,6 +34,7 @@ public class FkPlayer implements Saveable
 
 	private boolean knowsSbEdit = false;
 	private PlayerState state = PlayerState.INGAME;
+	private RegionChange lastChange;
 	private FkScoreboard board;
 	private ScoreboardDisplayer sbDisplayer;
 	private Location portal;
@@ -96,6 +97,14 @@ public class FkPlayer implements Saveable
 	public void setState(PlayerState state)
 	{
 		this.state = state;
+	}
+
+	public @Nullable RegionChange getLastRegionChange() {
+		return lastChange;
+	}
+
+	public void setLastChange(@Nullable RegionChange lastChange) {
+		this.lastChange = lastChange;
 	}
 
 	public void sendMessage(String message)

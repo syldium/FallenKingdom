@@ -10,6 +10,7 @@ import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.rules.Rule;
 import fr.devsylone.fkpi.teams.Base;
 import fr.devsylone.fkpi.teams.Team;
+import fr.devsylone.fallenkingdom.display.notification.RegionChange;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -89,29 +90,22 @@ public class MoveListener implements Listener
 			}
 			boolean wasInside = base.contains(e.getFrom());
 			boolean isInside = base.contains(e.getTo());
+			RegionChange change = null;
 			if (!wasInside && isInside) {
-				if (team.equals(pTeam)) {
-					fkp.sendMessage(Messages.PLAYER_SELF_BASE_ENTER);
-				} else {
-					fkp.sendMessage(Messages.PLAYER_BASE_ENTER.getMessage().replace("%team%", team.toString()));
-				}
+				change = new RegionChange(base, RegionChange.MoveType.ENTER);
 			} else if (wasInside && !isInside) {
-				if (team.equals(pTeam)) {
-					fkp.sendMessage(Messages.PLAYER_SELF_BASE_EXIT);
-				} else {
-					fkp.sendMessage(Messages.PLAYER_BASE_EXIT.getMessage().replace("%team%", team.toString()));
-				}
+				change = new RegionChange(base, RegionChange.MoveType.LEAVE);
 			}
 
 			if (base.getChestsRoom() != null && FkPI.getInstance().getChestsRoomsManager().isEnabled() && e.getPlayer().getGameMode() != GameMode.SPECTATOR) {
 				if (base.getChestsRoom().contains(e.getTo()) && !base.getChestsRoom().contains(e.getFrom())) {
 					if (team.equals(pTeam)) {
 						if (wasInside == isInside) {
-							fkp.sendMessage(Messages.PLAYER_SELF_CHEST_ROOM_ENTER);
+							change = new RegionChange(base.getChestsRoom(), RegionChange.MoveType.ENTER);
 						}
 					} else {
 						if (wasInside == isInside) {
-							fkp.sendMessage(Messages.PLAYER_CHEST_ROOM_ENTER.getMessage().replace("%team%", team.toString()));
+							change = new RegionChange(base.getChestsRoom(), RegionChange.MoveType.ENTER);
 						}
 						if (Fk.getInstance().getGame().isAssaultsEnabled()) {
 							base.getChestsRoom().addEnemyInside(e.getPlayer());
@@ -120,14 +114,20 @@ public class MoveListener implements Listener
 				} else if (base.getChestsRoom().contains(e.getFrom()) && !base.getChestsRoom().contains(e.getTo())) {
 					if (team.equals(pTeam)) {
 						if (wasInside == isInside) {
-							fkp.sendMessage(Messages.PLAYER_SELF_CHEST_ROOM_EXIT);
+							change = new RegionChange(base.getChestsRoom(), RegionChange.MoveType.LEAVE);
 						}
 					} else {
 						base.getChestsRoom().removeEnemyInside(e.getPlayer());
 						if (wasInside == isInside) {
+							change = new RegionChange(base.getChestsRoom(), RegionChange.MoveType.LEAVE);
 							fkp.sendMessage(Messages.PLAYER_CHEST_ROOM_EXIT.getMessage().replace("%team%", team.toString()));
 						}
 					}
+				}
+				if (change != null) {
+					Fk.getInstance().getDisplayService().dispatch(change, e.getPlayer());
+					Fk.getInstance().getDisplayService().update(e.getPlayer(), fkp, PlaceHolder.REGION);
+					fkp.setLastChange(change);
 				}
 			}
 		}

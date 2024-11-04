@@ -6,6 +6,7 @@ import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.teams.Base;
 import fr.devsylone.fkpi.teams.Team;
+import fr.devsylone.fallenkingdom.display.notification.RegionChange;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
@@ -152,6 +153,15 @@ public class PlaceHolderUtils
 		if (portal != null && player.getWorld().equals(portal.getWorld()))
 			return Messages.SCOREBOARD_PORTAL.getMessage();
 		return Messages.SCOREBOARD_BASE.getMessage(); // Même si on pointe vers rien
+	}
+
+	public static String getBaseStatus(Player player)
+	{
+		RegionChange change = Fk.getInstance().getPlayerManager().getPlayer(player).getLastRegionChange();
+		if (change == null || change.timestamp() < System.currentTimeMillis() - 2000L) {
+			return "";
+		}
+		return change.message(player);
 	}
 
 	public static int getDeaths(Player p)

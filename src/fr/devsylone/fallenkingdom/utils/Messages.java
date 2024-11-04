@@ -401,6 +401,7 @@ public enum Messages
     PLACE_HOLDER_BASE_DISTANCE("placeHolder.base.distance"),
     PLACE_HOLDER_BASE_DIRECTION("placeHolder.base.direction"),
     PLACE_HOLDER_BASE_OR_PORTAL("placeHolder.base-or-portal"),
+    PLACE_HOLDER_REGION("placeHolder.region"),
     PLACE_HOLDER_ALLY_DIR("placeHolder.ally.dir"),
     PLACE_HOLDER_ALLY_DIST("placeHolder.ally.dist"),
     PLACE_HOLDER_ALLY_NAME("placeHolder.ally.name"),

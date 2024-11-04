@@ -4,6 +4,9 @@ import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.display.change.DisplayChange;
 import fr.devsylone.fallenkingdom.display.change.SetScoreboardLineChange;
 import fr.devsylone.fallenkingdom.display.change.SetScoreboardTitleChange;
+import fr.devsylone.fallenkingdom.display.notification.ChatChannel;
+import fr.devsylone.fallenkingdom.display.notification.GameNotification;
+import fr.devsylone.fallenkingdom.display.notification.NotificationChannel;
 import fr.devsylone.fallenkingdom.display.progress.ProgressBar;
 import fr.devsylone.fallenkingdom.display.sound.SoundPlayer;
 import fr.devsylone.fallenkingdom.display.tick.CycleTickFormatter;
@@ -55,6 +58,8 @@ public class GlobalDisplayService implements DisplayService, Saveable {
     private SoundPlayer gameStartSound = SoundPlayer.EMPTY;
     private SoundPlayer eliminationSound = SoundPlayer.EMPTY;
     private SoundPlayer eventSound = SoundPlayer.EMPTY;
+
+    private NotificationChannel regionChangeDispatcher = new ChatChannel();
 
     public GlobalDisplayService() {
         this.services = Collections.emptyMap();
@@ -190,6 +195,8 @@ public class GlobalDisplayService implements DisplayService, Saveable {
     private static final String EVENT_SOUND = "event-sound";
     private static final String PROGRESSBAR = "progressbar";
     private static final String TICK_FORMAT = "tick-format";
+    private static final String NOTIFICATION = "notification";
+    private static final String REGION_CHANGE = "region-change";
 
     @Override
     public void load(ConfigurationSection config) {
@@ -222,6 +229,11 @@ public class GlobalDisplayService implements DisplayService, Saveable {
 
         this.services = services;
         this.text.load(config);
+
+        final ConfigurationSection notification = config.getConfigurationSection(NOTIFICATION);
+        if (notification != null) {
+            this.regionChangeDispatcher = NotificationChannel.fromConfig(notification.getString(REGION_CHANGE));
+        }
     }
 
     @Override
@@ -255,6 +267,9 @@ public class GlobalDisplayService implements DisplayService, Saveable {
         this.eliminationSound.save(config.createSection(ELIMINATION_SOUND));
         this.eventSound.save(config.createSection(EVENT_SOUND));
         this.text.save(config);
+
+        final ConfigurationSection notification = config.createSection(NOTIFICATION);
+        notification.set(REGION_CHANGE, NotificationChannel.name(this.regionChangeDispatcher));
     }
 
     public @NotNull ProgressBar initProgressBar(@NotNull Player player, @NotNull Location location) {
@@ -284,6 +299,10 @@ public class GlobalDisplayService implements DisplayService, Saveable {
 
     public void playEventSound(@NotNull Player player) {
         this.eventSound.play(player);
+    }
+
+    public void dispatch(@NotNull GameNotification notification, @NotNull Player player) {
+        this.regionChangeDispatcher.send(player, notification);
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})

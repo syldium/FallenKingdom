@@ -20,6 +20,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -292,6 +293,10 @@ public class ChestsRoom implements Saveable
 	private int getOffset()
 	{
 		return FkPI.getInstance().getChestsRoomsManager().getOffset();
+	}
+
+	public @NotNull Base getBase() {
+		return base;
 	}
 
 	public boolean exists()
