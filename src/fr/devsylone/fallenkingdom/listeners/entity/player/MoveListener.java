@@ -112,22 +112,17 @@ public class MoveListener implements Listener
 						}
 					}
 				} else if (base.getChestsRoom().contains(e.getFrom()) && !base.getChestsRoom().contains(e.getTo())) {
-					if (team.equals(pTeam)) {
-						if (wasInside == isInside) {
-							change = new RegionChange(base.getChestsRoom(), RegionChange.MoveType.LEAVE);
-						}
-					} else {
-						base.getChestsRoom().removeEnemyInside(e.getPlayer());
-						if (wasInside == isInside) {
-							change = new RegionChange(base.getChestsRoom(), RegionChange.MoveType.LEAVE);
-							fkp.sendMessage(Messages.PLAYER_CHEST_ROOM_EXIT.getMessage().replace("%team%", team.toString()));
-						}
-					}
-				}
+                    if (!team.equals(pTeam)) {
+                        base.getChestsRoom().removeEnemyInside(e.getPlayer());
+                    }
+                    if (wasInside == isInside) {
+                        change = new RegionChange(base.getChestsRoom(), RegionChange.MoveType.LEAVE);
+                    }
+                }
 				if (change != null) {
+					fkp.setLastChange(change);
 					Fk.getInstance().getDisplayService().dispatch(change, e.getPlayer());
 					Fk.getInstance().getDisplayService().update(e.getPlayer(), fkp, PlaceHolder.REGION);
-					fkp.setLastChange(change);
 				}
 			}
 		}
