@@ -14,7 +14,6 @@ import fr.devsylone.fallenkingdom.utils.XItemStack;
 import fr.devsylone.fallenkingdom.version.Environment;
 import fr.devsylone.fallenkingdom.version.potion.PotionIterator;
 import fr.devsylone.fkpi.rules.Rule;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
@@ -115,7 +114,7 @@ public class DisabledPotions extends FkPlayerCommand {
 
             /*
              * amount = 1 -> potion actuellement autorisée
-             * amount = 0 ou 64 -> potion actuellement désactivée
+             * amount = 64 -> potion actuellement désactivée
              */
             if (potionItem.getAmount() != 1) {
                 if (this.rule.enablePotion(data)) {
@@ -139,7 +138,7 @@ public class DisabledPotions extends FkPlayerCommand {
             if (this.rule.isDisabled(potionData)) {
                 Environment.setEnchantmentGlintOverride(potionMeta, true);
                 potionMeta.setLore(Collections.singletonList(LORE_DISABLED));
-                potionItem.setAmount(Bukkit.getVersion().contains("1.8") ? 0 : 64);
+                potionItem.setAmount(64);
             } else {
                 Environment.setEnchantmentGlintOverride(potionMeta, false);
                 potionMeta.setLore(Collections.singletonList(LORE_ENABLED));

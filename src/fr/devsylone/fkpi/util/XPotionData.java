@@ -151,7 +151,7 @@ public final class XPotionData
 		}
 
 		if (VERSION1_8) {
-			Potion1_8 potion = new Potion1_8(type, upgraded ? 2 : 1, false, type.isInstant() && extended);
+			Potion1_8 potion = new Potion1_8(type, upgraded ? 2 : 1, type.isInstant(), !type.isInstant() && extended);
 			potion.apply(potionItem);
 		} else {
 			PotionMeta meta = (PotionMeta) itemMeta;

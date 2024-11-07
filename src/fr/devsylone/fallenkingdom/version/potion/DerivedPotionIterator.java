@@ -19,6 +19,7 @@ class DerivedPotionIterator implements Iterator<XPotionData> {
         this.types = types;
     }
 
+    @Override
     public boolean hasNext() {
         return this.index < this.types.length || this.variantsIndex < this.variants.size();
     }
