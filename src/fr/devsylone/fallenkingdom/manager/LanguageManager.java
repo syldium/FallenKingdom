@@ -74,7 +74,7 @@ public class LanguageManager
                 localeComponents.addAll(Arrays.asList(localeComponent));
             }
 
-            localeComponents.addAll(0, Arrays.asList(TextComponent.fromLegacyText(Messages.PREFIX_FK.getMessage())));
+            localeComponents.addAll(0, Arrays.asList(TextComponent.fromLegacyText("§7[§5Fk§7] ")));
             TextComponent finalMessage = new TextComponent(localeComponents.toArray(new BaseComponent[0]));
             Bukkit.getConsoleSender().sendMessage(message);
             taskId = new BukkitRunnable() {

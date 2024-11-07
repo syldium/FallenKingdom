@@ -82,7 +82,7 @@ class NMSHologram1_17 extends NMSHologram {
                 Class<?> deltaMovement = NMSUtils.nmsClass("world.entity", "PositionMoveRotation", "PositionMoveRotation");
                 deltaMovementConstructor = deltaMovement.getConstructor(vec3dClass, vec3dClass, float.class, float.class);
                 entityPositionConstructor = PACKET_ENTITY_POSITION.getConstructor(int.class, deltaMovement, Set.class, boolean.class);
-            } catch (NoSuchMethodException ignored) {} // < 1.21.2
+            } catch (ClassNotFoundException | NoSuchMethodException ignored) {} // < 1.21.2
             PACKET_ENTITY_POSITION_CONSTRUCTOR = entityPositionConstructor;
             DELTA_MOVEMENT_CONSTRUCTOR = deltaMovementConstructor;
             PACKET_ENTITY_POSITION_FIELDS = Arrays.stream(PACKET_ENTITY_POSITION.getDeclaredFields())
