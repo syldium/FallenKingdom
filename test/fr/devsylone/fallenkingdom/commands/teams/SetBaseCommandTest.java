@@ -3,7 +3,6 @@ package fr.devsylone.fallenkingdom.commands.teams;
 import fr.devsylone.fallenkingdom.MockUtils;
 import fr.devsylone.fallenkingdom.commands.CommandTest;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

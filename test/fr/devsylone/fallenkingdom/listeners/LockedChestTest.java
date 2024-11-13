@@ -18,8 +18,10 @@ import org.junit.jupiter.api.Test;
 import java.lang.reflect.Field;
 import java.util.UUID;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockbukkit.mockbukkit.matcher.plugin.PluginManagerFiredEventFilterMatcher.hasFiredFilteredEvent;
 
 public class LockedChestTest {
 
@@ -97,8 +99,10 @@ public class LockedChestTest {
     }
 
     private void assertEventFired(LockedChest.ChestState excepted, UUID unlocker) {
-        MockUtils.getServerMockSafe().getPluginManager().assertEventFired(PlayerLockedChestInteractEvent.class, event ->
-            lockedChest.equals(event.getChest()) && lockedChest.getState().equals(excepted) && lockedChest.getUnlocker().equals(unlocker)
+        assertThat(MockUtils.getServerMockSafe().getPluginManager(), hasFiredFilteredEvent(
+                PlayerLockedChestInteractEvent.class, event ->
+                        lockedChest.equals(event.getChest()) && lockedChest.getState().equals(excepted) && lockedChest.getUnlocker().equals(unlocker)
+                )
         );
     }
 }

@@ -1,14 +1,14 @@
 package fr.devsylone.fallenkingdom;
 
-import be.seeseemelk.mockbukkit.MockBukkit;
-import be.seeseemelk.mockbukkit.ServerMock;
-import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import fr.devsylone.fkpi.teams.Team;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.inventory.ItemStack;
+import org.mockbukkit.mockbukkit.MockBukkit;
+import org.mockbukkit.mockbukkit.ServerMock;
+import org.mockbukkit.mockbukkit.entity.PlayerMock;
 
 public class MockUtils {
 

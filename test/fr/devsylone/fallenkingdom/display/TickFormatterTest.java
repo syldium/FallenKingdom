@@ -1,8 +1,8 @@
 package fr.devsylone.fallenkingdom.display;
 
 import fr.devsylone.fallenkingdom.display.tick.CycleTickFormatter;
-import fr.devsylone.fallenkingdom.display.tick.TimerTickFormatter;
 import fr.devsylone.fallenkingdom.display.tick.TickFormatter;
+import fr.devsylone.fallenkingdom.display.tick.TimerTickFormatter;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;

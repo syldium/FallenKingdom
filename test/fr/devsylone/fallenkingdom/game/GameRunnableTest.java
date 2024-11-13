@@ -12,11 +12,10 @@ import java.util.function.BooleanSupplier;
 
 import static fr.devsylone.fallenkingdom.game.GameHelper.assertGameRunnableStarted;
 import static fr.devsylone.fallenkingdom.game.GameHelper.assertGameRunnableStopped;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class GameRunnableTest {
 

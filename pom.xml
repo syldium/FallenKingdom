@@ -146,15 +146,15 @@
 
     <dependencies>
         <dependency> <!-- Units tests - seems like it needs to be before paper-api -->
-            <groupId>com.github.seeseemelk</groupId>
-            <artifactId>MockBukkit-v1.21</artifactId>
-            <version>3.133.2</version>
+            <groupId>org.mockbukkit.mockbukkit</groupId>
+            <artifactId>mockbukkit-v1.21</artifactId>
+            <version>4.3.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
-            <version>25.0.0</version>
+            <version>26.0.1</version>
             <scope>provided</scope>
         </dependency>
         <!-- Used to check the structure of NMS packets -->

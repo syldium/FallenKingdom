@@ -1,9 +1,9 @@
 package fr.devsylone.fallenkingdom.manager;
 
 import fr.devsylone.fallenkingdom.display.GlobalDisplayService;
-import fr.devsylone.fallenkingdom.players.FkPlayerMock;
 import fr.devsylone.fallenkingdom.manager.saveable.PlayerManager;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
+import fr.devsylone.fallenkingdom.players.FkPlayerMock;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 

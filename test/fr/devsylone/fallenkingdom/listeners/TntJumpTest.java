@@ -1,7 +1,5 @@
 package fr.devsylone.fallenkingdom.listeners;
 
-import be.seeseemelk.mockbukkit.WorldMock;
-import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import fr.devsylone.fallenkingdom.MockUtils;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.managers.TeamManager;
@@ -12,6 +10,12 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.junit.jupiter.api.Test;
+import org.mockbukkit.mockbukkit.entity.PlayerMock;
+import org.mockbukkit.mockbukkit.world.WorldMock;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockbukkit.mockbukkit.matcher.entity.EntityTeleportationMatcher.hasNotTeleported;
+import static org.mockbukkit.mockbukkit.matcher.entity.EntityTeleportationMatcher.hasTeleported;
 
 public class TntJumpTest {
 
@@ -50,7 +54,7 @@ public class TntJumpTest {
         FkPI.getInstance().getTeamManager().removePlayerOfHisTeam(player.getName());
         FkPI.getInstance().getTeamManager().getTeam("b").addPlayer(player.getName());
         playMoveSequence();
-        player.assertNotTeleported();
+        assertThat(player, hasNotTeleported());
     }
 
     @Test
@@ -59,7 +63,7 @@ public class TntJumpTest {
         FkPI.getInstance().getTeamManager().removePlayerOfHisTeam(player.getName());
         FkPI.getInstance().getTeamManager().getTeam("b").addPlayer(player.getName());
         playMoveSequence();
-        player.assertTeleported(tntLocs[0].clone().add(0, 1, 0), 1.5);
+        assertThat(player, hasTeleported(tntLocs[0].clone().add(0, 1, 0), 1.5));
     }
 
     @Test
@@ -68,7 +72,7 @@ public class TntJumpTest {
         FkPI.getInstance().getTeamManager().removePlayerOfHisTeam(player.getName());
         FkPI.getInstance().getTeamManager().getTeam("a").addPlayer(player.getName());
         playMoveSequence();
-        player.assertNotTeleported();
+        assertThat(player, hasNotTeleported());
     }
 
     private void playMoveSequence() {
