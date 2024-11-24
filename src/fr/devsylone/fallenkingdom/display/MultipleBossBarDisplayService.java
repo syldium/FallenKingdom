@@ -103,6 +103,7 @@ class MultipleBossBarDisplayService extends BossBarDisplayService {
         return new MultipleBossBarDisplayService(next, this.color, this.style, this.bars);
     }
 
+    @Override
     void save(@NotNull ConfigurationSection section) {
         section.set(COLOR, this.color.name());
         section.set(STYLE, this.style.name());

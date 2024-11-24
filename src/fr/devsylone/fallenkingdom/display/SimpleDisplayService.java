@@ -3,6 +3,7 @@ package fr.devsylone.fallenkingdom.display;
 import fr.devsylone.fallenkingdom.display.content.Content;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fallenkingdom.scoreboard.PlaceHolder;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -50,4 +51,6 @@ public abstract class SimpleDisplayService implements DisplayService {
     public @NotNull DisplayType type() {
         return this.type;
     }
+
+    abstract void save(@NotNull ConfigurationSection section);
 }

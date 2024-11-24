@@ -2,12 +2,14 @@ package fr.devsylone.fallenkingdom.display;
 
 import fr.devsylone.fallenkingdom.display.content.Content;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
+import fr.devsylone.fallenkingdom.scoreboard.PlaceHolder;
 import fr.devsylone.fallenkingdom.utils.NMSUtils;
 import fr.devsylone.fallenkingdom.utils.PacketUtils;
 import fr.devsylone.fallenkingdom.version.tracker.ChatMessage;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,8 +39,37 @@ public class ActionBarDisplayService extends SimpleDisplayService {
         SEND_ACTION_BAR = sendActionBar;
     }
 
+    private final boolean doesResend;
+
+    public ActionBarDisplayService(@NotNull ConfigurationSection section) {
+        super(DisplayType.ACTIONBAR, Content.fromConfig(section.get(CONTENT)));
+        this.doesResend = section.getBoolean(DOES_RESEND, true);
+    }
+
     public ActionBarDisplayService(@NotNull Content content) {
+        this(content, true);
+    }
+
+    public ActionBarDisplayService(@NotNull Content content, boolean doesResend) {
         super(DisplayType.ACTIONBAR, content);
+        this.doesResend = doesResend;
+    }
+
+    @Override
+    public boolean contains(@NotNull PlaceHolder placeHolder) {
+        return (this.doesResend && placeHolder == PlaceHolder.MINUTE) || super.contains(placeHolder);
+    }
+
+    @Override
+    public boolean containsAny(@NotNull PlaceHolder... placeHolders) {
+        if (this.doesResend) {
+            for (PlaceHolder placeHolder : placeHolders) {
+                if (placeHolder == PlaceHolder.MINUTE) {
+                    return true;
+                }
+            }
+        }
+        return super.containsAny(placeHolders);
     }
 
     @Override
@@ -53,7 +84,16 @@ public class ActionBarDisplayService extends SimpleDisplayService {
 
     @Override
     public @NotNull ActionBarDisplayService withValue(@NotNull Content next) {
-        return new ActionBarDisplayService(next);
+        return new ActionBarDisplayService(next, this.doesResend);
+    }
+
+    private static final String DOES_RESEND = "does-resend";
+    private static final String CONTENT = "content";
+
+    @Override
+    void save(@NotNull ConfigurationSection section) {
+        section.set(DOES_RESEND, this.doesResend);
+        this.content().save(section, CONTENT);
     }
 
     // 1.8 :cry:

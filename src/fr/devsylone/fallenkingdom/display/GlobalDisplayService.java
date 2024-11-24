@@ -204,7 +204,12 @@ public class GlobalDisplayService implements DisplayService, Saveable {
         this.hideAll();
         final Map<DisplayType, DisplayService> services = new EnumMap<>(DisplayType.class);
         if (config.contains(ACTIONBAR.asString())) {
-            services.put(ACTIONBAR, new ActionBarDisplayService(Content.fromConfig(config.get(ACTIONBAR.asString()))));
+            final ConfigurationSection section = config.getConfigurationSection(ACTIONBAR.asString());
+            if (section != null) {
+                services.put(ACTIONBAR, new ActionBarDisplayService(section));
+            } else { // Old config
+                services.put(ACTIONBAR, new ActionBarDisplayService(Content.fromConfig(config.get(ACTIONBAR.asString()))));
+            }
         }
         if (config.contains(BOSSBAR.asString())) {
             final ConfigurationSection section = requireNonNull(config.getConfigurationSection(BOSSBAR.asString()), "bossbar config has no section");
@@ -252,12 +257,7 @@ public class GlobalDisplayService implements DisplayService, Saveable {
                 section.set(TITLE, ((ScoreboardDisplayService) service).title());
                 section.set(SIDEBAR, ((ScoreboardDisplayService) service).lines());
             } else {
-                final Content content = ((SimpleDisplayService) service).content();
-                if (service instanceof BossBarDisplayService) {
-                    ((MultipleBossBarDisplayService) service).save(config.createSection(key));
-                } else {
-                    content.save(config, key);
-                }
+                ((SimpleDisplayService) service).save(config.createSection(key));
             }
         }
 
