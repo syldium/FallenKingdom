@@ -4,6 +4,7 @@ import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.display.change.DisplayChange;
 import fr.devsylone.fallenkingdom.display.change.SetScoreboardLineChange;
 import fr.devsylone.fallenkingdom.display.change.SetScoreboardTitleChange;
+import fr.devsylone.fallenkingdom.display.content.Content;
 import fr.devsylone.fallenkingdom.display.notification.ChatChannel;
 import fr.devsylone.fallenkingdom.display.notification.GameNotification;
 import fr.devsylone.fallenkingdom.display.notification.NotificationChannel;
@@ -203,7 +204,7 @@ public class GlobalDisplayService implements DisplayService, Saveable {
         this.hideAll();
         final Map<DisplayType, DisplayService> services = new EnumMap<>(DisplayType.class);
         if (config.contains(ACTIONBAR.asString())) {
-            services.put(ACTIONBAR, new ActionBarDisplayService(config.getString(ACTIONBAR.asString(), "")));
+            services.put(ACTIONBAR, new ActionBarDisplayService(Content.fromConfig(config.get(ACTIONBAR.asString()))));
         }
         if (config.contains(BOSSBAR.asString())) {
             final ConfigurationSection section = requireNonNull(config.getConfigurationSection(BOSSBAR.asString()), "bossbar config has no section");
@@ -251,11 +252,11 @@ public class GlobalDisplayService implements DisplayService, Saveable {
                 section.set(TITLE, ((ScoreboardDisplayService) service).title());
                 section.set(SIDEBAR, ((ScoreboardDisplayService) service).lines());
             } else {
-                final String value = ((SimpleDisplayService) service).value();
+                final Content content = ((SimpleDisplayService) service).content();
                 if (service instanceof BossBarDisplayService) {
                     ((MultipleBossBarDisplayService) service).save(config.createSection(key));
                 } else {
-                    config.set(key, value);
+                    content.save(config, key);
                 }
             }
         }

@@ -1,5 +1,6 @@
 package fr.devsylone.fallenkingdom.display;
 
+import fr.devsylone.fallenkingdom.display.content.Content;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fallenkingdom.utils.KeyHelper;
 import org.bukkit.Bukkit;
@@ -31,18 +32,18 @@ class MultipleBossBarDisplayService extends BossBarDisplayService {
 
     MultipleBossBarDisplayService(@NotNull ConfigurationSection section) {
         this(
-                section.getString(TITLE, ""),
+                Content.fromConfig(section.get(TITLE)),
                 enumValueOf(BarColor.class, section.getString(COLOR), BarColor.WHITE),
                 enumValueOf(BarStyle.class, section.getString(STYLE), BarStyle.SOLID)
         );
     }
 
-    MultipleBossBarDisplayService(@NotNull String value, @NotNull BarColor color, @NotNull BarStyle style) {
-        this(value, color, style, new HashMap<>());
+    MultipleBossBarDisplayService(@NotNull Content content, @NotNull BarColor color, @NotNull BarStyle style) {
+        this(content, color, style, new HashMap<>());
     }
 
-    MultipleBossBarDisplayService(@NotNull String value, @NotNull BarColor color, @NotNull BarStyle style, @NotNull Map<UUID, KeyedBossBar> bars) {
-        super(value);
+    MultipleBossBarDisplayService(@NotNull Content content, @NotNull BarColor color, @NotNull BarStyle style, @NotNull Map<UUID, KeyedBossBar> bars) {
+        super(content);
         this.color = color;
         this.style = style;
         this.bars = bars;
@@ -98,14 +99,14 @@ class MultipleBossBarDisplayService extends BossBarDisplayService {
     }
 
     @Override
-    public @NotNull MultipleBossBarDisplayService withValue(@NotNull String next) {
+    public @NotNull MultipleBossBarDisplayService withValue(@NotNull Content next) {
         return new MultipleBossBarDisplayService(next, this.color, this.style, this.bars);
     }
 
     void save(@NotNull ConfigurationSection section) {
         section.set(COLOR, this.color.name());
         section.set(STYLE, this.style.name());
-        section.set(TITLE, this.value());
+        this.content().save(section, TITLE);
     }
 
     private @Nullable BossBar existingBar(@NotNull Player player) {

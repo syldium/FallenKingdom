@@ -2,17 +2,18 @@ package fr.devsylone.fallenkingdom.display.change;
 
 import fr.devsylone.fallenkingdom.display.DisplayType;
 import fr.devsylone.fallenkingdom.display.SimpleDisplayService;
+import fr.devsylone.fallenkingdom.display.content.Content;
 import org.jetbrains.annotations.NotNull;
 
 public class SetTextChange implements DisplayChange<SimpleDisplayService> {
 
     private final DisplayType displayType;
-    private final String previous;
-    private final String next;
+    private final Content previous;
+    private final Content next;
 
-    public SetTextChange(@NotNull SimpleDisplayService service, @NotNull String value) {
+    public SetTextChange(@NotNull SimpleDisplayService service, @NotNull Content value) {
         this.displayType = service.type();
-        this.previous = service.value();
+        this.previous = service.content();
         this.next = value;
     }
 

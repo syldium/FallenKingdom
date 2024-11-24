@@ -1,5 +1,6 @@
 package fr.devsylone.fallenkingdom.display;
 
+import fr.devsylone.fallenkingdom.display.content.Content;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fallenkingdom.utils.NMSUtils;
 import fr.devsylone.fallenkingdom.utils.PacketUtils;
@@ -36,8 +37,8 @@ public class ActionBarDisplayService extends SimpleDisplayService {
         SEND_ACTION_BAR = sendActionBar;
     }
 
-    public ActionBarDisplayService(@NotNull String value) {
-        super(DisplayType.ACTIONBAR, value);
+    public ActionBarDisplayService(@NotNull Content content) {
+        super(DisplayType.ACTIONBAR, content);
     }
 
     @Override
@@ -51,7 +52,7 @@ public class ActionBarDisplayService extends SimpleDisplayService {
     }
 
     @Override
-    public @NotNull ActionBarDisplayService withValue(@NotNull String next) {
+    public @NotNull ActionBarDisplayService withValue(@NotNull Content next) {
         return new ActionBarDisplayService(next);
     }
 

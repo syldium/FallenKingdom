@@ -1,56 +1,33 @@
 package fr.devsylone.fallenkingdom.display;
 
+import fr.devsylone.fallenkingdom.display.content.Content;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fallenkingdom.scoreboard.PlaceHolder;
-import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.Set;
-
-import static java.util.Objects.requireNonNull;
-
 public abstract class SimpleDisplayService implements DisplayService {
 
     private final DisplayType type;
-    private final String value;
-    private final Set<PlaceHolder> placeHolders;
+    private final Content content;
 
-    public SimpleDisplayService(@NotNull DisplayType type, @NotNull String value) {
+    public SimpleDisplayService(@NotNull DisplayType type, @NotNull Content content) {
         if (type == DisplayType.SCOREBOARD) {
             throw new IllegalArgumentException();
         }
         this.type = type;
-        this.value = requireNonNull(value, "display value");
-        if (!value.contains(PLACEHOLDER_START) || !value.contains(PLACEHOLDER_END)) {
-            this.placeHolders = Collections.emptySet();
-            return;
-        }
-
-        this.placeHolders = EnumSet.noneOf(PlaceHolder.class);
-        for (PlaceHolder placeholder : PlaceHolder.values()) {
-            if (value.contains(placeholder.getKey())) {
-                this.placeHolders.add(placeholder);
-            }
-        }
+        this.content = content;
     }
 
     @Override
     public boolean contains(@NotNull PlaceHolder placeHolder) {
-        return this.placeHolders.contains(placeHolder);
+        return this.content.contains(placeHolder);
     }
 
     @Override
     public boolean containsAny(@NotNull PlaceHolder... placeHolders) {
-        for (PlaceHolder placeHolder : placeHolders) {
-            if (this.placeHolders.contains(placeHolder)) {
-                return true;
-            }
-        }
-        return false;
+        return this.content.containsAny(placeHolders);
     }
 
     @Override
@@ -58,25 +35,17 @@ public abstract class SimpleDisplayService implements DisplayService {
         if (placeHolders.length != 0 && !this.containsAny(placeHolders)) {
             return;
         }
-        if (fkPlayer.useFormattedText()) {
-            String replaced = this.value;
-            for (PlaceHolder placeHolder : this.placeHolders) {
-                replaced = placeHolder.replaceMultiple(replaced, player);
-            }
-            this.show(player, replaced);
-        } else {
-            this.show(player, ChatUtils.translateColorCodeToAmpersand(this.value));
-        }
+        this.show(player, this.content.format(player, fkPlayer, placeHolders));
     }
 
     public abstract void show(@NotNull Player player, @NotNull String message);
 
-    public @NotNull String value() {
-        return this.value;
+    public @NotNull Content content() {
+        return this.content;
     }
 
     @Contract("_ -> new")
-    public abstract @NotNull SimpleDisplayService withValue(@NotNull String next);
+    public abstract @NotNull SimpleDisplayService withValue(@NotNull Content next);
 
     public @NotNull DisplayType type() {
         return this.type;
