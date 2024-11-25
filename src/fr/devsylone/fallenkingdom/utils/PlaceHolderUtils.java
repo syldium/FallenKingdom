@@ -155,7 +155,47 @@ public class PlaceHolderUtils
 		return Messages.SCOREBOARD_BASE.getMessage(); // Même si on pointe vers rien
 	}
 
-	public static String getBaseStatus(Player player)
+	public static String getRegion(Player player)
+	{
+		Team pTeam = FkPI.getInstance().getTeamManager().getPlayerTeam(player);
+		Location loc = player.getLocation();
+		Base nearest = null;
+		double distance = Double.MAX_VALUE;
+		for (Team team : FkPI.getInstance().getTeamManager().getTeams()) {
+			Base base = team.getBase();
+			if (base == null || base.getCenter().getWorld() != loc.getWorld()) {
+				continue;
+			}
+			if (base.contains(loc)) {
+				boolean inChestsRoom = base.getChestsRoom().contains(loc);
+				Messages message;
+				if (team.equals(pTeam)) {
+					message = inChestsRoom ? Messages.PLAYER_SELF_CHEST_ROOM_INSIDE : Messages.PLAYER_SELF_BASE_INSIDE;
+				} else {
+					message = inChestsRoom ? Messages.PLAYER_CHEST_ROOM_INSIDE : Messages.PLAYER_BASE_INSIDE;
+				}
+				return message.getMessage().replace("%team%", team.toString());
+			}
+			double d = base.getCenter().distanceSquared(loc);
+			if (d < distance) {
+				distance = d;
+				nearest = base;
+			}
+		}
+
+		if (nearest == null) {
+			return noBase();
+		}
+		Messages message;
+		if (nearest.getTeam().equals(pTeam)) {
+			message = Messages.PLAYER_SELF_BASE_NEAR;
+		} else {
+			message = Messages.PLAYER_BASE_NEAR;
+		}
+		return message.getMessage().replace("%team%", nearest.getTeam().toString());
+	}
+
+	public static String getRegionChange(Player player)
 	{
 		RegionChange change = Fk.getInstance().getPlayerManager().getPlayer(player).getLastRegionChange();
 		if (change == null || change.timestamp() < System.currentTimeMillis() - 2000L) {

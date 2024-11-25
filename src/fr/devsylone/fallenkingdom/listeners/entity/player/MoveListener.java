@@ -122,7 +122,7 @@ public class MoveListener implements Listener
 				if (change != null) {
 					fkp.setLastChange(change);
 					Fk.getInstance().getDisplayService().dispatch(change, e.getPlayer());
-					Fk.getInstance().getDisplayService().update(e.getPlayer(), fkp, PlaceHolder.REGION);
+					Fk.getInstance().getDisplayService().update(e.getPlayer(), fkp, PlaceHolder.REGION, PlaceHolder.REGION_CHANGE);
 				}
 			}
 		}

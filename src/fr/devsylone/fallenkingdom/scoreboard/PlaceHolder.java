@@ -29,7 +29,8 @@ public enum PlaceHolder
     BASE_DISTANCE(PlaceHolderUtils::getBaseDistance, Messages.PLACE_HOLDER_BASE_DISTANCE, "DIST", "PLAYER_DISTANCE_TO_BASE", "BASE_DISTANCE", "DISTANCE"),
     BASE_DIRECTION(PlaceHolderUtils::getBaseDirection, Messages.PLACE_HOLDER_BASE_DIRECTION, "ARROW", "PLAYER_BASE_DIRECTION", "BASE_DIRECTION", "DIRECTION", "ARROWS"),
     BASE_OR_PORTAL(PlaceHolderUtils::getBaseOrPortal, Messages.PLACE_HOLDER_BASE_OR_PORTAL, "BASE_PORTAL", "BASE_OR_PORTAL"),
-	REGION(PlaceHolderUtils::getBaseStatus, Messages.PLACE_HOLDER_REGION, "REGION"),
+	REGION(PlaceHolderUtils::getRegion, Messages.PLACE_HOLDER_REGION, "REGION"),
+	REGION_CHANGE(PlaceHolderUtils::getRegionChange, Messages.PLACE_HOLDER_REGION_CHANGE, "REGION_CHANGE"),
 
 	NEAREST_ALLY(PlaceHolderUtils::getNearestAllyName, Messages.PLACE_HOLDER_ALLY_NAME, "ALLY"),
 	NEAREST_ALLY_DIR(PlaceHolderUtils::getNearestAllyDir, Messages.PLACE_HOLDER_ALLY_DIR, "ALLY_DIR"),
