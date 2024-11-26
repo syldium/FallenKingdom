@@ -95,7 +95,7 @@ class GameRunnable extends BukkitRunnable
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "function fallenkingdom:newday");
         }
 
-        if (FkPI.getInstance().getRulesManager().getRule(Rule.DO_PAUSE_AFTER_DAY) && game.day > 1) {
+        if (FkPI.getInstance().getRulesManager().getRule(Rule.AUTO_PAUSE).doAfterDay() && game.day > 1) {
             Fk.getInstance().getCommandManager().search(Pause.class).orElseThrow(RuntimeException::new).execute(Fk.getInstance(), Bukkit.getConsoleSender(), Collections.emptyList(), "fk");
         }
 

@@ -37,7 +37,6 @@ public class Rule<T>
 	// Booléens
 	public static final Rule<Boolean> FRIENDLY_FIRE = new Rule<>("FriendlyFire", true);
 	public static final Rule<Boolean> ETERNAL_DAY = new Rule<>("EternalDay", false);
-	public static final Rule<Boolean> DO_PAUSE_AFTER_DAY = new Rule<>("DoPauseAfterDay", false);
 	public static final Rule<Boolean> DEEP_PAUSE = new Rule<>("DeepPause", true);
 	public static final Rule<Boolean> TNT_JUMP = new Rule<>("TntJump", true);
 	public static final Rule<Boolean> RESPAWN_AT_HOME = new Rule<>("RespawnAtHome", false);
@@ -49,6 +48,7 @@ public class Rule<T>
 	public static final Rule<Character> GLOBAL_CHAT_PREFIX = new Rule<>("GlobalChatPrefix", '!');
 
 	// Valeurs complexes
+	public static final Rule<AutoPause> AUTO_PAUSE = new Rule<>("AutoPause", new AutoPause());
 	public static final Rule<AllowedBlocks> ALLOWED_BLOCKS = new Rule<>("AllowedBlocks", new AllowedBlocks());
 	public static final Rule<ChargedCreepers> CHARGED_CREEPERS = new Rule<>("ChargedCreepers", new ChargedCreepers());
 	public static final Rule<DisabledPotions> DISABLED_POTIONS = new Rule<>("DisabledPotions", new DisabledPotions());

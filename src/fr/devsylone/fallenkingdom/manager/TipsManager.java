@@ -11,11 +11,11 @@ import fr.devsylone.fallenkingdom.commands.abstraction.AbstractCommand;
 import fr.devsylone.fallenkingdom.commands.debug.Bug;
 import fr.devsylone.fallenkingdom.commands.game.gamescommands.Restore;
 import fr.devsylone.fallenkingdom.commands.game.gamescommands.StarterInv;
+import fr.devsylone.fallenkingdom.commands.rules.rulescommands.AutoPause;
 import fr.devsylone.fallenkingdom.commands.rules.rulescommands.ChargedCreepers;
 import fr.devsylone.fallenkingdom.commands.rules.rulescommands.DayDuration;
 import fr.devsylone.fallenkingdom.commands.rules.rulescommands.DisabledPotions;
 import fr.devsylone.fallenkingdom.commands.rules.rulescommands.PlaceBlockInCave;
-import fr.devsylone.fallenkingdom.commands.rules.rulescommands.booleancommands.DoPauseAfterDay;
 import fr.devsylone.fallenkingdom.commands.rules.rulescommands.booleancommands.TntJump;
 import fr.devsylone.fallenkingdom.commands.scoreboard.scoreboardcommands.Edit;
 import fr.devsylone.fallenkingdom.utils.Messages;
@@ -38,7 +38,7 @@ public class TipsManager
 
 	public TipsManager()
 	{
-		newTip(DoPauseAfterDay.class, Messages.TIP_DO_PAUSE_AFTER_DAY);
+		newTip(AutoPause.class, Messages.TIP_AUTO_PAUSE);
 		newTip(TntJump.class, Messages.TIP_TNT_JUMP);
 		newTip(ChargedCreepers.class, Messages.TIP_CHARGED_CREEPERS);
 		newTip(Edit.class, Messages.TIP_SCOREBOARD_EDIT);

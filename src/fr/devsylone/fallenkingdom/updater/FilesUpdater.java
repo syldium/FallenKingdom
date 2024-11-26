@@ -226,6 +226,16 @@ public class FilesUpdater
                 // Les flèches n'étaient pas prises en compte au chargement
             }
         }
+        if (isGrowing(lastv, "2.24.0")) {
+            final FkConfig saveConfig = Fk.getInstance().getSaveableManager().getFileConfiguration("save.yml");
+            final ConfigurationSection rulesSection = saveConfig.getConfigurationSection("FkPI.RulesManager.Rules");
+            if (rulesSection != null) {
+                final boolean doPauseAfterDay = rulesSection.getBoolean("DoPauseAfterDay.value");
+                final ConfigurationSection autoPause = rulesSection.createSection("AutoPause");
+                autoPause.set("after-day", doPauseAfterDay);
+                saveConfig.saveSync();
+            }
+        }
     }
 
     public boolean isSection(String path)

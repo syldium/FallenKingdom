@@ -45,10 +45,4 @@ public abstract class FkBooleanRuleCommand extends FkCommand
 	{
 		broadcastState(state, msg, Messages.CMD_RULES_POSSIBLE, Messages.CMD_RULES_IMPOSSIBLE);
 	}
-
-	protected void broadcastState(boolean state, Messages base, Messages trueMsg, Messages falseMsg)
-	{
-		Messages value = state ? trueMsg : falseMsg;
-		broadcast(base.getMessage().replace("%state%", value.getMessage()));
-	}
 }

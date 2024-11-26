@@ -6,6 +6,7 @@ import fr.devsylone.fallenkingdom.version.title.TitleSender;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.api.ITeam;
 import fr.devsylone.fkpi.api.event.TeamCaptureEvent;
+import fr.devsylone.fkpi.rules.Rule;
 import fr.devsylone.fkpi.teams.ChestsRoom;
 import net.kyori.adventure.util.Ticks;
 import org.bukkit.Bukkit;
@@ -67,7 +68,7 @@ public class ChestRoomRunnable extends BukkitRunnable {
 
             Bukkit.getServer().getPluginManager().callEvent(new TeamCaptureEvent(assailants, defenders, true)); // EVENT
 
-            if (FkPI.getInstance().getTeamManager().getTeams().size() > 2) {
+            if (FkPI.getInstance().getRulesManager().getRule(Rule.AUTO_PAUSE).doAfterCapture()) {
                 Fk.getInstance().getCommandManager().executeCommand(Fk.getInstance(), Bukkit.getConsoleSender(), "game pause");
                 this.cancel();
                 return;
