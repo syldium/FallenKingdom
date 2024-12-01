@@ -34,6 +34,7 @@ public class Environment {
     private static final boolean HAS_SPIGOT_BOOK_PAGES;
     private static final boolean HAS_DIRECT_INVENTORY_HOLDER;
     private static final boolean HAS_ENCHANTMENT_GLINT_OVERRIDE;
+    private static final boolean HAS_ENTITY_BY_UUID;
 
     static {
         boolean hasAsyncTeleport = false;
@@ -98,6 +99,13 @@ public class Environment {
             hasEnchantmentGlintOverride = true;
         } catch (ReflectiveOperationException ignored) { }
         HAS_ENCHANTMENT_GLINT_OVERRIDE = hasEnchantmentGlintOverride;
+
+        boolean hasEntityByUuid = false;
+        try {
+            World.class.getMethod("getEntity", UUID.class);
+            hasEntityByUuid = true;
+        } catch (NoSuchMethodException ignored) { }
+        HAS_ENTITY_BY_UUID = hasEntityByUuid;
     }
 
     public static CompletableFuture<Boolean> teleportAsync(Entity entity, Location location) {
@@ -170,6 +178,19 @@ public class Environment {
         } else {
             itemMeta.removeEnchant(Enchantment.LURE);
             itemMeta.removeItemFlags(ItemFlag.HIDE_ENCHANTS);
+        }
+    }
+
+    public static @Nullable Entity getEntityByUuid(@NotNull World world, @NotNull UUID uuid) {
+        if (HAS_ENTITY_BY_UUID) {
+            return world.getEntity(uuid);
+        } else {
+            for (Entity entity : world.getEntities()) {
+                if (entity.getUniqueId().equals(uuid)) {
+                    return entity;
+                }
+            }
+            return null;
         }
     }
 }

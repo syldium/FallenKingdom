@@ -9,6 +9,7 @@ import fr.devsylone.fallenkingdom.commands.teams.teamscommands.chestsroom.ChestR
 import fr.devsylone.fallenkingdom.commands.teams.teamscommands.chestsroom.ChestRoomEnabled;
 import fr.devsylone.fallenkingdom.commands.teams.teamscommands.chestsroom.ChestRoomOffset;
 import fr.devsylone.fallenkingdom.commands.teams.teamscommands.chestsroom.ChestRoomShow;
+import fr.devsylone.fallenkingdom.commands.teams.teamscommands.chestsroom.ChestRoomSpawn;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fallenkingdom.version.component.FkBook;
 import fr.devsylone.fallenkingdom.version.component.FkComponent;
@@ -42,6 +43,7 @@ public class ChestsRoom extends FkParentCommand
 				.add(new ChestRoomEnabled())
 				.add(new ChestRoomOffset())
 				.add(new ChestRoomShow())
+				.add(new ChestRoomSpawn())
 				.build()
 		, Messages.CMD_MAP_CHEST_ROOM, CommandRole.PLAYER);
 	}

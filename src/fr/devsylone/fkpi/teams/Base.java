@@ -64,7 +64,7 @@ public class Base implements Saveable
 	 */
 	private byte data;
 
-	private ChestsRoom chestRoom;
+	private Nexus nexus;
 
 	private int minX, minZ, maxX, maxZ;
 
@@ -83,7 +83,7 @@ public class Base implements Saveable
 		this.team = team;
 		this.material = material;
 		this.data = data;
-		this.chestRoom = new ChestsRoom(this);
+		this.nexus = new ChestsRoom(this);
 
 		/*
 		 * Ajustement de la Tp sur l'axe Z
@@ -184,14 +184,38 @@ public class Base implements Saveable
 		return center.clone();
 	}
 
-	public ChestsRoom getChestsRoom()
+	/**
+	 * @deprecated Utiliser {@link #getNexus()} à la place.
+	 */
+	@Deprecated
+	public @Nullable ChestsRoom getChestsRoom()
 	{
-		return chestRoom;
+		if (nexus instanceof ChestsRoom) {
+			return (ChestsRoom) nexus;
+		}
+		return null;
+	}
+
+	public void setChestsRoom(@NotNull Nexus room)
+	{
+		this.nexus = room;
+	}
+
+	public @NotNull Nexus getNexus()
+	{
+		return nexus;
 	}
 	
 	public void resetChestRoom()
 	{
-		chestRoom = new ChestsRoom(this);
+		nexus = new ChestsRoom(this);
+	}
+
+	public void markNexusAsCaptured()
+	{
+		final ChestsRoom room = new ChestsRoom(this);
+		room.markAsCaptured();
+		nexus = room;
 	}
 	
 	public Team getTeam()
@@ -316,7 +340,7 @@ public class Base implements Saveable
 	 * @return La Location modifiée.
 	 */
 	@Contract("_ -> param1")
-	private @NotNull Location adjustLoc(@NotNull Location loc)
+	public static @NotNull Location adjustLoc(@NotNull Location loc)
 	{
 		loc.set(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
 		World world = loc.getWorld();
@@ -341,8 +365,17 @@ public class Base implements Saveable
 		material = Material.matchMaterial(config.getString("Material"));
 		radius = config.getInt("Radius");
 
-		if(config.isConfigurationSection("ChestsRoom"))
-			chestRoom.load(config.getConfigurationSection("ChestsRoom"));
+		ConfigurationSection nexusConfig = config.getConfigurationSection("Nexus");
+		if (nexusConfig != null) {
+			this.nexus = Nexus.fromConfig(this, nexusConfig);
+		} else {
+			nexusConfig = config.getConfigurationSection("ChestsRoom");
+			if (nexusConfig != null) {
+				ChestsRoom chestsRoom = new ChestsRoom(this);
+				chestsRoom.load(nexusConfig);
+				this.nexus = chestsRoom;
+			}
+		}
 		updateMinMaxLoc();
 	}
 
@@ -356,6 +389,6 @@ public class Base implements Saveable
 		config.set("Material", material.name());
 		config.set("Radius", radius);
 
-		chestRoom.save(config.createSection("ChestsRoom"));
+		nexus.save(config.createSection("Nexus"));
 	}
 }

@@ -8,6 +8,8 @@ import fr.devsylone.fallenkingdom.commands.abstraction.FkPlayerCommand;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fallenkingdom.utils.Messages;
+import fr.devsylone.fkpi.teams.ChestsRoom;
+import fr.devsylone.fkpi.teams.Nexus;
 import fr.devsylone.fkpi.teams.Team;
 import org.bukkit.entity.Player;
 
@@ -25,12 +27,15 @@ public class ChestRoomShow extends FkPlayerCommand {
             throw new FkLightException(Messages.CMD_ERROR_CHEST_ROOM_DISABLED);
 
         Team team = plugin.getFkPI().getTeamManager().getPlayerTeam(sender);
-        if(team == null || team.getBase() == null || team.getBase().getChestsRoom() == null)
+        if(team == null || team.getBase() == null)
             throw new FkLightException(Messages.CMD_ERROR_CHEST_ROOM_NONE);
-        if(!team.getBase().getChestsRoom().exists())
+        Nexus nexus = team.getBase().getNexus();
+        if(!(nexus instanceof ChestsRoom))
+            throw new FkLightException(Messages.CMD_ERROR_CHEST_ROOM_NONE);
+        if(!((ChestsRoom) nexus).exists())
             throw new FkLightException(Messages.CMD_ERROR_NO_CHEST_ROOM);
 
-        team.getBase().getChestsRoom().show(sender, ArgumentParser.parseViewTime(args.get(0), Messages.CMD_ERROR_CHEST_ROOM_INVALID_TIME));
+        ((ChestsRoom) nexus).show(sender, ArgumentParser.parseViewTime(args.get(0), Messages.CMD_ERROR_CHEST_ROOM_INVALID_TIME));
         return CommandResult.SUCCESS;
     }
 }

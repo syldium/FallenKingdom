@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class ChestsRoom implements Saveable
+public class ChestsRoom implements Nexus, Saveable
 {
 	private Location min;
 	private Location max;
@@ -47,7 +47,7 @@ public class ChestsRoom implements Saveable
 		CAPTURED
 	}
 
-	public ChestsRoom(Base base)
+	public ChestsRoom(@NotNull Base base)
 	{
 		this.base = base;
 	}
@@ -57,12 +57,18 @@ public class ChestsRoom implements Saveable
 		return min != null && test.getX() >= Math.min(min.getX(), max.getX()) + offset && test.getY() >= Math.min(min.getY(), max.getY()) + offset && test.getZ() >= Math.min(min.getZ(), max.getZ()) + offset && test.getX() <= Math.max(min.getX(), max.getX()) - offset && test.getY() <= Math.max(min.getY(), max.getY()) - offset && test.getZ() <= Math.max(min.getZ(), max.getZ() - offset);
 	}
 
-	public boolean contains(Location test)
+	@Override
+	public boolean contains(@NotNull Location test)
 	{
 		if (min == null || max == null) {
 			return base.contains(test);
 		}
 		return isIn(test, min, max, 0);
+	}
+
+	public void markAsCaptured()
+	{
+		state = ChestRoomState.CAPTURED;
 	}
 
 	public void removeChest(Location loc)
@@ -193,7 +199,8 @@ public class ChestsRoom implements Saveable
 		}.runTaskTimer(Fk.getInstance(), 20L, 20L);
 	}
 
-	public void addEnemyInside(Player player)
+	@Override
+    public void addEnemyInside(@NotNull Player player)
 	{
 		Team team = FkPI.getInstance().getTeamManager().getPlayerTeam(player);
 		if (team != null && !team.equals(base.getTeam()))
@@ -205,7 +212,8 @@ public class ChestsRoom implements Saveable
 		}
 	}
 
-	public void removeEnemyInside(Player player)
+	@Override
+    public void removeEnemyInside(@NotNull Player player)
 	{
 		Team team = FkPI.getInstance().getTeamManager().getPlayerTeam(player);
 		if (team != null && !team.equals(base.getTeam()))
@@ -234,6 +242,11 @@ public class ChestsRoom implements Saveable
 				state = ChestRoomState.NORMAL;
 			}
 		}
+	}
+
+	@Override
+	public boolean isInside(@NotNull Player player) {
+		return enemyInside.contains(player.getUniqueId());
 	}
 
 	public List<UUID> getEnemiesInside() {
@@ -269,15 +282,23 @@ public class ChestsRoom implements Saveable
 	@Override
 	public void load(ConfigurationSection config)
 	{
+		String state = config.getString("state");
+		if (state != null) {
+			this.state = ChestRoomState.valueOf(state);
+		}
 		if(!config.isConfigurationSection("Chests"))
 			return;
 		for(String key : config.getConfigurationSection("Chests").getKeys(false))
 			newChest(new Location(Bukkit.getWorld(config.getString("Chests." + key + ".World")), config.getInt("Chests." + key + ".X"), config.getInt("Chests." + key + ".Y"), config.getInt("Chests." + key + ".Z")));
 	}
 
+	static final String CHESTS_ROOM = "chests-room";
+
 	@Override
-	public void save(ConfigurationSection config)
+	public void save(@NotNull ConfigurationSection config)
 	{
+		config.set("type", CHESTS_ROOM);
+		config.set("state", state.name());
 		if(chests.isEmpty())
 			return;
 		for(int i = 0; i < chests.size(); i++)
@@ -295,12 +316,26 @@ public class ChestsRoom implements Saveable
 		return FkPI.getInstance().getChestsRoomsManager().getOffset();
 	}
 
-	public @NotNull Base getBase() {
+	@Override
+    public @NotNull Base getBase() {
 		return base;
 	}
 
 	public boolean exists()
 	{
 		return !chests.isEmpty();
+	}
+
+	@Override
+	public String toString() {
+		return "ChestsRoom{" +
+				"min=" + this.min +
+				", max=" + this.max +
+				", chests=" + this.chests.size() +
+				", enemyInside=" + this.enemyInside +
+				", state=" + this.state +
+				", team=" + this.base.getTeam() +
+				", captureTeam=" + this.captureTeam +
+				'}';
 	}
 }

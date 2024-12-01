@@ -6,6 +6,8 @@ import java.util.List;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fallenkingdom.version.Version;
+import fr.devsylone.fkpi.teams.ChestsRoom;
+import fr.devsylone.fkpi.teams.Nexus;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -58,9 +60,14 @@ public class BlockExplodeListener implements Listener
 
 	public void removeExplodedChestsRoomChests(List<Block> blockList)
 	{
-		for(Team team : Fk.getInstance().getFkPI().getTeamManager().getTeams())
-			if(team.getBase() != null && team.getBase().getChestsRoom() != null)
-				for(Block b : blockList)
-					team.getBase().getChestsRoom().removeChest(b.getLocation());
+		for (Team team : Fk.getInstance().getFkPI().getTeamManager().getTeams()) {
+			if (team.getBase() == null) continue;
+			Nexus nexus = team.getBase().getNexus();
+			if (nexus instanceof ChestsRoom) {
+				for (Block b : blockList) {
+					((ChestsRoom) nexus).removeChest(b.getLocation());
+				}
+			}
+		}
 	}
 }

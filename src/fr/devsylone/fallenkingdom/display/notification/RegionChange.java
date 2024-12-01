@@ -3,7 +3,7 @@ package fr.devsylone.fallenkingdom.display.notification;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.teams.Base;
-import fr.devsylone.fkpi.teams.ChestsRoom;
+import fr.devsylone.fkpi.teams.Nexus;
 import fr.devsylone.fkpi.teams.Team;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -15,20 +15,20 @@ import org.jetbrains.annotations.Nullable;
 public class RegionChange implements GameNotification {
 
     private final Base base;
-    private final ChestsRoom chestsRoom;
+    private final Nexus nexus;
     private final MoveType moveType;
     private final long timestamp;
 
     public RegionChange(@NotNull Base base, @NotNull MoveType moveType) {
         this.base = base;
-        this.chestsRoom = null;
+        this.nexus = null;
         this.moveType = moveType;
         this.timestamp = System.currentTimeMillis();
     }
 
-    public RegionChange(@NotNull ChestsRoom chestsRoom, @NotNull MoveType moveType) {
-        this.base = chestsRoom.getBase();
-        this.chestsRoom = chestsRoom;
+    public RegionChange(@NotNull Nexus nexus, @NotNull MoveType moveType) {
+        this.base = nexus.getBase();
+        this.nexus = nexus;
         this.moveType = moveType;
         this.timestamp = System.currentTimeMillis();
     }
@@ -37,8 +37,8 @@ public class RegionChange implements GameNotification {
         return this.base;
     }
 
-    public @Nullable ChestsRoom getChestsRoom() {
-        return this.chestsRoom;
+    public @Nullable Nexus getNexus() {
+        return this.nexus;
     }
 
     public @NotNull MoveType getMoveType() {
@@ -56,7 +56,7 @@ public class RegionChange implements GameNotification {
         Team baseTeam = this.base.getTeam();
         Messages message;
         if (this.moveType == RegionChange.MoveType.ENTER) {
-            if (this.chestsRoom == null) {
+            if (this.nexus == null) {
                 if (baseTeam.equals(pTeam)) {
                     message = Messages.PLAYER_SELF_BASE_ENTER;
                 } else {
@@ -70,7 +70,7 @@ public class RegionChange implements GameNotification {
                 }
             }
         } else {
-            if (this.chestsRoom == null) {
+            if (this.nexus == null) {
                 if (baseTeam.equals(pTeam)) {
                     message = Messages.PLAYER_SELF_BASE_EXIT;
                 } else {
@@ -89,7 +89,7 @@ public class RegionChange implements GameNotification {
 
     @Override
     public String toString() {
-        return "RegionChange{base=" + this.base.getTeam() + ", chestsRoom=" + (this.chestsRoom != null) + ", moveType=" + this.moveType + ", timestamp=" + this.timestamp + "}";
+        return "RegionChange{base=" + this.base.getTeam() + ", nexus=" + (this.nexus != null) + ", moveType=" + this.moveType + ", timestamp=" + this.timestamp + "}";
     }
 
     public enum MoveType {

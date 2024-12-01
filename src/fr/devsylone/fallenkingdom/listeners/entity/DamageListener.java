@@ -10,17 +10,29 @@ import fr.devsylone.fallenkingdom.version.Environment;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.rules.ChargedCreepers;
 import fr.devsylone.fkpi.rules.Rule;
+import fr.devsylone.fkpi.teams.Base;
+import fr.devsylone.fkpi.teams.CrystalCore;
+import fr.devsylone.fkpi.teams.Nexus;
+import fr.devsylone.fkpi.teams.Team;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.entity.Creeper;
+import org.bukkit.entity.EnderCrystal;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.projectiles.ProjectileSource;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Random;
 
@@ -33,6 +45,62 @@ public class DamageListener implements Listener
             return;
         if(Fk.getInstance().getGame().isPaused() && e.getCause() != EntityDamageEvent.DamageCause.VOID)
             e.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onDamageByEntity(EntityDamageByEntityEvent event) {
+        final Entity entity = event.getEntity();
+        if (!(entity instanceof EnderCrystal)) {
+            return;
+        }
+        if (!Fk.getInstance().getWorldManager().isAffected(entity.getWorld())
+                || !Fk.getInstance().getGame().isAssaultsEnabled()) {
+            return;
+        }
+        final Player damager = getOwner(event.getDamager());
+        final Team playerTeam = damager == null ? null : FkPI.getInstance().getTeamManager().getPlayerTeam(damager);
+        for (Team team : FkPI.getInstance().getTeamManager().getTeams()) {
+            final Base base = team.getBase();
+            if (base == null) continue;
+            final Nexus nexus = base.getNexus();
+            if (!(nexus instanceof CrystalCore)) continue;
+            // L'entité n'est pas vérifiée comme appartenant à la base, au cas où des joueurs l'auraient déplacée
+            final CrystalCore core = (CrystalCore) nexus;
+            if (!entity.getUniqueId().equals(core.getEntityId())) continue;
+            event.setCancelled(true);
+            if (damager == null) return;
+            if (playerTeam == null) {
+                ChatUtils.sendMessage(damager, Messages.PLAYER_CHEST_ATTACK_TEAM.getMessage().replace("%team%", team.getName()));
+                return;
+            }
+            if (playerTeam == team) {
+                ChatUtils.sendMessage(damager, Messages.PLAYER_CHEST_ATTACK_SELF);
+                return;
+            }
+            core.damage(playerTeam, (int) event.getFinalDamage());
+            entity.getWorld().spawnParticle(Particle.CRIT, entity.getLocation(), 10, 0.5, 0.5, 0.5, 0.1);
+            if (!core.contains(damager.getLocation())) {
+                core.addEnemyInside(damager);
+                Fk.getInstance().getServer().getScheduler().runTaskLater(Fk.getInstance(), () -> {
+                    if (core.isInside(damager)) return;
+                    core.removeEnemyInside(damager);
+                }, 100);
+            }
+            return;
+        }
+    }
+
+    private static @Nullable Player getOwner(@NotNull Entity entity) {
+        if (entity instanceof Player) {
+            return (Player) entity;
+        }
+        if (entity instanceof Projectile) {
+            final ProjectileSource shooter = ((Projectile) entity).getShooter();
+            if (shooter instanceof Player) {
+                return (Player) shooter;
+            }
+        }
+        return null;
     }
 
     @EventHandler

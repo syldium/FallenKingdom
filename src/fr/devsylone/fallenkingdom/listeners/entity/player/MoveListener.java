@@ -9,6 +9,7 @@ import fr.devsylone.fallenkingdom.version.Version;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.rules.Rule;
 import fr.devsylone.fkpi.teams.Base;
+import fr.devsylone.fkpi.teams.Nexus;
 import fr.devsylone.fkpi.teams.Team;
 import fr.devsylone.fallenkingdom.display.notification.RegionChange;
 import org.bukkit.GameMode;
@@ -81,8 +82,6 @@ public class MoveListener implements Listener
 			return;
 		}
 
-		Team pTeam = FkPI.getInstance().getTeamManager().getPlayerTeam(e.getPlayer());
-
 		for (Team team : FkPI.getInstance().getTeamManager().getTeams()) {
 			Base base = team.getBase();
 			if (base == null) {
@@ -97,33 +96,20 @@ public class MoveListener implements Listener
 				change = new RegionChange(base, RegionChange.MoveType.LEAVE);
 			}
 
-			if (base.getChestsRoom() != null && FkPI.getInstance().getChestsRoomsManager().isEnabled() && e.getPlayer().getGameMode() != GameMode.SPECTATOR) {
-				if (base.getChestsRoom().contains(e.getTo()) && !base.getChestsRoom().contains(e.getFrom())) {
-					if (team.equals(pTeam)) {
-						if (wasInside == isInside) {
-							change = new RegionChange(base.getChestsRoom(), RegionChange.MoveType.ENTER);
-						}
-					} else {
-						if (wasInside == isInside) {
-							change = new RegionChange(base.getChestsRoom(), RegionChange.MoveType.ENTER);
-						}
-						if (Fk.getInstance().getGame().isAssaultsEnabled()) {
-							base.getChestsRoom().addEnemyInside(e.getPlayer());
-						}
-					}
-				} else if (base.getChestsRoom().contains(e.getFrom()) && !base.getChestsRoom().contains(e.getTo())) {
-                    if (!team.equals(pTeam)) {
-                        base.getChestsRoom().removeEnemyInside(e.getPlayer());
-                    }
-                    if (wasInside == isInside) {
-                        change = new RegionChange(base.getChestsRoom(), RegionChange.MoveType.LEAVE);
-                    }
+			Nexus nexus = base.getNexus();
+			if (FkPI.getInstance().getChestsRoomsManager().isEnabled() && e.getPlayer().getGameMode() != GameMode.SPECTATOR) {
+				if (nexus.contains(e.getTo()) && !nexus.isInside(e.getPlayer())) {
+					change = new RegionChange(nexus, RegionChange.MoveType.ENTER);
+ 					nexus.addEnemyInside(e.getPlayer());
+				} else if (!nexus.contains(e.getTo()) && nexus.isInside(e.getPlayer())) {
+					change = new RegionChange(nexus, RegionChange.MoveType.LEAVE);
+					nexus.removeEnemyInside(e.getPlayer());
                 }
-				if (change != null) {
-					fkp.setLastChange(change);
-					Fk.getInstance().getDisplayService().dispatch(change, e.getPlayer());
-					Fk.getInstance().getDisplayService().update(e.getPlayer(), fkp, PlaceHolder.REGION, PlaceHolder.REGION_CHANGE);
-				}
+			}
+			if (change != null) {
+				fkp.setLastChange(change);
+				Fk.getInstance().getDisplayService().dispatch(change, e.getPlayer());
+				Fk.getInstance().getDisplayService().update(e.getPlayer(), fkp, PlaceHolder.REGION, PlaceHolder.REGION_CHANGE);
 			}
 		}
 	}

@@ -167,7 +167,7 @@ public class PlaceHolderUtils
 				continue;
 			}
 			if (base.contains(loc)) {
-				boolean inChestsRoom = FkPI.getInstance().getChestsRoomsManager().isEnabled() && base.getChestsRoom().contains(loc);
+				boolean inChestsRoom = FkPI.getInstance().getChestsRoomsManager().isEnabled() && base.getNexus().contains(loc);
 				Messages message;
 				if (team.equals(pTeam)) {
 					message = inChestsRoom ? Messages.PLAYER_SELF_CHEST_ROOM_INSIDE : Messages.PLAYER_SELF_BASE_INSIDE;

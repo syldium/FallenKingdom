@@ -7,6 +7,8 @@ import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fallenkingdom.utils.XBlock;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.rules.Rule;
+import fr.devsylone.fkpi.teams.ChestsRoom;
+import fr.devsylone.fkpi.teams.Nexus;
 import fr.devsylone.fkpi.teams.Team;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -120,7 +122,7 @@ public class BlockListener implements Listener
 			else if(XBlock.canBePartOfChestRoom(e.getBlock().getType()))
 			{
 				int limit = FkPI.getInstance().getRulesManager().getRule(Rule.CHEST_LIMIT);
-				int baseY = Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(e.getPlayer()).getBase().getCenter().getBlockY();
+				int baseY = team.getBase().getCenter().getBlockY();
 				if(limit > 0 && Math.abs(baseY - block.getBlockY()) > limit)
 				{
 					ChatUtils.sendMessage(e.getPlayer(), Messages.PLAYER_CHEST_TOO_FAR);
@@ -128,7 +130,9 @@ public class BlockListener implements Listener
 				}
 				else if(team.getBase() != null && !e.isCancelled() && team.getBase().contains(e.getBlock().getLocation()) && Fk.getInstance().getFkPI().getChestsRoomsManager().isEnabled())
 				{
-					team.getBase().getChestsRoom().newChest(e.getBlock().getLocation());
+					final Nexus nexus = team.getBase().getNexus();
+					if (nexus instanceof ChestsRoom)
+						((ChestsRoom) nexus).newChest(e.getBlock().getLocation());
 				}
 			}
 		}
@@ -170,7 +174,9 @@ public class BlockListener implements Listener
 
 		if(XBlock.canBePartOfChestRoom(e.getBlock().getType()) && team.getBase() != null && !e.isCancelled() && team.getBase().contains(e.getBlock().getLocation()) && Fk.getInstance().getFkPI().getChestsRoomsManager().isEnabled())
 		{
-			team.getBase().getChestsRoom().removeChest(e.getBlock().getLocation());
+			Nexus nexus = team.getBase().getNexus();
+			if(nexus instanceof ChestsRoom)
+				((ChestsRoom) nexus).removeChest(e.getBlock().getLocation());
 		}
 	}
 
