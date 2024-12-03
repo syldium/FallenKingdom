@@ -198,6 +198,7 @@ public class Base implements Saveable
 
 	public void setChestsRoom(@NotNull Nexus room)
 	{
+		this.nexus.remove();
 		this.nexus = room;
 	}
 
@@ -208,14 +209,14 @@ public class Base implements Saveable
 	
 	public void resetChestRoom()
 	{
-		nexus = new ChestsRoom(this);
+		setChestsRoom(new ChestsRoom(this));
 	}
 
 	public void markNexusAsCaptured()
 	{
 		final ChestsRoom room = new ChestsRoom(this);
 		room.markAsCaptured();
-		nexus = room;
+		setChestsRoom(room);
 	}
 	
 	public Team getTeam()

@@ -77,15 +77,11 @@ public class DamageListener implements Listener
                 ChatUtils.sendMessage(damager, Messages.PLAYER_CHEST_ATTACK_SELF);
                 return;
             }
-            core.damage(playerTeam, (int) event.getFinalDamage());
-            entity.getWorld().spawnParticle(Particle.CRIT, entity.getLocation(), 10, 0.5, 0.5, 0.5, 0.1);
-            if (!core.contains(damager.getLocation())) {
+            if (!core.isInside(damager)) {
                 core.addEnemyInside(damager);
-                Fk.getInstance().getServer().getScheduler().runTaskLater(Fk.getInstance(), () -> {
-                    if (core.isInside(damager)) return;
-                    core.removeEnemyInside(damager);
-                }, 100);
             }
+            entity.getWorld().spawnParticle(Particle.CRIT, entity.getLocation(), 10, 0.5, 0.5, 0.5, 0.1);
+            core.damage(playerTeam, (int) event.getFinalDamage());
             return;
         }
     }

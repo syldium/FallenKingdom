@@ -321,6 +321,11 @@ public class ChestsRoom implements Nexus, Saveable
 		return base;
 	}
 
+	@Override
+	public void remove() {
+
+	}
+
 	public boolean exists()
 	{
 		return !chests.isEmpty();

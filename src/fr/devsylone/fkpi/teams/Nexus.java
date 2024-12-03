@@ -54,6 +54,8 @@ public interface Nexus {
     @Contract(pure = true)
     @NotNull Base getBase();
 
+    void remove();
+
     void save(@NotNull ConfigurationSection config);
 
     static @NotNull Nexus fromConfig(@NotNull Base base, @NotNull ConfigurationSection config) {

@@ -70,6 +70,16 @@ public class CrystalCore implements Nexus {
         return this.base;
     }
 
+    @Override
+    public void remove() {
+        this.bar.removeAll();
+        final Entity entity = this.entity.get();
+        if (entity != null) {
+            entity.remove();
+            this.entity.clear();
+        }
+    }
+
     static final String CORE = "core";
     static final String ENTITY = "entity";
     static final String BAR_COLOR = "bar-color";
@@ -93,17 +103,10 @@ public class CrystalCore implements Nexus {
             final Entity entity = this.entity.get();
             if (entity != null) {
                 entity.getWorld().createExplosion(entity.getLocation(), 3, false, false, entity);
-                entity.remove();
-                this.base.markNexusAsCaptured();
             }
-            this.bar.removeAll();
+            this.base.markNexusAsCaptured();
             CaptureRunnable.run(this.base.getTeam(), assailants);
         }
-    }
-
-    public void teardown() {
-        this.bar.removeAll();
-        this.base.resetChestRoom();
     }
 
     @Override
