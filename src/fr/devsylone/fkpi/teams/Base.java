@@ -343,7 +343,9 @@ public class Base implements Saveable
 	@Contract("_ -> param1")
 	public static @NotNull Location adjustLoc(@NotNull Location loc)
 	{
-		loc.set(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+		loc.setX(loc.getBlockX());
+		loc.setY(loc.getBlockY());
+		loc.setZ(loc.getBlockZ());
 		World world = loc.getWorld();
 		if(world == null)
 			return loc;
