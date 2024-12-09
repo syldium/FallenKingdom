@@ -16,8 +16,8 @@ public class TntJump extends FkBooleanRuleCommand
 
 	@Override
 	protected void sendMessage(boolean newValue) {
-		if (!Version.VersionType.V1_13.isHigherOrEqual()) {
-			throw new FkLightException(Messages.CMD_ERROR_VERSION_TOO_OLD.getMessage().replace("%version%", Version.VersionType.V1_13.toString()));
+		if (!Version.VersionType.V1_17.isHigherOrEqual()) {
+			throw new FkLightException(Messages.CMD_ERROR_VERSION_TOO_OLD.getMessage().replace("%version%", Version.VersionType.V1_17.toString()));
 		}
 		broadcastPossibleImpossible(newValue, Messages.CMD_RULES_TNT_JUMP);
 	}
