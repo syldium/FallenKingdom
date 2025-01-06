@@ -31,10 +31,6 @@ import org.jetbrains.annotations.Nullable;
 
 public class DisabledPotions extends FkPlayerCommand {
 
-    private static final String DISABLED_POTIONS_INVENTORY_TITLE = Messages.INVENTORY_POTION_TITLE.getMessage();
-    private static final String LORE_ENABLED = Messages.INVENTORY_POTION_ENABLE.getMessage();
-    private static final String LORE_DISABLED = Messages.INVENTORY_POTION_DISABLE.getMessage();
-
     private @Nullable Editor editor;
 
     public DisabledPotions() {
@@ -58,7 +54,7 @@ public class DisabledPotions extends FkPlayerCommand {
 
         public Editor(@NotNull Fk plugin) {
             this.rule = plugin.getFkPI().getRulesManager().getRule(Rule.DISABLED_POTIONS);
-            this.inventory = plugin.getServer().createInventory(this, 6 * 9, DISABLED_POTIONS_INVENTORY_TITLE);
+            this.inventory = plugin.getServer().createInventory(this, 6 * 9, Messages.INVENTORY_POTION_TITLE.getMessage());
 
             this.disableAmplifiedPotionsItem = XMaterial.PLAYER_HEAD.parseItem();
             SkullMeta meta = XItemStack.applyBase64Texture((SkullMeta) disableAmplifiedPotionsItem.getItemMeta(), "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTZmYWI5OTFkMDgzOTkzY2I4M2U0YmNmNDRhMGI2Y2VmYWM2NDdkNDE4OWVlOWNiODIzZTljYzE1NzFlMzgifX19");
@@ -137,11 +133,11 @@ public class DisabledPotions extends FkPlayerCommand {
             final PotionMeta potionMeta = (PotionMeta) potionItem.getItemMeta();
             if (this.rule.isDisabled(potionData)) {
                 Environment.setEnchantmentGlintOverride(potionMeta, true);
-                potionMeta.setLore(Collections.singletonList(LORE_DISABLED));
+                potionMeta.setLore(Collections.singletonList(Messages.INVENTORY_POTION_DISABLE.getMessage()));
                 potionItem.setAmount(64);
             } else {
                 Environment.setEnchantmentGlintOverride(potionMeta, false);
-                potionMeta.setLore(Collections.singletonList(LORE_ENABLED));
+                potionMeta.setLore(Collections.singletonList(Messages.INVENTORY_POTION_ENABLE.getMessage()));
                 potionItem.setAmount(1);
             }
             potionItem.setItemMeta(potionMeta);

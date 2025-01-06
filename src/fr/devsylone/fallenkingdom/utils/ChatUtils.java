@@ -14,7 +14,7 @@ public final class ChatUtils
 
 	public static String colorMessage(Messages message)
 	{
-		String msg = Fk.getInstance().getLanguageManager().getLanguageMessage(message.getAccessor());
+		String msg = Fk.getInstance().getLanguageManager().get(message);
 		return msg == null ? null : ChatColor.translateAlternateColorCodes('&', msg);
 	}
 

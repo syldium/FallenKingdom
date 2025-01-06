@@ -11,6 +11,7 @@ import org.bukkit.command.CommandSender;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.MissingResourceException;
 
 public class TryLoad extends FkCommand
 {
@@ -24,10 +25,13 @@ public class TryLoad extends FkCommand
         plugin.getLogger().info("Start of lang report");
         // Recherche des traductions en mode strict
         long missingTranslations = Arrays.stream(Messages.values()).filter(message -> {
-            String msg = plugin.getLanguageManager().getLanguageMessage(message.getAccessor(), true);
-            if (msg == null && message.getMessage() == null)
+            try {
+                plugin.getLanguageManager().get(message);
+            } catch (MissingResourceException ex) {
                 Fk.getInstance().getLogger().severe("Value of " + message.getAccessor() + " not set in any file!");
-            return msg == null;
+                return true;
+            }
+            return false;
         }).count();
         plugin.getLogger().info("End of lang report");
         ChatUtils.sendMessage(sender, Messages.CMD_LANG_TRY_LOAD);

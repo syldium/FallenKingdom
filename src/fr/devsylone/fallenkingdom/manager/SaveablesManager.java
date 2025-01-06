@@ -110,7 +110,7 @@ public class SaveablesManager {
 		}
 
 		if (!corrupted.isEmpty()) {
-			plugin.getOnConnectWarnings().add(Messages.CORRUPT_CONFIG_FILES.getMessage());
+			plugin.addOnConnectWarning(Messages.CORRUPT_CONFIG_FILES.getMessage());
 			File zip = new File(plugin.getDataFolder(), "invalid-" + new SimpleDateFormat("yyyy-MM-dd HH-mm-ss").format(Calendar.getInstance().getTimeInMillis()) + ".zip");
 			try {
 				zip.createNewFile();

@@ -34,8 +34,7 @@ public class FkMock extends Fk {
         getConfig().set("lang", "fr");
         getConfig().set("world-check", true);
         getConfig().set("affected-worlds", Arrays.asList("normal", "nether"));
-        languageManager = new LanguageManager();
-        languageManager.init(this);
+        languageManager = new LanguageManager(this);
 
         worldManager = new WorldManager(this);
         fkPI = new FkPI();

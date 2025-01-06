@@ -19,6 +19,8 @@ import fr.devsylone.fallenkingdom.updater.GitHubAssetInfo;
 import fr.devsylone.fallenkingdom.updater.UpdateChecker;
 import fr.devsylone.fallenkingdom.utils.FkConfig;
 import fr.devsylone.fallenkingdom.version.LuckPermsContext;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
 import org.bstats.charts.SingleLineChart;
@@ -83,7 +85,7 @@ public class Fk extends JavaPlugin
 
 	protected FkPI fkPI;
 
-	private final List<String> onConnectWarnings = new ArrayList<>();
+	private final List<BaseComponent[]> onConnectWarnings = new ArrayList<>();
 	private String pluginError = "";
 
 	private String previousVersion = getDescription().getVersion();
@@ -131,8 +133,7 @@ public class Fk extends JavaPlugin
 
 		ListenersManager.registerListeners(this);
 
-		languageManager = new LanguageManager();
-		languageManager.init(this);
+		languageManager = new LanguageManager(this);
 
 		if (!check())
 			return;
@@ -376,7 +377,7 @@ public class Fk extends JavaPlugin
 			getLogger().warning(pluginError);
 			getLogger().severe("------------------------------------------");
 
-			onConnectWarnings.add(pluginError);
+			addOnConnectWarning(pluginError);
 		}
 		return pluginError.isEmpty();
 	}
@@ -385,10 +386,15 @@ public class Fk extends JavaPlugin
 	{
 		Metrics metrics = new Metrics(this, 6738);
 		metrics.addCustomChart(new SingleLineChart("server_running_1-8_version", () -> Bukkit.getVersion().contains("1.8") ? 1 : 0));
-		metrics.addCustomChart(new SimplePie("lang_used", languageManager::getLocalePrefix));
+		metrics.addCustomChart(new SimplePie("lang_used", () -> languageManager.getLocale().getLanguage()));
 	}
 
 	public void addOnConnectWarning(String warning)
+	{
+		onConnectWarnings.add(TextComponent.fromLegacyText(warning));
+	}
+
+	public void addOnConnectWarning(BaseComponent[] warning)
 	{
 		onConnectWarnings.add(warning);
 	}

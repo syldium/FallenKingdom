@@ -83,7 +83,7 @@ public class Color
 
 	public String getGenredName(@MagicConstant(intValues = {GENRE_F, GENRE_M}) int genre)
 	{
-		if(Fk.getInstance().getLanguageManager().getLocalePrefix().equalsIgnoreCase("fr"))
+		if(Fk.getInstance().getLanguageManager().getLocale().getLanguage().equals("fr"))
 			return genre == GENRE_M ? maleColor : femColor;
 		return dyeColor.name().toLowerCase().replace('_', ' ');
 	}

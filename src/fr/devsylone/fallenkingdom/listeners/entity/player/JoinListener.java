@@ -12,6 +12,7 @@ import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fallenkingdom.utils.NMSUtils;
 import fr.devsylone.fallenkingdom.utils.XItemStack;
 import fr.devsylone.fkpi.FkPI;
+import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
@@ -48,8 +49,8 @@ public class JoinListener implements Listener
 		FkPlayer player = Fk.getInstance().getPlayerManager().getPlayer(e.getPlayer());
 
 		if(e.getPlayer().isOp())
-			for(String s : Fk.getInstance().getOnConnectWarnings())
-				e.getPlayer().sendMessage(s);
+			for(BaseComponent[] s : Fk.getInstance().getOnConnectWarnings())
+				e.getPlayer().spigot().sendMessage(s);
 
 		player.refreshScoreboard();
 		FkPI.getInstance().getTeamManager().nametag().addEntry(e.getPlayer());

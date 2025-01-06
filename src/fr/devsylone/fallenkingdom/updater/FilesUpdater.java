@@ -4,14 +4,18 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import fr.devsylone.fallenkingdom.display.GlobalDisplayService;
+import fr.devsylone.fallenkingdom.manager.LanguageManager;
 import fr.devsylone.fallenkingdom.scoreboard.PlaceHolder;
 import fr.devsylone.fallenkingdom.utils.FkConfig;
 import org.bukkit.configuration.ConfigurationSection;
@@ -201,7 +205,6 @@ public class FilesUpdater
                 {
                     e.printStackTrace();
                 }
-                Fk.getInstance().getLanguageManager().init(Fk.getInstance());
             }
         }
 
@@ -234,6 +237,20 @@ public class FilesUpdater
                 final ConfigurationSection autoPause = rulesSection.createSection("AutoPause");
                 autoPause.set("after-day", doPauseAfterDay);
                 saveConfig.saveSync();
+            }
+            try (Stream<Path> files = Files.list(Fk.getInstance().getDataFolder().toPath().resolve(LanguageManager.LOCALES))) {
+                final Iterable<Path> iterable = files::iterator;
+                for (Path path : iterable) {
+                    if (!path.getFileName().toString().startsWith(LanguageManager.MESSAGES_BUNDLE + '_') && path.getFileName().toString().endsWith(".properties")) {
+                        Files.move(
+                                path,
+                                path.getParent().resolve(LanguageManager.MESSAGES_BUNDLE + '_' + path.getFileName()),
+                                StandardCopyOption.REPLACE_EXISTING
+                        );
+                    }
+                }
+            } catch (IOException ex) {
+                Fk.getInstance().getLogger().log(Level.SEVERE, "Unable to add the \"messages_\" before all lang files.", ex);
             }
         }
     }

@@ -1,9 +1,12 @@
 package fr.devsylone.fallenkingdom.utils;
 
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.PropertyKey;
 
 import java.text.ChoiceFormat;
 import java.util.Arrays;
+
+import static fr.devsylone.fallenkingdom.manager.LanguageManager.MESSAGES_BUNDLE;
 
 public enum Messages
 {
@@ -424,7 +427,6 @@ public enum Messages
     PLACE_HOLDER_OPEN_NETHER("placeHolder.open.nether"),
     PLACE_HOLDER_OPEN_END("placeHolder.open.end"),
 
-    CONSOLE_LANG_COULD_NOT_LIST_FILES("console.lang.could-not-list-files"),
     CONSOLE_ADJUSTMENT_GAME_TIME("console.adjustment-game-time"),
     CONSOLE_AT("console.at"),
     CONSOLE_KICK_MESSAGE("console.kick.message"),
@@ -463,11 +465,11 @@ public enum Messages
 
     private final String accessor;
 
-    Messages(String accessor) {
+    Messages(@PropertyKey(resourceBundle = MESSAGES_BUNDLE) String accessor) {
         this.accessor = accessor;
     }
 
-    public String getAccessor() {
+    public @PropertyKey(resourceBundle = MESSAGES_BUNDLE) String getAccessor() {
         return accessor;
     }
 
