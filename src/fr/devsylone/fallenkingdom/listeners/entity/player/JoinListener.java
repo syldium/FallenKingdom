@@ -12,6 +12,8 @@ import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fallenkingdom.utils.NMSUtils;
 import fr.devsylone.fallenkingdom.utils.XItemStack;
 import fr.devsylone.fkpi.FkPI;
+import fr.devsylone.fkpi.teams.Base;
+import fr.devsylone.fkpi.teams.Team;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -81,6 +83,13 @@ public class JoinListener implements Listener
 
 		if (!Fk.getInstance().getWorldManager().isAffected(e.getPlayer().getWorld()))
 			return;
+
+		for (Team team : FkPI.getInstance().getTeamManager().getTeams()) {
+			final Base base = team.getBase();
+			if (base != null) {
+				base.getNexus().removeEnemyInside(e.getPlayer());
+			}
+		}
 
 		e.setQuitMessage(null);
 		Fk.broadcast(Messages.CHAT_QUIT.getMessage().replace("%player%", e.getPlayer().getDisplayName()));

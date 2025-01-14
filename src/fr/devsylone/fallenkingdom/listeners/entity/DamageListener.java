@@ -7,6 +7,7 @@ import fr.devsylone.fallenkingdom.scoreboard.PlaceHolder;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fallenkingdom.version.Environment;
+import fr.devsylone.fallenkingdom.version.Version;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.rules.ChargedCreepers;
 import fr.devsylone.fkpi.rules.Rule;
@@ -80,7 +81,9 @@ public class DamageListener implements Listener
             if (!core.isInside(damager)) {
                 core.addEnemyInside(damager);
             }
-            entity.getWorld().spawnParticle(Particle.CRIT, entity.getLocation(), 10, 0.5, 0.5, 0.5, 0.1);
+            if (Version.VersionType.V1_9_V1_12.isHigherOrEqual()) {
+                entity.getWorld().spawnParticle(Particle.CRIT, entity.getLocation(), 10, 0.5, 0.5, 0.5, 0.1);
+            }
             core.damage(playerTeam, (int) event.getFinalDamage());
             return;
         }

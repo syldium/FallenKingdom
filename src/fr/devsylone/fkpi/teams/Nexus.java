@@ -63,7 +63,7 @@ public interface Nexus {
         if (CORE.equals(nexusType)) {
             final String entity = config.getString(ENTITY);
             final UUID coreId = entity == null ? new UUID(0, 0) : UUID.fromString(entity);
-            return new CrystalCore(base, coreId, BarColor.valueOf(config.getString(BAR_COLOR, "WHITE")));
+            return new CrystalCore(base, coreId, base.getTeam().getColor().getBukkitChatColor());
         } else if (CHESTS_ROOM.equals(nexusType)) {
             final ChestsRoom chestsRoom = new ChestsRoom(base);
             chestsRoom.load(config);

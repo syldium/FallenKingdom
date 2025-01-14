@@ -5,6 +5,7 @@ import fr.devsylone.fallenkingdom.version.Version;
 final class Provider {
 
     static final Hologram HOLOGRAM;
+    static final BossBar.Factory BOSS_BAR;
 
     private static Hologram initVersion() {
         switch (Version.VERSION_TYPE) {
@@ -35,5 +36,10 @@ final class Provider {
             hologram = Version.VersionType.V1_20.isHigherOrEqual() ? new DisplayBukkitHologram() : new BukkitHolograms();
         }
         HOLOGRAM = hologram;
+        if (HOLOGRAM instanceof NMSHologram1_8) {
+            BOSS_BAR = (name, color) -> new WitherBossBar1_8(name);
+        } else {
+            BOSS_BAR = BukkitBossBar::new;
+        }
     }
 }

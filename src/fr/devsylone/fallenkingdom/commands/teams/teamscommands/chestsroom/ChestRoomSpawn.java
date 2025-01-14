@@ -7,7 +7,6 @@ import fr.devsylone.fallenkingdom.commands.abstraction.FkPlayerCommand;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fallenkingdom.utils.Messages;
-import fr.devsylone.fallenkingdom.version.Version;
 import fr.devsylone.fkpi.teams.CrystalCore;
 import fr.devsylone.fkpi.teams.Team;
 import org.bukkit.Location;
@@ -27,9 +26,6 @@ public class ChestRoomSpawn extends FkPlayerCommand {
 
     @Override
     public CommandResult execute(Fk plugin, Player sender, FkPlayer fkp, List<String> args, String label) {
-        if (!Version.VersionType.V1_9_V1_12.isHigherOrEqual()) {
-            throw new FkLightException(Messages.CMD_ERROR_VERSION_TOO_OLD.getMessage().replace("%version%", Version.VersionType.V1_9_V1_12.toString()));
-        }
         if (!plugin.getFkPI().getChestsRoomsManager().isEnabled()) {
             throw new FkLightException(Messages.CMD_ERROR_CHEST_ROOM_DISABLED);
         }

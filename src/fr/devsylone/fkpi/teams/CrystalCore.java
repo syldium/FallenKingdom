@@ -1,12 +1,11 @@
 package fr.devsylone.fkpi.teams;
 
 import fr.devsylone.fallenkingdom.game.CaptureRunnable;
+import fr.devsylone.fallenkingdom.version.Version;
+import fr.devsylone.fallenkingdom.version.packet.entity.BossBar;
 import fr.devsylone.fkpi.FkPI;
-import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.boss.BarColor;
-import org.bukkit.boss.BarStyle;
-import org.bukkit.boss.BossBar;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -27,15 +26,14 @@ public class CrystalCore implements Nexus {
     private int damage;
 
     public CrystalCore(@NotNull Base base, @NotNull Entity entity) {
-        this(base, entity.getUniqueId(), BarColor.WHITE);
+        this(base, entity.getUniqueId(), base.getTeam().getColor().getBukkitChatColor());
     }
 
-    public CrystalCore(@NotNull Base base, @NotNull UUID crystalId, @NotNull BarColor color) {
+    public CrystalCore(@NotNull Base base, @NotNull UUID crystalId, @NotNull ChatColor color) {
         this.base = base;
         this.crystalId = crystalId;
         this.entity = new WeakReference<>(null);
-        this.bar = Bukkit.createBossBar("Crystal", color, BarStyle.SOLID);
-        this.bar.setVisible(true);
+        this.bar = BossBar.INSTANCE.createBossBar("Crystal", color);
     }
 
     @Override
@@ -88,7 +86,6 @@ public class CrystalCore implements Nexus {
     public void save(@NotNull ConfigurationSection config) {
         config.set("type", CORE);
         config.set(ENTITY, this.crystalId.toString());
-        config.set(BAR_COLOR, this.bar.getColor().name());
     }
 
     public @NotNull UUID getEntityId() {
@@ -101,7 +98,7 @@ public class CrystalCore implements Nexus {
         this.bar.setProgress((double) Math.max(0, coreHealth - this.damage) / coreHealth);
         if (this.damage >= coreHealth) {
             final Entity entity = this.entity.get();
-            if (entity != null) {
+            if (entity != null && Version.VersionType.V1_13.isHigherOrEqual()) {
                 entity.getWorld().createExplosion(entity.getLocation(), 3, false, false, entity);
             }
             this.base.markNexusAsCaptured();
