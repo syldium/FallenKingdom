@@ -41,8 +41,13 @@ public class BlockListener implements Listener
 		FkPlayer fkp = Fk.getInstance().getPlayerManager().getPlayer(p);
 		Team team = Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(p);
 
-		if(p.getGameMode() == GameMode.CREATIVE)
+		if(p.getGameMode() == GameMode.CREATIVE) {
+			if (FkPI.getInstance().getChestsRoomsManager().isEnabled()
+					&& FkPI.getInstance().getTeamManager().getBase(p.getLocation()).map(base -> base.getNexus() instanceof ChestsRoom).orElse(false)) {
+				ChatUtils.sendMessage(p, Messages.PLAYER_CREATIVE_CHEST);
+			}
 			return;
+		}
 
 		if(team == null || plugin.getGame().isPreStart())
 			return;

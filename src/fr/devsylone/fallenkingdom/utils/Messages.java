@@ -325,6 +325,7 @@ public enum Messages
     PLAYER_CHEST_ATTACK_SELF("player.chest-room.attack-self"),
     PLAYER_CHEST_ATTACK_TEAM("player.chest-room.attack-team"),
     PLAYER_CREATIVE_CHAT("player.creative.chat"),
+    PLAYER_CREATIVE_CHEST("player.creative.chest"),
     PLAYER_CREATIVE_SUBTITLE("player.creative.subtitle"),
     PLAYER_CREATIVE_TITLE("player.creative.title"),
     PLAYER_DISABLED_POTION_BLAZE_POWDER_SHIFT("player.disabled-potion.blaze-powder-shift"),
