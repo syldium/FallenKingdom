@@ -237,9 +237,7 @@ public class ChestsRoom implements Nexus, Saveable
 					}
 				}
 
-				captureTeam = null;
-				captureTask.cancel();
-				state = ChestRoomState.NORMAL;
+				remove();
 			}
 		}
 	}
@@ -323,7 +321,12 @@ public class ChestsRoom implements Nexus, Saveable
 
 	@Override
 	public void remove() {
-
+		captureTeam = null;
+		if (captureTask != null) {
+			captureTask.cancel();
+		}
+		captureTask = null;
+		state = ChestRoomState.NORMAL;
 	}
 
 	public boolean exists()

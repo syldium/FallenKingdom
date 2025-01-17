@@ -73,6 +73,7 @@ public class BrigadierManager<S>
         LiteralArgumentBuilder<S> builder = LiteralArgumentBuilder.<S>literal(command.getName())
                 .requires(sender -> !withPermissions || command.hasPermission(this.bukkitSender.apply(sender)));
         if (command instanceof FkParentCommand) {
+            builder.executes(executor);
             builder.then(LiteralArgumentBuilder.<S>literal("help").executes(executor));
             for (AbstractCommand subCommand : ((FkParentCommand) command).getChildren()) {
                 if (subCommand.shouldDisplay()) {

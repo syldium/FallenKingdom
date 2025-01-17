@@ -36,6 +36,11 @@ public class ChestsRoomsManager implements Saveable
 		captureTime = arg;
 	}
 
+	public void setCoreHealth(int coreHealth)
+	{
+		this.coreHealth = coreHealth;
+	}
+
 	public void setOffset(int arg)
 	{
 		offset = arg;

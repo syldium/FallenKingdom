@@ -7,12 +7,20 @@ import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkParentCommand;
 import fr.devsylone.fallenkingdom.commands.teams.teamscommands.chestsroom.ChestRoomCapture;
 import fr.devsylone.fallenkingdom.commands.teams.teamscommands.chestsroom.ChestRoomEnabled;
+import fr.devsylone.fallenkingdom.commands.teams.teamscommands.chestsroom.ChestRoomHealth;
 import fr.devsylone.fallenkingdom.commands.teams.teamscommands.chestsroom.ChestRoomOffset;
+import fr.devsylone.fallenkingdom.commands.teams.teamscommands.chestsroom.ChestRoomRemove;
 import fr.devsylone.fallenkingdom.commands.teams.teamscommands.chestsroom.ChestRoomShow;
 import fr.devsylone.fallenkingdom.commands.teams.teamscommands.chestsroom.ChestRoomSpawn;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fallenkingdom.version.component.FkBook;
 import fr.devsylone.fallenkingdom.version.component.FkComponent;
+import fr.devsylone.fkpi.FkPI;
+import fr.devsylone.fkpi.managers.ChestsRoomsManager;
+import fr.devsylone.fkpi.teams.Base;
+import fr.devsylone.fkpi.teams.CrystalCore;
+import fr.devsylone.fkpi.teams.Nexus;
+import fr.devsylone.fkpi.teams.Team;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import org.bukkit.command.CommandSender;
@@ -20,10 +28,13 @@ import org.bukkit.entity.Player;
 
 import fr.devsylone.fallenkingdom.Fk;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static fr.devsylone.fallenkingdom.version.component.FkComponent.join;
 import static fr.devsylone.fallenkingdom.version.component.FkComponent.newline;
@@ -34,14 +45,14 @@ public class ChestsRoom extends FkParentCommand
 {
 	private static final String BOOK_PERMISSION = "fallenkingdom.commands.team.chestsRoom.book";
 
-	private FkBook book;
-
 	public ChestsRoom()
 	{
 		super("chestsRoom", ImmutableList.<FkCommand>builder()
 				.add(new ChestRoomCapture())
 				.add(new ChestRoomEnabled())
+				.add(new ChestRoomHealth())
 				.add(new ChestRoomOffset())
+				.add(new ChestRoomRemove())
 				.add(new ChestRoomShow())
 				.add(new ChestRoomSpawn())
 				.build()
@@ -51,17 +62,67 @@ public class ChestsRoom extends FkParentCommand
 	@Override
 	public CommandResult execute(Fk plugin, CommandSender sender, List<String> args, String label)
 	{
-		super.execute(plugin, sender, args, label);
+		if (args.isEmpty()) {
+			this.displayStatus(sender, plugin.getFkPI());
+		} else {
+			super.execute(plugin, sender, args, label);
+		}
 		if (sender instanceof Player && plugin.getCommandManager().hasPermission(sender, BOOK_PERMISSION)) {
-			if (this.book == null) {
-				this.book = this.book();
-			}
-			this.book.open((Player) sender);
+			final Base base = plugin.getFkPI().getTeamManager().getBase(((Player) sender).getLocation()).orElse(null);
+			this.book(base).open((Player) sender);
 		}
 		return CommandResult.SUCCESS;
 	}
 
-	public @NotNull FkBook book() {
+	public void displayStatus(@NotNull CommandSender sender, @NotNull FkPI fkPI) {
+		final ChestsRoomsManager manager = fkPI.getChestsRoomsManager();
+		final boolean enabled = manager.isEnabled();
+		sender.sendMessage(
+				Messages.CMD_TEAM_CHEST_ROOM_STATUS.getMessage()
+						.replace("%state%", (
+								enabled ? Messages.CMD_RULES_ACTIVATED : Messages.CMD_RULES_DEACTIVATED
+						).getMessage())
+		);
+		if (enabled) {
+			final List<fr.devsylone.fkpi.teams.ChestsRoom> chestsRooms = new ArrayList<>();
+			final List<CrystalCore> crystals = new ArrayList<>();
+			for (Team team : fkPI.getTeamManager().getTeams()) {
+				final Base base = team.getBase();
+				if (base == null) continue;
+				final Nexus nexus = base.getNexus();
+				if (nexus instanceof fr.devsylone.fkpi.teams.ChestsRoom) {
+					chestsRooms.add((fr.devsylone.fkpi.teams.ChestsRoom) nexus);
+				} else if (nexus instanceof CrystalCore) {
+					crystals.add((CrystalCore) nexus);
+				}
+			}
+			if (!chestsRooms.isEmpty()) {
+				sender.sendMessage(
+						Messages.CMD_TEAM_CHEST_ROOM_STATUS_CHEST.getMessage() + ": "
+								+ chestsRooms.stream().map(nexus -> nexus.getBase().getTeam().toString()).collect(Collectors.joining(", "))
+				);
+				sender.sendMessage(
+						Messages.CMD_TEAM_CHEST_ROOM_STATUS_CHEST_PARAMS.getMessage()
+								.replace("%offset%", String.valueOf(manager.getOffset()))
+								.replace("%offsetunit%", Messages.Unit.BLOCKS.tl(manager.getOffset()))
+								.replace("%time%", String.valueOf(manager.getCaptureTime()))
+								.replace("%timeunit%", Messages.Unit.SECONDS.tl(manager.getCaptureTime()))
+				);
+			}
+			if (!crystals.isEmpty()) {
+				sender.sendMessage(
+						Messages.CMD_TEAM_CHEST_ROOM_STATUS_CRYSTAL.getMessage() + ": "
+								+ crystals.stream().map(nexus -> nexus.getBase().getTeam().toString()).collect(Collectors.joining(", "))
+				);
+				sender.sendMessage(
+						Messages.CMD_TEAM_CHEST_ROOM_STATUS_CRYSTAL_PARAMS.getMessage()
+								.replace("%health%", String.valueOf(manager.getCoreHealth()))
+				);
+			}
+		}
+	}
+
+	public @NotNull FkBook book(@Nullable Base base) {
 		FkComponent title = text("ChestsRoom - Help", ChatColor.GREEN);
 		FkComponent author = text("Devsylone", ChatColor.DARK_BLUE);
 		FkComponent[] pages = new FkComponent[]{
@@ -70,6 +131,8 @@ public class ChestsRoom extends FkParentCommand
 						text("[Activer]", ChatColor.DARK_GREEN).command("/fk team chestsRoom enabled true").hover("Clique pour activer"),
 						space(),
 						text("[Désactiver]", ChatColor.DARK_RED).command("/fk team chestsRoom enabled false").hover("Clique pour désactiver"),
+						text("\n   "),
+						base == null ? space() : text("[Placer un cristal]", ChatColor.DARK_PURPLE).command("/fk team chestsRoom spawn " + base.getTeam().getName()).hover("Clique pour placer un cœur de base"),
 						text("\n\n   "),
 						text("> En savoir plus <", ChatColor.UNDERLINE).changePage(5).hover("Clique pour plus d'infos")
 				),
@@ -98,12 +161,13 @@ public class ChestsRoom extends FkParentCommand
 						newline(),
 						text("> 5 blocs", ChatColor.GREEN).command("/fk team chestsRoom offset 5"),
 						text("\n\n   "),
-						text("> En savoir plus <", ChatColor.UNDERLINE).changePage(7).hover("Clique pour plus d'infos")
+						text("> En savoir plus <", ChatColor.UNDERLINE).changePage(8).hover("Clique pour plus d'infos")
 				),
 				text("Explications\npages suivantes"),
-				text("↪ La reconnaissance automatique des salles des coffres permet d'automatiser l'élimination d'une équipe lorsque le plugin détecte qu'une équipe est restée le temps choisi dans la salle des coffres.\n\n↪ Le plugin calcule les dimensions de la salle --->"),
+				text("↪ La gestion de la salle des coffres permet d'automatiser l'élimination d'une équipe lorsque le plugin détecte qu'une équipe l'a capturée.\n\nDeux options sont disponibles :\n\n\n\n--->"),
+				text("1. Les coffres posés par les joueurs sont détectés et une salle des coffres est générée en fonction de leur position.\n\n2. L'administrateur de la partie place un cristal que les ennemis doivent frapper pour capturer la base.\n--->"),
 				join(
-						text("en fonction des coffres posés par les membres de l'équipe. Chaque joueur peut visualiser à tout moment de la partie sa salle des coffres grâce à la commande"),
+						text("En optant pour la première option, chaque joueur peut visualiser à tout moment de la partie sa salle des coffres grâce à la commande"),
 						text(" /fk team chestsRoom show", ChatColor.DARK_PURPLE),
 						text("\nVous êtes le seul à voir votre salle des coffres.", ChatColor.RED)
 				),

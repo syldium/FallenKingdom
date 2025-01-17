@@ -33,6 +33,7 @@ permissions:
    fallenkingdom.commands.lang.set: true
    fallenkingdom.commands.lang.tryload: true
    fallenkingdom.commands.rules.allowBlock: true
+   fallenkingdom.commands.rules.autoPause: true
    fallenkingdom.commands.rules.bucketAssault: true
    fallenkingdom.commands.rules.captureRate: true
    fallenkingdom.commands.rules.chargedCreepers: true
@@ -42,7 +43,6 @@ permissions:
    fallenkingdom.commands.rules.deepPause: true
    fallenkingdom.commands.rules.denyBlock: true
    fallenkingdom.commands.rules.disabledPotions: true
-   fallenkingdom.commands.rules.doPauseAfterDay: true
    fallenkingdom.commands.rules.endCap: true
    fallenkingdom.commands.rules.enderpearlAssault: true
    fallenkingdom.commands.rules.eternalDay: true
@@ -76,7 +76,10 @@ permissions:
    fallenkingdom.commands.team.setColor: true
    fallenkingdom.commands.chestsRoom.captureTime: true
    fallenkingdom.commands.chestsRoom.enabled: true
+   fallenkingdom.commands.chestsRoom.health: true
    fallenkingdom.commands.chestsRoom.offset: true
+   fallenkingdom.commands.chestsRoom.remove: true
+   fallenkingdom.commands.chestsRoom.spawn: true
  fallenkingdom.player:
   description: Permet d'afficher les règles et les équipes
   default: true
