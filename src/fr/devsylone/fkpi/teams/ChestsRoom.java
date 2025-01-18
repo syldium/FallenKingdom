@@ -244,7 +244,7 @@ public class ChestsRoom implements Nexus, Saveable
 
 	@Override
 	public boolean isInside(@NotNull Player player) {
-		return enemyInside.contains(player.getUniqueId());
+		return enemyInside.contains(player.getUniqueId()) || contains(player.getLocation());
 	}
 
 	public List<UUID> getEnemiesInside() {

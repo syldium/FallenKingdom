@@ -43,6 +43,7 @@ public class BlockListener implements Listener
 
 		if(p.getGameMode() == GameMode.CREATIVE) {
 			if (FkPI.getInstance().getChestsRoomsManager().isEnabled()
+					&& XBlock.canBePartOfChestRoom(e.getBlock().getType())
 					&& FkPI.getInstance().getTeamManager().getBase(p.getLocation()).map(base -> base.getNexus() instanceof ChestsRoom).orElse(false)) {
 				ChatUtils.sendMessage(p, Messages.PLAYER_CREATIVE_CHEST);
 			}
