@@ -378,6 +378,8 @@ public enum Messages
     SCOREBOARD_BASE("scoreboard.base"),
     SCOREBOARD_PORTAL("scoreboard.portal"),
 
+    BOSS_BAR_CRYSTAL("boss-bar.crystal"),
+
     TIP_BUG("tip.bug"),
     TIP_CHARGED_CREEPERS("tip.chargedCreepers"),
     TIP_DAY_DURATION("tip.dayDuration"),

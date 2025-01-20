@@ -30,6 +30,13 @@ public interface BossBar {
     void removePlayer(@NotNull Player player);
 
     /**
+     * Modifie le titre de la barre de boss.
+     *
+     * @param message le titre
+     */
+    void setTitle(@NotNull String message);
+
+    /**
      * Modifie la progression de la barre de boss.
      *
      * @param progress la progression, entre 0.0 et 1.0

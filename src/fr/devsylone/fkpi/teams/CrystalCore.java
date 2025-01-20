@@ -1,6 +1,7 @@
 package fr.devsylone.fkpi.teams;
 
 import fr.devsylone.fallenkingdom.game.CaptureRunnable;
+import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fallenkingdom.version.Version;
 import fr.devsylone.fallenkingdom.version.packet.entity.BossBar;
 import fr.devsylone.fkpi.FkPI;
@@ -33,7 +34,10 @@ public class CrystalCore implements Nexus {
         this.base = base;
         this.crystalId = crystalId;
         this.entity = new WeakReference<>(null);
-        this.bar = BossBar.INSTANCE.createBossBar("Crystal", color);
+        String name = Messages.BOSS_BAR_CRYSTAL.getMessage()
+                .replace("%team%", base.getTeam().toString())
+                .replace("%health%", String.valueOf(FkPI.getInstance().getChestsRoomsManager().getCoreHealth()));
+        this.bar = BossBar.INSTANCE.createBossBar(name, color);
     }
 
     @Override
@@ -95,6 +99,9 @@ public class CrystalCore implements Nexus {
     public void damage(@NotNull Team assailants, int damage) {
         this.damage += damage;
         int coreHealth = FkPI.getInstance().getChestsRoomsManager().getCoreHealth();
+        this.bar.setTitle(Messages.BOSS_BAR_CRYSTAL.getMessage()
+                .replace("%team%", this.base.getTeam().toString())
+                .replace("%health%", String.valueOf(coreHealth - this.damage)));
         this.bar.setProgress((double) Math.max(0, coreHealth - this.damage) / coreHealth);
         if (this.damage >= coreHealth) {
             final Entity entity = this.entity.get();

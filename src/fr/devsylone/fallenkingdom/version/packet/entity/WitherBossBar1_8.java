@@ -95,22 +95,22 @@ class WitherBossBar1_8 implements BossBar {
     }
 
     @Override
+    public void setTitle(@NotNull String message) {
+        if (this.entity == null) {
+            return;
+        }
+        this.entity.setCustomName(message);
+        this.syncMetadata();
+    }
+
+    @Override
     public void setProgress(double progress) {
         this.progress = progress;
         if (this.entity == null) {
             return;
         }
         this.entity.setHealth(progress * (this.entity.getMaxHealth() - 0.1f) + 0.1f);
-        try {
-            final Object dataWatcher = ENTITY_GET_DATA_WATCHER.invoke(this.entityNms);
-            final Object packet = PACKET_SET_METADATA.newInstance(this.entity.getEntityId(), dataWatcher, false);
-            for (Player player : this.viewers) {
-                PacketUtils.sendPacket(player, packet);
-                teleport(player, offsetPosition(player.getLocation()));
-            }
-        } catch (ReflectiveOperationException ex) {
-            throw new RuntimeException(ex);
-        }
+        this.syncMetadata();
     }
 
     @Override
@@ -151,6 +151,19 @@ class WitherBossBar1_8 implements BossBar {
             ENTITY_SET_LOCATION.invoke(this.entityNms, loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(), loc.getPitch());
             final Object packet = PACKET_TELEPORT.newInstance(this.entityNms);
             PacketUtils.sendPacket(player, packet);
+        } catch (ReflectiveOperationException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    private void syncMetadata() {
+        try {
+            final Object dataWatcher = ENTITY_GET_DATA_WATCHER.invoke(this.entityNms);
+            final Object packet = PACKET_SET_METADATA.newInstance(this.entity.getEntityId(), dataWatcher, false);
+            for (Player player : this.viewers) {
+                PacketUtils.sendPacket(player, packet);
+                teleport(player, offsetPosition(player.getLocation()));
+            }
         } catch (ReflectiveOperationException ex) {
             throw new RuntimeException(ex);
         }

@@ -29,6 +29,11 @@ class BukkitBossBar implements BossBar {
     }
 
     @Override
+    public void setTitle(@NotNull String message) {
+        this.bar.setTitle(message);
+    }
+
+    @Override
     public void setProgress(double progress) {
         this.bar.setProgress(progress);
     }
