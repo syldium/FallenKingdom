@@ -33,6 +33,7 @@ public class ChestsRoom implements Nexus, Saveable
 
 	private final List<Location> chests = new ArrayList<>();
 	private final List<UUID> enemyInside = new ArrayList<>();
+	private final List<UUID> alliesInside = new ArrayList<>();
 	private ChestRoomState state = ChestRoomState.NORMAL;
 
 	private final Base base;
@@ -209,6 +210,8 @@ public class ChestsRoom implements Nexus, Saveable
 			if (((float) enemyInside.size() / team.getPlayers().size()) * 100 >= FkPI.getInstance().getRulesManager().getRule(Rule.CAPTURE_RATE)) {
 				startCapture(team);
 			}
+		} else {
+			alliesInside.add(player.getUniqueId());
 		}
 	}
 
@@ -239,12 +242,14 @@ public class ChestsRoom implements Nexus, Saveable
 
 				remove();
 			}
+		} else {
+			alliesInside.remove(player.getUniqueId());
 		}
 	}
 
 	@Override
 	public boolean isInside(@NotNull Player player) {
-		return enemyInside.contains(player.getUniqueId()) || contains(player.getLocation());
+		return enemyInside.contains(player.getUniqueId()) || alliesInside.contains(player.getUniqueId());
 	}
 
 	public List<UUID> getEnemiesInside() {

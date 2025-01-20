@@ -49,7 +49,7 @@ public class CrystalCore implements Nexus {
                 this.entity = new WeakReference<>(entity);
             }
         }
-        return entity != null && entity.getLocation().distanceSquared(test) < 6*6;
+        return entity != null && entity.getWorld().equals(test.getWorld()) && entity.getLocation().distanceSquared(test) < 6*6;
     }
 
     @Override
