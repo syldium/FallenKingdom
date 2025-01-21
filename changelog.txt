@@ -554,3 +554,24 @@ Il est conseillé de réinitialiser les fichiers de langue.
 [+] Ajoute un reflet sur les potions désactivées pour les différencier des activées en 1.21
 [*] Rend le plugin plus résilient à des erreurs de configuration
 [*] Corrige l'initialisation du plugin pour certaines versions intermédiaires du jeu (1.19)
+
+--------
+
+      >> 2.24.0
+[+] Supporte les serveurs en 1.21.2, 1.21.3 et 1.21.4
+[+] Ajoute les cristaux de bases en alternative aux salles des coffres
+[+] Autorise de définir un cap à un jour déjà passé, ou à un jour ultérieur alors que déjà passé.
+[+] Permet la modification des préfixes utilisés dans le chat
+[+] Introduit le placeholder {REGION} pour afficher un message sur la zone courante du joueur.
+[+] Introduit le placeholder {REGION_CHANGE} pour présenter les notifications d'entrées/sorties de base du joueur.
+[+] Transforme la règle doPauseAfterDay en autoPause pour pouvoir aussi définir une pause automatique après chaque capture.
+[+] Permet de désactiver les notifications d'entrées/sorties de base dans le chat.
+[+] Permet de choisir le texte affiché sur certains supports selon les entrées/sorties des joueurs dans des bases
+[*] Corrige l'interface des potions désactivées (1.8)
+[*] Affiche de manière permanente les barres d'actions lorsque utilisées
+[*] Affiche le message que le soleil se lève pour chaque jour FK
+[*] Corrige un message d'erreur en console en utilisant la pause approfondie (1.19+)
+[*] Autorise le démarrage du plugin si les fichiers de langue ne peuvent pas être copiés
+[*] Met en pause les captures quand la partie est mise en pause
+[*] Centre les bases au milieu du bloc central
+[*] Corrige l'activation du plugin sur certains serveurs hybrides
