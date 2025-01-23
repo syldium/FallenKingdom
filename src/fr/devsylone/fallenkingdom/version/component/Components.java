@@ -3,7 +3,7 @@ package fr.devsylone.fallenkingdom.version.component;
 import com.google.common.collect.Sets;
 import net.kyori.adventure.inventory.Book;
 import net.md_5.bungee.api.ChatColor;
-import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
@@ -13,14 +13,22 @@ final class Components {
     static final Set<ChatColor> TEXT_DECORATIONS = Sets.newHashSet(ChatColor.MAGIC, ChatColor.BOLD, ChatColor.STRIKETHROUGH, ChatColor.UNDERLINE, ChatColor.ITALIC, ChatColor.RESET);
 
     static final boolean ADVENTURE;
+    static final boolean ADVENTURE_BOOK;
 
     static {
         boolean adventure = false;
         try {
-            BookMeta.class.isAssignableFrom(Book.class);
+            Class.forName("net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer");
             adventure = true;
-        } catch (Throwable ignored) { }
+        } catch (ClassNotFoundException ignored) { }
         ADVENTURE = adventure;
+
+        boolean adventureBook = false;
+        try {
+            Player.class.getMethod("openBook", Book.class);
+            adventureBook = true;
+        } catch (NoSuchMethodException ignored) { }
+        ADVENTURE_BOOK = adventureBook;
     }
 
     static @NotNull FkComponent newline() {

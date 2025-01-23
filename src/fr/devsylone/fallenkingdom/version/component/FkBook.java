@@ -9,7 +9,7 @@ import java.util.List;
 public interface FkBook {
 
     static @NotNull FkBook book(FkComponent title, FkComponent author, FkComponent... pages) {
-        return Components.ADVENTURE ? new AdventureImpl.BookImpl(title, author, pages) : new BukkitImpl.BookImpl(title, author, pages);
+        return Components.ADVENTURE_BOOK ? new AdventureImpl.BookImpl(title, author, pages) : new BukkitImpl.BookImpl(title, author, pages);
     }
 
     @NotNull FkComponent title();
