@@ -31,6 +31,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.MetadataValue;
 import org.bukkit.projectiles.ProjectileSource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -51,6 +52,10 @@ public class DamageListener implements Listener
     @EventHandler
     public void onDamageByEntity(EntityDamageByEntityEvent event) {
         final Entity entity = event.getEntity();
+        if (isCristal(event.getDamager()) || event.getDamager().hasMetadata("nodamage")) {
+            event.setCancelled(true);
+            return;
+        }
         if (!(entity instanceof EnderCrystal)) {
             return;
         }
@@ -107,6 +112,20 @@ public class DamageListener implements Listener
             }
         }
         return null;
+    }
+
+    private boolean isCristal(@NotNull Entity entity) {
+        for (Team team : FkPI.getInstance().getTeamManager().getTeams()) {
+            final Base base = team.getBase();
+            if (base == null) continue;
+            final Nexus nexus = base.getNexus();
+            if (!(nexus instanceof CrystalCore)) continue;
+            final CrystalCore core = (CrystalCore) nexus;
+            if (entity.getUniqueId().equals(core.getEntityId())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @EventHandler

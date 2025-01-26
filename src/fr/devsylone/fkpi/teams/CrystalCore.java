@@ -1,5 +1,6 @@
 package fr.devsylone.fkpi.teams;
 
+import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.game.CaptureRunnable;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fallenkingdom.version.Version;
@@ -10,6 +11,7 @@ import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.ref.WeakReference;
@@ -28,6 +30,7 @@ public class CrystalCore implements Nexus {
 
     public CrystalCore(@NotNull Base base, @NotNull Entity entity) {
         this(base, entity.getUniqueId(), base.getTeam().getColor().getBukkitChatColor());
+        entity.setMetadata("owner", new FixedMetadataValue(Fk.getInstance(), base.getTeam().getName()));
     }
 
     public CrystalCore(@NotNull Base base, @NotNull UUID crystalId, @NotNull ChatColor color) {

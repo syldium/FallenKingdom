@@ -13,6 +13,7 @@ import org.bukkit.FireworkEffect;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
@@ -73,6 +74,7 @@ public final class CaptureRunnable {
                         continue;
                     }
                     Firework fw = player.getWorld().spawn(player.getLocation(), Firework.class);
+                    fw.setMetadata("nodamage", new FixedMetadataValue(Fk.getInstance(), true));
                     FireworkMeta meta = fw.getFireworkMeta();
                     meta.addEffect(FireworkEffect.builder().withColor(Color.fromRGB(188, 166, 22), Color.GREEN).build());
                     fw.setFireworkMeta(meta);
