@@ -7,11 +7,11 @@ import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
 import fr.devsylone.fallenkingdom.commands.abstraction.IntegerArgument;
 import fr.devsylone.fallenkingdom.utils.Messages;
+import fr.devsylone.fallenkingdom.version.FkSound;
 import org.bukkit.command.CommandSender;
 
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
-import fr.devsylone.fallenkingdom.utils.FkSound;
 
 import java.util.List;
 

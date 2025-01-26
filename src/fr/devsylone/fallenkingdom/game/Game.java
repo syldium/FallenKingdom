@@ -3,6 +3,7 @@ package fr.devsylone.fallenkingdom.game;
 import fr.devsylone.fallenkingdom.display.GlobalDisplayService;
 import fr.devsylone.fallenkingdom.display.tick.CycleTickFormatter;
 import fr.devsylone.fallenkingdom.display.tick.TickFormatter;
+import fr.devsylone.fallenkingdom.version.FkSound;
 import fr.devsylone.fkpi.api.event.DayEvent;
 import fr.devsylone.fkpi.api.event.RuleChangeEvent;
 import fr.devsylone.fkpi.teams.Team;
@@ -13,7 +14,6 @@ import org.bukkit.entity.Player;
 
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
-import fr.devsylone.fallenkingdom.utils.FkSound;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.api.event.GameEvent;
@@ -235,7 +235,7 @@ public class Game implements Saveable
 	{
 		Fk.broadcast(Messages.BROADCAST_PREGAME_START.getMessage().replace("%time%", String.valueOf(time)));
 		for(Player p : Bukkit.getOnlinePlayers())
-			p.playSound(p.getLocation(), FkSound.NOTE_PLING.bukkitSound(), 1, 1);
+			p.playSound(p.getLocation(), FkSound.NOTE_PLING.key(), 1, 1);
 	}
 
 	private void broadcastTpIn(int time)
@@ -245,7 +245,7 @@ public class Game implements Saveable
 				.replace("%unit%", Messages.Unit.SECONDS.tl(time))
 		);
 		for(Player p : Bukkit.getOnlinePlayers())
-			p.playSound(p.getLocation(), FkSound.NOTE_BASS.bukkitSound(), 1, 1);
+			p.playSound(p.getLocation(), FkSound.NOTE_BASS.key(), 1, 1);
 	}
 
 	public long getExceptedWorldTime()

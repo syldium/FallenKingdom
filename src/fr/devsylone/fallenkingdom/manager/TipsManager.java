@@ -19,6 +19,7 @@ import fr.devsylone.fallenkingdom.commands.rules.rulescommands.PlaceBlockInCave;
 import fr.devsylone.fallenkingdom.commands.rules.rulescommands.booleancommands.TntJump;
 import fr.devsylone.fallenkingdom.commands.scoreboard.scoreboardcommands.Edit;
 import fr.devsylone.fallenkingdom.utils.Messages;
+import fr.devsylone.fallenkingdom.version.FkSound;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -26,7 +27,6 @@ import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.commands.chests.chestscommands.Add;
 import fr.devsylone.fallenkingdom.commands.chests.chestscommands.ChestLock;
 import fr.devsylone.fallenkingdom.players.Tip;
-import fr.devsylone.fallenkingdom.utils.FkSound;
 
 public class TipsManager
 {

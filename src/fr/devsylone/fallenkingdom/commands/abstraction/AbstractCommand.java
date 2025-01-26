@@ -2,8 +2,8 @@ package fr.devsylone.fallenkingdom.commands.abstraction;
 
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
-import fr.devsylone.fallenkingdom.utils.FkSound;
 import fr.devsylone.fallenkingdom.utils.Messages;
+import fr.devsylone.fallenkingdom.version.FkSound;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -137,7 +137,7 @@ public abstract class AbstractCommand
     protected void broadcast(String message, FkSound sound) {
         broadcast(message);
         for (Player player : Fk.getInstance().getPlayerManager().getOnlinePlayers()) {
-            player.playSound(player.getLocation(), sound.bukkitSound(),1.0f,1.0f);
+            player.playSound(player.getLocation(), sound.key(), 1.0f, 1.0f);
         }
     }
 

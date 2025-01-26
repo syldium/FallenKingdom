@@ -6,8 +6,8 @@ import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
 import fr.devsylone.fallenkingdom.game.Game;
-import fr.devsylone.fallenkingdom.utils.FkSound;
 import fr.devsylone.fallenkingdom.utils.Messages;
+import fr.devsylone.fallenkingdom.version.FkSound;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -54,7 +54,7 @@ public class Pause extends FkCommand
 
 		sender.sendMessage("§b§m-----------");
 		broadcast(Messages.CMD_GAME_PAUSE.getMessage());
-		broadcast(Messages.CMD_GAME_PAUSE_ID.getMessage().replace("%id%", String.valueOf(id)), FkSound.NOTE_BASS_GUITAR);
+		broadcast(Messages.CMD_GAME_PAUSE_ID.getMessage().replace("%id%", String.valueOf(id)), FkSound.NOTE_GUITAR);
 		return CommandResult.SUCCESS;
 	}
 }

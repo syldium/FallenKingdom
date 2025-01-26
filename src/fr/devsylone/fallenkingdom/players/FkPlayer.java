@@ -4,6 +4,7 @@ import fr.devsylone.fallenkingdom.display.GlobalDisplayService;
 import fr.devsylone.fallenkingdom.scoreboard.PlaceHolder;
 import fr.devsylone.fallenkingdom.utils.DistanceTree;
 import fr.devsylone.fallenkingdom.utils.Messages;
+import fr.devsylone.fallenkingdom.version.FkSound;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.teams.Base;
 import fr.devsylone.fkpi.teams.Team;
@@ -17,7 +18,6 @@ import org.bukkit.entity.Player;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
 import fr.devsylone.fallenkingdom.scoreboard.FkScoreboard;
 import fr.devsylone.fallenkingdom.scoreboard.ScoreboardDisplayer;
-import fr.devsylone.fallenkingdom.utils.FkSound;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -130,7 +130,7 @@ public class FkPlayer implements Saveable
 		if(p != null)
 		{
 			if(sound != null)
-				p.playSound(p.getLocation(), sound.bukkitSound(), 1.0F, 1.0F);
+				p.playSound(p.getLocation(), sound.key(), 1.0F, 1.0F);
 
 			String full = message.length() < 4 ? "" : Messages.PREFIX_FK.getMessage() + prefix;
 

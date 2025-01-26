@@ -5,8 +5,8 @@ import fr.devsylone.fallenkingdom.commands.game.gamescommands.Pause;
 import fr.devsylone.fallenkingdom.display.tick.CycleTickFormatter;
 import fr.devsylone.fallenkingdom.scoreboard.PlaceHolder;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
-import fr.devsylone.fallenkingdom.utils.FkSound;
 import fr.devsylone.fallenkingdom.utils.Messages;
+import fr.devsylone.fallenkingdom.version.FkSound;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.api.event.DayEvent;
 import fr.devsylone.fkpi.lockedchests.LockedChest;
@@ -120,7 +120,7 @@ class GameRunnable extends BukkitRunnable
                         .replace("%y%", String.valueOf(chest.getLocation().getBlockY()))
                         .replace("%z%", String.valueOf(chest.getLocation().getBlockZ()))
                 );
-                player.playSound(player.getLocation(), FkSound.ENDERMAN_TELEPORT.bukkitSound(), 1.0F, 1.0F);
+                player.playSound(player.getLocation(), FkSound.ENDERMAN_TELEPORT.key(), 1.0F, 1.0F);
             }
         }
     }

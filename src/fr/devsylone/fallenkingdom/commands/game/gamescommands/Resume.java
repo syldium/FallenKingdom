@@ -4,6 +4,7 @@ import fr.devsylone.fallenkingdom.commands.abstraction.CommandRole;
 import fr.devsylone.fallenkingdom.commands.abstraction.CommandResult;
 import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
 import fr.devsylone.fallenkingdom.utils.Messages;
+import fr.devsylone.fallenkingdom.version.FkSound;
 import fr.devsylone.fkpi.rules.Rule;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -12,7 +13,6 @@ import org.bukkit.command.CommandSender;
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
 import fr.devsylone.fallenkingdom.game.Game;
-import fr.devsylone.fallenkingdom.utils.FkSound;
 
 import java.util.List;
 
@@ -45,7 +45,7 @@ public class Resume extends FkCommand
 		plugin.getDeepPauseManager().resetAIs();
 		plugin.getDeepPauseManager().unprotectItems();
 
-		broadcast(Messages.CMD_GAME_RESUME.getMessage(), FkSound.NOTE_PIANO);
+		broadcast(Messages.CMD_GAME_RESUME.getMessage(), FkSound.NOTE_HARP);
 		return CommandResult.SUCCESS;
 	}
 }
