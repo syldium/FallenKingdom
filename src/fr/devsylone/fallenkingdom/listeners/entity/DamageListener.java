@@ -54,8 +54,7 @@ public class DamageListener implements Listener
         if (!(entity instanceof EnderCrystal)) {
             return;
         }
-        if (!Fk.getInstance().getWorldManager().isAffected(entity.getWorld())
-                || !Fk.getInstance().getGame().isAssaultsEnabled()) {
+        if (!Fk.getInstance().getWorldManager().isAffected(entity.getWorld())) {
             return;
         }
         final Player damager = getOwner(event.getDamager());
@@ -70,6 +69,14 @@ public class DamageListener implements Listener
             if (!entity.getUniqueId().equals(core.getEntityId())) continue;
             event.setCancelled(true);
             if (damager == null) return;
+            if (!Fk.getInstance().getGame().isAssaultsEnabled() || !FkPI.getInstance().getChestsRoomsManager().isEnabled()) {
+                ChatUtils.sendMessage(damager, Messages.PLAYER_TNT_NOT_ACTIVE);
+                return;
+            }
+            if (Fk.getInstance().getGame().isPaused()) {
+                ChatUtils.sendMessage(damager, Messages.PLAYER_PAUSE);
+                return;
+            }
             if (playerTeam == null) {
                 ChatUtils.sendMessage(damager, Messages.PLAYER_CHEST_ATTACK_TEAM.getMessage().replace("%team%", team.getName()));
                 return;
