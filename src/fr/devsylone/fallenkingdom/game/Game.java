@@ -126,6 +126,13 @@ public class Game implements Saveable
         }
     }
 
+	void syncCaps() {
+		pvpEnabled = FkPI.getInstance().getRulesManager().getRule(Rule.PVP_CAP) <= day;
+		assaultsEnabled = FkPI.getInstance().getRulesManager().getRule(Rule.TNT_CAP) <= day;
+		netherEnabled = FkPI.getInstance().getRulesManager().getRule(Rule.NETHER_CAP) <= day;
+		endEnabled = FkPI.getInstance().getRulesManager().getRule(Rule.END_CAP) <= day;
+	}
+
 	@Override
 	public void load(ConfigurationSection config)
 	{
@@ -145,10 +152,7 @@ public class Game implements Saveable
 			state = GameState.STARTED;
 		}
 
-		pvpEnabled = FkPI.getInstance().getRulesManager().getRule(Rule.PVP_CAP) <= day;
-		assaultsEnabled = FkPI.getInstance().getRulesManager().getRule(Rule.TNT_CAP) <= day;
-		netherEnabled = FkPI.getInstance().getRulesManager().getRule(Rule.NETHER_CAP) <= day;
-		endEnabled = FkPI.getInstance().getRulesManager().getRule(Rule.END_CAP) <= day;
+		syncCaps();
 		updateDayDuration();
 
 		switch (state) {
