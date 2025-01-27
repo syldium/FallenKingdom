@@ -51,6 +51,18 @@ public interface Nexus {
     @Contract(pure = true)
     boolean isInside(@NotNull Player player);
 
+    /**
+     * Détermine si le nexus est dans une zone délimitable.
+     * <p>
+     * Usuellement, le nexus est défini sauf s'il n'est pas localisable dans le monde.
+     *
+     * @return {@code true} si le nexus est défini, {@code false} sinon
+     */
+    @Contract(pure = true)
+    default boolean isDefined() {
+        return true;
+    }
+
     @Contract(pure = true)
     @NotNull Base getBase();
 

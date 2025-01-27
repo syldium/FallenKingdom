@@ -252,6 +252,11 @@ public class ChestsRoom implements Nexus, Saveable
 		return enemyInside.contains(player.getUniqueId()) || alliesInside.contains(player.getUniqueId());
 	}
 
+	@Override
+	public boolean isDefined() {
+		return min != null && max != null;
+	}
+
 	public List<UUID> getEnemiesInside() {
 		return enemyInside;
 	}

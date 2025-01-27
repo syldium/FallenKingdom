@@ -99,10 +99,14 @@ public class MoveListener implements Listener
 			Nexus nexus = base.getNexus();
 			if (FkPI.getInstance().getChestsRoomsManager().isEnabled() && e.getPlayer().getGameMode() != GameMode.SPECTATOR) {
 				if (nexus.contains(e.getTo()) && !nexus.isInside(e.getPlayer())) {
-					change = new RegionChange(nexus, RegionChange.MoveType.ENTER);
+					if (nexus.isDefined()) {
+						change = new RegionChange(nexus, RegionChange.MoveType.ENTER);
+					}
  					nexus.addEnemyInside(e.getPlayer());
 				} else if (!nexus.contains(e.getTo()) && nexus.isInside(e.getPlayer())) {
-					change = new RegionChange(nexus, RegionChange.MoveType.LEAVE);
+					if (nexus.isDefined()) {
+						change = new RegionChange(nexus, RegionChange.MoveType.LEAVE);
+					}
 					nexus.removeEnemyInside(e.getPlayer());
                 }
 			}
