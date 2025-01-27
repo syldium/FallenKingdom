@@ -66,6 +66,18 @@ public interface Nexus {
     @Contract(pure = true)
     @NotNull Base getBase();
 
+    /**
+     * Réinitialise le nexus à son état initial.
+     * <p>
+     * Le nexus doit être utilisable ensuite.
+     */
+    void reset();
+
+    /**
+     * Supprime les éléments que le nexus a ajoutés au monde.
+     * <p>
+     * Le nexus peut ne plus être utilisable après cela.
+     */
     void remove();
 
     void save(@NotNull ConfigurationSection config);

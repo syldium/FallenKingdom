@@ -7,6 +7,7 @@ import fr.devsylone.fallenkingdom.commands.abstraction.FkCommand;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fallenkingdom.utils.Messages;
+import fr.devsylone.fkpi.teams.ChestsRoom;
 import fr.devsylone.fkpi.teams.CrystalCore;
 import fr.devsylone.fkpi.teams.Team;
 import org.bukkit.command.CommandSender;
@@ -29,7 +30,7 @@ public class ChestRoomRemove extends FkCommand {
             throw new FkLightException(Messages.CMD_ERROR_CHEST_ROOM_NO_CRYSTAL);
         }
 
-        team.getBase().resetChestRoom();
+        team.getBase().setChestsRoom(new ChestsRoom(team.getBase()));
         ChatUtils.sendMessage(sender, Messages.CMD_TEAM_CHEST_ROOM_REMOVED.getMessage().replace("%team%", team.toString()));
         return CommandResult.SUCCESS;
     }

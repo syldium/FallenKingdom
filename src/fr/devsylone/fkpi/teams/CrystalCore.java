@@ -76,6 +76,15 @@ public class CrystalCore implements Nexus {
     }
 
     @Override
+    public void reset() {
+        this.damage = 0;
+        this.bar.setTitle(Messages.BOSS_BAR_CRYSTAL.getMessage()
+                .replace("%team%", this.base.getTeam().toString())
+                .replace("%health%", String.valueOf(FkPI.getInstance().getChestsRoomsManager().getCoreHealth())));
+        this.bar.setProgress(1);
+    }
+
+    @Override
     public void remove() {
         this.bar.removeAll();
         final Entity entity = this.entity.get();

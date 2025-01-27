@@ -330,13 +330,21 @@ public class ChestsRoom implements Nexus, Saveable
 	}
 
 	@Override
-	public void remove() {
-		captureTeam = null;
+	public void reset() {
+		enemyInside.clear();
+		alliesInside.clear();
 		if (captureTask != null) {
 			captureTask.cancel();
 		}
 		captureTask = null;
+		captureTeam = null;
 		state = ChestRoomState.NORMAL;
+		// Conserve les positions des coffres en mémoire
+	}
+
+	@Override
+	public void remove() {
+		reset();
 	}
 
 	public boolean exists()

@@ -209,7 +209,7 @@ public class Base implements Saveable
 	
 	public void resetChestRoom()
 	{
-		setChestsRoom(new ChestsRoom(this));
+		this.nexus.reset();
 	}
 
 	public void markNexusAsCaptured()
