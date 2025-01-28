@@ -207,7 +207,8 @@ public class ChestsRoom implements Nexus, Saveable
 		if (team != null && !team.equals(base.getTeam()))
 		{
 			enemyInside.add(player.getUniqueId());
-			if (((float) enemyInside.size() / team.getPlayers().size()) * 100 >= FkPI.getInstance().getRulesManager().getRule(Rule.CAPTURE_RATE)) {
+			if (Fk.getInstance().getGame().isAssaultsEnabled() && !Fk.getInstance().getGame().isPaused()
+				&& ((float) enemyInside.size() / team.getPlayers().size()) * 100 >= FkPI.getInstance().getRulesManager().getRule(Rule.CAPTURE_RATE)) {
 				startCapture(team);
 			}
 		} else {
