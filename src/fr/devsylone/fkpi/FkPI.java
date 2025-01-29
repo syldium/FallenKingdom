@@ -4,6 +4,7 @@ import fr.devsylone.fkpi.managers.ChestsRoomsManager;
 import fr.devsylone.fkpi.managers.LockedChestsManager;
 import fr.devsylone.fkpi.managers.RulesManager;
 import fr.devsylone.fkpi.managers.TeamManager;
+import fr.devsylone.fkpi.teams.Team;
 import fr.devsylone.fkpi.util.Saveable;
 import lombok.Getter;
 import org.bukkit.configuration.ConfigurationSection;
@@ -30,6 +31,11 @@ public class FkPI implements Saveable
     public void reset()
     {
         teardown();
+        for(Team team : teamManager.getTeams())
+        {
+            if(team.getBase() != null)
+                team.getBase().getNexus().remove();
+        }
         teamManager = new TeamManager();
         rulesManager = new RulesManager();
         lockedChestsManager = new LockedChestsManager();
