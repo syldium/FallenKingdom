@@ -115,6 +115,9 @@ public class DamageListener implements Listener
     }
 
     private boolean isCristal(@NotNull Entity entity) {
+        if (!(entity instanceof EnderCrystal)) {
+            return false;
+        }
         for (Team team : FkPI.getInstance().getTeamManager().getTeams()) {
             final Base base = team.getBase();
             if (base == null) continue;

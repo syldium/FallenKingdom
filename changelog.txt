@@ -575,3 +575,13 @@ Il est conseillé de réinitialiser les fichiers de langue.
 [*] Met en pause les captures quand la partie est mise en pause
 [*] Centre les bases au milieu du bloc central
 [*] Corrige l'activation du plugin sur certains serveurs hybrides
+
+      >> 2.24.1
+[+] Régénère passivement les cristaux de base en présence d'alliés et en absence
+[*] Assure que les cristaux sont invulnérables avant la partie et pendant les pauses
+[*] Annule tous les dégâts issus d'entités de salle des coffres
+[*] Corrige une erreur liée à certains sons (1.21.4)
+[*] Assure du respect systématique de la règle tntCap
+[*] Conserve les nexus lors de l'arrêt d'une partie
+[*] Corrige la détection d'Adventure lorsque la bibliothèque est fournie par un autre plugin
+[*] Permet de ne pas afficher les messages de type notification lorsque leur traduction est vide

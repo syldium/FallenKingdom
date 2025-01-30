@@ -78,6 +78,7 @@ permissions:
    fallenkingdom.commands.chestsRoom.enabled: true
    fallenkingdom.commands.chestsRoom.health: true
    fallenkingdom.commands.chestsRoom.offset: true
+   fallenkingdom.commands.chestsRoom.regen: true
    fallenkingdom.commands.chestsRoom.remove: true
    fallenkingdom.commands.chestsRoom.spawn: true
  fallenkingdom.player:
