@@ -11,12 +11,18 @@ import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.api.event.DayEvent;
 import fr.devsylone.fkpi.lockedchests.LockedChest;
 import fr.devsylone.fkpi.rules.Rule;
+import fr.devsylone.fkpi.teams.Base;
+import fr.devsylone.fkpi.teams.CrystalCore;
+import fr.devsylone.fkpi.teams.Nexus;
+import fr.devsylone.fkpi.teams.Team;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Collections;
+
+import static fr.devsylone.fallenkingdom.display.tick.TimerTickFormatter.TICKS_PER_MINUTE;
 
 class GameRunnable extends BukkitRunnable
 {
@@ -57,6 +63,7 @@ class GameRunnable extends BukkitRunnable
             Fk.getInstance().getDisplayService().updateAll(PlaceHolder.DAY, PlaceHolder.HOUR, PlaceHolder.MINUTE);
             lastMinutes = minutes;
         }
+        healCrystals();
     }
 
     protected void updateWorldTime()
@@ -123,6 +130,36 @@ class GameRunnable extends BukkitRunnable
                         .replace("%z%", String.valueOf(chest.getLocation().getBlockZ()))
                 );
                 player.playSound(player.getLocation(), FkSound.ENDERMAN_TELEPORT.key(), 1.0F, 1.0F);
+            }
+        }
+    }
+
+    protected void healCrystals() {
+        int ticksInMinute = game.time % TICKS_PER_MINUTE;
+        for (Team team : FkPI.getInstance().getTeamManager().getTeams()) {
+            Base base = team.getBase();
+            if (base == null) continue;
+            Nexus nexus = base.getNexus();
+            if (!(nexus instanceof CrystalCore)) continue;
+            CrystalCore core = (CrystalCore) nexus;
+            boolean anyEnemy = false;
+            int allyCount = 0;
+            for (Player player : core.getPlayersInside()) {
+                final Team playerTeam = FkPI.getInstance().getTeamManager().getPlayerTeam(player);
+                if (playerTeam == null) continue;
+                if (playerTeam.equals(team)) {
+                    allyCount += 1;
+                } else {
+                    anyEnemy = true;
+                }
+            }
+            if (anyEnemy || allyCount == 0) continue;
+            allyCount -= 1;
+            int previousGain = FkPI.getInstance().getChestsRoomsManager().getRegenerationForTicks(ticksInMinute - 1, allyCount);
+            int currentGain = FkPI.getInstance().getChestsRoomsManager().getRegenerationForTicks(ticksInMinute, allyCount);
+            int gain = currentGain - previousGain;
+            if (gain > 0) {
+                core.heal(gain);
             }
         }
     }

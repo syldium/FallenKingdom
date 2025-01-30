@@ -1,7 +1,6 @@
 package fr.devsylone.fkpi.teams;
 
 import org.bukkit.Location;
-import org.bukkit.boss.BarColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
@@ -10,7 +9,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.UUID;
 
 import static fr.devsylone.fkpi.teams.ChestsRoom.CHESTS_ROOM;
-import static fr.devsylone.fkpi.teams.CrystalCore.BAR_COLOR;
 import static fr.devsylone.fkpi.teams.CrystalCore.CORE;
 import static fr.devsylone.fkpi.teams.CrystalCore.ENTITY;
 
@@ -48,6 +46,13 @@ public interface Nexus {
      */
     void removeEnemyInside(@NotNull Player player);
 
+    /**
+     * Teste si un joueur a été ajouté à la liste des joueurs à l'intérieur du nexus.
+     *
+     * @param player Le joueur à tester
+     * @return {@code true} si le joueur est à l'intérieur, {@code false} sinon
+     * @see #contains(Location) pour vérifier si la position effective du joueur est à l'intérieur
+     */
     @Contract(pure = true)
     boolean isInside(@NotNull Player player);
 
@@ -87,7 +92,8 @@ public interface Nexus {
         if (CORE.equals(nexusType)) {
             final String entity = config.getString(ENTITY);
             final UUID coreId = entity == null ? new UUID(0, 0) : UUID.fromString(entity);
-            return new CrystalCore(base, coreId, base.getTeam().getColor().getBukkitChatColor());
+            final int damage = config.getInt(CrystalCore.DAMAGE);
+            return new CrystalCore(base, coreId, base.getTeam().getColor().getBukkitChatColor(), damage);
         } else if (CHESTS_ROOM.equals(nexusType)) {
             final ChestsRoom chestsRoom = new ChestsRoom(base);
             chestsRoom.load(config);

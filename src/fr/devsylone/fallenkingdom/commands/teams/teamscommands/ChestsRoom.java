@@ -9,6 +9,7 @@ import fr.devsylone.fallenkingdom.commands.teams.teamscommands.chestsroom.ChestR
 import fr.devsylone.fallenkingdom.commands.teams.teamscommands.chestsroom.ChestRoomEnabled;
 import fr.devsylone.fallenkingdom.commands.teams.teamscommands.chestsroom.ChestRoomHealth;
 import fr.devsylone.fallenkingdom.commands.teams.teamscommands.chestsroom.ChestRoomOffset;
+import fr.devsylone.fallenkingdom.commands.teams.teamscommands.chestsroom.ChestRoomRegen;
 import fr.devsylone.fallenkingdom.commands.teams.teamscommands.chestsroom.ChestRoomRemove;
 import fr.devsylone.fallenkingdom.commands.teams.teamscommands.chestsroom.ChestRoomShow;
 import fr.devsylone.fallenkingdom.commands.teams.teamscommands.chestsroom.ChestRoomSpawn;
@@ -52,6 +53,7 @@ public class ChestsRoom extends FkParentCommand
 				.add(new ChestRoomEnabled())
 				.add(new ChestRoomHealth())
 				.add(new ChestRoomOffset())
+				.add(new ChestRoomRegen())
 				.add(new ChestRoomRemove())
 				.add(new ChestRoomShow())
 				.add(new ChestRoomSpawn())
@@ -117,6 +119,8 @@ public class ChestsRoom extends FkParentCommand
 				sender.sendMessage(
 						Messages.CMD_TEAM_CHEST_ROOM_STATUS_CRYSTAL_PARAMS.getMessage()
 								.replace("%health%", String.valueOf(manager.getCoreHealth()))
+								.replace("%regen%", String.valueOf(manager.getRegenerationPerMinute()))
+								.replace("%allyBonus%", String.valueOf(manager.getRegenerationPerMinutePerAlly()))
 				);
 			}
 		}

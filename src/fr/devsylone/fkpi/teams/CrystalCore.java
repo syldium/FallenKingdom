@@ -12,9 +12,13 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import java.lang.ref.WeakReference;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -34,13 +38,16 @@ public class CrystalCore implements Nexus {
     }
 
     public CrystalCore(@NotNull Base base, @NotNull UUID crystalId, @NotNull ChatColor color) {
+        this(base, crystalId, color, 0);
+    }
+
+    public CrystalCore(@NotNull Base base, @NotNull UUID crystalId, @NotNull ChatColor color, int damage) {
         this.base = base;
         this.crystalId = crystalId;
         this.entity = new WeakReference<>(null);
-        String name = Messages.BOSS_BAR_CRYSTAL.getMessage()
-                .replace("%team%", base.getTeam().toString())
-                .replace("%health%", String.valueOf(FkPI.getInstance().getChestsRoomsManager().getCoreHealth()));
-        this.bar = BossBar.INSTANCE.createBossBar(name, color);
+        this.bar = BossBar.INSTANCE.createBossBar(Messages.BOSS_BAR_CRYSTAL.getMessage(), color);
+        this.damage = damage;
+        updateDisplay();
     }
 
     @Override
@@ -70,6 +77,16 @@ public class CrystalCore implements Nexus {
         return this.bar.getPlayers().contains(player);
     }
 
+    /**
+     * Renvoie la liste des joueurs actuellement à l'intérieur du nexus.
+     *
+     * @return Une collection de joueurs
+     */
+    @Contract(pure = true)
+    public @UnmodifiableView @NotNull Collection<Player> getPlayersInside() {
+        return Collections.unmodifiableCollection(this.bar.getPlayers());
+    }
+
     @Override
     public @NotNull Base getBase() {
         return this.base;
@@ -96,12 +113,13 @@ public class CrystalCore implements Nexus {
 
     static final String CORE = "core";
     static final String ENTITY = "entity";
-    static final String BAR_COLOR = "bar-color";
+    static final String DAMAGE = "damage";
 
     @Override
     public void save(@NotNull ConfigurationSection config) {
         config.set("type", CORE);
         config.set(ENTITY, this.crystalId.toString());
+        config.set(DAMAGE, this.damage);
     }
 
     public @NotNull UUID getEntityId() {
@@ -110,12 +128,8 @@ public class CrystalCore implements Nexus {
 
     public void damage(@NotNull Team assailants, int damage) {
         this.damage += damage;
-        int coreHealth = FkPI.getInstance().getChestsRoomsManager().getCoreHealth();
-        this.bar.setTitle(Messages.BOSS_BAR_CRYSTAL.getMessage()
-                .replace("%team%", this.base.getTeam().toString())
-                .replace("%health%", String.valueOf(coreHealth - this.damage)));
-        this.bar.setProgress((double) Math.max(0, coreHealth - this.damage) / coreHealth);
-        if (this.damage >= coreHealth) {
+        updateDisplay();
+        if (this.damage >= FkPI.getInstance().getChestsRoomsManager().getCoreHealth()) {
             final Entity entity = this.entity.get();
             if (entity != null && Version.VersionType.V1_13.isHigherOrEqual()) {
                 entity.getWorld().createExplosion(entity.getLocation(), 3, false, false, entity);
@@ -123,6 +137,21 @@ public class CrystalCore implements Nexus {
             this.base.markNexusAsCaptured();
             CaptureRunnable.run(this.base.getTeam(), assailants);
         }
+    }
+
+    public void heal(int health) {
+        this.damage = Math.max(0, this.damage - health);
+        if (health > 0) {
+            updateDisplay();
+        }
+    }
+
+    private void updateDisplay() {
+        int coreHealth = FkPI.getInstance().getChestsRoomsManager().getCoreHealth();
+        this.bar.setTitle(Messages.BOSS_BAR_CRYSTAL.getMessage()
+                .replace("%team%", this.base.getTeam().toString())
+                .replace("%health%", String.valueOf(coreHealth - this.damage)));
+        this.bar.setProgress((double) Math.max(0, coreHealth - this.damage) / coreHealth);
     }
 
     @Override
