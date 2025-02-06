@@ -150,6 +150,17 @@
         </repository>
     </repositories>
 
+    <distributionManagement>
+        <snapshotRepository>
+            <id>syldium-repository-snapshots</id>
+            <url>https://syldium.dev/maven/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>syldium-repository</id>
+            <url>https://syldium.dev/maven/releases</url>
+        </repository>
+    </distributionManagement>
+
     <dependencies>
         <dependency> <!-- Units tests - seems like it needs to be before paper-api -->
             <groupId>org.mockbukkit.mockbukkit</groupId>
