@@ -59,7 +59,7 @@ import com.cryptomorin.xseries.XMaterial;
  * @author Crypto Morin
  * @version 1.1.0
  * @see Block
- * @see BlockData
+ * @see org.bukkit.block.data.BlockData
  * @see BlockState
  * @see MaterialData
  * @see XMaterial
@@ -146,7 +146,7 @@ public final class XBlock {
     /**
      * Get the first air block from a list of blocks
      * @see List<BlockState> for 1.13+ event.getBlocks()
-     * @see ArrayList<Block> for 1.12.2- event.getBlocks()
+     * @see List<Block> for 1.12.2- event.getBlocks()
      * @param blocks
      * @return air
      */

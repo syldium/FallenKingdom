@@ -11,10 +11,6 @@ import java.util.List;
 
 /**
  * Définit une équipe du Fallen Kingdom pour l'API.
- *
- * Toutes ces fonctions sont thread-safe. Après un changement sur la
- * liste des joueurs, appeler ScoreboardManager#refreshAllScoreboards()
- * sur le thread principal pour mettre à jour les scoreboards et pseudos.
  */
 public interface ITeam
 {

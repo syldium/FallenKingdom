@@ -577,7 +577,7 @@ Il est conseillé de réinitialiser les fichiers de langue.
 [*] Corrige l'activation du plugin sur certains serveurs hybrides
 
       >> 2.24.1
-[+] Régénère passivement les cristaux de base en présence d'alliés et en absence
+[+] Régénère passivement les cristaux de base en présence d'alliés et en absence d'ennemis
 [*] Assure que les cristaux sont invulnérables avant la partie et pendant les pauses
 [*] Annule tous les dégâts issus d'entités de salle des coffres
 [*] Corrige une erreur liée à certains sons (1.21.4)
