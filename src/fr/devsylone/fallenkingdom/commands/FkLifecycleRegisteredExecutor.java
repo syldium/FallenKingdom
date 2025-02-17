@@ -17,6 +17,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.Plugin;
 
+import java.util.Arrays;
+
 @SuppressWarnings("UnstableApiUsage")
 public class FkLifecycleRegisteredExecutor extends FkAsyncCommandExecutor {
 
@@ -45,6 +47,14 @@ public class FkLifecycleRegisteredExecutor extends FkAsyncCommandExecutor {
         });
     }
 
+    /**
+     * Exécuteur de commande déléguant à la commande Bukkit.
+     * <p>
+     * Avant Paper 1.21.4 #163, l'exécuteur initial tel que créé par Paper tronquait le premier argument de la commande.
+     * Voir {@code BukkitCommandNode.BukkitBrigCommand} dans Paper.
+     *
+     * @implNote Inutile depuis Paper 1.21.4 #163, conservé pour compatibilité.
+     */
     private static class RawExecutor implements Command<CommandSourceStack> {
 
         private final org.bukkit.command.Command inner;
@@ -57,7 +67,10 @@ public class FkLifecycleRegisteredExecutor extends FkAsyncCommandExecutor {
         public int run(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
             final CommandSender sender = context.getSource().getSender();
             final String content = context.getRange().get(context.getInput());
-            final String[] args = org.apache.commons.lang3.StringUtils.split(content, ' ');
+            String[] args = org.apache.commons.lang3.StringUtils.split(content, ' ');
+            if (context.getRange().getLength() == context.getInput().length()) { // Depuis Paper 1.21.4 #163
+                args = Arrays.copyOfRange(args, 1, args.length);
+            }
             return this.inner.execute(sender, this.inner.getName(), args) ? 1 : 0;
         }
     }
