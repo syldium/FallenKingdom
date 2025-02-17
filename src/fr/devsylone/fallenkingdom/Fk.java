@@ -63,9 +63,6 @@ import static fr.devsylone.fallenkingdom.version.Version.classExists;
 @Getter
 public class Fk extends JavaPlugin
 {
-	@Getter
-	private static boolean debugMode;
-
 	protected Game game;
 	protected CommandManager commandManager;
 	protected PlayerManager playerManager;
@@ -107,29 +104,10 @@ public class Fk extends JavaPlugin
 
 	public void onEnable0()
 	{
-		try
-		{
-			/*
-			 * Mode debug
-			 */
-			debugMode = new File(getDataFolder(), "debug").exists();
-			if(debugMode)
-			{
-				debug("##########################");
-				debug("STARTED IN DEBUG MODE");
-				debug("##########################");
-			}
-		}catch(Exception e)
-		{
-			debugMode = false;
-		}
 
 		/*
 		 * Random
 		 */
-
-		if(!getDataFolder().exists())
-			getDataFolder().mkdir();
 
 		ListenersManager.registerListeners(this);
 
@@ -289,18 +267,6 @@ public class Fk extends JavaPlugin
 	public static void broadcast(String message)
 	{
 		broadcast(message, "", null);
-	}
-
-	public static void debug(Object message)
-	{
-		if(debugMode)
-		{
-			if(!Fk.getInstance().isEnabled())
-				Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), () -> Bukkit.broadcastMessage(Messages.PREFIX_DEBUG.getMessage() + (message == null ? "null" : message.toString())));
-			else
-				Bukkit.broadcastMessage(Messages.PREFIX_DEBUG.getMessage() + (message == null ? "null" : message.toString()));
-		}
-
 	}
 
 	public void addError(String s)

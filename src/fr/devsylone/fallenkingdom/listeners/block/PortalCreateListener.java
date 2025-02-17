@@ -29,15 +29,13 @@ public class PortalCreateListener implements Listener
 
 		if(!Fk.getInstance().getGame().isNetherEnabled() && e.getReason().equals(CreateReason.FIRE))
 		{
-			Block air = null;
+			Block air;
 			try {
 				Method getBlocks = PortalCreateEvent.class.getDeclaredMethod("getBlocks");
 				air = XBlock.getAirBlock((List<?>) getBlocks.invoke(e));
 			} catch (Exception ex) {
-				ex.printStackTrace(); // Dommage...
+				return; // Dommage...
 			}
-			if (Fk.isDebugMode())
-				Fk.getInstance().getLogger().info(air.getType().toString() + " " + Messages.CONSOLE_AT + " " + air.getLocation().toString());
 
 			Fk.getInstance().getPortalsManager().addPortal(air.getLocation());
 			e.setCancelled(true);
