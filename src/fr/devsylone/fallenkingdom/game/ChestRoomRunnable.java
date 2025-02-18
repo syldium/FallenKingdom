@@ -39,6 +39,7 @@ public class ChestRoomRunnable extends BukkitRunnable {
         }
         if (++elapsedRuns == captureTime) {
             CaptureRunnable.run(defenders, assailants);
+            chestsRoom.markAsCaptured();
             this.cancel();
         } else {
             List<Player> outsidePlayers = new LinkedList<>(); // Pour éviter une ConcurrentModificationException
