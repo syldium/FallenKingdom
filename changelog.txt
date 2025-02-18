@@ -585,3 +585,7 @@ Il est conseillé de réinitialiser les fichiers de langue.
 [*] Conserve les nexus lors de l'arrêt d'une partie
 [*] Corrige la détection d'Adventure lorsque la bibliothèque est fournie par un autre plugin
 [*] Permet de ne pas afficher les messages de type notification lorsque leur traduction est vide
+
+      >> 2.24.2
+[*] Corrige les commandes sous Paper 1.21.4 build #163
+[*] Ne permet pas de capturer une salle des coffres déjà capturée
