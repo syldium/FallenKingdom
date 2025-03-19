@@ -55,12 +55,10 @@ import fr.devsylone.fallenkingdom.version.Version;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.rules.Rule;
 import fr.devsylone.fkpi.teams.Team;
-import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import static fr.devsylone.fallenkingdom.version.Version.classExists;
 
-@Getter
 public class Fk extends JavaPlugin
 {
 	protected Game game;
@@ -77,7 +75,6 @@ public class Fk extends JavaPlugin
 	protected PortalsManager portalsManager;
 	protected LanguageManager languageManager;
 
-	@Getter
 	protected static Fk instance;
 
 	protected FkPI fkPI;
@@ -390,5 +387,76 @@ public class Fk extends JavaPlugin
 		File pluginsDir = getDataFolder().getParentFile().getAbsoluteFile();
 		File runDir = pluginsDir.getParentFile().getAbsoluteFile();
 		return runDir.toPath();
+	}
+
+	public static @NotNull Fk getInstance() {
+		return instance;
+	}
+
+	public @NotNull Game getGame() {
+		return this.game;
+	}
+
+	public @NotNull FkPI getFkPI() {
+		return this.fkPI;
+	}
+
+	public @NotNull CommandManager getCommandManager() {
+		return this.commandManager;
+	}
+
+	public @NotNull PlayerManager getPlayerManager() {
+		return this.playerManager;
+	}
+
+	public @NotNull WorldManager getWorldManager() {
+		return this.worldManager;
+	}
+
+	public @NotNull PauseRestorer getPauseRestorer() {
+		return this.pauseRestorer;
+	}
+
+	public @NotNull StarterInventoryManager getStarterInventoryManager() {
+		return this.starterInventoryManager;
+	}
+
+	/**
+	 * @deprecated See {@link #getDisplayService()}
+	 */
+	public @NotNull ScoreboardManager getScoreboardManager() {
+		return this.scoreboardManager;
+	}
+
+	public @NotNull GlobalDisplayService getDisplayService() {
+		return this.displayService;
+	}
+
+	public @NotNull DeepPauseManager getDeepPauseManager() {
+		return this.deepPauseManager;
+	}
+
+	public @NotNull TipsManager getTipsManager() {
+		return this.tipsManager;
+	}
+
+	public @NotNull SaveablesManager getSaveableManager() {
+		return this.saveableManager;
+	}
+
+	public @NotNull PortalsManager getPortalsManager() {
+		return this.portalsManager;
+	}
+
+	public @NotNull LanguageManager getLanguageManager() {
+		return this.languageManager;
+	}
+
+	public @NotNull String getPluginError() {
+		return this.pluginError;
+	}
+
+	public List<BaseComponent[]> getOnConnectWarnings() {
+		return this.onConnectWarnings;
 	}
 }

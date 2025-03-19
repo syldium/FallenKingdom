@@ -6,8 +6,6 @@ import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fallenkingdom.version.Version;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.lockedchests.LockedChest;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.TranslatableComponent;
 import org.bukkit.Material;
@@ -189,11 +187,23 @@ public class ArgumentParser {
         throw new ArgumentParseException(Messages.CMD_ERROR_NOT_LOCKED_CHEST.getMessage());
     }
 
-    @AllArgsConstructor @Getter
     public static class MaterialWithData {
 
         private final Material material;
         private final byte data;
+
+        public MaterialWithData(Material material, byte data) {
+            this.material = material;
+            this.data = data;
+        }
+
+        public Material getMaterial() {
+            return this.material;
+        }
+
+        public byte getData() {
+            return this.data;
+        }
 
         @Override
         public String toString() {

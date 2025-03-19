@@ -19,7 +19,6 @@ import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.api.event.GameEvent;
 import fr.devsylone.fkpi.rules.Rule;
 import fr.devsylone.fkpi.util.Saveable;
-import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,17 +33,17 @@ public class Game implements Saveable
 {
 	private static final List<Rule<?>> OBSERVED_RULES = Arrays.asList(Rule.PVP_CAP, Rule.TNT_CAP, Rule.NETHER_CAP, Rule.END_CAP);
 
-	@Getter protected GameState state = GameState.BEFORE_STARTING;
-	@Getter protected int day = 0;
-	@Getter protected int time = FkPI.getInstance().getRulesManager().getRule(Rule.DAY_DURATION) - 10;
-	@Getter protected TickFormatter timeFormat = null; // Toujours non null une fois les données chargées
+	protected GameState state = GameState.BEFORE_STARTING;
+	protected int day = 0;
+	protected int time = FkPI.getInstance().getRulesManager().getRule(Rule.DAY_DURATION) - 10;
+	protected TickFormatter timeFormat = null; // Toujours non null une fois les données chargées
 
 	protected GameRunnable task = null;
 
-	@Getter protected boolean assaultsEnabled = false;
-	@Getter protected boolean pvpEnabled = false;
-	@Getter protected boolean netherEnabled = false;
-	@Getter protected boolean endEnabled = false;
+	protected boolean assaultsEnabled = false;
+	protected boolean pvpEnabled = false;
+	protected boolean netherEnabled = false;
+	protected boolean endEnabled = false;
 
 	public enum GameState
 	{
@@ -62,6 +61,10 @@ public class Game implements Saveable
 		public String asString() {
 			return this.name;
 		}
+	}
+
+	public @NotNull GameState getState() {
+		return state;
 	}
 
 	public boolean setState(GameState state)
@@ -85,6 +88,34 @@ public class Game implements Saveable
 		this.state = state;
 
 		return true;
+	}
+
+	public int getDay() {
+		return this.day;
+	}
+
+	public int getTime() {
+		return this.time;
+	}
+
+	public TickFormatter getTimeFormat() {
+		return this.timeFormat;
+	}
+
+	public boolean isAssaultsEnabled() {
+		return this.assaultsEnabled;
+	}
+
+	public boolean isPvpEnabled() {
+		return this.pvpEnabled;
+	}
+
+	public boolean isEndEnabled() {
+		return this.endEnabled;
+	}
+
+	public boolean isNetherEnabled() {
+		return this.netherEnabled;
 	}
 
 	public void startTimer()

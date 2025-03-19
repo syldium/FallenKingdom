@@ -6,15 +6,15 @@ import fr.devsylone.fkpi.managers.RulesManager;
 import fr.devsylone.fkpi.managers.TeamManager;
 import fr.devsylone.fkpi.teams.Team;
 import fr.devsylone.fkpi.util.Saveable;
-import lombok.Getter;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.NotNull;
 
 public class FkPI implements Saveable
 {
-	@Getter private TeamManager teamManager = new TeamManager();
-    @Getter private RulesManager rulesManager = new RulesManager();
-    @Getter private LockedChestsManager lockedChestsManager = new LockedChestsManager();
-    @Getter private ChestsRoomsManager chestsRoomsManager = new ChestsRoomsManager();
+    private TeamManager teamManager = new TeamManager();
+    private RulesManager rulesManager = new RulesManager();
+    private LockedChestsManager lockedChestsManager = new LockedChestsManager();
+    private ChestsRoomsManager chestsRoomsManager = new ChestsRoomsManager();
 
     private static FkPI instance;
 
@@ -26,6 +26,22 @@ public class FkPI implements Saveable
     public FkPI()
     {
         instance = this;
+    }
+
+    public @NotNull TeamManager getTeamManager() {
+        return this.teamManager;
+    }
+
+    public @NotNull RulesManager getRulesManager() {
+        return this.rulesManager;
+    }
+
+    public @NotNull LockedChestsManager getLockedChestsManager() {
+        return this.lockedChestsManager;
+    }
+
+    public @NotNull ChestsRoomsManager getChestsRoomsManager() {
+        return this.chestsRoomsManager;
     }
 
     public void reset()
