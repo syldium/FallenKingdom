@@ -354,23 +354,27 @@ public class Game implements Saveable
 	<T> @Nullable DayEvent updateCap(Rule<T> cap) {
 		DayEvent event = null;
 		if (Rule.PVP_CAP.equals(cap)) {
-			if (FkPI.getInstance().getRulesManager().getRule(Rule.PVP_CAP) == day) {
-				pvpEnabled = true;
+			boolean hasPvp = FkPI.getInstance().getRulesManager().getRule(Rule.PVP_CAP) <= day;
+			if (hasPvp != pvpEnabled) {
+				pvpEnabled = hasPvp;
 				event = new DayEvent(DayEvent.Type.PVP_ENABLED, day, Messages.BROADCAST_DAY_PVP.getMessage());
 			}
 		} else if (Rule.TNT_CAP.equals(cap)) {
-			if (FkPI.getInstance().getRulesManager().getRule(Rule.TNT_CAP) == day) {
-				assaultsEnabled = true;
+			boolean hasAssaults = FkPI.getInstance().getRulesManager().getRule(Rule.TNT_CAP) <= day;
+			if (hasAssaults != assaultsEnabled) {
+				assaultsEnabled = hasAssaults;
 				event = new DayEvent(DayEvent.Type.TNT_ENABLED, day, Messages.BROADCAST_DAY_ASSAULT.getMessage());
 			}
 		} else if (Rule.NETHER_CAP.equals(cap)) {
-			if (FkPI.getInstance().getRulesManager().getRule(Rule.NETHER_CAP) == day) {
-				netherEnabled = true;
+			boolean hasNether = FkPI.getInstance().getRulesManager().getRule(Rule.NETHER_CAP) <= day;
+			if (hasNether != netherEnabled) {
+				netherEnabled = hasNether;
 				event = new DayEvent(DayEvent.Type.NETHER_ENABLED, day, Messages.BROADCAST_DAY_NETHER.getMessage());
 				Fk.getInstance().getPortalsManager().enablePortals();
 			}
 		} else if (Rule.END_CAP.equals(cap)) {
-			if (FkPI.getInstance().getRulesManager().getRule(Rule.END_CAP) == day) {
+			boolean hasEnd = FkPI.getInstance().getRulesManager().getRule(Rule.END_CAP) <= day;
+			if (hasEnd != endEnabled) {
 				endEnabled = true;
 				event = new DayEvent(DayEvent.Type.END_ENABLED, day, Messages.BROADCAST_DAY_END.getMessage());
 			}
