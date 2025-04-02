@@ -589,3 +589,8 @@ Il est conseillé de réinitialiser les fichiers de langue.
       >> 2.24.2
 [*] Corrige les commandes sous Paper 1.21.4 build #163
 [*] Ne permet pas de capturer une salle des coffres déjà capturée
+
+      >> 2.24.3
+[+] Supporte les serveurs en 1.21.5
+[*] Corrige la détection des potions dans l'alambic (1.21+)
+[*] Répercute immédiatement le changement d'un cap sur la partie en cours
