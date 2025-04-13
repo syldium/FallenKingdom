@@ -14,6 +14,7 @@ import fr.devsylone.fallenkingdom.utils.XItemStack;
 import fr.devsylone.fallenkingdom.version.Environment;
 import fr.devsylone.fallenkingdom.version.potion.PotionIterator;
 import fr.devsylone.fkpi.rules.Rule;
+import io.papermc.paper.datacomponent.DataComponentTypes;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
@@ -28,6 +29,9 @@ import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fkpi.util.XPotionData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import static io.papermc.paper.datacomponent.item.ItemLore.lore;
+import static net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer.legacyAmpersand;
 
 public class DisabledPotions extends FkPlayerCommand {
 
@@ -69,6 +73,7 @@ public class DisabledPotions extends FkPlayerCommand {
 
             Iterator<XPotionData> iterator = PotionIterator.create(PotionType.values());
 
+            int slot = 8;
             while (iterator.hasNext()) {
                 XPotionData potionData = iterator.next();
                 if (potionData.getType().getEffectType() == null) {
@@ -76,7 +81,7 @@ public class DisabledPotions extends FkPlayerCommand {
                 }
 
                 ItemStack potionItem = XMaterial.POTION.parseItem();
-                this.inventory.addItem(updateItem(potionItem, potionData));
+                this.inventory.setItem(++slot, updateItem(potionItem, potionData));
             }
         }
 
@@ -94,7 +99,7 @@ public class DisabledPotions extends FkPlayerCommand {
                 final ItemStack[] contents = this.inventory.getContents();
                 for (int i = 0; i < contents.length; i++) {
                     final ItemStack item = contents[i];
-                    if (item != null && item.getAmount() == 1 && (potionData = XPotionData.fromItemStack(item)) != null && potionData.isUpgraded()) {
+                    if (item != null && (potionData = XPotionData.fromItemStack(item)) != null && potionData.isUpgraded() && !this.rule.isDisabled(potionData)) {
                         contents[i] = click(item, potionData);
                     }
                 }
@@ -108,27 +113,25 @@ public class DisabledPotions extends FkPlayerCommand {
                 potionName += data.isExtended() ? " + redstone" : data.isUpgraded() ? " + glowstone" : "";
             }
 
-            /*
-             * amount = 1 -> potion actuellement autorisée
-             * amount = 64 -> potion actuellement désactivée
-             */
-            if (potionItem.getAmount() != 1) {
-                if (this.rule.enablePotion(data)) {
-                    broadcast(Messages.INVENTORY_POTION_ENABLE_CLICK.getMessage().replace("%potion%", potionName));
-                    potionItem = XMaterial.POTION.parseItem();
-                    updateItem(potionItem, data);
-                }
+            if (this.rule.togglePotion(data)) {
+                broadcast(Messages.INVENTORY_POTION_ENABLE_CLICK.getMessage().replace("%potion%", potionName));
             } else {
-                if (this.rule.disablePotion(data)) {
-                    broadcast(Messages.INVENTORY_POTION_DISABLE_CLICK.getMessage().replace("%potion%", potionName));
-                    potionItem = XMaterial.POTION.parseItem();
-                    updateItem(potionItem, data);
-                }
+                broadcast(Messages.INVENTORY_POTION_DISABLE_CLICK.getMessage().replace("%potion%", potionName));
             }
+            potionItem = XMaterial.POTION.parseItem();
+            updateItem(potionItem, data);
             return potionItem;
         }
 
         private @NotNull ItemStack updateItem(@NotNull ItemStack potionItem, @NotNull XPotionData potionData) {
+            if (Environment.HAS_DATA_COMPONENTS) {
+                return updateItemViaDataComponent(potionItem, potionData);
+            } else {
+                return updateItemViaItemMeta(potionItem, potionData);
+            }
+        }
+
+        private @NotNull ItemStack updateItemViaItemMeta(@NotNull ItemStack potionItem, @NotNull XPotionData potionData) {
             potionData.applyTo(potionItem);
             final PotionMeta potionMeta = (PotionMeta) potionItem.getItemMeta();
             if (this.rule.isDisabled(potionData)) {
@@ -141,6 +144,25 @@ public class DisabledPotions extends FkPlayerCommand {
                 potionItem.setAmount(1);
             }
             potionItem.setItemMeta(potionMeta);
+            return potionItem;
+        }
+
+        @SuppressWarnings("UnstableApiUsage")
+        private @NotNull ItemStack updateItemViaDataComponent(@NotNull ItemStack potionItem, @NotNull XPotionData potionData) {
+            potionData.applyTo(potionItem);
+            Messages lore;
+            if (this.rule.isDisabled(potionData)) {
+                lore = Messages.INVENTORY_POTION_DISABLE;
+                potionItem.setData(DataComponentTypes.DAMAGE, 9);
+                potionItem.setData(DataComponentTypes.MAX_DAMAGE, 10);
+                potionItem.setData(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true);
+            } else {
+                lore = Messages.INVENTORY_POTION_ENABLE;
+                potionItem.resetData(DataComponentTypes.DAMAGE);
+                potionItem.resetData(DataComponentTypes.MAX_DAMAGE);
+                potionItem.setData(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, false);
+            }
+            potionItem.setData(DataComponentTypes.LORE, lore().addLine(legacyAmpersand().deserialize(lore.getMessage())));
             return potionItem;
         }
 

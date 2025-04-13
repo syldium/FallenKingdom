@@ -14,6 +14,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
@@ -35,6 +36,7 @@ public class Environment {
     private static final boolean HAS_DIRECT_INVENTORY_HOLDER;
     private static final boolean HAS_ENCHANTMENT_GLINT_OVERRIDE;
     private static final boolean HAS_ENTITY_BY_UUID;
+    public static final boolean HAS_DATA_COMPONENTS;
 
     static {
         boolean hasAsyncTeleport = false;
@@ -106,6 +108,14 @@ public class Environment {
             hasEntityByUuid = true;
         } catch (NoSuchMethodException ignored) { }
         HAS_ENTITY_BY_UUID = hasEntityByUuid;
+
+        boolean hasDataComponents = false;
+        try {
+            Class<?> valuedClass = Class.forName("io.papermc.paper.datacomponent.DataComponentType$Valued");
+            ItemStack.class.getMethod("setData", valuedClass, Object.class);
+            hasDataComponents = true;
+        } catch (ClassNotFoundException | NoSuchMethodException ignored) { }
+        HAS_DATA_COMPONENTS = hasDataComponents;
     }
 
     public static CompletableFuture<Boolean> teleportAsync(Entity entity, Location location) {

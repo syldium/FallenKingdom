@@ -12,6 +12,7 @@ import fr.devsylone.fkpi.util.XPotionData;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.potion.PotionType;
+import org.jetbrains.annotations.NotNull;
 
 public class DisabledPotions implements RuleValue
 {
@@ -45,6 +46,20 @@ public class DisabledPotions implements RuleValue
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * Change l'interdiction d'un effet de potion.
+	 *
+	 * @param data L'effet de potion à changer
+	 * @return {@code false} si l'effet a été interdit, {@code true} s'il a été autorisé
+	 */
+	public boolean togglePotion(@NotNull XPotionData data) {
+		if (disablePotion(data)) {
+			return false;
+		} else {
+			return enablePotion(data);
+		}
 	}
 
 	@Override
