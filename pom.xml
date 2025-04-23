@@ -148,6 +148,10 @@
             <name>Minecraft Libraries</name>
             <url>https://libraries.minecraft.net</url>
         </repository>
+        <repository>
+            <id>github</id>
+            <url>https://maven.pkg.github.com/lynxplay/Paper</url>
+        </repository>
     </repositories>
 
     <distributionManagement>
@@ -162,12 +166,12 @@
     </distributionManagement>
 
     <dependencies>
-        <dependency> <!-- Units tests - seems like it needs to be before paper-api -->
-            <groupId>org.mockbukkit.mockbukkit</groupId>
-            <artifactId>mockbukkit-v1.21</artifactId>
-            <version>4.45.1</version>
-            <scope>test</scope>
-        </dependency>
+<!--        <dependency> &lt;!&ndash; Units tests - seems like it needs to be before paper-api &ndash;&gt;-->
+<!--            <groupId>org.mockbukkit.mockbukkit</groupId>-->
+<!--            <artifactId>mockbukkit-v1.21</artifactId>-->
+<!--            <version>4.45.1</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
@@ -183,9 +187,9 @@
             <systemPath>${project.basedir}/run/versions/1.20.6/paper-1.20.6.jar</systemPath>
         </dependency>-->
         <dependency>
-            <groupId>io.papermc.paper</groupId>
+            <groupId>dev.lynxplay.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>1.21.4-R0.1-SNAPSHOT</version>
+            <version>25w17a-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -222,7 +226,7 @@
         <dependency>
             <groupId>fr.mrmicky</groupId>
             <artifactId>fastboard</artifactId>
-            <version>2.1.4</version>
+            <version>2.1.5-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

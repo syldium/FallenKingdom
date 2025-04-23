@@ -15,6 +15,7 @@ import fr.devsylone.fallenkingdom.version.Environment;
 import fr.devsylone.fallenkingdom.version.potion.PotionIterator;
 import fr.devsylone.fkpi.rules.Rule;
 import io.papermc.paper.datacomponent.DataComponentTypes;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
@@ -22,8 +23,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.potion.PotionType;
-
-import com.cryptomorin.xseries.XMaterial;
 
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fkpi.util.XPotionData;
@@ -60,12 +59,12 @@ public class DisabledPotions extends FkPlayerCommand {
             this.rule = plugin.getFkPI().getRulesManager().getRule(Rule.DISABLED_POTIONS);
             this.inventory = plugin.getServer().createInventory(this, 6 * 9, Messages.INVENTORY_POTION_TITLE.getMessage());
 
-            this.disableAmplifiedPotionsItem = XMaterial.PLAYER_HEAD.parseItem();
+            this.disableAmplifiedPotionsItem = ItemStack.of(Material.PLAYER_HEAD);
             SkullMeta meta = XItemStack.applyBase64Texture((SkullMeta) disableAmplifiedPotionsItem.getItemMeta(), "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTZmYWI5OTFkMDgzOTkzY2I4M2U0YmNmNDRhMGI2Y2VmYWM2NDdkNDE4OWVlOWNiODIzZTljYzE1NzFlMzgifX19");
             meta.setDisplayName(Messages.INVENTORY_POTION_LEVEL_II.getMessage());
             disableAmplifiedPotionsItem.setItemMeta(meta);
 
-            final ItemStack glassPane = XMaterial.CYAN_STAINED_GLASS_PANE.parseItem();
+            final ItemStack glassPane = ItemStack.of(Material.CYAN_STAINED_GLASS_PANE);
             for (int i = 0; i < 9; i++) {
                 this.inventory.setItem(i, glassPane);
             }
@@ -80,7 +79,7 @@ public class DisabledPotions extends FkPlayerCommand {
                     continue;
                 }
 
-                ItemStack potionItem = XMaterial.POTION.parseItem();
+                ItemStack potionItem = ItemStack.of(Material.POTION);
                 this.inventory.setItem(++slot, updateItem(potionItem, potionData));
             }
         }
@@ -118,7 +117,7 @@ public class DisabledPotions extends FkPlayerCommand {
             } else {
                 broadcast(Messages.INVENTORY_POTION_DISABLE_CLICK.getMessage().replace("%potion%", potionName));
             }
-            potionItem = XMaterial.POTION.parseItem();
+            potionItem = ItemStack.of(Material.POTION);
             updateItem(potionItem, data);
             return potionItem;
         }
