@@ -17,6 +17,7 @@ public class FkRuleCommand extends FkParentCommand
 		super("rules", ImmutableList.<FkCommand>builder()
 				.add(new AllowBlock())
 				.add(new AutoPause())
+				.add(new BlastProofBase())
 				.add(new BucketAssault())
 				.add(new CaptureRate())
 				.add(new ChargedCreepers())

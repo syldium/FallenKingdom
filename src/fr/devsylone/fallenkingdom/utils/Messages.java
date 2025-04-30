@@ -158,6 +158,7 @@ public enum Messages
     CMD_MAP_RULES_ALLOW_BLOCK("cmd.map.rules.allowBlock"),
     CMD_MAP_RULES_ALLOW_BLOCK_SIGN("cmd.map.rules.allow-block.allowed.all-types.sign"),
     CMD_MAP_RULES_AUTO_PAUSE("cmd.map.rules.autoPause"),
+    CMD_MAP_RULES_BLAST_PROOF_BASE("cmd.map.rules.blastProofBase"),
     CMD_MAP_RULES_BUCKET_ASSAULT("cmd.map.rules.bucketAssault"),
     CMD_MAP_RULES_CAPTURE_RATE("cmd.map.rules.captureRate"),
     CMD_MAP_RULES_CHARGED_CREEPERS("cmd.map.rules.chargedCreepers"),
@@ -275,6 +276,7 @@ public enum Messages
     CMD_RULES_TNT_JUMP("cmd.rules.tnt-jump"),
     CMD_RULES_VERTICAL_LIMIT_REMOVED("cmd.rules.vertical-limit.removed"),
     CMD_RULES_VERTICAL_LIMIT_FIXED("cmd.rules.vertical-limit.fixed"),
+    CMD_RULES_BLAST_PROOF_BASE("cmd.rules.blast-proof-base"),
     CMD_RULES_BUCKET_ASSAULT("cmd.rules.bucket-assault"),
 
     CMD_SCOREBOARD_RESET("cmd.scoreboard.reset"),

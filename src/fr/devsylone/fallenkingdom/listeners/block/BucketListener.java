@@ -3,10 +3,13 @@ package fr.devsylone.fallenkingdom.listeners.block;
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fallenkingdom.utils.Messages;
+import fr.devsylone.fallenkingdom.version.Version;
 import fr.devsylone.fkpi.rules.Rule;
 import fr.devsylone.fkpi.teams.Team;
 import org.bukkit.GameMode;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Waterlogged;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -35,7 +38,7 @@ public class BucketListener implements Listener
 
     private void onBucket(@NotNull PlayerBucketEvent event, Messages message) {
         final Player player = event.getPlayer();
-        final Block block = event.getBlockClicked();
+        final Block block = event.getBlock();
         if (player.getGameMode() == GameMode.CREATIVE || !plugin.getWorldManager().isWorldWithBase(player.getWorld())) {
             return;
         }
@@ -45,16 +48,23 @@ public class BucketListener implements Listener
             return;
         }
 
-        if (plugin.getFkPI().getRulesManager().getRule(Rule.BUCKET_ASSAULT)) {
-            return;
+        if (!plugin.getFkPI().getRulesManager().getRule(Rule.BUCKET_ASSAULT)) {
+            for (Team team : Fk.getInstance().getFkPI().getTeamManager().getTeams()) {
+                if (!playerTeam.equals(team)) {
+                    if (team.getBase() != null && team.getBase().contains(block, 3)) {
+                        ChatUtils.sendMessage(player, message);
+                        event.setCancelled(true);
+                        return;
+                    }
+                }
+            }
         }
-
-        for (Team team : Fk.getInstance().getFkPI().getTeamManager().getTeams()) {
-            if (!playerTeam.equals(team)) {
-                if (team.getBase() != null && team.getBase().contains(block, 3)) {
+        if (!plugin.getFkPI().getRulesManager().getRule(Rule.BLAST_PROOF_BASE) && Version.VersionType.V1_13.isHigherOrEqual()) {
+            final BlockData blockData = block.getBlockData();
+            if (plugin.getFkPI().getTeamManager().getBase(block).isPresent()) {
+                if (blockData instanceof Waterlogged) {
                     ChatUtils.sendMessage(player, message);
                     event.setCancelled(true);
-                    break;
                 }
             }
         }
