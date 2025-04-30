@@ -33,6 +33,7 @@ public class FkRuleCommand extends FkParentCommand
 				.add(new FriendlyFire())
 				.add(new GlobalChatPrefix())
 				.add(new HealthBelowName())
+				.add(new PrivateChests())
 				.add(new RulesList())
 				.add(new NetherCap())
 				.add(new PlaceBlockInCave())

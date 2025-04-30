@@ -176,6 +176,7 @@ public enum Messages
     CMD_MAP_RULES_LIST("cmd.map.rules.list"),
     CMD_MAP_RULES_NETHER_CAP("cmd.map.rules.netherCap"),
     CMD_MAP_RULES_PLACE_BLOCK_IN_CAVE("cmd.map.rules.placeBlockInCave"),
+    CMD_MAP_RULES_PRIVATE_CHESTS("cmd.map.rules.privateChests"),
     CMD_MAP_RULES_PVP_CAP("cmd.map.rules.pvpCap"),
     CMD_MAP_RULES_RESPAWN_AT_HOME("cmd.map.rules.respawnAtHome"),
     CMD_MAP_RULES_TNT_CAP("cmd.map.rules.tntCap"),
@@ -278,6 +279,7 @@ public enum Messages
     CMD_RULES_VERTICAL_LIMIT_FIXED("cmd.rules.vertical-limit.fixed"),
     CMD_RULES_BLAST_PROOF_BASE("cmd.rules.blast-proof-base"),
     CMD_RULES_BUCKET_ASSAULT("cmd.rules.bucket-assault"),
+    CMD_RULES_PRIVATE_CHESTS("cmd.rules.private-chests"),
 
     CMD_SCOREBOARD_RESET("cmd.scoreboard.reset"),
     CMD_TEAM_ADD_PLAYER("cmd.team.addPlayer"),
@@ -331,6 +333,7 @@ public enum Messages
     PLAYER_BLOCK_BREAK_ENEMY("player.block.break-enemy"),
     PLAYER_BLOCK_BREAK_LOCKED("player.block.break-locked"),
     PLAYER_BLOCK_NOT_ALLOWED("player.block.not-allowed"),
+    PLAYER_BLOCK_PRIVATE("player.block.private"),
     PLAYER_CHEST_ROOM_CAPTURE_INTERRUPTED("player.base.chest-room.capture.interrupted"),
     PLAYER_CHEST_ROOM_CAPTURE_STARTED("player.base.chest-room.capture.started"),
     PLAYER_CHEST_ROOM_ENTER("player.base.chest-room.enter"),

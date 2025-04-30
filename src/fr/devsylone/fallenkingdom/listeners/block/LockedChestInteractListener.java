@@ -3,12 +3,18 @@ package fr.devsylone.fallenkingdom.listeners.block;
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fallenkingdom.utils.Messages;
+import fr.devsylone.fallenkingdom.utils.XBlock;
 import fr.devsylone.fallenkingdom.version.Version;
+import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.lockedchests.LockedChest;
 import fr.devsylone.fkpi.lockedchests.LockedChest.ChestState;
+import fr.devsylone.fkpi.rules.Rule;
+import fr.devsylone.fkpi.teams.Base;
+import fr.devsylone.fkpi.teams.Team;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Chest;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -21,17 +27,26 @@ public class LockedChestInteractListener implements Listener
 {
 
 	@EventHandler
-	public void interact(PlayerInteractEvent e)
-	{
-		if (!Fk.getInstance().getWorldManager().isAffected(e.getPlayer().getWorld()))
+	public void interact(PlayerInteractEvent e) {
+		Player player = e.getPlayer();
+		if (!Fk.getInstance().getWorldManager().isAffected(player.getWorld()))
 			return;
-		if(e.getAction().equals(Action.RIGHT_CLICK_BLOCK) && e.getClickedBlock().getType().equals(Material.CHEST) && Fk.getInstance().getFkPI().getLockedChestsManager().getChestAt(e.getClickedBlock().getLocation()) != null)
-		{
-			final LockedChest chest = Fk.getInstance().getFkPI().getLockedChestsManager().getChestAt(e.getClickedBlock().getLocation());
-
-			if(chest.getState().equals(ChestState.UNLOCKED))
+		if (e.getAction() != Action.RIGHT_CLICK_BLOCK || !XBlock.canBePartOfChestRoom(e.getClickedBlock().getType())) {
+			return;
+		}
+		boolean hasAlwaysAccess = player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR;
+		if (FkPI.getInstance().getRulesManager().getRule(Rule.PRIVATE_CHESTS) && !Fk.getInstance().getGame().isAssaultsEnabled() && !hasAlwaysAccess) {
+			final Team playerTeam = FkPI.getInstance().getTeamManager().getPlayerTeam(player);
+			final Team teamOwner = FkPI.getInstance().getTeamManager().getBase(e.getClickedBlock()).map(Base::getTeam).orElse(null);
+			if (playerTeam != null && teamOwner != null && !playerTeam.equals(teamOwner)) {
+				e.setCancelled(true);
+				ChatUtils.sendMessage(player, Messages.PLAYER_BLOCK_PRIVATE.getMessage().replace("%team%", teamOwner.toString()));
 				return;
+			}
+		}
 
+		final LockedChest chest = FkPI.getInstance().getLockedChestsManager().getChestAt(e.getClickedBlock().getLocation());
+		if (chest != null && chest.getState() != ChestState.UNLOCKED) {
 			if (Version.VersionType.V1_13.isHigherOrEqual() && e.getClickedBlock().getState() instanceof Chest && isInvEmpty(((Chest) e.getClickedBlock().getState()).getBlockInventory())) {
 				LootTable lootTable = chest.getLootTable();
 				if (lootTable != null) {
@@ -42,7 +57,7 @@ public class LockedChestInteractListener implements Listener
 				}
 			}
 
-			if(e.getPlayer().getGameMode().equals(GameMode.CREATIVE))
+			if(hasAlwaysAccess)
 			{
 				e.getPlayer().sendMessage(Messages.PREFIX_ALERT.getMessage() + Messages.PLAYER_OPEN_LOCKED_CHEST_CREATIVE);
 				return;
