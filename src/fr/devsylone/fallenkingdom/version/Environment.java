@@ -69,9 +69,10 @@ public class Environment {
 
         boolean hasAdventureApi = false;
         try {
-            Class.forName("net.kyori.adventure.text.Component");
+            Class<?> component = Class.forName("net.kyori.adventure.text.Component");
+            PlayerDeathEvent.class.getMethod("deathMessage", component);
             hasAdventureApi = true;
-        } catch (ClassNotFoundException ignored) { }
+        } catch (ClassNotFoundException | NoSuchMethodException ignored) { }
         HAS_ADVENTURE_API = hasAdventureApi;
 
         boolean hasMinHeight = false;
