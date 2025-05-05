@@ -38,7 +38,7 @@ public class BucketListener implements Listener
 
     private void onBucket(@NotNull PlayerBucketEvent event, Messages message) {
         final Player player = event.getPlayer();
-        final Block block = event.getBlock();
+        final Block block = event.getBlockClicked();
         if (player.getGameMode() == GameMode.CREATIVE || !plugin.getWorldManager().isWorldWithBase(player.getWorld())) {
             return;
         }
