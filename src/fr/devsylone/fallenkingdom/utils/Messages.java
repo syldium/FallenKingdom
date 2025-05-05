@@ -174,6 +174,7 @@ public enum Messages
     CMD_MAP_RULES_FRIENDLY_FIRE("cmd.map.rules.friendlyFire"),
     CMD_MAP_RULES_HEALTH_BELOW_NAME("cmd.map.rules.healthBelowName"),
     CMD_MAP_RULES_LIST("cmd.map.rules.list"),
+    CMD_MAP_RULES_NETHER_ASSAULT("cmd.map.rules.netherAssault"),
     CMD_MAP_RULES_NETHER_CAP("cmd.map.rules.netherCap"),
     CMD_MAP_RULES_PLACE_BLOCK_IN_CAVE("cmd.map.rules.placeBlockInCave"),
     CMD_MAP_RULES_PRIVATE_CHESTS("cmd.map.rules.privateChests"),
@@ -279,6 +280,7 @@ public enum Messages
     CMD_RULES_VERTICAL_LIMIT_FIXED("cmd.rules.vertical-limit.fixed"),
     CMD_RULES_BLAST_PROOF_BASE("cmd.rules.blast-proof-base"),
     CMD_RULES_BUCKET_ASSAULT("cmd.rules.bucket-assault"),
+    CMD_RULES_NETHER_ASSAULT("cmd.rules.nether-assault"),
     CMD_RULES_PRIVATE_CHESTS("cmd.rules.private-chests"),
 
     CMD_SCOREBOARD_RESET("cmd.scoreboard.reset"),
@@ -356,6 +358,7 @@ public enum Messages
     PLAYER_LOCKED_CHEST_NO_ACCESS("player.locked-chest.no-access"),
     PLAYER_LOCKED_CHEST_TOO_EARLY("player.locked-chest.too-early"),
     PLAYER_NETHER_NOT_ACTIVE("player.not-active.nether"),
+    PLAYER_NETHER_PORTAL_PAIR_IN_ENEMY_BASE("player.nether-portal.pair-in-enemy-base"),
     PLAYER_NETHER_PORTAL_SETUP("player.nether-portal.setup"),
     PLAYER_NETHER_PORTAL_TOO_EARLY("player.nether-portal.too-early"),
     PLAYER_OPEN_LOCKED_CHEST_CREATIVE("player.locked-chest.creative"),

@@ -1,6 +1,9 @@
 package fr.devsylone.fallenkingdom.listeners.entity.player;
 
 import fr.devsylone.fallenkingdom.utils.Messages;
+import fr.devsylone.fkpi.FkPI;
+import fr.devsylone.fkpi.rules.Rule;
+import fr.devsylone.fkpi.teams.Base;
 import org.bukkit.GameMode;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -27,6 +30,7 @@ public class UsePortalListener implements Listener
 			{
 				ChatUtils.sendMessage(e.getPlayer(), Messages.PLAYER_NETHER_NOT_ACTIVE);
 				e.setCancelled(true);
+				return;
 			}
 		}
 		else if(e.getTo().getWorld().getEnvironment() == Environment.THE_END)
@@ -34,6 +38,16 @@ public class UsePortalListener implements Listener
 			if(!Fk.getInstance().getGame().isEndEnabled() && Fk.getInstance().getGame().hasStarted())
 			{
 				ChatUtils.sendMessage(e.getPlayer(), Messages.PLAYER_END_NOT_ACTIVE);
+				e.setCancelled(true);
+				return;
+			}
+		}
+
+		if (Fk.getInstance().getWorldManager().isWorldWithBase(e.getTo().getWorld())
+				&& !FkPI.getInstance().getRulesManager().getRule(Rule.NETHER_ASSAULT)) {
+			Base base = FkPI.getInstance().getTeamManager().getBase(e.getTo()).orElse(null);
+			if (base != null && !base.getTeam().equals(FkPI.getInstance().getTeamManager().getPlayerTeam(e.getPlayer()))) {
+				ChatUtils.sendMessage(e.getPlayer(), Messages.PLAYER_NETHER_PORTAL_PAIR_IN_ENEMY_BASE.getMessage().replace("%team%", base.getTeam().toString()));
 				e.setCancelled(true);
 			}
 		}

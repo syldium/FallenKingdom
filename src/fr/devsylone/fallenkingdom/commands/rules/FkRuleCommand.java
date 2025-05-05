@@ -36,6 +36,7 @@ public class FkRuleCommand extends FkParentCommand
 				.add(new PrivateChests())
 				.add(new RulesList())
 				.add(new NetherCap())
+				.add(new NetherAssault())
 				.add(new PlaceBlockInCave())
 				.add(new PvpCap())
 				.add(new RespawnAtHome())

@@ -145,25 +145,15 @@ public final class XBlock {
 
     /**
      * Get the first air block from a list of blocks
-     * @see List<BlockState> for 1.13+ event.getBlocks()
-     * @see List<Block> for 1.12.2- event.getBlocks()
-     * @param blocks
+     *
+     * @param blocks the list of blocks
      * @return air
      */
-    public static Block getAirBlock(List<?> blocks) {
-        if (ISFLAT) { // 1.13+
-            for (Object b : blocks) {
-                Material material = ((BlockState) b).getBlock().getType();
-                if (material == Material.AIR || material == XMaterial.CAVE_AIR.parseMaterial()) {
-                    return ((BlockState) b).getBlock();
-                }
-            }
-        } else { // 1.12.2-
-            for (Object b : blocks) {
-                Material material = ((Block) b).getType();
-                if (material == Material.AIR) {
-                    return ((Block) b);
-                }
+    public static Block getAirBlock(List<Block> blocks) {
+        for (Block block : blocks) {
+            Material material = block.getType();
+            if (material == Material.AIR || material == XMaterial.CAVE_AIR.parseMaterial()) {
+                return block;
             }
         }
         return null;
