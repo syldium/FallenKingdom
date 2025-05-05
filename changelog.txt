@@ -594,3 +594,10 @@ Il est conseillé de réinitialiser les fichiers de langue.
 [+] Supporte les serveurs en 1.21.5
 [*] Corrige la détection des potions dans l'alambic (1.21+)
 [*] Répercute immédiatement le changement d'un cap sur la partie en cours
+
+      >> 2.24.4
+[+] Ajoute la règle `blastProofBase` autorisant ou non les blocs résistants aux explosions dans les bases
+[+] Ajoute la règle `netherAssault` pour contrôler les assauts par les portails du Nether
+[+] Ajoute la règle `privateChests` afin de réserver les coffres d'une base à son équipe
+[*] Présente les potions désactivées avec une barre de durabilité dans l'interface (1.21.4+)
+[*] Corrige les messages de morts sur les serveurs non Paper et Adventure non relocalisé
