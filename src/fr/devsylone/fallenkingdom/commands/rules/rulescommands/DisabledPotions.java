@@ -44,7 +44,7 @@ public class DisabledPotions extends FkPlayerCommand {
     @Override
     public CommandResult execute(Fk plugin, Player sender, FkPlayer fkp, List<String> args, String label) {
         if (this.editor == null) {
-            this.editor = new Editor(plugin);
+            this.editor = Environment.HAS_DATA_COMPONENTS ? new EditorPaper(plugin) : new Editor(plugin);
         }
         sender.openInventory(this.editor.getInventory());
         return CommandResult.SUCCESS;
@@ -52,7 +52,7 @@ public class DisabledPotions extends FkPlayerCommand {
 
     private class Editor implements PluginInventory {
 
-        private final fr.devsylone.fkpi.rules.DisabledPotions rule;
+        protected final fr.devsylone.fkpi.rules.DisabledPotions rule;
         private final Inventory inventory;
         private final ItemStack disableAmplifiedPotionsItem;
 
@@ -94,20 +94,20 @@ public class DisabledPotions extends FkPlayerCommand {
 
             XPotionData potionData = XPotionData.fromItemStack(event.getCurrentItem());
             if (potionData != null) {
-                event.setCurrentItem(click(event.getCurrentItem(), potionData));
+                event.setCurrentItem(click(potionData));
             } else if (event.getCurrentItem().getType() == this.disableAmplifiedPotionsItem.getType()) {
                 final ItemStack[] contents = this.inventory.getContents();
                 for (int i = 0; i < contents.length; i++) {
                     final ItemStack item = contents[i];
                     if (item != null && (potionData = XPotionData.fromItemStack(item)) != null && potionData.isUpgraded() && !this.rule.isDisabled(potionData)) {
-                        contents[i] = click(item, potionData);
+                        contents[i] = click(potionData);
                     }
                 }
                 this.inventory.setContents(contents);
             }
         }
 
-        private @NotNull ItemStack click(@NotNull ItemStack potionItem, @NotNull XPotionData data) {
+        private @NotNull ItemStack click(@NotNull XPotionData data) {
             String potionName = data.getType().name();
             if (!PotionIterator.USE_SEPARATE_POTION_TYPES) {
                 potionName += data.isExtended() ? " + redstone" : data.isUpgraded() ? " + glowstone" : "";
@@ -118,20 +118,12 @@ public class DisabledPotions extends FkPlayerCommand {
             } else {
                 broadcast(Messages.INVENTORY_POTION_DISABLE_CLICK.getMessage().replace("%potion%", potionName));
             }
-            potionItem = XMaterial.POTION.parseItem();
+            ItemStack potionItem = XMaterial.POTION.parseItem();
             updateItem(potionItem, data);
             return potionItem;
         }
 
-        private @NotNull ItemStack updateItem(@NotNull ItemStack potionItem, @NotNull XPotionData potionData) {
-            if (Environment.HAS_DATA_COMPONENTS) {
-                return updateItemViaDataComponent(potionItem, potionData);
-            } else {
-                return updateItemViaItemMeta(potionItem, potionData);
-            }
-        }
-
-        private @NotNull ItemStack updateItemViaItemMeta(@NotNull ItemStack potionItem, @NotNull XPotionData potionData) {
+        protected @NotNull ItemStack updateItem(@NotNull ItemStack potionItem, @NotNull XPotionData potionData) {
             potionData.applyTo(potionItem);
             final PotionMeta potionMeta = (PotionMeta) potionItem.getItemMeta();
             if (this.rule.isDisabled(potionData)) {
@@ -147,8 +139,21 @@ public class DisabledPotions extends FkPlayerCommand {
             return potionItem;
         }
 
+        @Override
+        public @NotNull Inventory getInventory() {
+            return this.inventory;
+        }
+    }
+
+    private class EditorPaper extends Editor {
+
+        public EditorPaper(@NotNull Fk plugin) {
+            super(plugin);
+        }
+
+        @Override
         @SuppressWarnings("UnstableApiUsage")
-        private @NotNull ItemStack updateItemViaDataComponent(@NotNull ItemStack potionItem, @NotNull XPotionData potionData) {
+        protected @NotNull ItemStack updateItem(@NotNull ItemStack potionItem, @NotNull XPotionData potionData) {
             potionData.applyTo(potionItem);
             Messages lore;
             if (this.rule.isDisabled(potionData)) {
@@ -164,11 +169,6 @@ public class DisabledPotions extends FkPlayerCommand {
             }
             potionItem.setData(DataComponentTypes.LORE, lore().addLine(legacyAmpersand().deserialize(lore.getMessage())));
             return potionItem;
-        }
-
-        @Override
-        public @NotNull Inventory getInventory() {
-            return this.inventory;
         }
     }
 }
