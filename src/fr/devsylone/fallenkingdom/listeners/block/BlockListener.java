@@ -5,6 +5,7 @@ import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fallenkingdom.utils.XBlock;
+import fr.devsylone.fallenkingdom.version.Version;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.rules.Rule;
 import fr.devsylone.fkpi.teams.ChestsRoom;
@@ -14,6 +15,8 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Waterlogged;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -139,6 +142,15 @@ public class BlockListener implements Listener
 					final Nexus nexus = team.getBase().getNexus();
 					if (nexus instanceof ChestsRoom)
 						((ChestsRoom) nexus).newChest(e.getBlock().getLocation());
+				}
+			} else if (Version.VersionType.V1_13.isHigherOrEqual()) {
+				BlockData data = e.getBlockPlaced().getBlockData();
+				if (data instanceof Waterlogged) {
+					Waterlogged waterlogged = (Waterlogged) data;
+					if (waterlogged.isWaterlogged() && !FkPI.getInstance().getRulesManager().getRule(Rule.BLAST_PROOF_BASE)) {
+						ChatUtils.sendMessage(e.getPlayer(), Messages.PLAYER_BLOCK_NOT_ALLOWED);
+						e.setCancelled(true);
+					}
 				}
 			}
 		}
