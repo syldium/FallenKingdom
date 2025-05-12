@@ -15,7 +15,6 @@ import fr.devsylone.fallenkingdom.display.notification.RegionChange;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -35,11 +34,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Random;
 import java.util.UUID;
 
 import static fr.devsylone.fallenkingdom.listeners.entity.player.PauseInteractionListener.isCancelledDueToPause;
-import static fr.devsylone.fallenkingdom.version.Environment.getMinHeight;
 
 public class MoveListener implements Listener
 {
@@ -161,61 +158,34 @@ public class MoveListener implements Listener
 	@EventHandler(ignoreCancelled = true)
 	public void onTeleport(PlayerTeleportEvent e) {
 		TeleportCause cause = e.getCause();
-		TeleportCause chorus = Version.VersionType.V1_9_V1_12.isHigherOrEqual() ? TeleportCause.CHORUS_FRUIT : null;
-		if (cause != TeleportCause.ENDER_PEARL && cause != chorus)
-			return;
-
-		if (isCancelledDueToPause(e.getPlayer())) {
+		Player player = e.getPlayer();
+		Location to = e.getTo();
+		if (isCancelledDueToPause(player)) {
 			e.setCancelled(true);
 			return;
 		}
-
-		if (e.getTo() == null || e.getPlayer().getGameMode() == GameMode.CREATIVE || FkPI.getInstance().getRulesManager().getRule(Rule.ENDERPEARL_ASSAULT))
+		if (!Fk.getInstance().getWorldManager().isWorldWithBase(to.getWorld())) {
 			return;
+		}
+		if (player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR) {
+			return;
+		}
 
 		Team pTeam = FkPI.getInstance().getTeamManager().getPlayerTeam(e.getPlayer());
-		for (Team team : FkPI.getInstance().getTeamManager().getTeams()) {
-			if (team.getBase() == null)
-				continue;
-
-			if (!team.getBase().contains(e.getFrom(), -1) && team.getBase().contains(e.getTo()) && !team.equals(pTeam)) {
-				ChatUtils.sendMessage(e.getPlayer(), Messages.PLAYER_TP_IN_BASE);
+		TeleportCause chorus = Version.VersionType.V1_9_V1_12.isHigherOrEqual() ? TeleportCause.CHORUS_FRUIT : null;
+		if (cause == TeleportCause.NETHER_PORTAL && !FkPI.getInstance().getRulesManager().getRule(Rule.NETHER_ASSAULT)) {
+			Base base = FkPI.getInstance().getTeamManager().getBase(to).orElse(null);
+			if (base != null && !base.getTeam().equals(pTeam)) {
+				ChatUtils.sendMessage(player, Messages.PLAYER_NETHER_PORTAL_PAIR_IN_ENEMY_BASE.getMessage().replace("%team%", base.getTeam().toString()));
 				e.setCancelled(true);
-
-				if (e.getCause().equals(chorus))
-					tpAsChorusFruit(e.getPlayer(), team.getBase()); // Pourquoi pas ?
+			}
+		} else if ((cause == TeleportCause.ENDER_PEARL || cause == chorus) && !FkPI.getInstance().getRulesManager().getRule(Rule.ENDERPEARL_ASSAULT)) {
+			Base base = FkPI.getInstance().getTeamManager().getBase(to).orElse(null);
+			if (base != null && !base.getTeam().equals(pTeam) && !base.contains(e.getFrom(), -1)) {
+				ChatUtils.sendMessage(player, Messages.PLAYER_TP_IN_BASE.getMessage().replace("%team%", base.getTeam().toString()));
+				e.setCancelled(true);
 			}
 		}
-	}
-
-	private void tpAsChorusFruit(Player player, Base base)
-	{
-		Random random = new Random();
-		for (int i = 0; i < 15; i++) {
-			double x = player.getLocation().getX() + (random.nextDouble() - 0.5) * 16.0;
-			double y = player.getLocation().getY() + (double) (random.nextInt(16) - 8);
-			double z = player.getLocation().getZ() + (random.nextDouble() - 0.5) * 16.0;
-			Location loc = new Location(player.getWorld(), x, y, z);
-			if (!base.contains(loc, 1) && safeTp(player, loc)) {
-				player.getWorld().playSound(player.getLocation(), Sound.ITEM_CHORUS_FRUIT_TELEPORT, 1.0F, 1.0F);
-				break;
-			}
-		}
-	}
-
-	private boolean safeTp(Player player, Location loc)
-	{
-		World world = loc.getWorld();
-		if (world == null || !loc.getChunk().isLoaded())
-			return false;
-
-		if (!loc.getBlock().getType().isSolid() && !loc.clone().add(0, 1, 0).getBlock().getType().isSolid()) {
-			while (!loc.clone().add(0, -1, 0).getBlock().getType().isSolid() && loc.getY() > getMinHeight(world))
-				loc.add(0, -1, 0);
-			player.teleport(loc, TeleportCause.CHORUS_FRUIT);
-			return true;
-		}
-		return false;
 	}
 
 	private enum TntState {
