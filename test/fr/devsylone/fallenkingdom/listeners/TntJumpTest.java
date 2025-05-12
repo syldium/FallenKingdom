@@ -1,5 +1,6 @@
 package fr.devsylone.fallenkingdom.listeners;
 
+import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.MockUtils;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.managers.TeamManager;
@@ -9,6 +10,8 @@ import fr.devsylone.fkpi.teams.Team;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockbukkit.mockbukkit.entity.PlayerMock;
 import org.mockbukkit.mockbukkit.world.WorldMock;
@@ -19,11 +22,12 @@ import static org.mockbukkit.mockbukkit.matcher.entity.EntityTeleportationMatche
 
 public class TntJumpTest {
 
-    private final WorldMock world;
-    private final Location[] tntLocs;
-    private final PlayerMock player;
+    private WorldMock world;
+    private Location[] tntLocs;
+    private PlayerMock player;
 
-    public TntJumpTest() {
+    @BeforeEach
+    public void setUp() {
         world = (WorldMock) MockUtils.getServerMockSafe().getWorlds().get(0);
         tntLocs = new Location[] {
                 new Location(world, 21, 70, 20),
@@ -33,7 +37,8 @@ public class TntJumpTest {
             location.getBlock().setType(Material.TNT);
         }
         player = MockUtils.getDefaultPlayer();
-        TeamManager teamManager = MockUtils.getPluginMockSafe().getFkPI().getTeamManager();
+        Fk plugin = MockUtils.getPluginMockSafe();
+        TeamManager teamManager = plugin.getFkPI().getTeamManager();
         teamManager.getTeams().clear();
 
         Location aBaseCenter = new Location(world, 0, 70, 0);
@@ -46,6 +51,15 @@ public class TntJumpTest {
         b.setBase(new Base(b, new Location(world, 100, 70, 100), 20, Material.COBBLESTONE, (byte) 0));
         b.addPlayer(player.getName());
         teamManager.getTeams().add(b);
+        plugin.getWorldManager().invalidateBaseWorldsCache(plugin.getFkPI().getTeamManager());
+    }
+
+    @AfterEach
+    public void tearDown() {
+        for (Location location : tntLocs) {
+            location.getBlock().setType(Material.AIR);
+        }
+        FkPI.getInstance().getTeamManager().getTeams().clear();
     }
 
     @Test

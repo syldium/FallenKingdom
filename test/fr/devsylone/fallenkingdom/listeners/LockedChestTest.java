@@ -12,6 +12,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -25,16 +26,22 @@ import static org.mockbukkit.mockbukkit.matcher.plugin.PluginManagerFiredEventFi
 
 public class LockedChestTest {
 
-    private World world = MockUtils.getServerMockSafe().getWorlds().get(0);
-    private Location chestLocation = new Location(world, 100, 60, -200);
-    private Block chest = world.getBlockAt(chestLocation);
+    private Block chest;
     private LockedChest lockedChest;
 
     @BeforeEach
     public void init() {
+        World world = MockUtils.getServerMockSafe().getWorlds().get(0);
+        Location chestLocation = new Location(world, 100, 60, -200);
+        chest = world.getBlockAt(chestLocation);
         chest.setType(Material.CHEST);
         lockedChest = new LockedChest(chestLocation, 10, 2, "Super cool content");
         MockUtils.getPluginMockSafe().getFkPI().getLockedChestsManager().addOrEdit(lockedChest);
+    }
+
+    @AfterEach
+    public void tearDown() {
+        MockUtils.getPluginMockSafe().getFkPI().getLockedChestsManager().remove(lockedChest.getLocation());
     }
 
     @Test
