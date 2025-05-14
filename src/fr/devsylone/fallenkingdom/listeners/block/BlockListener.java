@@ -158,43 +158,34 @@ public class BlockListener implements Listener
 	}
 
 	@EventHandler
-	public void event(BlockBreakEvent e)
-	{
-		if (!Fk.getInstance().getWorldManager().isWorldWithBase(e.getPlayer().getWorld()))
+	public void event(BlockBreakEvent event) {
+		final Player player = event.getPlayer();
+		if (!Fk.getInstance().getWorldManager().isWorldWithBase(player.getWorld())) {
 			return;
-
-		Player p = e.getPlayer();
-		Team team = Fk.getInstance().getFkPI().getTeamManager().getPlayerTeam(p);
-
-		if(team == null || plugin.getGame().isPreStart())
-			return;
-
-		//AVANT check creative
-
-		if(p.getGameMode() == GameMode.CREATIVE)
-			return;
-
-		if(e.getBlock().getType() == Material.TNT)
-			return;
-
-		Block b = e.getBlock();
-		Location bloc = b.getLocation();
-
-		for(Team t : Fk.getInstance().getFkPI().getTeamManager().getTeams())
-		{
-			if(!t.equals(team) && t.getBase() != null && t.getBase().contains(bloc))
-			{
-				ChatUtils.sendMessage(p, Messages.PLAYER_BLOCK_BREAK_ENEMY);
-				e.setCancelled(true);
-				return;
-			}
 		}
 
-		if(XBlock.canBePartOfChestRoom(e.getBlock().getType()) && team.getBase() != null && !e.isCancelled() && team.getBase().contains(e.getBlock().getLocation()) && Fk.getInstance().getFkPI().getChestsRoomsManager().isEnabled())
-		{
-			Nexus nexus = team.getBase().getNexus();
-			if(nexus instanceof ChestsRoom)
-				((ChestsRoom) nexus).removeChest(e.getBlock().getLocation());
+		final Block block = event.getBlock();
+		final Location loc = block.getLocation();
+		if (block.getType() == Material.TNT) {
+			return;
+		}
+		for (Team team : FkPI.getInstance().getTeamManager().getTeams()) {
+			if (team.getBase() == null || !team.getBase().contains(block)) {
+				continue;
+			}
+			final Nexus nexus = team.getBase().getNexus();
+			if (nexus instanceof ChestsRoom && XBlock.canBePartOfChestRoom(block.getType())) {
+				((ChestsRoom) nexus).removeChest(loc);
+			}
+			if (player.getGameMode() == GameMode.CREATIVE || Fk.getInstance().getGame().isPreStart()) {
+				return;
+			}
+			final Team playerTeam = FkPI.getInstance().getTeamManager().getPlayerTeam(player);
+			if (!team.equals(playerTeam)) {
+				ChatUtils.sendMessage(player, Messages.PLAYER_BLOCK_BREAK_ENEMY);
+				event.setCancelled(true);
+				return;
+			}
 		}
 	}
 
