@@ -49,7 +49,7 @@ public class XItemStack {
 
     static {
         try {
-            Class<?> chatSerializer = NMSUtils.nmsClass("network.chat", "IChatBaseComponent$ChatSerializer", "Component$Serializer");
+            Class<?> chatSerializer = NMSUtils.obcClass("util.CraftChatMessage");
 
             Optional<Class<?>> registryAccess = NMSUtils.nmsOptionalClass("core", "IRegistryCustom", "RegistryAccess");
             Optional<Method> parseFromJson = Arrays.stream(chatSerializer.getDeclaredMethods())

@@ -28,7 +28,11 @@ public final class ChatMessage {
         }
 
         try {
-            final Class<?> serializer = CHAT_BASE_COMPONENT.getDeclaredClasses()[0];
+            final Class<?>[] innerClasses = CHAT_BASE_COMPONENT.getDeclaredClasses();
+            if (innerClasses.length == 0) {
+                throw new NoSuchMethodException();
+            }
+            final Class<?> serializer = innerClasses[0];
             MESSAGE_FROM_JSON = NMSUtils.getMethod(serializer, CHAT_BASE_COMPONENT, String.class);
         } catch (ReflectiveOperationException ignored) {}
     }
