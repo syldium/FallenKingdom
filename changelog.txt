@@ -601,3 +601,10 @@ Il est conseillé de réinitialiser les fichiers de langue.
 [+] Ajoute la règle `privateChests` afin de réserver les coffres d'une base à son équipe
 [*] Présente les potions désactivées avec une barre de durabilité dans l'interface (1.21.4+)
 [*] Corrige les messages de morts sur les serveurs non Paper et Adventure non relocalisé
+
+      >> 2.24.5
+[+] Supporte les serveurs en 1.21.6 et 1.21.7
+[*] Retire les coffres cassés par un admin des salles des coffres
+[*] Détecte davantage de tentatives de waterlog dans la règle blastProofBase
+[*] Détecte davantage de passages par le Nether dans la règle netherAssault
+[*] Corrige l'interface des potions désactivées (1.21.4-)
