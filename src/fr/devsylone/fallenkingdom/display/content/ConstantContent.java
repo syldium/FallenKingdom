@@ -87,7 +87,7 @@ public class ConstantContent implements Content {
                     replaced = PlaceholderAPI.setPlaceholders(player, replaced);
                 } catch (Exception e) {
                     // En cas d'erreur PAPI, on continue sans traiter les placeholders PAPI
-                    Bukkit.getLogger().warning("[FallenKingdom] Erreur lors du traitement des placeholders PAPI: " + e.getMessage());
+                    Fk.getInstance().getLogger().log(Level.WARNING, "Erreur lors du traitement des placeholders PAPI", e);
                 }
             }
 
