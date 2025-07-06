@@ -4,6 +4,8 @@ import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fallenkingdom.scoreboard.PlaceHolder;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fallenkingdom.utils.Messages;
+import me.clip.placeholderapi.PlaceholderAPI;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -28,6 +30,9 @@ public class ScoreboardDisplayService implements DisplayService {
     private final List<String> lines;
     private final List<Set<PlaceHolder>> indexes;
     private final Map<PlaceHolder, List<Integer>> placeHolders;
+    private final boolean titleHasPapiPlaceholders;
+    private final List<Boolean> linesPapiPlaceholders;
+    private static final Boolean PAPI_ENABLED = Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI");
 
     public ScoreboardDisplayService() {
         this("", Collections.emptyList());
@@ -36,19 +41,28 @@ public class ScoreboardDisplayService implements DisplayService {
     public ScoreboardDisplayService(@NotNull String title, @NotNull List<@NotNull String> lines) {
         this.title = requireNonNull(title,"scoreboard title");
         requireNonNull(lines,"scoreboard lines");
+
+        // Vérification des placeholders PAPI dans le titre
+        this.titleHasPapiPlaceholders = PAPI_ENABLED && title.contains("%") && title.indexOf('%') != title.lastIndexOf('%');
+
         if (lines.isEmpty()) {
             this.lines = Collections.emptyList();
             this.indexes = Collections.emptyList();
             this.placeHolders = Collections.emptyMap();
+            this.linesPapiPlaceholders = Collections.emptyList();
             return;
         }
 
         this.lines = new ArrayList<>(lines);
         this.indexes = new ArrayList<>(lines.size());
         this.placeHolders = new EnumMap<>(PlaceHolder.class);
+        this.linesPapiPlaceholders = new ArrayList<>(lines.size());
+
         for (int i = 0; i < lines.size(); i++) {
             final String value = requireNonNull(lines.get(i), "scoreboard line");
             final Set<PlaceHolder> set = EnumSet.noneOf(PlaceHolder.class);
+
+            // Vérification des placeholders internes
             for (PlaceHolder placeholder : PlaceHolder.values()) {
                 if (value.contains(placeholder.getKey())) {
                     set.add(placeholder);
@@ -56,6 +70,10 @@ public class ScoreboardDisplayService implements DisplayService {
                 }
             }
             this.indexes.add(set);
+
+            // Vérification des placeholders PAPI pour cette ligne
+            boolean hasPapi = PAPI_ENABLED && value.contains("%") && value.indexOf('%') != value.lastIndexOf('%');
+            this.linesPapiPlaceholders.add(hasPapi);
         }
     }
 
@@ -78,6 +96,23 @@ public class ScoreboardDisplayService implements DisplayService {
             }
         }
         return false;
+    }
+
+    /**
+     * Vérifie si le titre contient des placeholders PAPI
+     * @return true si le titre contient des placeholders PAPI
+     */
+    public boolean titleContainsPapiPlaceholders() {
+        return this.titleHasPapiPlaceholders;
+    }
+
+    /**
+     * Vérifie si une ligne contient des placeholders PAPI
+     * @param line l'index de la ligne
+     * @return true si la ligne contient des placeholders PAPI
+     */
+    public boolean lineContainsPapiPlaceholders(int line) {
+        return line >= 0 && line < this.linesPapiPlaceholders.size() && this.linesPapiPlaceholders.get(line);
     }
 
     @Override
@@ -122,14 +157,42 @@ public class ScoreboardDisplayService implements DisplayService {
 
     public @NotNull String renderLine(@NotNull Player player, @NotNull FkPlayer fkPlayer, int line) {
         String replaced = this.lines.get(line);
+
         if (!fkPlayer.useFormattedText()) {
-            return ChatUtils.translateColorCodeToAmpersand(replaced);
+            replaced = ChatUtils.translateColorCodeToAmpersand(replaced);
+        } else {
+            // Traitement des placeholders internes
+            for (PlaceHolder placeHolder : this.indexes.get(line)) {
+                final int usageIndex = this.placeHolders.get(placeHolder).indexOf(line);
+                replaced = placeHolder.replace(replaced, player, usageIndex);
+            }
         }
-        for (PlaceHolder placeHolder : this.indexes.get(line)) {
-            final int usageIndex = this.placeHolders.get(placeHolder).indexOf(line);
-            replaced = placeHolder.replace(replaced, player, usageIndex);
+
+        // Traitement des placeholders PAPI pour cette ligne
+        if (this.linesPapiPlaceholders.get(line)) {
+            try {
+                replaced = PlaceholderAPI.setPlaceholders(player, replaced);
+            } catch (Exception e) {
+                Bukkit.getLogger().warning("[FallenKingdom] Erreur lors du traitement des placeholders PAPI (ligne " + line + "): " + e.getMessage());
+            }
         }
+
         return replaced;
+    }
+
+    public @NotNull String renderTitle(@NotNull Player player) {
+        String rendered = this.title;
+
+        // Traitement des placeholders PAPI dans le titre
+        if (this.titleHasPapiPlaceholders) {
+            try {
+                rendered = PlaceholderAPI.setPlaceholders(player, rendered);
+            } catch (Exception e) {
+                Bukkit.getLogger().warning("[FallenKingdom] Erreur lors du traitement des placeholders PAPI (titre): " + e.getMessage());
+            }
+        }
+
+        return rendered;
     }
 
     public @NotNull String title() {
