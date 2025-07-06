@@ -10,6 +10,8 @@ import fr.devsylone.fallenkingdom.version.Version;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.rules.Rule;
 import fr.mrmicky.fastboard.FastBoard;
+import me.clip.placeholderapi.PlaceholderAPI;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -19,9 +21,11 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class FkScoreboard
 {
+	private static final boolean PAPI_AVAILABLE = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null;
 
 	private final GlobalDisplayService displayService;
 	private final FastBoard sidebarBoard;
@@ -36,25 +40,33 @@ public class FkScoreboard
 		this.displayService = fkPlayer.getDisplayService();
 
 		this.sidebarBoard = new FastBoard(player);
-		this.sidebarBoard.updateTitle(this.displayService.scoreboard().title());
+		this.sidebarBoard.updateTitle(parsePlaceholders(player, this.displayService.scoreboard().title()));
 
 		refreshAll();
 	}
 
 	public void updateLines(@NotNull Collection<@NotNull String> lines)
 	{
+		Player player = this.player.get();
+		if (player == null) return;
+
+		// Parse PAPI placeholders if available
+		List<String> parsedLines = lines.stream()
+				.map(line -> parsePlaceholders(player, line))
+				.collect(Collectors.toList());
+
 		if (Version.VersionType.V1_13.isHigherOrEqual()) {
 			List<String> scores = null;
 			if (this.fkPlayer.getState() == PlayerState.EDITING_SCOREBOARD) {
-				scores = new ArrayList<>(lines.size());
-				for (int line = lines.size() - 1; line >= 0; line--) {
+				scores = new ArrayList<>(parsedLines.size());
+				for (int line = parsedLines.size() - 1; line >= 0; line--) {
 					scores.add(ChatColor.RED + String.valueOf(line));
 				}
 			}
-			this.sidebarBoard.updateLines(lines, scores);
+			this.sidebarBoard.updateLines(parsedLines, scores);
 		} else {
-			final List<String> truncated = new ArrayList<>(lines.size());
-			for (String line : lines) {
+			final List<String> truncated = new ArrayList<>(parsedLines.size());
+			for (String line : parsedLines) {
 				truncated.add(line.substring(0, Math.min(30, line.length())));
 			}
 			this.sidebarBoard.updateLines(truncated);
@@ -63,14 +75,20 @@ public class FkScoreboard
 
 	public void updateLine(int line, @NotNull String text)
 	{
+		Player player = this.player.get();
+		if (player == null) return;
+
+		// Parse PAPI placeholders if available
+		String parsedText = parsePlaceholders(player, text);
+
 		if (Version.VersionType.V1_13.isHigherOrEqual()) {
 			String score = null;
 			if (this.fkPlayer.getState() == PlayerState.EDITING_SCOREBOARD) {
 				score = ChatColor.RED + String.valueOf(this.displayService.scoreboard().reverseIndex(line));
 			}
-			this.sidebarBoard.updateLine(line, text, score);
+			this.sidebarBoard.updateLine(line, parsedText, score);
 		} else {
-			this.sidebarBoard.updateLine(line, text.substring(0, Math.min(30, text.length())));
+			this.sidebarBoard.updateLine(line, parsedText.substring(0, Math.min(30, parsedText.length())));
 		}
 	}
 
@@ -139,5 +157,28 @@ public class FkScoreboard
 	{
 		if(!sidebarBoard.isDeleted())
 			sidebarBoard.delete();
+	}
+
+	/**
+	 * Parse PlaceholderAPI placeholders if the plugin is available
+	 * @param player The player for context
+	 * @param text The text to parse
+	 * @return The parsed text
+	 */
+	private @NotNull String parsePlaceholders(@NotNull Player player, @NotNull String text)
+	{
+		if (PAPI_AVAILABLE) {
+			return PlaceholderAPI.setPlaceholders(player, text);
+		}
+		return text;
+	}
+
+	/**
+	 * Check if PlaceholderAPI is available
+	 * @return true if PAPI is loaded
+	 */
+	public static boolean isPAPIAvailable()
+	{
+		return PAPI_AVAILABLE;
 	}
 }
