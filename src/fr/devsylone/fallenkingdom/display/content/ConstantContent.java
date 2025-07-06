@@ -93,18 +93,7 @@ public class ConstantContent implements Content {
 
             return replaced;
         } else {
-            String result = ChatUtils.translateColorCodeToAmpersand(this.value);
-
-            // Même pour le texte non formaté, on traite les placeholders PAPI
-            if (this.hasPapiPlaceholders) {
-                try {
-                    result = PlaceholderAPI.setPlaceholders(player, result);
-                } catch (Exception e) {
-                    Bukkit.getLogger().warning("[FallenKingdom] Erreur lors du traitement des placeholders PAPI: " + e.getMessage());
-                }
-            }
-
-            return result;
+            return ChatUtils.translateColorCodeToAmpersand(this.value);
         }
     }
 
