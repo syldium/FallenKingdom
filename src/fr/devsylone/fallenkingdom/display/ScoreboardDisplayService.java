@@ -188,7 +188,7 @@ public class ScoreboardDisplayService implements DisplayService {
             try {
                 rendered = PlaceholderAPI.setPlaceholders(player, rendered);
             } catch (Exception e) {
-                Bukkit.getLogger().warning("[FallenKingdom] Erreur lors du traitement des placeholders PAPI (titre): " + e.getMessage());
+                Fk.getInstance().getLogger().log(Level.WARNING, "Erreur lors du traitement des placeholders PAPI (titre)", e);
             }
         }
 
