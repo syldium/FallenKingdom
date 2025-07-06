@@ -28,18 +28,6 @@ public class InterruptibleContent implements Content {
         return this.interrupt.containsAny(placeHolders) || this.inner.containsAny(placeHolders);
     }
 
-    /**
-     * Vérifie si ce contenu contient des placeholders PAPI
-     * @return true si des placeholders PAPI sont présents dans interrupt ou inner
-     */
-    public boolean containsPapiPlaceholders() {
-        return (this.interrupt instanceof ConstantContent && ((ConstantContent) this.interrupt).containsPapiPlaceholders()) ||
-                (this.inner instanceof ConstantContent && ((ConstantContent) this.inner).containsPapiPlaceholders()) ||
-                (this.interrupt instanceof BaseDependantContent && ((BaseDependantContent) this.interrupt).containsPapiPlaceholders()) ||
-                (this.inner instanceof BaseDependantContent && ((BaseDependantContent) this.inner).containsPapiPlaceholders()) ||
-                (this.interrupt instanceof InterruptibleContent && ((InterruptibleContent) this.interrupt).containsPapiPlaceholders()) ||
-                (this.inner instanceof InterruptibleContent && ((InterruptibleContent) this.inner).containsPapiPlaceholders());
-    }
 
     @Override
     public @NotNull String format(@NotNull Player player, @NotNull FkPlayer fkPlayer, @NotNull PlaceHolder... placeHolders) {

@@ -1,5 +1,6 @@
 package fr.devsylone.fallenkingdom.display;
 
+import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fallenkingdom.scoreboard.PlaceHolder;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
@@ -21,6 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 
 import static java.util.Objects.requireNonNull;
 
@@ -30,7 +32,6 @@ public class ScoreboardDisplayService implements DisplayService {
     private final List<String> lines;
     private final List<Set<PlaceHolder>> indexes;
     private final Map<PlaceHolder, List<Integer>> placeHolders;
-    private final boolean titleHasPapiPlaceholders;
     private final List<Boolean> linesPapiPlaceholders;
     private static final Boolean PAPI_ENABLED = Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI");
 
@@ -41,9 +42,6 @@ public class ScoreboardDisplayService implements DisplayService {
     public ScoreboardDisplayService(@NotNull String title, @NotNull List<@NotNull String> lines) {
         this.title = requireNonNull(title,"scoreboard title");
         requireNonNull(lines,"scoreboard lines");
-
-        // Vérification des placeholders PAPI dans le titre
-        this.titleHasPapiPlaceholders = PAPI_ENABLED && title.contains("%") && title.indexOf('%') != title.lastIndexOf('%');
 
         if (lines.isEmpty()) {
             this.lines = Collections.emptyList();
@@ -98,22 +96,6 @@ public class ScoreboardDisplayService implements DisplayService {
         return false;
     }
 
-    /**
-     * Vérifie si le titre contient des placeholders PAPI
-     * @return true si le titre contient des placeholders PAPI
-     */
-    public boolean titleContainsPapiPlaceholders() {
-        return this.titleHasPapiPlaceholders;
-    }
-
-    /**
-     * Vérifie si une ligne contient des placeholders PAPI
-     * @param line l'index de la ligne
-     * @return true si la ligne contient des placeholders PAPI
-     */
-    private boolean lineContainsPapiPlaceholders(int line) {
-        return this.linesPapiPlaceholders.get(line);
-    }
 
     @Override
     public void update(@NotNull Player player, @NotNull FkPlayer fkPlayer, @NotNull PlaceHolder... placeHolders) {
@@ -173,27 +155,13 @@ public class ScoreboardDisplayService implements DisplayService {
             try {
                 replaced = PlaceholderAPI.setPlaceholders(player, replaced);
             } catch (Exception e) {
-                Bukkit.getLogger().warning("[FallenKingdom] Erreur lors du traitement des placeholders PAPI (ligne " + line + "): " + e.getMessage());
+                Fk.getInstance().getLogger().log(Level.WARNING, "[FallenKingdom] Erreur lors du traitement des placeholders PAPI (ligne " + line + "): " + e.getMessage());
             }
         }
 
         return replaced;
     }
 
-    public @NotNull String renderTitle(@NotNull Player player) {
-        String rendered = this.title;
-
-        // Traitement des placeholders PAPI dans le titre
-        if (this.titleHasPapiPlaceholders) {
-            try {
-                rendered = PlaceholderAPI.setPlaceholders(player, rendered);
-            } catch (Exception e) {
-                Fk.getInstance().getLogger().log(Level.WARNING, "Erreur lors du traitement des placeholders PAPI (titre)", e);
-            }
-        }
-
-        return rendered;
-    }
 
     public @NotNull String title() {
         return this.title;

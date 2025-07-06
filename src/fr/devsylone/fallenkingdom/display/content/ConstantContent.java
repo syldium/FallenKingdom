@@ -8,10 +8,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import fr.devsylone.fallenkingdom.Fk;
 
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
+import java.util.logging.Level;
 
 import static fr.devsylone.fallenkingdom.display.DisplayService.PLACEHOLDER_END;
 import static fr.devsylone.fallenkingdom.display.DisplayService.PLACEHOLDER_START;
@@ -63,13 +65,6 @@ public class ConstantContent implements Content {
         return false;
     }
 
-    /**
-     * Vérifie si ce contenu contient des placeholders PAPI
-     * @return true si des placeholders PAPI sont présents
-     */
-    public boolean containsPapiPlaceholders() {
-        return this.hasPapiPlaceholders;
-    }
 
     @Override
     public @NotNull String format(@NotNull Player player, @NotNull FkPlayer fkPlayer, @NotNull PlaceHolder... placeHolders) {

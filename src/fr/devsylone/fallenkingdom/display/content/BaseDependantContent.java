@@ -37,18 +37,6 @@ public class BaseDependantContent implements Content {
         return this.inside.containsAny(placeHolders) || this.outside.containsAny(placeHolders);
     }
 
-    /**
-     * Vérifie si ce contenu contient des placeholders PAPI
-     * @return true si des placeholders PAPI sont présents dans inside ou outside
-     */
-    public boolean containsPapiPlaceholders() {
-        return (this.inside instanceof ConstantContent && ((ConstantContent) this.inside).containsPapiPlaceholders()) ||
-                (this.outside instanceof ConstantContent && ((ConstantContent) this.outside).containsPapiPlaceholders()) ||
-                (this.inside instanceof BaseDependantContent && ((BaseDependantContent) this.inside).containsPapiPlaceholders()) ||
-                (this.outside instanceof BaseDependantContent && ((BaseDependantContent) this.outside).containsPapiPlaceholders()) ||
-                (this.inside instanceof InterruptibleContent && ((InterruptibleContent) this.inside).containsPapiPlaceholders()) ||
-                (this.outside instanceof InterruptibleContent && ((InterruptibleContent) this.outside).containsPapiPlaceholders());
-    }
 
     @Override
     public @NotNull String format(@NotNull Player player, @NotNull FkPlayer fkPlayer, @NotNull PlaceHolder... placeHolders) {
