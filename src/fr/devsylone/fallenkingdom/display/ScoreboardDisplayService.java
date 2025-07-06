@@ -111,8 +111,8 @@ public class ScoreboardDisplayService implements DisplayService {
      * @param line l'index de la ligne
      * @return true si la ligne contient des placeholders PAPI
      */
-    public boolean lineContainsPapiPlaceholders(int line) {
-        return line >= 0 && line < this.linesPapiPlaceholders.size() && this.linesPapiPlaceholders.get(line);
+    private boolean lineContainsPapiPlaceholders(int line) {
+        return this.linesPapiPlaceholders.get(line);
     }
 
     @Override
