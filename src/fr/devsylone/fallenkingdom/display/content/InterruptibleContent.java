@@ -28,7 +28,6 @@ public class InterruptibleContent implements Content {
         return this.interrupt.containsAny(placeHolders) || this.inner.containsAny(placeHolders);
     }
 
-
     @Override
     public @NotNull String format(@NotNull Player player, @NotNull FkPlayer fkPlayer, @NotNull PlaceHolder... placeHolders) {
         String result = this.interrupt.format(player, fkPlayer, placeHolders);

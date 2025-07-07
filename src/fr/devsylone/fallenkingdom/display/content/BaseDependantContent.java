@@ -37,7 +37,6 @@ public class BaseDependantContent implements Content {
         return this.inside.containsAny(placeHolders) || this.outside.containsAny(placeHolders);
     }
 
-
     @Override
     public @NotNull String format(@NotNull Player player, @NotNull FkPlayer fkPlayer, @NotNull PlaceHolder... placeHolders) {
         if (FkPI.getInstance().getTeamManager().getBase(player.getLocation()).isPresent()) {

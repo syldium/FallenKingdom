@@ -26,10 +26,11 @@ import static java.util.Objects.requireNonNull;
  */
 public class ConstantContent implements Content {
 
+    private static final boolean PAPI_ENABLED = Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI");
+
     private final String value;
     private final Set<PlaceHolder> placeHolders;
     private final boolean hasPapiPlaceholders;
-    private static final Boolean PAPI_ENABLED = Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI");
 
     public ConstantContent(@NotNull String value) {
         this.value = requireNonNull(value, "display value");
@@ -64,7 +65,6 @@ public class ConstantContent implements Content {
         }
         return false;
     }
-
 
     @Override
     public @NotNull String format(@NotNull Player player, @NotNull FkPlayer fkPlayer, @NotNull PlaceHolder... placeHolders) {

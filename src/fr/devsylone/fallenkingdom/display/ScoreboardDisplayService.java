@@ -162,7 +162,6 @@ public class ScoreboardDisplayService implements DisplayService {
         return replaced;
     }
 
-
     public @NotNull String title() {
         return this.title;
     }
