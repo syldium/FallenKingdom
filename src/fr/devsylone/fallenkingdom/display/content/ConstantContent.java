@@ -97,6 +97,10 @@ public class ConstantContent implements Content {
         parent.set(name, this.value);
     }
 
+    public @NotNull String content() {
+        return this.value;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof ConstantContent)) return false;
