@@ -1,5 +1,6 @@
 package fr.devsylone.fallenkingdom.display;
 
+import fr.devsylone.fallenkingdom.display.content.ConstantContent;
 import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fallenkingdom.scoreboard.PlaceHolder;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
@@ -8,25 +9,24 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnmodifiableView;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumMap;
-import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
 public class ScoreboardDisplayService implements DisplayService {
 
-    private final String title;
-    private final List<String> lines;
-    private final List<Set<PlaceHolder>> indexes;
+    private final ConstantContent title;
+    private final List<ConstantContent> lines;
     private final Map<PlaceHolder, List<Integer>> placeHolders;
 
     public ScoreboardDisplayService() {
@@ -34,28 +34,27 @@ public class ScoreboardDisplayService implements DisplayService {
     }
 
     public ScoreboardDisplayService(@NotNull String title, @NotNull List<@NotNull String> lines) {
+        this(new ConstantContent(title), lines.stream().map(ConstantContent::new).collect(Collectors.toList()));
+    }
+
+    public ScoreboardDisplayService(@NotNull ConstantContent title, @NotNull List<@NotNull ConstantContent> lines) {
         this.title = requireNonNull(title,"scoreboard title");
         requireNonNull(lines,"scoreboard lines");
         if (lines.isEmpty()) {
             this.lines = Collections.emptyList();
-            this.indexes = Collections.emptyList();
             this.placeHolders = Collections.emptyMap();
             return;
         }
 
         this.lines = new ArrayList<>(lines);
-        this.indexes = new ArrayList<>(lines.size());
         this.placeHolders = new EnumMap<>(PlaceHolder.class);
         for (int i = 0; i < lines.size(); i++) {
-            final String value = requireNonNull(lines.get(i), "scoreboard line");
-            final Set<PlaceHolder> set = EnumSet.noneOf(PlaceHolder.class);
+            final String value = requireNonNull(lines.get(i), "scoreboard line").content();
             for (PlaceHolder placeholder : PlaceHolder.values()) {
                 if (value.contains(placeholder.getKey())) {
-                    set.add(placeholder);
                     this.placeHolders.computeIfAbsent(placeholder, s -> new ArrayList<>(2)).add(i);
                 }
             }
-            this.indexes.add(set);
         }
     }
 
@@ -121,23 +120,17 @@ public class ScoreboardDisplayService implements DisplayService {
     }
 
     public @NotNull String renderLine(@NotNull Player player, @NotNull FkPlayer fkPlayer, int line) {
-        String replaced = this.lines.get(line);
-        if (!fkPlayer.useFormattedText()) {
-            return ChatUtils.translateColorCodeToAmpersand(replaced);
-        }
-        for (PlaceHolder placeHolder : this.indexes.get(line)) {
-            final int usageIndex = this.placeHolders.get(placeHolder).indexOf(line);
-            replaced = placeHolder.replace(replaced, player, usageIndex);
-        }
-        return replaced;
+        return this.lines.get(line).format(player, fkPlayer);
     }
 
     public @NotNull String title() {
-        return this.title;
+        return this.title.content();
     }
 
-    public @NotNull @UnmodifiableView List<@NotNull String> lines() {
-        return Collections.unmodifiableList(this.lines);
+    public @NotNull @Unmodifiable List<@NotNull String> lines() {
+        return Collections.unmodifiableList(this.lines.stream()
+                .map(ConstantContent::content)
+                .collect(Collectors.toList()));
     }
 
     public @NotNull List<String> renderLines(@NotNull Player player, @NotNull FkPlayer fkPlayer) {
@@ -149,7 +142,7 @@ public class ScoreboardDisplayService implements DisplayService {
     }
 
     public @NotNull String line(int index) {
-        return this.lines.get(index);
+        return this.lines.get(index).content();
     }
 
     public int size() {
@@ -158,7 +151,7 @@ public class ScoreboardDisplayService implements DisplayService {
 
     @Contract("_, _ -> new")
     public @NotNull ScoreboardDisplayService withLine(int line, @Nullable String value) {
-        final List<String> lines;
+        final List<ConstantContent> lines;
         if (value == null) {
             // Supprimer une ligne
             if (0 > line || line >= this.size()) {
@@ -171,7 +164,7 @@ public class ScoreboardDisplayService implements DisplayService {
             if (line < 0) {
                 // Rajouter au début
                 lines = new ArrayList<>(this.size() - line);
-                lines.add(value);
+                lines.add(new ConstantContent(value));
                 fillWith(lines, line + 1, 0);
                 lines.addAll(this.lines);
             } else {
@@ -179,7 +172,7 @@ public class ScoreboardDisplayService implements DisplayService {
                 lines = new ArrayList<>(Math.max(this.size(), line + 1));
                 lines.addAll(this.lines);
                 fillWith(lines, this.size(), line + 1);
-                lines.set(line, value);
+                lines.set(line, new ConstantContent(value));
             }
         }
         return new ScoreboardDisplayService(this.title, lines);
@@ -187,12 +180,14 @@ public class ScoreboardDisplayService implements DisplayService {
 
     @Contract("_ -> new")
     public @NotNull ScoreboardDisplayService withLines(@NotNull List<@NotNull String> lines) {
-        return new ScoreboardDisplayService(this.title, lines);
+        return new ScoreboardDisplayService(this.title, lines.stream()
+                .map(ConstantContent::new)
+                .collect(Collectors.toList()));
     }
 
     @Contract("_ -> new")
     public ScoreboardDisplayService withTitle(@NotNull String title) {
-        return new ScoreboardDisplayService(title, this.lines);
+        return new ScoreboardDisplayService(new ConstantContent(title), this.lines);
     }
 
     public boolean isDefaultSidebar() {
@@ -202,16 +197,16 @@ public class ScoreboardDisplayService implements DisplayService {
         }
 
         for (int i = 0; i < def.length; i++) {
-            if (!def[i].equals(this.lines.get(i))) {
+            if (!def[i].equals(this.lines.get(i).content())) {
                 return false;
             }
         }
         return true;
     }
 
-    private static void fillWith(@NotNull List<@NotNull String> lines, int from, int to) {
+    private static void fillWith(@NotNull List<@NotNull ConstantContent> lines, int from, int to) {
         for (int i = from; i < to; i++) {
-            lines.add("");
+            lines.add(new ConstantContent(""));
         }
     }
 }
