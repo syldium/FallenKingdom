@@ -1,12 +1,16 @@
 package fr.devsylone.fallenkingdom.utils;
 
 import fr.devsylone.fallenkingdom.Fk;
+import me.clip.placeholderapi.PlaceholderAPI;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public final class ChatUtils
 {
 	public static final String DEVSYLONE = "§1§odevsylone";
+	private static final boolean PAPI_ENABLED = Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI");
 
 	private ChatUtils() throws IllegalAccessException {
 		throw new IllegalAccessException(this.getClass().getSimpleName() + " cannot be instantiated.");
@@ -18,9 +22,14 @@ public final class ChatUtils
 		return msg == null ? null : ChatColor.translateAlternateColorCodes('&', msg);
 	}
 
-	public static void sendMessage(CommandSender sender, String message)
-	{
+	public static void sendMessage(CommandSender sender, String message) {
 		if (message == null || message.isEmpty()) return;
+
+		if (PAPI_ENABLED && sender instanceof Player) {
+			Player player = (Player) sender;
+			message = PlaceholderAPI.setPlaceholders(player, message);
+		}
+
 		sender.sendMessage(Messages.PREFIX_FK.getMessage() + message);
 	}
 
