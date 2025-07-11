@@ -23,16 +23,20 @@ public final class ChatUtils
 
 	public static void sendMessage(CommandSender sender, String message) {
 		if (message == null || message.isEmpty()) return;
+		String prefix = Messages.PREFIX_FK.getMessage();
 
 		if (Fk.PAPI_ENABLED) {
 			if (sender instanceof Player) {
 				message = PlaceholderAPI.setPlaceholders((Player) sender, message);
+				prefix = PlaceholderAPI.setPlaceholders((Player) sender, prefix);
 			} else {
 				message = PlaceholderAPI.setPlaceholders(null, message);
+				prefix = PlaceholderAPI.setPlaceholders(null, prefix);
+
 			}
 		}
 
-		sender.sendMessage(Messages.PREFIX_FK.getMessage() + message);
+		sender.sendMessage(prefix + message);
 	}
 
 
