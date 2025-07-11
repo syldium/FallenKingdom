@@ -4,8 +4,11 @@ import fr.devsylone.fallenkingdom.Fk;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.UUID;
 
 public final class ChatUtils
 {
@@ -25,13 +28,19 @@ public final class ChatUtils
 	public static void sendMessage(CommandSender sender, String message) {
 		if (message == null || message.isEmpty()) return;
 
-		if (PAPI_ENABLED && sender instanceof Player) {
-			Player player = (Player) sender;
-			message = PlaceholderAPI.setPlaceholders(player, message);
+		if (PAPI_ENABLED) {
+			if (sender instanceof Player) {
+				message = PlaceholderAPI.setPlaceholders((Player) sender, message);
+			} else {
+				UUID dummyUUID = UUID.fromString("00000000-0000-0000-0000-000000000000");
+				OfflinePlayer dummyPlayer = Bukkit.getOfflinePlayer(dummyUUID);
+				message = PlaceholderAPI.setPlaceholders(dummyPlayer, message);
+			}
 		}
 
 		sender.sendMessage(Messages.PREFIX_FK.getMessage() + message);
 	}
+
 
 	public static void sendMessage(CommandSender sender, Messages message)
 	{
