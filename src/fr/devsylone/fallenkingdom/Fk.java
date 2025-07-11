@@ -74,6 +74,7 @@ public class Fk extends JavaPlugin
 	protected SaveablesManager saveableManager;
 	protected PortalsManager portalsManager;
 	protected LanguageManager languageManager;
+	public static boolean PAPI_ENABLED;
 
 	protected static Fk instance;
 
@@ -105,6 +106,8 @@ public class Fk extends JavaPlugin
 		/*
 		 * Random
 		 */
+
+		PAPI_ENABLED = Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI");
 
 		ListenersManager.registerListeners(this);
 
@@ -172,7 +175,7 @@ public class Fk extends JavaPlugin
 
 		saveDefaultConfig();
 
-		if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null)
+		if(PAPI_ENABLED)
 			new PlaceHolderExpansion().register();
 
 		try {

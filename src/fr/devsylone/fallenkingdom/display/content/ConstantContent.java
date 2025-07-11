@@ -26,8 +26,6 @@ import static java.util.Objects.requireNonNull;
  */
 public class ConstantContent implements Content {
 
-    private static final boolean PAPI_ENABLED = Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI");
-
     private final String value;
     private final Set<PlaceHolder> placeHolders;
     private final boolean hasPapiPlaceholders;
@@ -48,7 +46,7 @@ public class ConstantContent implements Content {
         }
 
         // Vérification des placeholders PAPI (format %identifier_params%)
-        this.hasPapiPlaceholders = PAPI_ENABLED && value.contains("%") && value.indexOf('%') != value.lastIndexOf('%');
+        this.hasPapiPlaceholders = Fk.PAPI_ENABLED && value.contains("%") && value.indexOf('%') != value.lastIndexOf('%');
     }
 
     @Override

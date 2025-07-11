@@ -13,7 +13,6 @@ import java.util.UUID;
 public final class ChatUtils
 {
 	public static final String DEVSYLONE = "§1§odevsylone";
-	private static final boolean PAPI_ENABLED = Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI");
 
 	private ChatUtils() throws IllegalAccessException {
 		throw new IllegalAccessException(this.getClass().getSimpleName() + " cannot be instantiated.");
@@ -28,7 +27,7 @@ public final class ChatUtils
 	public static void sendMessage(CommandSender sender, String message) {
 		if (message == null || message.isEmpty()) return;
 
-		if (PAPI_ENABLED) {
+		if (Fk.PAPI_ENABLED) {
 			if (sender instanceof Player) {
 				message = PlaceholderAPI.setPlaceholders((Player) sender, message);
 			} else {
