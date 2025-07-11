@@ -1,8 +1,11 @@
 package fr.devsylone.fallenkingdom.utils;
 
 import fr.devsylone.fallenkingdom.Fk;
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
 
 public final class ChatUtils
 {
@@ -18,11 +21,24 @@ public final class ChatUtils
 		return msg == null ? null : ChatColor.translateAlternateColorCodes('&', msg);
 	}
 
-	public static void sendMessage(CommandSender sender, String message)
-	{
+	public static void sendMessage(CommandSender sender, String message) {
 		if (message == null || message.isEmpty()) return;
-		sender.sendMessage(Messages.PREFIX_FK.getMessage() + message);
+		String prefix = Messages.PREFIX_FK.getMessage();
+
+		if (Fk.PAPI_ENABLED) {
+			if (sender instanceof Player) {
+				message = PlaceholderAPI.setPlaceholders((Player) sender, message);
+				prefix = PlaceholderAPI.setPlaceholders((Player) sender, prefix);
+			} else {
+				message = PlaceholderAPI.setPlaceholders(null, message);
+				prefix = PlaceholderAPI.setPlaceholders(null, prefix);
+
+			}
+		}
+
+		sender.sendMessage(prefix + message);
 	}
+
 
 	public static void sendMessage(CommandSender sender, Messages message)
 	{
