@@ -4,7 +4,9 @@ import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.exception.FkLightException;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fallenkingdom.version.FkSound;
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -13,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Décrit une commande, peu importe son niveau
@@ -119,12 +122,21 @@ public abstract class AbstractCommand
     }
 
     protected void broadcast(String message) {
+        String prefix = Messages.PREFIX_FK.getMessage();
         if (getParent() == null) {
             Fk.broadcast(message);
             return;
         }
         getParent().broadcast(message);
-        Bukkit.getConsoleSender().sendMessage(Messages.PREFIX_FK.getMessage() + message);
+
+        if (Fk.PAPI_ENABLED) {
+            UUID dummyUUID = UUID.fromString("00000000-0000-0000-0000-000000000000");
+            OfflinePlayer dummyPlayer = Bukkit.getOfflinePlayer(dummyUUID);
+            message = PlaceholderAPI.setPlaceholders(dummyPlayer, message);
+            prefix = PlaceholderAPI.setPlaceholders(dummyPlayer, Messages.PREFIX_FK.getMessage());
+        }
+
+        Bukkit.getConsoleSender().sendMessage(prefix + message);
     }
 
     protected void broadcast(String message, int noBroadcastPos, List<String> args) {

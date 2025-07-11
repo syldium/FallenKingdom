@@ -20,6 +20,7 @@ import fr.devsylone.fallenkingdom.updater.UpdateChecker;
 import fr.devsylone.fallenkingdom.utils.FkConfig;
 import fr.devsylone.fallenkingdom.version.FkSound;
 import fr.devsylone.fallenkingdom.version.LuckPermsContext;
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bstats.bukkit.Metrics;
@@ -248,6 +249,10 @@ public class Fk extends JavaPlugin
 	{
 		if (message == null || message.isEmpty()) {
 			return;
+		}
+		if (Fk.PAPI_ENABLED) {
+			message = PlaceholderAPI.setPlaceholders(null, message);
+			prefix = PlaceholderAPI.setPlaceholders(null, prefix);
 		}
 		message = "§r" + message;
 		for(FkPlayer p : getInstance().getPlayerManager().getConnectedPlayers())

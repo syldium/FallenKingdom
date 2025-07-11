@@ -1,5 +1,6 @@
 package fr.devsylone.fallenkingdom.players;
 
+import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.display.GlobalDisplayService;
 import fr.devsylone.fallenkingdom.scoreboard.PlaceHolder;
 import fr.devsylone.fallenkingdom.utils.DistanceTree;
@@ -10,6 +11,7 @@ import fr.devsylone.fkpi.teams.Base;
 import fr.devsylone.fkpi.teams.Team;
 import fr.devsylone.fallenkingdom.display.notification.RegionChange;
 import fr.devsylone.fkpi.util.Saveable;
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
@@ -136,6 +138,10 @@ public class FkPlayer implements Saveable
 
 			message = NEW_LINE_PATTERN.matcher("\n" + message).replaceAll("\n" + full);
 			message = message.substring(1);
+
+			if (Fk.PAPI_ENABLED) {
+				message = PlaceholderAPI.setPlaceholders(p, message);
+			}
 
 			p.sendMessage(message);
 		}

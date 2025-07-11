@@ -2,13 +2,10 @@ package fr.devsylone.fallenkingdom.utils;
 
 import fr.devsylone.fallenkingdom.Fk;
 import me.clip.placeholderapi.PlaceholderAPI;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.UUID;
 
 public final class ChatUtils
 {
@@ -31,9 +28,7 @@ public final class ChatUtils
 			if (sender instanceof Player) {
 				message = PlaceholderAPI.setPlaceholders((Player) sender, message);
 			} else {
-				UUID dummyUUID = UUID.fromString("00000000-0000-0000-0000-000000000000");
-				OfflinePlayer dummyPlayer = Bukkit.getOfflinePlayer(dummyUUID);
-				message = PlaceholderAPI.setPlaceholders(dummyPlayer, message);
+				message = PlaceholderAPI.setPlaceholders(null, message);
 			}
 		}
 
