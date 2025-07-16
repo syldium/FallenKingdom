@@ -1,0 +1,21 @@
+[versions]
+annotations = "26.0.2"
+errorprone = "3.49.5"
+junit = "5.13.3"
+run-task = "2.3.1"
+
+adventure = "4.23.0"
+cloud = "2.0.0"
+configurate = "4.2.0"
+paper = "1.21.7-R0.1-SNAPSHOT"
+
+[libraries]
+adventureApi = { group = "net.kyori", name = "adventure-api", version.ref = "adventure" }
+annotations = { group = "org.jetbrains", name = "annotations", version.ref = "annotations" }
+cloudCore = { group = "org.incendo", name = "cloud-core", version.ref = "cloud" }
+configurateCore = { group = "org.spongepowered", name = "configurate-core", version.ref = "configurate" }
+junitBom = { group = "org.junit", name = "junit-bom", version.ref = "junit" }
+junitJupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junit" }
+junitPlatformLauncher = { group = "org.junit.platform", name = "junit-platform-launcher" }
+minimessage = { group = "net.kyori", name = "adventure-text-minimessage", version.ref = "adventure" }
+paperApi = { group = "io.papermc.paper", name = "paper-api", version.ref = "paper" }

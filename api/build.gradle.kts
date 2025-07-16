@@ -1,9 +1,19 @@
-import fr.devsylone.fallenkingdom.ADVENTURE_VER
-import fr.devsylone.fallenkingdom.CONFIGURATE_VER
-import fr.devsylone.fallenkingdom.PAPER_VER
+java {
+    disableAutoTargetJvm()
+}
 
 dependencies {
-    compileOnly("com.destroystokyo.paper:paper-api:${PAPER_VER}")
-    compileOnly("net.kyori:adventure-api:${ADVENTURE_VER}")
-    compileOnly("org.spongepowered:configurate-core:${CONFIGURATE_VER}")
+    compileOnly(libs.paperApi)
+    compileOnly(libs.configurateCore)
+
+    testImplementation(platform(libs.junitBom))
+    testImplementation(libs.junitJupiter)
+    testRuntimeOnly(libs.junitPlatformLauncher)
+}
+
+tasks.test {
+    useJUnitPlatform()
+    testLogging {
+        events("passed", "skipped", "failed")
+    }
 }
