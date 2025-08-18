@@ -348,7 +348,7 @@ public class Fk extends JavaPlugin
 	private void metrics() throws NoClassDefFoundError // gson en 1.8.0
 	{
 		Metrics metrics = new Metrics(this, 6738);
-		metrics.addCustomChart(new SingleLineChart("server_running_1-8_version", () -> Bukkit.getVersion().contains("1.8") ? 1 : 0));
+		metrics.addCustomChart(new SingleLineChart("server_running_1-8_version", () -> !Version.VersionType.V1_9_V1_12.isHigherOrEqual() ? 1 : 0));
 		metrics.addCustomChart(new SimplePie("lang_used", () -> languageManager.getLocale().getLanguage()));
 	}
 

@@ -33,7 +33,6 @@ public class DeepPauseManager implements Saveable
     private final List<LivingEntity> noAI = new ArrayList<>();
     private final List<Entity> unDespawnable = new ArrayList<>();
 
-    private static final boolean VERSION1_8 = Bukkit.getBukkitVersion().contains("1.8");
     private static Method NMS_ENTITY_GETNBTTAG;
     private static Method NMS_ENTITY_C;
     private static Constructor<?> NMS_NBTTAG;
@@ -47,7 +46,7 @@ public class DeepPauseManager implements Saveable
     protected static void init()
     {
         try {
-            if (VERSION1_8) {
+            if (!Version.VersionType.V1_9_V1_12.isHigherOrEqual()) {
                 Class<?> entity = NMSUtils.nmsClass("world.entity", "Entity");
                 NMS_ENTITY_GETNBTTAG = entity.getDeclaredMethod("getNBTTag");
                 Class<?> nbtTagCompound = NMSUtils.nmsClass("nbt", "NBTTagCompound");
@@ -190,7 +189,7 @@ public class DeepPauseManager implements Saveable
 
     private void setAI(LivingEntity entity, boolean active)
     {
-        if (!VERSION1_8) {
+        if (Version.VersionType.V1_9_V1_12.isHigherOrEqual()) {
             entity.setAI(active);
             return;
         }

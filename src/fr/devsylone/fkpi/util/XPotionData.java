@@ -1,7 +1,6 @@
 package fr.devsylone.fkpi.util;
 
 import com.google.common.base.Preconditions;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.ThrownPotion;
@@ -15,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import static fr.devsylone.fallenkingdom.version.Version.VersionType.V1_16;
+import static fr.devsylone.fallenkingdom.version.Version.classExists;
 
 @SuppressWarnings("deprecation")
 public final class XPotionData
@@ -25,7 +25,7 @@ public final class XPotionData
 
 	private final boolean upgraded;
 
-	private static final boolean VERSION1_8 = Bukkit.getBukkitVersion().contains("1.8");
+	private static final boolean VERSION1_8;
 	private static final boolean SEPARATE_POTION_TYPES;
 
 	static {
@@ -37,6 +37,7 @@ public final class XPotionData
 			// ignore
 		}
 		SEPARATE_POTION_TYPES = separatePotionTypes;
+		VERSION1_8 = !separatePotionTypes && !classExists("org.bukkit.potion.PotionData");
 	}
 
 	public XPotionData(PotionType type, boolean extended, boolean upgraded)

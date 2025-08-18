@@ -348,7 +348,6 @@ public enum Messages
     PLAYER_CREATIVE_CHEST("player.creative.chest"),
     PLAYER_CREATIVE_SUBTITLE("player.creative.subtitle"),
     PLAYER_CREATIVE_TITLE("player.creative.title"),
-    PLAYER_DISABLED_POTION_BLAZE_POWDER_SHIFT("player.disabled-potion.blaze-powder-shift"),
     PLAYER_DISABLED_POTION_CONSUME("player.disabled-potion.consume"),
     PLAYER_DISABLED_POTION_CRAFT("player.disabled-potion.craft"),
     PLAYER_FILL_BUCKET_NEXT("player.fill-bucket-next"),

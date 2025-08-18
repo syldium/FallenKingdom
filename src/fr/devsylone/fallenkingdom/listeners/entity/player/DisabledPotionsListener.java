@@ -10,7 +10,6 @@ import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.rules.DisabledPotions;
 import fr.devsylone.fkpi.rules.Rule;
 import fr.devsylone.fkpi.util.XPotionData;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Projectile;
@@ -89,10 +88,7 @@ public class DisabledPotionsListener implements Listener
 
 		if(isForbiddenBrewing(potions, ingredient))
 		{
-			if(!Bukkit.getVersion().contains("1.8") && newItem.getType() == XMaterial.BLAZE_POWDER.parseMaterial() && e.isShiftClick())
-				ChatUtils.sendMessage(e.getWhoClicked(), Messages.PLAYER_DISABLED_POTION_BLAZE_POWDER_SHIFT);
-			else
-				ChatUtils.sendMessage(e.getWhoClicked(), Messages.PLAYER_DISABLED_POTION_CRAFT);
+			ChatUtils.sendMessage(e.getWhoClicked(), Messages.PLAYER_DISABLED_POTION_CRAFT);
 			e.setCancelled(true);
 		}
 	}
