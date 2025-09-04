@@ -72,7 +72,7 @@ public class TeleportAssaultTest {
     public void teleportInEnemyBase() {
         assertFalse(createTeleportEvent(TeleportCause.NETHER_PORTAL), "The player should not be teleported in an enemy base");
         assertFalse(createTeleportEvent(TeleportCause.ENDER_PEARL), "The player should not be teleported in an enemy base");
-        assertFalse(createTeleportEvent(TeleportCause.CHORUS_FRUIT), "The player should not be teleported in an enemy base");
+        assertFalse(createTeleportEvent(TeleportCause.CONSUMABLE_EFFECT), "The player should not be teleported in an enemy base");
     }
 
     @Test
@@ -81,7 +81,7 @@ public class TeleportAssaultTest {
         this.enemyTeam.addPlayer(this.player.getName());
         assertTrue(createTeleportEvent(TeleportCause.NETHER_PORTAL), "The player should be teleported in the base");
         assertTrue(createTeleportEvent(TeleportCause.ENDER_PEARL), "The player should be teleported in the base");
-        assertTrue(createTeleportEvent(TeleportCause.CHORUS_FRUIT), "The player should be teleported in the base");
+        assertTrue(createTeleportEvent(TeleportCause.CONSUMABLE_EFFECT), "The player should be teleported in the base");
     }
 
     @Test
@@ -94,7 +94,7 @@ public class TeleportAssaultTest {
     public void teleportNeutralLocation() {
         final Location location = new Location(this.player.getWorld(), 0, 70, 0);
         assertTrue(createTeleportEvent(TeleportCause.ENDER_PEARL, location), "The player should be teleported");
-        assertTrue(createTeleportEvent(TeleportCause.CHORUS_FRUIT, location), "The player should be teleported");
+        assertTrue(createTeleportEvent(TeleportCause.CONSUMABLE_EFFECT, location), "The player should be teleported");
         assertTrue(createTeleportEvent(TeleportCause.NETHER_PORTAL, location), "The player should be teleported");
     }
 

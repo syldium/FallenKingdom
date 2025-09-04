@@ -13,7 +13,6 @@
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.proc>full</maven.compiler.proc>
     </properties>
 
     <licenses>
@@ -44,7 +43,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.13.0</version>
+                <version>3.14.0</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
@@ -126,7 +125,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.5.1</version>
+                <version>3.5.3</version>
                 <configuration>
                     <trimStackTrace>false</trimStackTrace>
                     <argLine>-javaagent:${org.mockito:mockito-core:jar}</argLine>
@@ -183,16 +182,10 @@
     </distributionManagement>
 
     <dependencies>
-        <dependency> <!-- Units tests - seems like it needs to be before paper-api -->
-            <groupId>org.mockbukkit.mockbukkit</groupId>
-            <artifactId>mockbukkit-v1.21</artifactId>
-            <version>4.45.1</version>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
-            <version>26.0.1</version>
+            <version>26.0.2</version>
             <scope>provided</scope>
         </dependency>
         <!-- Used to check the structure of NMS packets -->
@@ -206,8 +199,14 @@
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>1.21.4-R0.1-SNAPSHOT</version>
+            <version>1.21.8-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockbukkit.mockbukkit</groupId>
+            <artifactId>mockbukkit-v1.21</artifactId>
+            <version>4.76.0</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.mojang</groupId>
@@ -218,7 +217,7 @@
         <dependency>
             <groupId>com.mojang</groupId>
             <artifactId>authlib</artifactId>
-            <version>6.0.54</version>
+            <version>6.0.58</version>
             <scope>provided</scope>
         </dependency>
         <!-- Structure of 1.8 NMS packets -->
@@ -231,7 +230,7 @@
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-buffer</artifactId>
-            <version>4.1.112.Final</version>
+            <version>4.1.118.Final</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -261,7 +260,7 @@
         <dependency>
             <groupId>net.luckperms</groupId>
             <artifactId>api</artifactId>
-            <version>5.4</version>
+            <version>5.5</version>
             <scope>provided</scope>
         </dependency>
 
@@ -269,13 +268,13 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>5.12.2</version>
+            <version>5.13.4</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>5.17.0</version>
+            <version>5.19.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -307,7 +306,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>3.11.2</version>
+                        <version>3.11.3</version>
                         <executions>
                             <execution>
                                 <id>attach-javadocs</id>

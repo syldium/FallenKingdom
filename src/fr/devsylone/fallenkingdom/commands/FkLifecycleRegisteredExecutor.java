@@ -40,7 +40,7 @@ public class FkLifecycleRegisteredExecutor extends FkAsyncCommandExecutor {
                 // S'il s'agit de la deuxième fois que la commande est enregistrée (pour un rechargement des datapacks par exemple),
                 // le provider n'existe plus sur "args" vu que le plugin a déjà reconstruit la commande. À la place, le
                 // provider précédent est réutilisé.
-                this.suggestionProvider = ((ArgumentCommandNode<CommandSourceStack, String>) old).getCustomSuggestions();
+                this.suggestionProvider = ((ArgumentCommandNode<CommandSourceStack, ?>) old).getCustomSuggestions();
             }
             final LiteralCommandNode<CommandSourceStack> literal = builder.register(this, command.getName(), new RawExecutor(command), this.suggestionProvider);
             commands.register(literal, command.getAliases());
