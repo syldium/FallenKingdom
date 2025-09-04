@@ -4,7 +4,6 @@ import fr.devsylone.fallenkingdom.players.FkPlayer;
 import fr.devsylone.fallenkingdom.scoreboard.PlaceHolder;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import me.clip.placeholderapi.PlaceholderAPI;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -17,6 +16,7 @@ import java.util.logging.Level;
 
 import static fr.devsylone.fallenkingdom.display.DisplayService.PLACEHOLDER_END;
 import static fr.devsylone.fallenkingdom.display.DisplayService.PLACEHOLDER_START;
+import static fr.devsylone.fallenkingdom.version.Version.classExists;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -26,7 +26,7 @@ import static java.util.Objects.requireNonNull;
  */
 public class ConstantContent implements Content {
 
-    private static final boolean PAPI_ENABLED = Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI");
+    private static final boolean PAPI_ENABLED = classExists("me.clip.placeholderapi.PlaceholderAPI");
 
     private final String value;
     private final Set<PlaceHolder> placeHolders;
