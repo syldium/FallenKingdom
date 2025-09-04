@@ -608,3 +608,7 @@ Il est conseillé de réinitialiser les fichiers de langue.
 [*] Détecte davantage de tentatives de waterlog dans la règle blastProofBase
 [*] Détecte davantage de passages par le Nether dans la règle netherAssault
 [*] Corrige l'interface des potions désactivées (1.21.4-)
+
+      >> 2.24.6
+[+] Supporte les serveurs en 1.21.8
+[+] Intègre les placeholders de PlaceholderAPI dans les affichages
