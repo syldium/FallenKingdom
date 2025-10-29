@@ -43,7 +43,7 @@ public class Rule<T>
 	public static final Rule<Boolean> HEALTH_BELOW_NAME = new Rule<>("HealthBelowName", true);
 	public static final Rule<Boolean> BLAST_PROOF_BASE = new Rule<>("BlastProofBase", false);
 	public static final Rule<Boolean> BUCKET_ASSAULT = new Rule<>("BucketAssault", false);
-	public static final Rule<Boolean> ENDERPEARL_ASSAULT = new Rule<>("EnderpearlAssault", true);
+	public static final Rule<Boolean> ENDERPEARL_ASSAULT = new Rule<>("EnderpearlAssault", false);
 	public static final Rule<Boolean> NETHER_ASSAULT = new Rule<>("NetherAssault", false);
 	public static final Rule<Boolean> PRIVATE_CHESTS = new Rule<>("PrivateChests", false);
 

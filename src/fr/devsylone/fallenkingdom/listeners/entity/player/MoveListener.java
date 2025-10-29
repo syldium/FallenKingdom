@@ -181,7 +181,7 @@ public class MoveListener implements Listener
 			}
 		} else if ((cause == TeleportCause.ENDER_PEARL || cause == chorus) && !FkPI.getInstance().getRulesManager().getRule(Rule.ENDERPEARL_ASSAULT)) {
 			Base base = FkPI.getInstance().getTeamManager().getBase(to).orElse(null);
-			if (base != null && !base.getTeam().equals(pTeam) && !base.contains(e.getFrom(), -1)) {
+			if (base != null && !base.getTeam().equals(pTeam)) {
 				ChatUtils.sendMessage(player, Messages.PLAYER_TP_IN_BASE.getMessage().replace("%team%", base.getTeam().toString()));
 				e.setCancelled(true);
 			}
