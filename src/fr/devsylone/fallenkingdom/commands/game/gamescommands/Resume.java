@@ -16,6 +16,8 @@ import fr.devsylone.fallenkingdom.game.Game;
 
 import java.util.List;
 
+import static fr.devsylone.fallenkingdom.version.Environment.setAdvanceTime;
+
 public class Resume extends FkCommand
 {
 	public Resume()
@@ -24,7 +26,6 @@ public class Resume extends FkCommand
 	}
 
 	@Override
-	@SuppressWarnings("deprecation")
 	public CommandResult execute(Fk plugin, CommandSender sender, List<String> args, String label)
 	{
 		if(plugin.getGame().isPreStart())
@@ -39,7 +40,7 @@ public class Resume extends FkCommand
 		{
 			for(World w : Bukkit.getWorlds())
 				if (plugin.getWorldManager().isAffected(w))
-					w.setGameRuleValue("doDaylightCycle", "true");
+					setAdvanceTime(w, true);
 		}
 		plugin.getDeepPauseManager().unfreezePlayers();
 		plugin.getDeepPauseManager().resetAIs();

@@ -5,6 +5,7 @@ import fr.devsylone.fkpi.teams.Team;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
+import org.bukkit.GameRules;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.enchantments.Enchantment;
@@ -24,6 +25,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
+import static fr.devsylone.fallenkingdom.version.Version.classExists;
+
 public class Environment {
 
     private static final boolean HAS_ASYNC_TELEPORT;
@@ -36,6 +39,7 @@ public class Environment {
     private static final boolean HAS_DIRECT_INVENTORY_HOLDER;
     private static final boolean HAS_ENCHANTMENT_GLINT_OVERRIDE;
     private static final boolean HAS_ENTITY_BY_UUID;
+    private static final boolean HAS_GAME_RULE_REGISTRY;
     public static final boolean HAS_DATA_COMPONENTS;
 
     static {
@@ -117,6 +121,8 @@ public class Environment {
             hasDataComponents = true;
         } catch (ClassNotFoundException | NoSuchMethodException ignored) { }
         HAS_DATA_COMPONENTS = hasDataComponents;
+
+        HAS_GAME_RULE_REGISTRY = classExists("org.bukkit.GameRules");
     }
 
     public static CompletableFuture<Boolean> teleportAsync(Entity entity, Location location) {
@@ -202,6 +208,14 @@ public class Environment {
                 }
             }
             return null;
+        }
+    }
+
+    public static void setAdvanceTime(@NotNull World world, boolean enabled) {
+        if (HAS_GAME_RULE_REGISTRY) {
+            world.setGameRule(GameRules.ADVANCE_TIME, enabled);
+        } else {
+            world.setGameRuleValue("doDaylightCycle", String.valueOf(enabled));
         }
     }
 }

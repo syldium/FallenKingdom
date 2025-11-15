@@ -57,6 +57,7 @@ import fr.devsylone.fkpi.rules.Rule;
 import fr.devsylone.fkpi.teams.Team;
 import org.jetbrains.annotations.NotNull;
 
+import static fr.devsylone.fallenkingdom.version.Environment.setAdvanceTime;
 import static fr.devsylone.fallenkingdom.version.Version.classExists;
 
 public class Fk extends JavaPlugin
@@ -192,7 +193,7 @@ public class Fk extends JavaPlugin
 			{
 				if(!Fk.getInstance().getWorldManager().isAffected(w))
 					continue;
-				w.setGameRuleValue("doDaylightCycle", "false");
+				setAdvanceTime(w, false);
 				w.setTime(6000L);
 			}
 

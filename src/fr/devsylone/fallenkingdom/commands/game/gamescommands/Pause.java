@@ -17,6 +17,8 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
+import static fr.devsylone.fallenkingdom.version.Environment.setAdvanceTime;
+
 public class Pause extends FkCommand
 {
 	public Pause()
@@ -38,7 +40,7 @@ public class Pause extends FkCommand
 
 		for(World w : Bukkit.getWorlds())
 			if (plugin.getWorldManager().isAffected(w))
-				w.setGameRuleValue("doDaylightCycle", "false");
+				setAdvanceTime(w, false);
 
 		plugin.getDeepPauseManager().removeAIs();
 		plugin.getDeepPauseManager().protectDespawnItems();
