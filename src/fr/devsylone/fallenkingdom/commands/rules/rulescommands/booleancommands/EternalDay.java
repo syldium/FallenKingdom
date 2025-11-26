@@ -8,6 +8,8 @@ import fr.devsylone.fallenkingdom.commands.rules.FkBooleanRuleCommand;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fkpi.rules.Rule;
 
+import static fr.devsylone.fallenkingdom.version.Environment.setAdvanceTime;
+
 public class EternalDay extends FkBooleanRuleCommand
 {
 	public EternalDay()
@@ -16,13 +18,12 @@ public class EternalDay extends FkBooleanRuleCommand
 	}
 
 	@Override
-	@SuppressWarnings("deprecation")
 	protected void sendMessage(boolean newValue) {
 		for(World w : Bukkit.getWorlds())
 		{
 			if(Fk.getInstance().getWorldManager().isAffected(w))
 			{
-				w.setGameRuleValue("doDaylightCycle", newValue ? "false" : "true");
+				setAdvanceTime(w, !newValue);
 				w.setTime(Fk.getInstance().getGame().getExceptedWorldTime());
 			}
 		}

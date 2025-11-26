@@ -19,7 +19,13 @@ public final class MinecraftKey {
 
     static {
         try {
-            IDENTIFIER = NMSUtils.nmsClass("resources", "MinecraftKey", "ResourceLocation");
+            Class<?> identifierClass;
+            try {
+                identifierClass = NMSUtils.nmsClass("resources", "MinecraftKey", "ResourceLocation");
+            } catch (ReflectiveOperationException ex) { // 1.21.11+
+                identifierClass = NMSUtils.nmsClass("resources", "MinecraftKey", "Identifier");
+            }
+            IDENTIFIER = identifierClass;
             MINECRAFT_KEY_CONSTRUCTOR = IDENTIFIER.getDeclaredConstructor(String.class, String.class);
             MINECRAFT_KEY_CONSTRUCTOR.setAccessible(true);
 
