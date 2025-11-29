@@ -61,7 +61,7 @@ class WitherBossBar1_8 implements BossBar {
     }
 
     private double progress = 1.0D;
-    private final String name;
+    private String name;
     private @Nullable Wither entity;
     private Object entityNms;
     private final Set<Player> viewers = new HashSet<>();
@@ -96,6 +96,7 @@ class WitherBossBar1_8 implements BossBar {
 
     @Override
     public void setTitle(@NotNull String message) {
+        this.name = message;
         if (this.entity == null) {
             return;
         }
