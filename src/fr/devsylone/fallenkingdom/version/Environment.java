@@ -5,8 +5,11 @@ import fr.devsylone.fkpi.teams.Team;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
+import org.bukkit.GameRule;
 import org.bukkit.GameRules;
 import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.World;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
@@ -39,7 +42,8 @@ public class Environment {
     private static final boolean HAS_DIRECT_INVENTORY_HOLDER;
     private static final boolean HAS_ENCHANTMENT_GLINT_OVERRIDE;
     private static final boolean HAS_ENTITY_BY_UUID;
-    private static final boolean HAS_GAME_RULE_REGISTRY;
+    private static final boolean HAS_GAME_RULE_REGISTRY_PAPER;
+    private static final boolean HAS_GAME_RULE_REGISTRY_SPIGOT;
     public static final boolean HAS_DATA_COMPONENTS;
 
     static {
@@ -122,7 +126,13 @@ public class Environment {
         } catch (ClassNotFoundException | NoSuchMethodException ignored) { }
         HAS_DATA_COMPONENTS = hasDataComponents;
 
-        HAS_GAME_RULE_REGISTRY = classExists("org.bukkit.GameRules");
+        HAS_GAME_RULE_REGISTRY_PAPER = classExists("org.bukkit.GameRules");
+        boolean hasGameRuleRegistrySpigot = false;
+        try {
+            Class.forName("org.bukkit.Registry").getField("GAME_RULE");
+            hasGameRuleRegistrySpigot = true;
+        } catch (ClassNotFoundException | NoSuchFieldException ignored) { }
+        HAS_GAME_RULE_REGISTRY_SPIGOT = hasGameRuleRegistrySpigot;
     }
 
     public static CompletableFuture<Boolean> teleportAsync(Entity entity, Location location) {
@@ -211,9 +221,16 @@ public class Environment {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public static void setAdvanceTime(@NotNull World world, boolean enabled) {
-        if (HAS_GAME_RULE_REGISTRY) {
-            world.setGameRule(GameRules.ADVANCE_TIME, enabled);
+        if (HAS_GAME_RULE_REGISTRY_PAPER || HAS_GAME_RULE_REGISTRY_SPIGOT) {
+            GameRule<Boolean> rule;
+            if (HAS_GAME_RULE_REGISTRY_PAPER) {
+                rule = GameRules.ADVANCE_TIME;
+            } else {
+                rule = (GameRule<Boolean>) Registry.GAME_RULE.getOrThrow(NamespacedKey.minecraft("advance_time"));
+            }
+            world.setGameRule(rule, enabled);
         } else {
             world.setGameRuleValue("doDaylightCycle", String.valueOf(enabled));
         }
