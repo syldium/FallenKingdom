@@ -612,3 +612,9 @@ Il est conseillé de réinitialiser les fichiers de langue.
       >> 2.24.6
 [+] Supporte les serveurs en 1.21.8
 [+] Intègre les placeholders de PlaceholderAPI dans les affichages
+
+      >> 2.24.7
+[+] Supporte les serveurs en 1.21.11
+[*] Corrige l'affichage initial de la barre de boss des nexus (1.8)
+[*] La règle enderpearlAssault est désormais activée par défaut
+[*] La règle enderpearlAssault interdit également la téléportation au sein d'une même base ennemie
