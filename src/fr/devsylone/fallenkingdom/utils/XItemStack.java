@@ -2,8 +2,11 @@ package fr.devsylone.fallenkingdom.utils;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.Multimap;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import com.mojang.authlib.properties.PropertyMap;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.Bukkit;
@@ -43,6 +46,8 @@ public class XItemStack {
     private final static Field LORE;
     private final static Field SKULL_META_PROFILE;
     private final static @Nullable Constructor<?> RESOLVABLE_PROFILE_CONSTRUCTOR;
+    private final static @Nullable Method RESOLVABLE_PROFILE_CREATE_RESOLVED;
+    private final static Method GAME_PROFILE_PROPERTIES;
 
     private final static boolean HAS_COMPONENT_API;
     private final static boolean SERIALIZED_VIEW; // Spigot en 2021
@@ -117,6 +122,18 @@ public class XItemStack {
                 }
             } catch (NoSuchMethodException ignored) {}
             RESOLVABLE_PROFILE_CONSTRUCTOR = resolvableProfileConstructor;
+            Method resolvableProfileCreateResolved = null;
+            try {
+                if (skullMetaProfile != null) {
+                    resolvableProfileCreateResolved = NMSUtils.getMethod(skullMetaProfile.getType(), skullMetaProfile.getType(), GameProfile.class);
+                }
+            } catch (NoSuchMethodException ignored) {}
+            RESOLVABLE_PROFILE_CREATE_RESOLVED = resolvableProfileCreateResolved;
+            Method gameProfileProperties = null;
+            try {
+                gameProfileProperties = GameProfile.class.getMethod("getProperties");
+            } catch (NoSuchMethodException ignored) {}
+            GAME_PROFILE_PROPERTIES = gameProfileProperties;
 
             Class<?> craftMeta = NMSUtils.obcClass("inventory.CraftMetaItem");
             DISPLAY_NAME = craftMeta.getDeclaredField("displayName");
@@ -198,10 +215,20 @@ public class XItemStack {
             profile.setProperty(new ProfileProperty("textures", texture));
             meta.setPlayerProfile(profile);
         } else {
-            final GameProfile profile = new GameProfile(UUID.randomUUID(), "");
-            profile.getProperties().put("textures", new Property("textures", texture));
+            final Property property = new Property("textures", texture);
             try {
-                if (RESOLVABLE_PROFILE_CONSTRUCTOR != null) {
+                final GameProfile profile;
+                if (GAME_PROFILE_PROPERTIES == null) {
+                    final Multimap<String, Property> map = ImmutableMultimap.of(property.name(), property);
+                    profile = new GameProfile(UUID.randomUUID(), "", new PropertyMap(map));
+                } else {
+                    profile = new GameProfile(UUID.randomUUID(), "");
+                    final PropertyMap map = (PropertyMap) GAME_PROFILE_PROPERTIES.invoke(profile);
+                    map.put("textures", new Property("textures", texture));
+                }
+                if (RESOLVABLE_PROFILE_CREATE_RESOLVED != null) {
+                    SKULL_META_PROFILE.set(meta, RESOLVABLE_PROFILE_CREATE_RESOLVED.invoke(null, profile));
+                } else if (RESOLVABLE_PROFILE_CONSTRUCTOR != null) {
                     SKULL_META_PROFILE.set(meta, RESOLVABLE_PROFILE_CONSTRUCTOR.newInstance(profile));
                 } else {
                     SKULL_META_PROFILE.set(meta, profile);
