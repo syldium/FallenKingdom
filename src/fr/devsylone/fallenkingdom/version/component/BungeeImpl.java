@@ -45,6 +45,24 @@ class BungeeImpl implements FkComponent {
     }
 
     @Override
+    public @NotNull FkComponent changePage(int page) {
+        if (BukkitImpl.BookImpl.CHANGE_PAGE_FIX == null) {
+            return this.interact(new ClickEvent(ClickEvent.Action.CHANGE_PAGE, String.valueOf(page)));
+        } else {
+            return this.interact(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/change_page " + page));
+        }
+    }
+
+    @Override
+    public @NotNull FkComponent command(@NotNull String command) {
+        return this.interact(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command));
+    }
+
+    @Override
+    public @NotNull FkComponent openUrl(@NotNull String url) {
+        return this.interact(new ClickEvent(ClickEvent.Action.OPEN_URL, url));
+    }
+
     public @NotNull FkComponent interact(@NotNull ClickEvent event) {
         this.component.setClickEvent(event);
         return this;

@@ -3,7 +3,6 @@ package fr.devsylone.fallenkingdom.version.component;
 import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.event.ClickEvent.Action;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
@@ -37,7 +36,13 @@ class AdventureImpl implements FkComponent {
     }
 
     AdventureImpl(FkComponent... components) {
-        this(Component.join(Component.empty(), asAdventure(components)));
+        if (components.length == 0) {
+            this.component = Component.empty();
+        } else if (components.length == 1) {
+            this.component = asAdventure(components[0]);
+        } else {
+            this.component = Component.empty().append(asAdventure(components));
+        }
     }
 
     static @NotNull FkComponent newline() {
@@ -61,8 +66,8 @@ class AdventureImpl implements FkComponent {
     }
 
     @Override
-    public @NotNull FkComponent interact(@NotNull net.md_5.bungee.api.chat.ClickEvent event) {
-        this.component = this.component.clickEvent(ClickEvent.clickEvent(asAdventure(event.getAction()), event.getValue()));
+    public @NotNull FkComponent openUrl(@NotNull String url) {
+        this.component = this.component.clickEvent(ClickEvent.openUrl(url));
         return this;
     }
 
@@ -100,18 +105,7 @@ class AdventureImpl implements FkComponent {
         return this.component.toString();
     }
 
-    private static @NotNull Action asAdventure(net.md_5.bungee.api.chat.ClickEvent.Action eventAction) {
-        switch (eventAction) {
-            case OPEN_URL: return Action.OPEN_URL;
-            case OPEN_FILE: return Action.OPEN_FILE;
-            case RUN_COMMAND: return Action.RUN_COMMAND;
-            case SUGGEST_COMMAND: return Action.SUGGEST_COMMAND;
-            case CHANGE_PAGE: return Action.CHANGE_PAGE;
-            case COPY_TO_CLIPBOARD: return Action.COPY_TO_CLIPBOARD;
-            default: throw new IllegalArgumentException("Unknown click event.");
-        }
-    }
-
+    @SuppressWarnings("deprecation")
     private static @NotNull Style asAdventure(ChatColor... colors) {
         if (colors.length == 0) return Style.empty();
         if (colors.length == 1 && !TEXT_DECORATIONS.contains(colors[0])) return Style.style(asAdventure(colors[0]));
@@ -127,6 +121,7 @@ class AdventureImpl implements FkComponent {
         return style.build();
     }
 
+    @SuppressWarnings("deprecation")
     private static @NotNull TextColor asAdventure(ChatColor color) {
         if (color == ChatColor.BLACK) return NamedTextColor.BLACK;
         if (color == ChatColor.DARK_BLUE) return NamedTextColor.DARK_BLUE;

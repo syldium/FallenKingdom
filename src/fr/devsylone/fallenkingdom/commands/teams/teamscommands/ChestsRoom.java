@@ -189,11 +189,11 @@ public class ChestsRoom extends FkParentCommand
 						text(" : Avec une marge de 2 blocs, lorsque vous allez poser un seul coffre, les dimensions de la salle seront de 5x5x5.\n\n"),
 						text("Screens\n\n", ChatColor.UNDERLINE, ChatColor.BOLD),
 						text("     "),
-						text("> En Vanilla <", ChatColor.UNDERLINE, ChatColor.LIGHT_PURPLE).interact(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://imgur.com/kRpAMkA")),
+						text("> En Vanilla <", ChatColor.UNDERLINE, ChatColor.LIGHT_PURPLE).openUrl("https://imgur.com/kRpAMkA"),
 						text("\n\n   "),
-						text("> Marge 2 blocs <", ChatColor.UNDERLINE, ChatColor.DARK_GREEN).interact(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://imgur.com/q1A1BfO")),
+						text("> Marge 2 blocs <", ChatColor.UNDERLINE, ChatColor.DARK_GREEN).openUrl("https://imgur.com/q1A1BfO"),
 						text("\n\n   "),
-						text("> Marge 4 blocs <", ChatColor.UNDERLINE, ChatColor.DARK_GREEN).interact(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://imgur.com/8flOtrC"))
+						text("> Marge 4 blocs <", ChatColor.UNDERLINE, ChatColor.DARK_GREEN).openUrl("https://imgur.com/8flOtrC")
 				)
 		};
 		return FkBook.book(title, author, pages);

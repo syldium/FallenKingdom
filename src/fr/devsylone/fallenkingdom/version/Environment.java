@@ -79,6 +79,7 @@ public class Environment {
         try {
             Class<?> component = Class.forName("net.kyori.adventure.text.Component");
             PlayerDeathEvent.class.getMethod("deathMessage", component);
+            Class.forName("net.kyori.adventure.text.TranslationArgument");
             hasAdventureApi = true;
         } catch (ClassNotFoundException | NoSuchMethodException ignored) { }
         HAS_ADVENTURE_API = hasAdventureApi;
