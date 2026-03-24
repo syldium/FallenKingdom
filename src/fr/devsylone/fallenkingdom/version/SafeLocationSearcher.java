@@ -1,6 +1,5 @@
 package fr.devsylone.fallenkingdom.version;
 
-import com.cryptomorin.xseries.XMaterial;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fallenkingdom.utils.XBlock;
 import org.bukkit.Chunk;
@@ -27,8 +26,8 @@ import static fr.devsylone.fallenkingdom.version.Environment.getMinHeight;
 public class SafeLocationSearcher {
 
     private static final Set<Material> DAMAGING_TYPES = XBlock.materialSet(
-            XMaterial.CACTUS, XMaterial.CAMPFIRE, XMaterial.FIRE, XMaterial.MAGMA_BLOCK, XMaterial.SOUL_CAMPFIRE, XMaterial.SOUL_FIRE,
-            XMaterial.SWEET_BERRY_BUSH, XMaterial.WITHER_ROSE, XMaterial.POINTED_DRIPSTONE, XMaterial.POWDER_SNOW, XMaterial.LAVA_CAULDRON
+            "CACTUS", "CAMPFIRE", "FIRE", "MAGMA_BLOCK", "SOUL_CAMPFIRE", "SOUL_FIRE",
+            "SWEET_BERRY_BUSH", "WITHER_ROSE", "POINTED_DRIPSTONE", "POWDER_SNOW", "LAVA_CAULDRON"
     );
 
     private final Location around;

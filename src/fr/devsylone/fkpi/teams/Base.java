@@ -1,6 +1,6 @@
 package fr.devsylone.fkpi.teams;
 
-import com.cryptomorin.xseries.XMaterial;
+import fr.devsylone.fallenkingdom.utils.XMaterial;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.rules.Rule;
 import fr.devsylone.fkpi.util.OutlineSquareIterator;
@@ -291,7 +291,7 @@ public class Base implements Saveable
 
 		for(int i = 0; i < 3; i++)
 		{
-			index.getBlock().setType(XMaterial.OAK_FENCE.parseMaterial());
+			index.getBlock().setType(XMaterial.OAK_FENCE.material());
 			index.add(0, 1, 0);
 		}
 
@@ -319,7 +319,7 @@ public class Base implements Saveable
 				 * On place une laine et on change la couleur
 				 * en fonction de la couleur de l'equipe.
 				 */
-				index.getBlock().setType(XMaterial.WHITE_WOOL.parseMaterial());
+				index.getBlock().setType(XMaterial.WHITE_WOOL.material());
 				XBlock.setColor(index.getBlock(), team.getColor().getDyeColor());
 
 				index.add(0, 1, 0);

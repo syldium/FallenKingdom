@@ -9,6 +9,7 @@ import fr.devsylone.fkpi.api.event.RuleChangeEvent;
 import fr.devsylone.fkpi.teams.Team;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.World.Environment;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
@@ -250,7 +251,7 @@ public class Game implements Saveable
 			Bukkit.getScheduler().runTaskLater(Fk.getInstance(), () -> {
 				updateDayDuration();
 				for(World w : Bukkit.getWorlds()) {
-					if (Fk.getInstance().getWorldManager().isAffected(w))
+					if (Fk.getInstance().getWorldManager().isAffected(w) && w.getEnvironment() == Environment.NORMAL)
 						w.setFullTime(getExceptedWorldTime());
 				}
 

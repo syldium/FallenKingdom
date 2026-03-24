@@ -1,6 +1,5 @@
 package fr.devsylone.fallenkingdom.listeners.entity.player;
 
-import com.cryptomorin.xseries.XMaterial;
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fallenkingdom.utils.Messages;
@@ -10,6 +9,7 @@ import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.rules.DisabledPotions;
 import fr.devsylone.fkpi.rules.Rule;
 import fr.devsylone.fkpi.util.XPotionData;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Projectile;
@@ -69,7 +69,7 @@ public class DisabledPotionsListener implements Listener
 		if((e.getClick() == ClickType.LEFT || e.getClick() == ClickType.RIGHT) && (e.getSlotType() == SlotType.FUEL || e.getSlotType() == SlotType.CRAFTING))
 			newItem = e.getCursor();
 
-		else if(e.getClick() == ClickType.NUMBER_KEY && e.getView().getBottomInventory().getItem(e.getHotbarButton()) != null && (e.getSlotType() == SlotType.FUEL && e.getView().getBottomInventory().getItem(e.getHotbarButton()).getType() != XMaterial.POTION.parseMaterial() || e.getSlotType() == SlotType.CRAFTING && e.getView().getBottomInventory().getItem(e.getHotbarButton()).getType() == XMaterial.POTION.parseMaterial()))
+		else if(e.getClick() == ClickType.NUMBER_KEY && e.getView().getBottomInventory().getItem(e.getHotbarButton()) != null && (e.getSlotType() == SlotType.FUEL && e.getView().getBottomInventory().getItem(e.getHotbarButton()).getType() != Material.POTION || e.getSlotType() == SlotType.CRAFTING && e.getView().getBottomInventory().getItem(e.getHotbarButton()).getType() == Material.POTION))
 			newItem = e.getView().getBottomInventory().getItem(e.getHotbarButton());
 
 		else if(e.isShiftClick() && e.getSlotType() != SlotType.FUEL && e.getSlotType() != SlotType.CRAFTING)
@@ -81,7 +81,7 @@ public class DisabledPotionsListener implements Listener
 		ItemStack[] potions = Arrays.copyOf(e.getInventory().getContents(), 3);
 		ItemStack ingredient = e.getInventory().getItem(3);
 
-		if(newItem.getType() == XMaterial.POTION.parseMaterial())
+		if(newItem.getType() == Material.POTION)
 			potions = new ItemStack[] {null, newItem, null};
 		else
 			ingredient = newItem;

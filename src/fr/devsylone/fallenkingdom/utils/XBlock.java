@@ -31,14 +31,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import fr.devsylone.fallenkingdom.version.Version.VersionType;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.material.Colorable;
 import org.bukkit.material.MaterialData;
-
-import com.cryptomorin.xseries.XMaterial;
 
 /*
  * References
@@ -66,21 +65,31 @@ import com.cryptomorin.xseries.XMaterial;
  */
 @SuppressWarnings("deprecation")
 public final class XBlock {
-    private static final boolean ISFLAT = XMaterial.supports(13);
+    private static final boolean ISFLAT = VersionType.V1_13.isHigherOrEqual();
+    private static final boolean IS_AIR;
+
+    static {
+        boolean isAir = false;
+        try {
+            Material.class.getMethod("isAir");
+            isAir = true;
+        } catch (NoSuchMethodException ignored) {}
+        IS_AIR = isAir;
+    }
 
     public static final Set<Material> REPLACEABLE = materialSet(
-            XMaterial.DANDELION, XMaterial.POPPY, XMaterial.BLUE_ORCHID, XMaterial.ALLIUM, XMaterial.AZURE_BLUET, XMaterial.RED_TULIP,
-            XMaterial.ORANGE_TULIP, XMaterial.WHITE_TULIP, XMaterial.PINK_TULIP, XMaterial.OXEYE_DAISY, XMaterial.CORNFLOWER,
-            XMaterial.LILY_OF_THE_VALLEY, XMaterial.WITHER_ROSE, XMaterial.SUNFLOWER, XMaterial.LILAC, XMaterial.ROSE_BUSH,
-            XMaterial.PEONY, XMaterial.TALL_GRASS, XMaterial.LARGE_FERN, XMaterial.FERN, XMaterial.DEAD_BUSH,
-            XMaterial.OAK_FENCE, XMaterial.AIR
+            "DANDELION", "POPPY", "BLUE_ORCHID", "ALLIUM", "AZURE_BLUET", "RED_TULIP",
+            "ORANGE_TULIP", "WHITE_TULIP", "PINK_TULIP", "OXEYE_DAISY", "CORNFLOWER",
+            "LILY_OF_THE_VALLEY", "WITHER_ROSE", "SUNFLOWER", "LILAC", "ROSE_BUSH",
+            "PEONY", "TALL_GRASS", "LARGE_FERN", "FERN", "DEAD_BUSH",
+            "OAK_FENCE", "AIR"
     );
     public static final Set<Material> BLOCKS_IN_CAVES = materialSet(
-            XMaterial.STONE, XMaterial.GRANITE, XMaterial.DIORITE, XMaterial.ANDESITE, XMaterial.DEEPSLATE, XMaterial.DRIPSTONE_BLOCK,
-            XMaterial.CALCITE, XMaterial.SMOOTH_BASALT, XMaterial.TUFF
+            "STONE", "GRANITE", "DIORITE", "ANDESITE", "DEEPSLATE", "DRIPSTONE_BLOCK",
+            "CALCITE", "SMOOTH_BASALT", "TUFF"
     );
     public static final Set<Material> CONTAINERS = materialSet(
-            XMaterial.CHEST, XMaterial.TRAPPED_CHEST, XMaterial.BARREL
+            "CHEST", "TRAPPED_CHEST", "BARREL"
     );
 
     public static boolean isReplaceable(Block block) {
@@ -151,8 +160,7 @@ public final class XBlock {
      */
     public static Block getAirBlock(List<Block> blocks) {
         for (Block block : blocks) {
-            Material material = block.getType();
-            if (material == Material.AIR || material == XMaterial.CAVE_AIR.parseMaterial()) {
+            if (isAir(block.getType())) {
                 return block;
             }
         }
@@ -163,14 +171,27 @@ public final class XBlock {
         return ISFLAT;
     }
 
-    public static Set<Material> materialSet(XMaterial... materials) {
+    public static Set<Material> materialSet(String... materials) {
         return materialSet(Arrays.stream(materials));
     }
 
-    private static Set<Material> materialSet(Stream<XMaterial> stream) {
+    private static Set<Material> materialSet(Stream<String> stream) {
         return stream
-                .map(XMaterial::parseMaterial)
+                .map(name -> {
+                    try {
+                        return Material.valueOf(name);
+                    } catch (IllegalArgumentException e) {
+                        return null;
+                    }
+                })
                 .filter(Objects::nonNull)
                 .collect(Collectors.toCollection(() -> Material.class.isEnum() ? EnumSet.noneOf(Material.class) : new HashSet<>()));
+    }
+
+    public static boolean isAir(Material type) {
+        if (IS_AIR) {
+            return type.isAir();
+        }
+        return type == Material.AIR;
     }
 }

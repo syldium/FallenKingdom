@@ -21,8 +21,6 @@ import fr.devsylone.fallenkingdom.utils.FkConfig;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import com.cryptomorin.xseries.XMaterial;
-
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.game.Game.GameState;
 import fr.devsylone.fkpi.util.Color;
@@ -74,14 +72,6 @@ public class FilesUpdater
                     set("ChargedCreepers", 10050001);
                 else
                     set("ChargedCreepers", 50001);
-
-            //Version 2.5.0 Material.SIGN c'est l'item
-            if(setSection.getStringList("AllowedBlocks").contains(XMaterial.OAK_SIGN.parseMaterial().name()))
-            {
-                List<String> list = setSection.getStringList("AllowedBlocks");
-                list.remove(XMaterial.OAK_SIGN.parseMaterial().name());
-                set("AllowedBlocks", list);
-            }
 
             // Version < je sais plus
             if(!isSection("NetherCap"))

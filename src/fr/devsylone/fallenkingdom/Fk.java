@@ -191,7 +191,7 @@ public class Fk extends JavaPlugin
 		if(fkPI.getRulesManager().getRulesList().containsKey(Rule.ETERNAL_DAY) && fkPI.getRulesManager().getRule(Rule.ETERNAL_DAY))
 			for(World w : Bukkit.getWorlds())
 			{
-				if(!Fk.getInstance().getWorldManager().isAffected(w))
+				if(!Fk.getInstance().getWorldManager().isAffected(w) || w.getEnvironment() != World.Environment.NORMAL)
 					continue;
 				setAdvanceTime(w, false);
 				w.setTime(6000L);

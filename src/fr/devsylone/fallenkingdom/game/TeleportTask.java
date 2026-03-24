@@ -1,6 +1,5 @@
 package fr.devsylone.fallenkingdom.game;
 
-import com.cryptomorin.xseries.XPotion;
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.version.Environment;
 import fr.devsylone.fkpi.teams.Team;
@@ -11,6 +10,18 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 class TeleportTask implements Runnable {
+
+    private static final PotionEffectType RESISTANCE;
+
+    static {
+        PotionEffectType resistance;
+        try {
+            resistance = PotionEffectType.RESISTANCE;
+        } catch (Throwable e) {
+            resistance = PotionEffectType.getByName("DAMAGE_RESISTANCE");
+        }
+        RESISTANCE = resistance;
+    }
 
     private final Team team;
 
@@ -31,7 +42,7 @@ class TeleportTask implements Runnable {
             }
 
             Environment.teleportAsync(player, team.getBase().getTpPoint());
-            player.addPotionEffect(new PotionEffect(XPotion.RESISTANCE.getPotionEffectType(), 20 * 5, 4));
+            player.addPotionEffect(new PotionEffect(RESISTANCE, 20 * 5, 4));
             player.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, 20 * 30, 4));
             player.setGameMode(GameMode.SURVIVAL);
             player.setHealth(20);

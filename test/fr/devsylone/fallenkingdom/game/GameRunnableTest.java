@@ -83,7 +83,7 @@ public class GameRunnableTest {
         MockUtils.getServerMockSafe().getScheduler().performTicks(31L);
         assertEquals(30, game.getTime());
         for (World world : Bukkit.getWorlds()) {
-            if (world != MockUtils.getUnaffectedWorld()) {
+            if (world != MockUtils.getUnaffectedWorld() && world.getEnvironment() == World.Environment.NORMAL) {
                 assertEquals(30L * 20L, world.getTime());
             }
         }

@@ -4,8 +4,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.cryptomorin.xseries.XMaterial;
 import fr.devsylone.fallenkingdom.utils.ConfigHelper;
+import fr.devsylone.fallenkingdom.utils.XBlock;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -25,10 +25,9 @@ public class PortalsManager implements Saveable
 
 	public void enablePortals()
 	{
-		Material caveAir = XMaterial.CAVE_AIR.parseMaterial();
 		for(final Location loc : portals)
 		{
-			if(loc != null && loc.getBlock() != null && (loc.getBlock().getType().equals(Material.AIR) || loc.getBlock().getType().equals(caveAir)))
+			if(loc != null && loc.getBlock() != null && XBlock.isAir(loc.getBlock().getType()))
 			{
 				loc.getBlock().setType(Material.FIRE);
 				Bukkit.getScheduler().scheduleSyncDelayedTask(Fk.getInstance(), () -> {

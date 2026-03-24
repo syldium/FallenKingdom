@@ -1,6 +1,5 @@
 package fr.devsylone.fallenkingdom.utils;
 
-import com.cryptomorin.xseries.XMaterial;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -129,7 +128,7 @@ public class XAdvancement {
             }
             for (EntityType entityType : EntityType.values()) {
                 if (entityType.name().equalsIgnoreCase(word)) {
-                    ItemStack skull = new ItemStack(XMaterial.PLAYER_HEAD.parseItem());
+                    ItemStack skull = XMaterial.PLAYER_HEAD.item();
                     SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
                     skullMeta.setOwner("MHF_" + word.substring(0, 1).toUpperCase(Locale.ROOT) + word.substring(1));
                     skull.setItemMeta(skullMeta);

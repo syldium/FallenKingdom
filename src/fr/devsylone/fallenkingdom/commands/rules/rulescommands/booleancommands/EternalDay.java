@@ -7,6 +7,7 @@ import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.commands.rules.FkBooleanRuleCommand;
 import fr.devsylone.fallenkingdom.utils.Messages;
 import fr.devsylone.fkpi.rules.Rule;
+import org.bukkit.World.Environment;
 
 import static fr.devsylone.fallenkingdom.version.Environment.setAdvanceTime;
 
@@ -21,7 +22,7 @@ public class EternalDay extends FkBooleanRuleCommand
 	protected void sendMessage(boolean newValue) {
 		for(World w : Bukkit.getWorlds())
 		{
-			if(Fk.getInstance().getWorldManager().isAffected(w))
+			if(Fk.getInstance().getWorldManager().isAffected(w) && w.getEnvironment() == Environment.NORMAL)
 			{
 				setAdvanceTime(w, !newValue);
 				w.setTime(Fk.getInstance().getGame().getExceptedWorldTime());

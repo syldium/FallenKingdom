@@ -51,7 +51,7 @@ public class BrigadierSpigotManager<S> extends BrigadierManager<S> implements Li
             CONSOLE_FIELD.setAccessible(true);
 
             Class<?> minecraftServer = PacketUtils.MINECRAFT_SERVER;
-            Class<?> commandDispatcher = NMSUtils.nmsClass("commands", "CommandDispatcher");
+            Class<?> commandDispatcher = NMSUtils.nmsClass("commands", "CommandDispatcher", "Commands");
             GET_COMMAND_DISPATCHER_METHOD = NMSUtils.getMethod(minecraftServer, commandDispatcher);
             GET_COMMAND_DISPATCHER_METHOD.setAccessible(true);
 
@@ -61,7 +61,7 @@ public class BrigadierSpigotManager<S> extends BrigadierManager<S> implements Li
                     .findFirst().orElseThrow(NoSuchMethodException::new);
             GET_BRIGADIER_DISPATCHER_METHOD.setAccessible(true);
 
-            Class<?> commandListenerWrapper = NMSUtils.nmsClass("commands", "CommandListenerWrapper");
+            Class<?> commandListenerWrapper = NMSUtils.nmsClass("commands", "CommandListenerWrapper", "CommandSourceStack");
             GET_BUKKIT_SENDER_METHOD = commandListenerWrapper.getDeclaredMethod("getBukkitSender");
             GET_BUKKIT_SENDER_METHOD.setAccessible(true);
 

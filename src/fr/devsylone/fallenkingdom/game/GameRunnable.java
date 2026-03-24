@@ -17,6 +17,7 @@ import fr.devsylone.fkpi.teams.Nexus;
 import fr.devsylone.fkpi.teams.Team;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.World.Environment;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -34,7 +35,7 @@ class GameRunnable extends BukkitRunnable
         this.game = game;
         game.updateDayDuration();
         for (World world : Bukkit.getWorlds()) {
-            if (Fk.getInstance().getWorldManager().isAffected(world)) {
+            if (Fk.getInstance().getWorldManager().isAffected(world) && world.getEnvironment() == Environment.NORMAL) {
                 world.setFullTime(game.getExceptedWorldTime());
             }
         }
@@ -71,10 +72,10 @@ class GameRunnable extends BukkitRunnable
         long worldTime = game.getExceptedWorldTime();
         for(World w : Bukkit.getWorlds())
         {
-            if(!Fk.getInstance().getWorldManager().isAffected(w))
+            if(!Fk.getInstance().getWorldManager().isAffected(w) || w.getEnvironment() != Environment.NORMAL)
                 continue;
 
-            if(w.getEnvironment() == World.Environment.NORMAL && Math.abs(w.getFullTime() - worldTime) > 32 && game.day != 0)
+            if(Math.abs(w.getFullTime() - worldTime) > 32 && game.day != 0)
             {
                 Fk.getInstance().getLogger().info(Messages.CONSOLE_ADJUSTMENT_GAME_TIME.getMessage());
                 final long fullTime = w.getFullTime();

@@ -1,8 +1,8 @@
 package fr.devsylone.fkpi.teams;
 
-import com.cryptomorin.xseries.XMaterial;
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.game.ChestRoomRunnable;
+import fr.devsylone.fallenkingdom.utils.XMaterial;
 import fr.devsylone.fallenkingdom.version.packet.block.MultiBlockChange;
 import fr.devsylone.fallenkingdom.version.packet.entity.Hologram;
 import fr.devsylone.fallenkingdom.version.packet.entity.ItemSlot;
@@ -152,7 +152,7 @@ public class ChestsRoom implements Nexus, Saveable
 					inter = inter + (iy == 0 ? 1 : 0);
 					inter = inter + (iz == 0 ? 1 : 0);
 
-					if(!loc.equals(p.getLocation().add(0, -1, 0).getBlock().getLocation()) && XBlock.isBlockInCave(loc.getBlock().getType()) || loc.getBlock().getType() == Material.SAND || loc.getBlock().getType() == Material.COBBLESTONE || loc.getBlock().getType() == Material.DIRT || loc.getBlock().getType() == XMaterial.GRASS_BLOCK.parseMaterial() || loc.getBlock().getType() == Material.GRAVEL || loc.getBlock().getType().name().contains("ORE"))
+					if(!loc.equals(p.getLocation().add(0, -1, 0).getBlock().getLocation()) && XBlock.isBlockInCave(loc.getBlock().getType()) || loc.getBlock().getType() == Material.SAND || loc.getBlock().getType() == Material.COBBLESTONE || loc.getBlock().getType() == Material.DIRT || loc.getBlock().getType() == XMaterial.GRASS_BLOCK.material() || loc.getBlock().getType() == Material.GRAVEL || loc.getBlock().getType().name().contains("ORE"))
 						change.change(loc.getBlock(), Material.AIR);
 
 					int id = -1;

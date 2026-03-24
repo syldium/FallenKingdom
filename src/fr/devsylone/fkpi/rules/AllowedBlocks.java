@@ -22,8 +22,6 @@ import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 
-import com.cryptomorin.xseries.XMaterial;
-
 public class AllowedBlocks implements RuleValue
 {
 	private final Map<Material, Set<Byte>> allowed = Material.class.isEnum() ? new EnumMap<>(Material.class) : new HashMap<>();
@@ -206,15 +204,13 @@ public class AllowedBlocks implements RuleValue
 		try {
 			Class.forName("org.bukkit.Tag").getField("SIGNS");
 			SIGNS.addAll(new HashSet<>(Tag.SIGNS.getValues()));
-		} catch (ExceptionInInitializerError ignored) {
-			// test env
 		} catch (ClassNotFoundException | NoSuchFieldException e) {
-			if (XBlock.isFlat()) {
-				SIGNS.add(XMaterial.OAK_SIGN.parseMaterial());
-			} else {
-				SIGNS.add(Material.valueOf("SIGN_POST"));
+			for (String sign : new String[]{"SIGN", "WALL_SIGN", "SIGN_POST"}) {
+				Material material = Material.matchMaterial(sign);
+				if (material != null) {
+					SIGNS.add(material);
+				}
 			}
-			SIGNS.add(XMaterial.OAK_WALL_SIGN.parseMaterial());
 		}
 	}
 }

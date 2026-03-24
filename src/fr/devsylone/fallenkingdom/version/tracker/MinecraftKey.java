@@ -29,10 +29,16 @@ public final class MinecraftKey {
             MINECRAFT_KEY_CONSTRUCTOR = IDENTIFIER.getDeclaredConstructor(String.class, String.class);
             MINECRAFT_KEY_CONSTRUCTOR.setAccessible(true);
 
-            RESOURCE = NMSUtils.nmsClass("resources", "ResourceKey");
-            RESOURCE_KEY_FACTORY = Arrays.stream(RESOURCE.getMethods())
-                    .filter(m -> m.getParameterCount() == 1 && m.getParameterTypes()[0].equals(IDENTIFIER))
-                    .findFirst().orElseThrow(NoSuchMethodException::new);
+            Class<?> resourceClass = null;
+            Method resourceKeyFactory = null;
+            try {
+                resourceClass = NMSUtils.nmsClass("resources", "ResourceKey");
+                resourceKeyFactory = Arrays.stream(resourceClass.getMethods())
+                        .filter(m -> m.getParameterCount() == 1 && m.getParameterTypes()[0].equals(IDENTIFIER))
+                        .findFirst().orElseThrow(NoSuchMethodException::new);
+            } catch (ReflectiveOperationException ignored) {} // < 1.16
+            RESOURCE = resourceClass;
+            RESOURCE_KEY_FACTORY = resourceKeyFactory;
         } catch (ReflectiveOperationException ex) {
             throw new ExceptionInInitializerError(ex);
         }
