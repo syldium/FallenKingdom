@@ -618,3 +618,7 @@ Il est conseillé de réinitialiser les fichiers de langue.
 [*] Corrige l'affichage initial de la barre de boss des nexus (1.8)
 [*] La règle enderpearlAssault est désormais activée par défaut
 [*] La règle enderpearlAssault interdit également la téléportation au sein d'une même base ennemie
+
+      >> 2.24.8
+[+] Supporte les serveurs en 26.1
+[*] Considère les coffres en cuivre dans les salles des coffres
