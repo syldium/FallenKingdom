@@ -89,7 +89,9 @@ public final class XBlock {
             "CALCITE", "SMOOTH_BASALT", "TUFF"
     );
     public static final Set<Material> CONTAINERS = materialSet(
-            "CHEST", "TRAPPED_CHEST", "BARREL"
+            "CHEST", "TRAPPED_CHEST", "BARREL",
+            "COPPER_CHEST", "EXPOSED_COPPER_CHEST", "WEATHERED_COPPER_CHEST", "OXIDIZED_COPPER_CHEST",
+            "WAXED_COPPER_CHEST", "WAXED_EXPOSED_COPPER_CHEST", "WAXED_WEATHERED_COPPER_CHEST", "WAXED_OXIDIZED_COPPER_CHEST"
     );
 
     public static boolean isReplaceable(Block block) {
