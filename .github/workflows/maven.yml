@@ -2,10 +2,6 @@ name: Build and test with Maven
 
 on:  
   push:
-    branches:
-      - master
-      - dev
-  pull_request:
 
 jobs:
   build:
