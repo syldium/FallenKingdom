@@ -46,6 +46,7 @@ public class Rule<T>
 	public static final Rule<Boolean> ENDERPEARL_ASSAULT = new Rule<>("EnderpearlAssault", false);
 	public static final Rule<Boolean> NETHER_ASSAULT = new Rule<>("NetherAssault", false);
 	public static final Rule<Boolean> PRIVATE_CHESTS = new Rule<>("PrivateChests", false);
+	public static final Rule<Boolean> ENEMY_BUILD = new Rule<>("EnemyBuild", false);
 
 	// Chars
 	public static final Rule<Character> GLOBAL_CHAT_PREFIX = new Rule<>("GlobalChatPrefix", '!');

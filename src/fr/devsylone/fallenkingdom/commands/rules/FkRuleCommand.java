@@ -29,6 +29,7 @@ public class FkRuleCommand extends FkParentCommand
 				.add(new DisabledPotions())
 				.add(new EndCap())
 				.add(new EnderpearlAssault())
+				.add(new EnemyBuild())
 				.add(new EternalDay())
 				.add(new FriendlyFire())
 				.add(new GlobalChatPrefix())

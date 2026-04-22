@@ -114,6 +114,9 @@ public class BlockListener implements Listener
 					if(!t.equals(team) && t.getBase() != null && t.getBase().contains(block))
 						enemyBase = true;
 
+				if (enemyBase && FkPI.getInstance().getRulesManager().getRule(Rule.ENEMY_BUILD))
+					return;
+
 				int stones = 0;
 				if(!enemyBase && FkPI.getInstance().getRulesManager().getRule(Rule.PLACE_BLOCK_IN_CAVE).isActive())
 					for(int y = block.getBlockY() + 1; y < block.getWorld().getMaxHeight(); y++)
@@ -177,7 +180,7 @@ public class BlockListener implements Listener
 			if (nexus instanceof ChestsRoom && XBlock.canBePartOfChestRoom(block.getType())) {
 				((ChestsRoom) nexus).removeChest(loc);
 			}
-			if (player.getGameMode() == GameMode.CREATIVE || Fk.getInstance().getGame().isPreStart()) {
+			if (player.getGameMode() == GameMode.CREATIVE || Fk.getInstance().getGame().isPreStart() || FkPI.getInstance().getRulesManager().getRule(Rule.ENEMY_BUILD)) {
 				return;
 			}
 			final Team playerTeam = FkPI.getInstance().getTeamManager().getPlayerTeam(player);
