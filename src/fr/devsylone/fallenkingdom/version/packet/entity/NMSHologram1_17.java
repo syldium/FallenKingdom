@@ -6,8 +6,10 @@ import fr.devsylone.fallenkingdom.utils.PacketUtils;
 import fr.devsylone.fallenkingdom.utils.Unsafety;
 import fr.devsylone.fallenkingdom.utils.XItemStack;
 import fr.devsylone.fallenkingdom.version.tracker.DataTracker;
+import fr.devsylone.fallenkingdom.version.tracker.InternalRegistry;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -18,7 +20,6 @@ import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -45,9 +46,12 @@ class NMSHologram1_17 extends NMSHologram {
 
     static {
         try {
-            final Class<?> entityTypesClass = NMSUtils.nmsClass("world.entity", "EntityTypes", "EntityType");
+            Class<?> entityTypesClass = NMSUtils.nmsOptionalClass("world.entity", "EntityType").orElse(null);
+            if (entityTypesClass == null) {
+                entityTypesClass = NMSUtils.nmsClass("world.entity", "EntityTypes");
+            }
             final Class<?> vec3dClass = NMSUtils.nmsClass("world.phys", "Vec3D", "Vec3");
-            ARMOR_STAND = ((Optional<?>) NMSUtils.getMethod(entityTypesClass, Optional.class, String.class).invoke(null, "armor_stand")).get();
+            ARMOR_STAND = new InternalRegistry<>(NamespacedKey.minecraft("entity_type")).get(NamespacedKey.minecraft("armor_stand"));
             ZERO_VEC3D = NMSUtils.getField(vec3dClass, vec3dClass, field -> Modifier.isStatic(field.getModifiers())).get(null);
             VEC3D = vec3dClass.getConstructor(double.class, double.class, double.class);
 
