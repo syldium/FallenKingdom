@@ -622,3 +622,7 @@ Il est conseillé de réinitialiser les fichiers de langue.
       >> 2.24.8
 [+] Supporte les serveurs en 26.1
 [*] Considère les coffres en cuivre dans les salles des coffres
+
+      >> 2.24.9
+[+] Supporte les serveurs en 26.2
+[*] Corrige un avertissement dans la console sous Java 26 ("final field mutation")
