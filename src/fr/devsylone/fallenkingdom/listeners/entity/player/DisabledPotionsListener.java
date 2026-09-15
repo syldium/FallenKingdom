@@ -3,13 +3,14 @@ package fr.devsylone.fallenkingdom.listeners.entity.player;
 import fr.devsylone.fallenkingdom.Fk;
 import fr.devsylone.fallenkingdom.utils.ChatUtils;
 import fr.devsylone.fallenkingdom.utils.Messages;
-import fr.devsylone.fallenkingdom.utils.PotionUtils;
 import fr.devsylone.fallenkingdom.version.Version;
+import fr.devsylone.fallenkingdom.version.potion.BrewerAccess;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.rules.DisabledPotions;
 import fr.devsylone.fkpi.rules.Rule;
 import fr.devsylone.fkpi.util.XPotionData;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Projectile;
@@ -34,9 +35,10 @@ public class DisabledPotionsListener implements Listener
 	@EventHandler
 	public void event(BrewEvent e)
 	{
-		if(!Fk.getInstance().getWorldManager().isAffected(e.getBlock().getWorld()))
+		World world = e.getBlock().getWorld();
+		if(!Fk.getInstance().getWorldManager().isAffected(world))
 			return;
-		if(isForbiddenBrewing(Arrays.copyOf(e.getContents().getContents(), 3), e.getContents().getContents()[3]))
+		if(isForbiddenBrewing(world, Arrays.copyOf(e.getContents().getContents(), 3), e.getContents().getContents()[3]))
 			e.setCancelled(true);
 	}
 
@@ -52,7 +54,7 @@ public class DisabledPotionsListener implements Listener
 		else if(e.getRawSlots().contains(0) || e.getRawSlots().contains(1) || e.getRawSlots().contains(2))
 			potions = new ItemStack[] {null, e.getOldCursor(), null};
 
-		if(isForbiddenBrewing(potions, ingredient))
+		if(isForbiddenBrewing(e.getWhoClicked().getWorld(), potions, ingredient))
 		{
 			ChatUtils.sendMessage(e.getWhoClicked(), Messages.PLAYER_DISABLED_POTION_CRAFT);
 			e.setCancelled(true);
@@ -86,21 +88,21 @@ public class DisabledPotionsListener implements Listener
 		else
 			ingredient = newItem;
 
-		if(isForbiddenBrewing(potions, ingredient))
+		if(isForbiddenBrewing(e.getWhoClicked().getWorld(), potions, ingredient))
 		{
 			ChatUtils.sendMessage(e.getWhoClicked(), Messages.PLAYER_DISABLED_POTION_CRAFT);
 			e.setCancelled(true);
 		}
 	}
 
-	public boolean isForbiddenBrewing(ItemStack[] potions, ItemStack ingredient)
+	public boolean isForbiddenBrewing(World world, ItemStack[] potions, ItemStack ingredient)
 	{
 		if(ingredient == null || Arrays.equals(potions, new ItemStack[]{null, null, null}))
 			return false;
 
 		DisabledPotions rule = FkPI.getInstance().getRulesManager().getRule(Rule.DISABLED_POTIONS);
-		for (ItemStack potion : PotionUtils.getBrewedPotions(potions, ingredient)) {
-			if (rule.isDisabled(XPotionData.fromItemStack(potion))) {
+		for (ItemStack potion : potions) {
+			if (rule.isDisabled(XPotionData.fromItemStack(BrewerAccess.INSTANCE.mix(world, potion, ingredient)))) {
 				return true;
 			}
 		}

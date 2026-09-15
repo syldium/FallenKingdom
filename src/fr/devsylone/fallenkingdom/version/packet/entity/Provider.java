@@ -22,6 +22,7 @@ final class Provider {
             case V1_17:
             case V1_19:
             case V1_20:
+            case V26_3:
                 return new NMSHologram1_17();
             default:
                 throw new RuntimeException("Could not get packet manager by version!");

@@ -95,8 +95,14 @@ public class XItemStack {
             ITEM_STACK = NMSUtils.nmsClass("world.item", "ItemStack");
             AS_NMS_COPY = NMSUtils.obcClass("inventory.CraftItemStack")
                     .getDeclaredMethod("asNMSCopy", ItemStack.class);
-            AS_CRAFT_MIRROR = NMSUtils.obcClass("inventory.CraftItemStack")
-                    .getDeclaredMethod("asCraftMirror", ITEM_STACK);
+            Class<?> craftItemStackClass = NMSUtils.obcClass("inventory.CraftItemStack");
+            Method asCraftMirror;
+            try {
+                asCraftMirror = craftItemStackClass.getDeclaredMethod("asCraftMirror", ITEM_STACK);
+            } catch (NoSuchMethodException e) {
+                asCraftMirror = craftItemStackClass.getDeclaredMethod("asBukkitMirror", ITEM_STACK);
+            }
+            AS_CRAFT_MIRROR = asCraftMirror;
 
             boolean hasComponentApi;
             try {
