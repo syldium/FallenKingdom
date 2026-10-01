@@ -27,6 +27,10 @@ public class AllowedBlocks implements RuleValue
 	private final Map<Material, Set<Byte>> allowed = Material.class.isEnum() ? new EnumMap<>(Material.class) : new HashMap<>();
 	private final List<String> reducedList = new ArrayList<>();
 
+	public boolean isAllowed(Material material) {
+		return allowed.containsKey(material);
+	}
+
 	public boolean isAllowed(Material material, byte data)
 	{
 		Set<Byte> datas = allowed.get(material);

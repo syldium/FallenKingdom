@@ -3,6 +3,7 @@ package fr.devsylone.fallenkingdom.commands;
 import fr.devsylone.fallenkingdom.display.ScoreboardDisplayService;
 import fr.devsylone.fallenkingdom.exception.ArgumentParseException;
 import fr.devsylone.fallenkingdom.utils.Messages;
+import fr.devsylone.fallenkingdom.utils.XBlock;
 import fr.devsylone.fallenkingdom.version.Version;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.lockedchests.LockedChest;
@@ -64,14 +65,14 @@ public class ArgumentParser {
         return Boolean.parseBoolean(bool);
     }
 
-    public static MaterialWithData parseBlock(String block) throws ArgumentParseException {
-        return parseBlock(block, s -> {});
+    public static MaterialWithData parsePlaceable(String block) throws ArgumentParseException {
+        return parsePlaceable(block, s -> {});
     }
 
-    public static MaterialWithData parseBlock(String block, Consumer<String> itemConsumer) throws ArgumentParseException {
+    public static MaterialWithData parsePlaceable(String block, Consumer<String> itemConsumer) throws ArgumentParseException {
         int sep = Version.VersionType.V1_13.isHigherOrEqual() ? -1 : block.indexOf(":");
         Material m = Material.matchMaterial(block.substring(0, sep < 0 ? block.length() : sep));
-        if (m == null || !m.isBlock()) {
+        if (m == null || !XBlock.isPlaceable(m)) {
             itemConsumer.accept(block);
             throw new ArgumentParseException(Messages.CMD_ERROR_UNKNOWN_BLOCK.getMessage().replace("%block%", block));
         }
@@ -84,13 +85,13 @@ public class ArgumentParser {
 
 
     @SuppressWarnings("deprecation")
-    public static MaterialWithData parseBlock(int index, List<String> args, Player player, boolean denyAir, boolean itemStackData, BiConsumer<Player, String> itemConsumer) throws ArgumentParseException {
+    public static MaterialWithData parsePlaceable(int index, List<String> args, Player player, boolean denyAir, boolean itemStackData, BiConsumer<Player, String> itemConsumer) throws ArgumentParseException {
         if (index < args.size()) {
-            return parseBlock(args.get(index));
+            return parsePlaceable(args.get(index));
         }
         ItemStack item = player.getItemInHand();
         Material m = item.getType();
-        if (!m.isBlock() || (denyAir && isAir(m))) {
+        if (!XBlock.isPlaceable(m) || (denyAir && isAir(m))) {
             itemConsumer.accept(player, m.name());
             throw new ArgumentParseException(Messages.CMD_ERROR_UNKNOWN_BLOCK.getMessage().replace("%block%", m.name()));
         }
@@ -102,16 +103,16 @@ public class ArgumentParser {
         return new MaterialWithData(player.getItemInHand().getType(), data);
     }
 
-    public static MaterialWithData parseBlock(int index, List<String> args, Player player, boolean denyAir, boolean itemStackData) throws ArgumentParseException {
-        return parseBlock(index, args, player, denyAir, itemStackData, (p, input) -> {});
+    public static MaterialWithData parsePlaceable(int index, List<String> args, Player player, boolean denyAir, boolean itemStackData) throws ArgumentParseException {
+        return parsePlaceable(index, args, player, denyAir, itemStackData, (p, input) -> {});
     }
 
-    public static MaterialWithData parseBlock(int index, List<String> args, Player player, boolean denyAir, BiConsumer<Player, String> itemConsumer) throws ArgumentParseException {
-        return parseBlock(index, args, player, denyAir, false, itemConsumer);
+    public static MaterialWithData parsePlaceable(int index, List<String> args, Player player, boolean denyAir, BiConsumer<Player, String> itemConsumer) throws ArgumentParseException {
+        return parsePlaceable(index, args, player, denyAir, false, itemConsumer);
     }
 
-    public static MaterialWithData parseBlock(int index, List<String> args, Player player, boolean denyAir) throws ArgumentParseException {
-        return parseBlock(index, args, player, denyAir, false);
+    public static MaterialWithData parsePlaceable(int index, List<String> args, Player player, boolean denyAir) throws ArgumentParseException {
+        return parsePlaceable(index, args, player, denyAir, false);
     }
 
     public static boolean isAir(Material material) {

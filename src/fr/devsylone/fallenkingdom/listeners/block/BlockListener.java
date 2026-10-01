@@ -8,6 +8,7 @@ import fr.devsylone.fallenkingdom.utils.XBlock;
 import fr.devsylone.fallenkingdom.version.Version;
 import fr.devsylone.fkpi.FkPI;
 import fr.devsylone.fkpi.rules.Rule;
+import fr.devsylone.fkpi.teams.Base;
 import fr.devsylone.fkpi.teams.ChestsRoom;
 import fr.devsylone.fkpi.teams.Nexus;
 import fr.devsylone.fkpi.teams.Team;
@@ -23,6 +24,10 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityPlaceEvent;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.Optional;
 
 public class BlockListener implements Listener
 {
@@ -196,6 +201,27 @@ public class BlockListener implements Listener
 		{
 			e.setCancelled(true);
 			ChatUtils.sendMessage(e.getPlayer(), Messages.PLAYER_BLOCK_BREAK_LOCKED);
+		}
+	}
+
+	public static class EntityListener implements Listener {
+		@EventHandler
+		public void onEntityPlace(EntityPlaceEvent event) {
+			final Player player = event.getPlayer();
+			if (player == null || player.getGameMode() == GameMode.CREATIVE || !Fk.getInstance().getWorldManager().isWorldWithBase(player.getWorld())) {
+				return;
+			}
+			final ItemStack placedItem = player.getInventory().getItem(event.getHand());
+			final Team playerTeam = FkPI.getInstance().getTeamManager().getPlayerTeam(player);
+			final Optional<Base> base = FkPI.getInstance().getTeamManager().getBase(event.getEntity().getLocation());
+			if (base.isPresent() && base.get().getTeam().equals(playerTeam)) {
+				return;
+			}
+			if (FkPI.getInstance().getRulesManager().getRule(Rule.ALLOWED_BLOCKS).isAllowed(placedItem.getType())) {
+				return;
+			}
+			ChatUtils.sendMessage(player, Messages.PLAYER_BLOCK_NOT_ALLOWED);
+			event.setCancelled(true);
 		}
 	}
 }

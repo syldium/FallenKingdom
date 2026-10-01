@@ -56,5 +56,7 @@ public class ListenersManager
 		pm.registerEvents(new TeamChangeListener(plugin), plugin);
 		if (Version.classExists("org.bukkit.event.player.PlayerAdvancementDoneEvent"))
 			pm.registerEvents(new AdvancementListener(), plugin);
+		if (Version.classExists("org.bukkit.event.entity.EntityPlaceEvent"))
+			pm.registerEvents(new BlockListener.EntityListener(), plugin);
 	}
 }

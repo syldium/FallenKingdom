@@ -34,9 +34,9 @@ public class AllowBlock extends FkCommand
 			if (args.size() <= 0) {
 				return CommandResult.NOT_VALID_EXECUTOR;
 			}
-			material = ArgumentParser.parseBlock(args.get(0), (input) -> enderEyeSuggestion(sender, input));
+			material = ArgumentParser.parsePlaceable(args.get(0), (input) -> enderEyeSuggestion(sender, input));
 		} else {
-			material = ArgumentParser.parseBlock(0, args, (Player) sender, true, AllowBlock::enderEyeSuggestion);
+			material = ArgumentParser.parsePlaceable(0, args, (Player) sender, true, AllowBlock::enderEyeSuggestion);
 		}
 
 		enderEyeSuggestion(sender, material.getMaterial().name());

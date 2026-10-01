@@ -28,16 +28,22 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import fr.devsylone.fallenkingdom.version.Version.VersionType;
+import fr.devsylone.fallenkingdom.version.tag.PaperTagTest;
+import io.papermc.paper.registry.RegistryKey;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.inventory.ItemType;
 import org.bukkit.material.Colorable;
 import org.bukkit.material.MaterialData;
+
+import static fr.devsylone.fallenkingdom.version.Version.classExists;
 
 /*
  * References
@@ -67,6 +73,7 @@ import org.bukkit.material.MaterialData;
 public final class XBlock {
     private static final boolean ISFLAT = VersionType.V1_13.isHigherOrEqual();
     private static final boolean IS_AIR;
+    private static final Predicate<Material> IS_PLACEABLE;
 
     static {
         boolean isAir = false;
@@ -75,6 +82,12 @@ public final class XBlock {
             isAir = true;
         } catch (NoSuchMethodException ignored) {}
         IS_AIR = isAir;
+
+        Predicate<Material> isPlaceable = Material::isBlock;
+        if (classExists("io.papermc.paper.registry.tag.Tag")) {
+            isPlaceable = APISpecific.createPlaceablePredicate();
+        }
+        IS_PLACEABLE = isPlaceable;
     }
 
     public static final Set<Material> REPLACEABLE = materialSet(
@@ -110,6 +123,10 @@ public final class XBlock {
 
     public static boolean canBePartOfChestRoom(Material material) {
         return CONTAINERS.contains(material);
+    }
+
+    public static boolean isPlaceable(Material material) {
+        return IS_PLACEABLE.test(material);
     }
 
     public static boolean setColor(Block block, DyeColor color) {
@@ -195,5 +212,20 @@ public final class XBlock {
             return type.isAir();
         }
         return type == Material.AIR;
+    }
+
+    static class APISpecific {
+        private APISpecific() {}
+
+        public static Predicate<Material> createPlaceablePredicate() {
+            PaperTagTest<ItemType> additional = new PaperTagTest<>(RegistryKey.ITEM, "boats", "chest_boats", "cushions");
+            return material -> {
+                if (material.isBlock()) {
+                    return true;
+                }
+                final ItemType itemType = material.asItemType();
+                return itemType != null && additional.test(itemType);
+            };
+        }
     }
 }

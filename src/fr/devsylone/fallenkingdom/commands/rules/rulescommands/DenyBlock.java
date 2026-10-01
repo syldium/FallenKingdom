@@ -32,9 +32,9 @@ public class DenyBlock extends FkCommand
 			if (args.size() <= 0) {
 				return CommandResult.NOT_VALID_EXECUTOR;
 			}
-			material = ArgumentParser.parseBlock(args.get(0));
+			material = ArgumentParser.parsePlaceable(args.get(0));
 		} else {
-			material = ArgumentParser.parseBlock(0, args, (Player) sender,true);
+			material = ArgumentParser.parsePlaceable(0, args, (Player) sender,true);
 		}
 		AllowedBlocks rule = FkPI.getInstance().getRulesManager().getRule(Rule.ALLOWED_BLOCKS);
 

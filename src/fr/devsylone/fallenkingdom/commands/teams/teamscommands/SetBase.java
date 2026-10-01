@@ -27,7 +27,7 @@ public class SetBase extends FkPlayerCommand
 	@Override
 	public CommandResult execute(Fk plugin, Player sender, FkPlayer fkp, List<String> args, String label) {
 		int radius = ArgumentParser.parseInt(args.get(1), Messages.CMD_ERROR_RADIUS_FORMAT);
-		ArgumentParser.MaterialWithData block = ArgumentParser.parseBlock(2, args, sender, false, true);
+		ArgumentParser.MaterialWithData block = ArgumentParser.parsePlaceable(2, args, sender, false, true);
 
 		Team team = plugin.getFkPI().getTeamManager().getTeamOrThrow(args.get(0));
 
